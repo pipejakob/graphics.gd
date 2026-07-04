@@ -27,7 +27,8 @@
  *   1. Save the integer + SSE/FP argument registers (and the variadic vector
  *      count / struct-return pointer).
  *   2. Resolve THIS thread's glibc TLS via get_thread_foreign_tls() -- keyed by
- *      kernel tid, so it is correct no matter which TLS is currently active.
+ *      the CPU TLS pointer active on entry, so it is correct no matter which TLS
+ *      is currently active (native for an outer call, foreign when nested).
  *   3. Save the current TLS, switch to the glibc TLS, COPY the caller's
  *      stack-passed arguments into our frame, call the real function, then
  *      restore the saved TLS.
@@ -93,12 +94,15 @@ foreign_tramp:
 	movaps	%xmm6,-192(%rbp)
 	movaps	%xmm7,-208(%rbp)
 
-	/* Block Go's async signals (SIGURG/SIGPROF) for the whole switched window so
-	 * their handlers can't run while %fs points at the glibc TLS -- they read g
-	 * from %fs-relative TLS and would deref garbage. Also covers the brief switch
-	 * inside get_thread_foreign_tls' on-demand path. Old mask saved at -224.
-	 * rt_sigprocmask(SIG_BLOCK, {SIGURG,SIGPROF}, &old, 8). */
-	mov	$0x4400000,%eax		/* (1<<22 SIGURG)|(1<<26 SIGPROF) */
+	/* Block signals for the whole switched window so no Go signal handler can run
+	 * while %fs points at the glibc TLS -- every Go handler reads g from
+	 * %fs-relative TLS and would deref garbage. Block ALL catchable signals
+	 * except the synchronous faults (SIGSEGV/SIGBUS/SIGFPE/SIGILL/SIGTRAP/SIGABRT,
+	 * bits for signals 4-8,11), so a genuine fault in a foreign library still
+	 * terminates promptly. Also covers the brief switch inside
+	 * get_thread_foreign_tls' on-demand path. Old mask saved at -224.
+	 * rt_sigprocmask(SIG_BLOCK, ~0 & ~sync_faults, &old, 8). */
+	movabs	$0xFFFFFFFFFFFFFB07,%rax	/* all signals except SIGILL/TRAP/ABRT/BUS/FPE/SEGV */
 	mov	%rax,-216(%rbp)
 	xor	%edi,%edi		/* SIG_BLOCK */
 	lea	-216(%rbp),%rsi
@@ -223,10 +227,13 @@ foreign_tramp:
 
 	mov	x19,x9			/* real_func (survives the calls) */
 
-	/* Block Go's async signals (SIGURG/SIGPROF) for the switched window so their
-	 * handlers can't run while tpidr_el0 points at the glibc TLS. x9 is free now.
-	 * rt_sigprocmask(SIG_BLOCK, {SIGURG,SIGPROF}, &old@sp+344, 8). */
-	movz	x9,#0x440,lsl #16	/* 0x4400000 = (1<<22 SIGURG)|(1<<26 SIGPROF) */
+	/* Block signals for the switched window so no Go signal handler runs while
+	 * tpidr_el0 points at the glibc TLS. Block ALL catchable signals except the
+	 * synchronous faults (SIGSEGV/SIGBUS/SIGFPE/SIGILL/SIGTRAP/SIGABRT), so a
+	 * genuine fault still terminates promptly. x9 is free now.
+	 * rt_sigprocmask(SIG_BLOCK, ~0 & ~sync_faults, &old@sp+344, 8). */
+	movn	x9,#0			/* x9 = 0xFFFFFFFFFFFFFFFF */
+	movk	x9,#0xFB07		/* low word clears SIGILL/TRAP/ABRT/BUS/FPE/SEGV */
 	str	x9,[sp,#336]
 	mov	x0,#0			/* SIG_BLOCK */
 	add	x1,sp,#336

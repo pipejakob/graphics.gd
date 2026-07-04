@@ -1,8 +1,20 @@
 /* dlopen.c - Cosmopolitan-style dlopen port for static musl binaries
  *
  * Supports loading both musl-built and glibc-built shared libraries on Linux.
- * Uses the helper executable trick to borrow the system's dynamic loader.
- * Implements TLS switching to allow foreign libraries to use their own TLS.
+ * A static musl binary cannot dlopen() glibc libraries directly, so we run a
+ * tiny glibc "helper" program in-process (borrowing the host's ld.so + glibc)
+ * that hands us the real dlopen/dlsym and a set of glibc TLS blocks. Every call
+ * into a foreign library then switches the CPU TLS register (%fs / tpidr_el0)
+ * to a glibc TLS block for the duration of the call (see foreign_tramp.S).
+ *
+ * The helper comes from one of two sources, in order:
+ *   1. An embedded, prebuilt ELF (helper_bin_*.c, cross-built by gen_helper.sh
+ *      against an old glibc) loaded from an in-memory fd. This needs no compiler
+ *      and is immune to noexec mounts, so a stock glibc desktop/server "just
+ *      works". Used only when a real glibc is detected on the host.
+ *   2. helper_src.h compiled on the fly with cc/gcc/clang and cached per-user.
+ *      Used on musl hosts (where the embedded glibc helper cannot run) and as a
+ *      fallback if the embedded helper is unusable.
  *
  * This file is only compiled when targeting musl (not glibc).
  */
@@ -31,6 +43,8 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
+
+#include "helper_src.h"  /* HELPER: the borrowed-loader program source */
 
 #define RTLD_LOCAL 0
 #define RTLD_LAZY  1
@@ -82,137 +96,6 @@
 
 #define TLS_POOL_SIZE 64
 
-#define HELPER \
-  "#define _GNU_SOURCE\n" \
-  "#include <dlfcn.h>\n" \
-  "#include <stdio.h>\n" \
-  "#include <stdlib.h>\n" \
-  "#include <pthread.h>\n" \
-  "#include <semaphore.h>\n" \
-  "#include <stdint.h>\n" \
-  "\n" \
-  "#define TLS_POOL_SIZE 64\n" \
-  "\n" \
-  "/* TLS stack for nested trampoline calls (per-thread). */\n" \
-  "__thread struct {\n" \
-  "  long sp;\n" \
-  "  void *stack[32];\n" \
-  "} __tramp_ctx;\n" \
-  "\n" \
-  "/* TLS pool: array of glibc TLS pointers, one per pool thread. */\n" \
-  "struct tls_pool {\n" \
-  "  void *tls_ptrs[TLS_POOL_SIZE];      /* glibc TLS pointers */\n" \
-  "  void *tramp_ctxs[TLS_POOL_SIZE];    /* per-thread __tramp_ctx addresses */\n" \
-  "  sem_t ready;                         /* signaled when all threads ready */\n" \
-  "  sem_t shutdown;                      /* signaled to shut down threads */\n" \
-  "  int count;                           /* number of threads initialized */\n" \
-  "  pthread_mutex_t lock;\n" \
-  "} __tls_pool;\n" \
-  "\n" \
-  "static void *get_tls(void) {\n" \
-  "  void *tls;\n" \
-  "#if defined(__x86_64__)\n" \
-  "  __asm__ volatile(\"mov %%fs:0, %0\" : \"=r\"(tls));\n" \
-  "#elif defined(__aarch64__)\n" \
-  "  __asm__ volatile(\"mrs %0, tpidr_el0\" : \"=r\"(tls));\n" \
-  "#else\n" \
-  "#error \"unsupported architecture\"\n" \
-  "#endif\n" \
-  "  return tls;\n" \
-  "}\n" \
-  "\n" \
-  "static void *pool_thread(void *arg) {\n" \
-  "  int idx = (int)(intptr_t)arg;\n" \
-  "  pthread_mutex_lock(&__tls_pool.lock);\n" \
-  "  __tls_pool.tls_ptrs[idx] = get_tls();\n" \
-  "  __tls_pool.tramp_ctxs[idx] = &__tramp_ctx;\n" \
-  "  __tls_pool.count++;\n" \
-  "  pthread_mutex_unlock(&__tls_pool.lock);\n" \
-  "  sem_post(&__tls_pool.ready); /* signal this thread recorded its TLS */\n" \
-  "  sem_wait(&__tls_pool.shutdown); /* sleep forever */\n" \
-  "  return NULL;\n" \
-  "}\n" \
-  "\n" \
-  "/* On-demand glibc TCB factory: spawn a parked glibc thread and return its\n" \
-  "   TLS pointer, so the musl side can hand fresh glibc TCBs to threads beyond\n" \
-  "   the pre-spawned pool (no fixed cap). The musl side serializes calls, so the\n" \
-  "   statics below need no locking. */\n" \
-  "static sem_t __tcb_ready;\n" \
-  "static void *__tcb_captured;\n" \
-  "static void *tcb_thread(void *arg) {\n" \
-  "  (void)arg;\n" \
-  "  __tcb_captured = get_tls();\n" \
-  "  sem_post(&__tcb_ready);\n" \
-  "  sem_wait(&__tls_pool.shutdown); /* park forever */\n" \
-  "  return NULL;\n" \
-  "}\n" \
-  "void *glibc_tcb_create(void) {\n" \
-  "  pthread_attr_t attr;\n" \
-  "  pthread_attr_init(&attr);\n" \
-  "  pthread_attr_setstacksize(&attr, 16384);\n" \
-  "  sem_init(&__tcb_ready, 0, 0);\n" \
-  "  pthread_t t;\n" \
-  "  int rc = pthread_create(&t, &attr, tcb_thread, NULL);\n" \
-  "  pthread_attr_destroy(&attr);\n" \
-  "  if (rc != 0) return NULL;\n" \
-  "  pthread_detach(t);\n" \
-  "  sem_wait(&__tcb_ready);\n" \
-  "  return __tcb_captured;\n" \
-  "}\n" \
-  "\n" \
-  "int main(int argc, char **argv, char **envp) {\n" \
-  "  char *ep;\n" \
-  "  long addr;\n" \
-  "  if (argc != 2) {\n" \
-  "    fprintf(stderr, \"%s: not intended to be run directly\\n\", argv[0]);\n" \
-  "    return 1;\n" \
-  "  }\n" \
-  "  addr = strtol(argv[1], &ep, 10);\n" \
-  "  if (*ep) {\n" \
-  "    fprintf(stderr, \"%s: invalid function address\\n\", argv[0]);\n" \
-  "    return 2;\n" \
-  "  }\n" \
-  "  /* Initialize TLS pool */\n" \
-  "  sem_init(&__tls_pool.ready, 0, 0);\n" \
-  "  sem_init(&__tls_pool.shutdown, 0, 0);\n" \
-  "  pthread_mutex_init(&__tls_pool.lock, NULL);\n" \
-  "  __tls_pool.count = 0;\n" \
-  "  /* Slot 0 is for main thread */\n" \
-  "  __tls_pool.tls_ptrs[0] = get_tls();\n" \
-  "  __tls_pool.tramp_ctxs[0] = &__tramp_ctx;\n" \
-  "  __tls_pool.count = 1;\n" \
-  "  /* Create pool threads */\n" \
-  "  pthread_attr_t attr;\n" \
-  "  pthread_attr_init(&attr);\n" \
-  "  pthread_attr_setstacksize(&attr, 16384); /* minimal stack */\n" \
-  "  int created = 0;\n" \
-  "  for (int i = 1; i < TLS_POOL_SIZE; i++) {\n" \
-  "    pthread_t t;\n" \
-  "    if (pthread_create(&t, &attr, pool_thread, (void*)(intptr_t)i) == 0) {\n" \
-  "      pthread_detach(t);\n" \
-  "      created++;\n" \
-  "    }\n" \
-  "  }\n" \
-  "  pthread_attr_destroy(&attr);\n" \
-  "  /* Wait only for the threads that were actually created, so a failed\n" \
-  "     pthread_create (e.g. RLIMIT_NPROC in a container) cannot hang us\n" \
-  "     forever. Unfilled slots keep NULL TLS pointers; the musl side's\n" \
-  "     get_thread_slot() aborts cleanly if one is ever assigned. */\n" \
-  "  for (int i = 0; i < created; i++) sem_wait(&__tls_pool.ready);\n" \
-  "  if (created < TLS_POOL_SIZE - 1)\n" \
-  "    fprintf(stderr, \"dlopen helper: only %d of %d TLS pool threads \"\n" \
-  "                    \"created; foreign calls limited to %d threads\\n\",\n" \
-  "            created, TLS_POOL_SIZE - 1, created + 1);\n" \
-  "  return ((int (*)(void *))addr)((void *[]){\n" \
-  "      dlopen,\n" \
-  "      dlsym,\n" \
-  "      dlclose,\n" \
-  "      dlerror,\n" \
-  "      &__tls_pool,\n" \
-  "      glibc_tcb_create,\n" \
-  "  });\n" \
-  "}\n"
-
 struct Loaded {
   char *base;
   char *entry;
@@ -222,43 +105,54 @@ struct Loaded {
 
 static _Thread_local char dlerror_buf[128];
 
-/* TLS pool structure (must match helper's struct tls_pool) */
+/* TLS pool structure (must match helper_src.h's struct tls_pool). Only the
+ * tls_ptrs array is read on the musl side; the semaphores/count/lock that
+ * follow it in the helper are init-only and never touched here. */
 struct tls_pool {
   void *tls_ptrs[TLS_POOL_SIZE];      /* glibc TLS pointers */
-  void *tramp_ctxs[TLS_POOL_SIZE];    /* per-thread __tramp_ctx addresses */
-  /* sem_t ready, shutdown - we don't need these after init */
-  /* int count, mutex - we don't need these after init */
 };
 
-/*
- * __foreign struct layout - offsets must match foreign_tramp.S:
- *   offset 0:  atomic_uint once
- *   offset 8:  void *pool (TLS pool pointer)
- *   offset 16: void *foreign_tls (main thread's, for compat)
- *   offset 24: void *native_tls (main thread's)
- *   offset 32: bool is_supported
- */
+/* Shared state populated by the helper's callback (foreign_helper). The order of
+ * the callback pointer array is an ABI contract with helper_src.h's main(). */
 struct {
-  atomic_uint once;
-  struct tls_pool *pool;  // offset 8: TLS pool for multi-threaded support
-  void *foreign_tls;      // offset 16: foreign TLS pointer (main thread's, for compat)
-  void *native_tls;       // offset 24: native TLS pointer (main thread's)
-  bool is_supported;      // offset 32
+  struct tls_pool *pool;   /* pre-spawned glibc TLS pool */
+  void *foreign_tls;       /* main thread's glibc TLS (bootstrap for on-demand) */
+  void *native_tls;        /* main thread's musl TLS */
+  bool is_supported;
   void *(*dlopen_real)(const char *, int);
   void *(*dlsym_real)(void *, const char *);
   int (*dlclose_real)(void *);
   char *(*dlerror_real)(void);
-  void *(*dlopen)(const char *, int);
-  void *(*dlsym)(void *, const char *);
-  int (*dlclose)(void *);
-  char *(*dlerror)(void);
   jmp_buf jb;
-  /* Thread-to-slot mapping */
   atomic_int next_slot;
   /* Factory (in the helper's glibc context) that spawns a parked glibc thread
    * and returns its TLS pointer, used to grow past the pre-spawned pool. */
   void *(*glibc_tcb_create)(void);
 } __foreign;
+
+/* --- async-signal blocking around the TLS-switched window --------------------
+ *
+ * While the CPU TLS register points at a glibc TLS block, no Go signal handler
+ * may run: every Go handler reads the current goroutine `g` from %fs/tpidr-
+ * relative TLS and would dereference garbage. The trampoline (foreign_tramp.S)
+ * blocks signals itself on the hot path; the cold C entry points below use these
+ * helpers. We block all catchable signals EXCEPT the synchronous faults
+ * (SIGSEGV/SIGBUS/SIGFPE/SIGILL/SIGTRAP/SIGABRT) so a genuine fault inside a
+ * foreign library still terminates promptly instead of being deferred. */
+static void block_foreign_signals(sigset_t *old) {
+  sigset_t s;
+  sigfillset(&s);
+  sigdelset(&s, SIGSEGV);
+  sigdelset(&s, SIGBUS);
+  sigdelset(&s, SIGFPE);
+  sigdelset(&s, SIGILL);
+  sigdelset(&s, SIGTRAP);
+  sigdelset(&s, SIGABRT);
+  pthread_sigmask(SIG_BLOCK, &s, old);
+}
+static void restore_signals(const sigset_t *old) {
+  pthread_sigmask(SIG_SETMASK, old, NULL);
+}
 
 /* Map a CPU TLS pointer -> this thread's assigned glibc TLS pointer.
  *
@@ -415,32 +309,6 @@ static size_t my_strlcpy(char *dst, const char *src, size_t siz) {
   return len;
 }
 
-static size_t my_strlcat(char *dst, const char *src, size_t siz) {
-  size_t len = strlen(dst);
-  if (len < siz) my_strlcpy(dst + len, src, siz - len);
-  return len + strlen(src);
-}
-
-static const char *get_tmp_dir(void) {
-  const char *t = getenv("TMPDIR");
-  if (!t || !*t) t = getenv("HOME");
-  if (!t || !*t) t = ".";
-  return t;
-}
-
-static int timespec_cmp(const struct timespec *a, const struct timespec *b) {
-  if (a->tv_sec != b->tv_sec) return a->tv_sec > b->tv_sec ? 1 : -1;
-  if (a->tv_nsec != b->tv_nsec) return a->tv_nsec > b->tv_nsec ? 1 : -1;
-  return 0;
-}
-
-static int is_file_newer_than(const char *path, const char *other) {
-  struct stat st1, st2;
-  if (stat(path, &st1)) return -1;
-  if (stat(other, &st2)) return errno == ENOENT ? 2 : -1;
-  return timespec_cmp(&st1.st_mtim, &st2.st_mtim) > 0;
-}
-
 static const char *get_program_executable_name(void) {
   static char buf[PATH_MAX];
   static bool initialized = false;
@@ -525,32 +393,36 @@ static char *elf_map(int fd, const Elf64_Ehdr *ehdr, Elf64_Phdr *phdr, long page
   return base;
 }
 
-static bool elf_load(struct Loaded *l, const char *file, long pagesz,
-                     char *interp_path, size_t interp_size) {
-  int fd = open(file, O_RDONLY | O_CLOEXEC);
-  if (fd == -1) return false;
-
+/* Load an ELF from an already-open, seekable fd (does not take ownership). */
+static bool elf_load_fd(struct Loaded *l, int fd, long pagesz,
+                        char *interp_path, size_t interp_size) {
   if (pread(fd, &l->eh, sizeof(l->eh), 0) != sizeof(l->eh) ||
       !is_elf64(&l->eh) ||
       l->eh.e_phnum > sizeof(l->ph)/sizeof(l->ph[0]) ||
       l->eh.e_machine != get_host_elf_machine()) {
-    close(fd);
     errno = ENOEXEC;
     return false;
   }
 
   if (pread(fd, l->ph, l->eh.e_phnum * sizeof(l->ph[0]), l->eh.e_phoff) !=
       (ssize_t)(l->eh.e_phnum * sizeof(l->ph[0]))) {
-    close(fd);
     return false;
   }
 
   l->base = elf_map(fd, &l->eh, l->ph, pagesz, interp_path, interp_size);
-  close(fd);
   if (l->base == MAP_FAILED) return false;
 
   l->entry = l->base + l->eh.e_entry;
   return true;
+}
+
+static bool elf_load(struct Loaded *l, const char *file, long pagesz,
+                     char *interp_path, size_t interp_size) {
+  int fd = open(file, O_RDONLY | O_CLOEXEC);
+  if (fd == -1) return false;
+  bool ok = elf_load_fd(l, fd, pagesz, interp_path, interp_size);
+  close(fd);
+  return ok;
 }
 
 static void foreign_helper(void **p) {
@@ -570,13 +442,17 @@ static void foreign_helper(void **p) {
   longjmp(__foreign.jb, 1);
 }
 
-static void elf_exec(const char *file, char **envp) {
+/* Map the helper (from prog_fd) and its interpreter in-process, build a proper
+ * ELF initial stack, and jump into the interpreter. On success control returns
+ * via foreign_helper's longjmp (never through this function). Returns to the
+ * caller only on failure; the caller owns prog_fd. */
+static void elf_exec_fd(int prog_fd, char **envp) {
   long pagesz = sysconf(_SC_PAGESIZE);
   if (pagesz <= 0) pagesz = 4096;
 
   struct Loaded prog;
   char interp_path[256] = {0};
-  if (!elf_load(&prog, file, pagesz, interp_path, sizeof(interp_path))) return;
+  if (!elf_load_fd(&prog, prog_fd, pagesz, interp_path, sizeof(interp_path))) return;
 
   struct Loaded interp;
   if (!elf_load(&interp, interp_path, pagesz, NULL, 0)) return;
@@ -753,13 +629,9 @@ static bool foreign_seal(void *p, size_t n) {
  * The stub does nothing but hand control to the shared foreign_tramp with the
  * real function pointer in a scratch register; foreign_tramp resolves this
  * thread's glibc TLS, saves all argument/return registers around the switch,
- * calls the real function, and restores the caller's TLS. Keeping the logic in
- * one hand-written assembly routine (foreign_tramp.S) instead of per-stub
- * generated bytes is both simpler and avoids the previous stub's bugs (it never
- * saved the FP argument registers around its helper call, and it read a
- * _Thread_local under possibly-foreign TLS). All argument registers, the
- * variadic count (%al / none on aarch64) and the struct-return pointer flow
- * through untouched. */
+ * calls the real function, and restores the caller's TLS. All argument
+ * registers, the variadic count (%al / none on aarch64) and the struct-return
+ * pointer flow through untouched. */
 __attribute__((noinline))
 static void *foreign_wrap(void *real_func) {
   if (!real_func) return NULL;
@@ -803,75 +675,261 @@ static void *foreign_wrap(void *real_func) {
 #endif
 }
 
-static bool foreign_compile(char exe[PATH_MAX]) {
-  my_strlcpy(exe, get_tmp_dir(), PATH_MAX);
-  my_strlcat(exe, "/.musl_dlopen_helper", PATH_MAX);
-  if (mkdir(exe, 0755) && errno != EEXIST) return false;
-  my_strlcat(exe, "/helper", PATH_MAX);
+/* --- embedded prebuilt helper -------------------------------------------------
+ *
+ * helper_bin_<arch>.c defines these (guarded by arch) with the ELF cross-built
+ * by gen_helper.sh against an old glibc. */
+#if defined(__x86_64__) || defined(__aarch64__)
+extern const unsigned char helper_bin[];
+extern const unsigned int helper_bin_len;
+#define HAVE_EMBEDDED_HELPER 1
+#endif
 
-  switch (is_file_newer_than(get_program_executable_name(), exe)) {
-    case 0: return true;
-    case 1: case 2: break;
-    default: return false;
+/* Is a real glibc runtime present on this host? The embedded helper is a glibc
+ * binary; jumping into a non-glibc loader (e.g. a musl host, or a gcompat stub
+ * masquerading as /lib64/ld-linux-*) could hard-exit us with no chance to fall
+ * back. Requiring libc.so.6 on disk keeps the embedded path to genuine glibc
+ * hosts; everything else compiles a host-native helper instead. */
+static bool has_glibc_libc(void) {
+  static const char *const paths[] = {
+    "/lib/x86_64-linux-gnu/libc.so.6",
+    "/usr/lib/x86_64-linux-gnu/libc.so.6",
+    "/lib/aarch64-linux-gnu/libc.so.6",
+    "/usr/lib/aarch64-linux-gnu/libc.so.6",
+    "/lib64/libc.so.6",
+    "/usr/lib64/libc.so.6",
+    "/usr/lib/libc.so.6",
+    "/lib/libc.so.6",
+  };
+  for (size_t i = 0; i < sizeof(paths)/sizeof(paths[0]); i++)
+    if (access(paths[i], F_OK) == 0) return true;
+  return false;
+}
+
+/* Return an fd holding the embedded helper ELF, or -1 if unavailable/unsafe.
+ * Uses an anonymous in-memory file (memfd), so it never touches disk and is
+ * immune to noexec mounts -- elf_exec_fd maps it PROT_EXEC directly from the fd. */
+static int embedded_helper_fd(void) {
+#ifdef HAVE_EMBEDDED_HELPER
+  if (!has_glibc_libc()) return -1;
+  int fd = memfd_create("gdhelper", MFD_CLOEXEC);
+  if (fd < 0) return -1;
+  const unsigned char *p = helper_bin;
+  size_t left = helper_bin_len;
+  while (left) {
+    ssize_t n = write(fd, p, left);
+    if (n <= 0) { close(fd); return -1; }
+    p += (size_t)n;
+    left -= (size_t)n;
+  }
+  return fd;
+#else
+  return -1;
+#endif
+}
+
+/* --- compiled-helper fallback (per-user, ownership-verified cache) ------------
+ *
+ * On hosts where the embedded helper can't run (musl, or glibc older than the
+ * embedded baseline) we compile helper_src.h with the system C compiler. The
+ * cache is keyed by a hash of the helper source, so an ABI change to the helper
+ * never reuses a stale binary, and lives in a per-user 0700 directory that we
+ * verify we own before executing anything from it in-process. */
+
+static uint64_t fnv1a(const char *s) {
+  uint64_t h = 1469598103934665603ULL;
+  while (*s) { h ^= (unsigned char)*s++; h *= 1099511628211ULL; }
+  return h;
+}
+
+/* True if `d` is a directory we own with no group/other write bit. */
+static bool path_is_own_secure(const char *d) {
+  struct stat st;
+  if (lstat(d, &st)) return false;
+  return st.st_uid == getuid() && !(st.st_mode & (S_IWGRP | S_IWOTH));
+}
+
+/* Pick (creating if needed) a per-user, 0700, we-own-it cache directory that is
+ * suitable for holding an executable. Tries XDG_CACHE_HOME, ~/.cache, TMPDIR,
+ * then /tmp. Returns true and fills `out` (>= PATH_MAX), or false. */
+static bool make_cache_dir(char *out) {
+  unsigned uid = (unsigned)getuid();
+  char cand[PATH_MAX];
+  const char *xdg = getenv("XDG_CACHE_HOME");
+  const char *home = getenv("HOME");
+  const char *tmp = getenv("TMPDIR");
+  for (int which = 0; which < 4; which++) {
+    switch (which) {
+      case 0: if (!xdg || !*xdg) continue;
+        snprintf(cand, sizeof(cand), "%s/graphics.gd-dlopen-%u", xdg, uid); break;
+      case 1: if (!home || !*home) continue;
+        snprintf(cand, sizeof(cand), "%s/.cache/graphics.gd-dlopen-%u", home, uid); break;
+      case 2: if (!tmp || !*tmp) continue;
+        snprintf(cand, sizeof(cand), "%s/graphics.gd-dlopen-%u", tmp, uid); break;
+      default:
+        snprintf(cand, sizeof(cand), "/tmp/graphics.gd-dlopen-%u", uid); break;
+    }
+    if (mkdir(cand, 0700) != 0 && errno != EEXIST) continue;
+    if (!path_is_own_secure(cand)) continue;  /* hijacked or wrong owner */
+    my_strlcpy(out, cand, PATH_MAX);
+    return true;
+  }
+  return false;
+}
+
+/* Compile `src` to `out` with `compiler`, capturing the compiler's stderr into
+ * errbuf on failure. Returns true on a clean build, false if the compiler was
+ * missing or the compile failed. */
+static bool run_compiler(const char *compiler, const char *src, const char *out,
+                         char *errbuf, size_t errn) {
+  char errfile[PATH_MAX];
+  snprintf(errfile, sizeof(errfile), "%s.err", out);
+
+  posix_spawn_file_actions_t fa;
+  posix_spawn_file_actions_init(&fa);
+  posix_spawn_file_actions_addopen(&fa, 2, errfile, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+
+  char *args[] = {(char *)compiler, "-pie", "-fPIC", "-O2",
+                  (char *)src, "-o", (char *)out, "-ldl", "-lpthread", NULL};
+  pid_t pid;
+  int rc = posix_spawnp(&pid, compiler, &fa, NULL, args, environ);
+  posix_spawn_file_actions_destroy(&fa);
+  if (rc != 0) { unlink(errfile); return false; }  /* compiler not found */
+
+  int status;
+  waitpid(pid, &status, 0);
+  bool ok = WIFEXITED(status) && WEXITSTATUS(status) == 0;
+  if (!ok && errbuf && errn) {
+    int f = open(errfile, O_RDONLY);
+    if (f >= 0) {
+      ssize_t n = read(f, errbuf, errn - 1);
+      if (n > 0) errbuf[n] = '\0';
+      close(f);
+    }
+  }
+  unlink(errfile);
+  return ok;
+}
+
+static bool foreign_compile(char exe[PATH_MAX]) {
+  char dir[PATH_MAX];
+  if (!make_cache_dir(dir)) {
+    dlerror_set("dlopen: no writable per-user cache directory for helper");
+    return false;
+  }
+
+  /* Name the cached binary by a hash of the helper source: an ABI change to the
+   * helper yields a new name, so we never execute a stale/mismatched helper. */
+  snprintf(exe, PATH_MAX, "%s/helper-%016llx",
+           dir, (unsigned long long)fnv1a(HELPER));
+
+  /* Reuse a cached helper only if we own it and it isn't group/other-writable. */
+  struct stat st;
+  if (stat(exe, &st) == 0 && st.st_uid == getuid() &&
+      !(st.st_mode & (S_IWGRP | S_IWOTH)) && (st.st_mode & S_IXUSR)) {
+    return true;
   }
 
   char src[PATH_MAX];
-  my_strlcpy(src, exe, PATH_MAX);
-  my_strlcat(src, ".c", PATH_MAX);
-
+  snprintf(src, sizeof(src), "%s/helper.c", dir);
   int fd = open(src, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-  if (fd == -1) return false;
+  if (fd == -1) { dlerror_set("dlopen: cannot write helper source"); return false; }
   if (write(fd, HELPER, sizeof(HELPER)-1) != sizeof(HELPER)-1) {
-    close(fd); unlink(src); return false;
+    close(fd); unlink(src); dlerror_set("dlopen: short write of helper source"); return false;
   }
   close(fd);
 
   char tmp[PATH_MAX];
-  my_strlcpy(tmp, exe, PATH_MAX);
-  my_strlcat(tmp, ".tmpXXXXXX", PATH_MAX);
+  snprintf(tmp, sizeof(tmp), "%s/helper.tmpXXXXXX", dir);
   int tmpfd = mkstemp(tmp);
-  if (tmpfd == -1) { unlink(src); return false; }
+  if (tmpfd == -1) { unlink(src); dlerror_set("dlopen: mkstemp failed"); return false; }
   close(tmpfd);
 
-  char *args[] = {"cc", "-pie", "-fPIC", src, "-o", tmp, "-ldl", NULL};
-  pid_t pid;
-  int status;
-  if (posix_spawnp(&pid, "cc", NULL, NULL, args, environ) != 0) {
-    unlink(tmp); unlink(src); return false;
+  /* Try the common compiler front-ends in order; capture the last error. */
+  static const char *const compilers[] = {"cc", "gcc", "clang"};
+  char errbuf[128] = {0};
+  bool built = false;
+  for (size_t i = 0; i < sizeof(compilers)/sizeof(compilers[0]); i++) {
+    if (run_compiler(compilers[i], src, tmp, errbuf, sizeof(errbuf))) { built = true; break; }
   }
-  waitpid(pid, &status, 0);
   unlink(src);
-  if (status != 0) { unlink(tmp); return false; }
-  if (rename(tmp, exe) == -1) { unlink(tmp); return false; }
+  if (!built) {
+    unlink(tmp);
+    if (errbuf[0]) {
+      char msg[128];
+      snprintf(msg, sizeof(msg), "dlopen: helper compile failed: %s", errbuf);
+      dlerror_set(msg);
+    } else {
+      dlerror_set("dlopen: no C compiler found (cc/gcc/clang) to build helper");
+    }
+    return false;
+  }
+  if (rename(tmp, exe) == -1) { unlink(tmp); dlerror_set("dlopen: helper rename failed"); return false; }
   return true;
 }
 
-static void foreign_setup(void) {
-  char exe[PATH_MAX];
-  if (!foreign_compile(exe)) {
-    dlerror_set("Failed to compile dlopen helper");
-    return;
-  }
+/* Mask saved across the helper-exec window. File scope, not a foreign_setup
+ * local, because the helper returns via longjmp: a non-volatile local written
+ * between setjmp and longjmp is indeterminate afterwards, and the restore must
+ * run in the success branch (longjmp does not restore the signal mask). Setup
+ * runs once under pthread_once, so a single static is safe. */
+static sigset_t foreign_setup_mask;
 
-  /* Save our native TLS before executing the helper (it will change TLS) */
+static void foreign_setup(void) {
+  /* Save our native TLS before executing the helper (it will change TLS). */
   __foreign.native_tls = get_current_tls();
 
-  if (setjmp(__foreign.jb) == 0) {
-    elf_exec(exe, environ);
-    dlerror_set("Failed to execute dlopen helper");
+  if (setjmp(__foreign.jb) != 0) {
+    /* A helper jumped back to us (foreign_helper): success. Restore the signal
+     * mask the longjmp skipped over, then finish. */
+    set_current_tls(__foreign.native_tls);
+    restore_signals(&foreign_setup_mask);
+    if (!__foreign.foreign_tls) {
+      dlerror_set("Failed to capture foreign TLS pointer");
+      return;
+    }
+    __foreign.is_supported = true;
     return;
   }
 
-  /* Restore our native TLS - the helper's interpreter changed it */
-  set_current_tls(__foreign.native_tls);
+  /* GRAPHICS_GD_DLOPEN_HELPER lets a user/operator pin the helper source when
+   * diagnosing a host: "embed" forces the prebuilt helper, "compile" forces a
+   * runtime build. Unset (default) tries embedded first, then compiled. */
+  const char *force = getenv("GRAPHICS_GD_DLOPEN_HELPER");
+  bool allow_embed = !force || strcmp(force, "compile") != 0;
+  bool allow_compile = !force || strcmp(force, "embed") != 0;
 
-  /* Sanity check: make sure we captured the foreign TLS */
-  if (!__foreign.foreign_tls) {
-    dlerror_set("Failed to capture foreign TLS pointer");
-    return;
+  /* Running the helper maps ld.so + glibc in-process under foreign TLS, and any
+   * async signal whose Go handler runs during that window reads a bogus g. Block
+   * them for the whole (cold, one-time) setup; restored in the success branch
+   * above, or below if every attempt fails. */
+  block_foreign_signals(&foreign_setup_mask);
+
+  /* Attempt 1: the embedded prebuilt helper via an in-memory fd (glibc hosts;
+   * no compiler needed, immune to noexec). elf_exec_fd only returns on failure;
+   * on success it longjmps to the setjmp above. */
+  if (allow_embed) {
+    int fd = embedded_helper_fd();
+    if (fd >= 0) {
+      elf_exec_fd(fd, environ);
+      close(fd);
+    }
   }
 
-  __foreign.is_supported = true;
+  /* Attempt 2: compile a host-native helper and run it from disk. */
+  char exe[PATH_MAX];
+  if (allow_compile && foreign_compile(exe)) {
+    int cfd = open(exe, O_RDONLY | O_CLOEXEC);
+    if (cfd >= 0) {
+      elf_exec_fd(cfd, environ);
+      close(cfd);
+    }
+  }
+
+  /* Reached only if every attempt failed (success longjmps past this). */
+  restore_signals(&foreign_setup_mask);
+  if (!__foreign.is_supported && !dlerror_buf[0])
+    dlerror_set("Failed to set up dlopen helper (embedded and compiled paths failed)");
 }
 
 static pthread_once_t foreign_once_control = PTHREAD_ONCE_INIT;
@@ -884,295 +942,66 @@ static bool foreign_init(void) {
 
 /* Public dlfcn API
  *
- * These functions save and restore the current TLS rather than unconditionally
- * switching to native TLS at exit. This is critical for callbacks: if a foreign
- * function calls back into code that calls dlsym(), we must preserve foreign
- * TLS context rather than corrupting it by switching to native.
- */
+ * These functions run entirely under the calling thread's glibc TLS. They save
+ * and restore the current TLS (rather than unconditionally switching to native
+ * at exit) so that if a foreign function calls back into code that calls
+ * dlsym(), the outer foreign TLS context is preserved. Async signals are blocked
+ * across the switched window so no Go signal handler runs under foreign TLS. */
 __attribute__((noinline))
 void *dlopen(const char *path, int mode) {
   if (!foreign_init()) return NULL;
+  sigset_t old;
+  block_foreign_signals(&old);
   void *saved_tls = get_current_tls();
-  set_current_tls(get_thread_foreign_tls(get_current_tls()));
+  set_current_tls(get_thread_foreign_tls(saved_tls));
   void *result = __foreign.dlopen_real(path, mode);
   set_current_tls(saved_tls);
+  restore_signals(&old);
   return result;
-}
-
-/*
- * Check if a function name is a "GetProcAddress" style function that returns
- * function pointers. These need special handling - we must wrap the returned
- * function pointer, not just the GetProcAddress function itself.
- */
-static bool is_procaddr_function(const char *name) {
-  return strcmp(name, "glXGetProcAddressARB") == 0 ||
-         strcmp(name, "glXGetProcAddress") == 0 ||
-         strcmp(name, "eglGetProcAddress") == 0 ||
-         strcmp(name, "wlEglGetProcAddress") == 0 ||
-         strcmp(name, "vkGetInstanceProcAddr") == 0 ||
-         strcmp(name, "vkGetDeviceProcAddr") == 0 ||
-         strcmp(name, "SDL_GL_GetProcAddress") == 0;
-}
-
-/*
- * Wrapper for GetProcAddress-style functions.
- * This wraps the returned function pointer so it switches TLS when called.
- *
- * We generate a trampoline that:
- * 1. Calls the real GetProcAddress with TLS switching
- * 2. Wraps the returned function pointer
- *
- * Since we can't easily generate code that does this, we use a different
- * approach: we return a stub that captures the real function and wraps
- * its return value. This requires generating custom code for each lookup.
- */
-typedef void *(*procaddr_fn)(const char *);
-typedef void *(*procaddr_fn2)(void *, const char *);
-
-/* Storage for GetProcAddress wrappers - we need to track the real function */
-struct procaddr_wrapper {
-  void *real_func;
-  bool has_handle;  /* true if function takes (handle, name), false if just (name) */
-};
-
-#define MAX_PROCADDR_WRAPPERS 16
-static struct procaddr_wrapper procaddr_wrappers[MAX_PROCADDR_WRAPPERS];
-static int procaddr_wrapper_count = 0;
-
-/* Forward declaration */
-static void *create_procaddr_wrapper(void *real_func, bool has_handle);
-
-/*
- * Generic wrapper that calls a GetProcAddress function and wraps the result.
- * The wrapper index is encoded in the stub.
- */
-static void *call_procaddr_and_wrap(int idx, void *handle, const char *name) {
-  if (idx < 0 || idx >= procaddr_wrapper_count) return NULL;
-  struct procaddr_wrapper *w = &procaddr_wrappers[idx];
-
-  void *saved_tls = get_current_tls();
-  set_current_tls(get_thread_foreign_tls(get_current_tls()));
-
-  void *func;
-  if (w->has_handle) {
-    func = ((procaddr_fn2)w->real_func)(handle, name);
-  } else {
-    func = ((procaddr_fn)w->real_func)(name);
-  }
-
-  set_current_tls(saved_tls);
-
-  if (!func) return NULL;
-
-#ifdef DLOPEN_DEBUG
-  fprintf(stderr, "[PROCADDR] wrapper %d(\"%s\") -> %p", idx, name, func);
-#endif
-
-  /*
-   * If the returned function is ALSO a procaddr function, wrap it specially.
-   * This handles cases like glXGetProcAddressARB("glXGetProcAddress").
-   */
-  if (is_procaddr_function(name)) {
-    bool has_handle = (strcmp(name, "vkGetInstanceProcAddr") == 0 ||
-                       strcmp(name, "vkGetDeviceProcAddr") == 0);
-#ifdef DLOPEN_DEBUG
-    fprintf(stderr, " (procaddr, has_handle=%d)\n", has_handle);
-#endif
-    return create_procaddr_wrapper(func, has_handle);
-  }
-
-#ifdef DLOPEN_DEBUG
-  fprintf(stderr, " (wrapping)\n");
-#endif
-  return foreign_wrap(func);
-}
-
-/* Generate wrapper stub for GetProcAddress-style function */
-static void *create_procaddr_wrapper(void *real_func, bool has_handle) {
-  if (procaddr_wrapper_count >= MAX_PROCADDR_WRAPPERS) return NULL;
-
-  int idx = procaddr_wrapper_count++;
-  procaddr_wrappers[idx].real_func = real_func;
-  procaddr_wrappers[idx].has_handle = has_handle;
-
-#ifdef __x86_64__
-  /*
-   * Generate a stub that calls call_procaddr_and_wrap(idx, handle, name)
-   * For has_handle=false: rdi=name, we pass (idx, NULL, name)
-   * For has_handle=true: rdi=handle, rsi=name, we pass (idx, handle, name)
-   *
-   * Code:
-   *   mov %rsi, %rdx        ; name -> arg3 (or for !has_handle: mov %rdi, %rdx)
-   *   mov %rdi, %rsi        ; handle -> arg2 (or for !has_handle: xor %esi, %esi)
-   *   mov $idx, %edi        ; idx -> arg1
-   *   movabs $call_procaddr_and_wrap, %rax
-   *   jmp *%rax
-   */
-  unsigned char *stub = foreign_alloc(32);
-  if (!stub) return NULL;
-
-  int i = 0;
-  if (has_handle) {
-    /* mov %rsi, %rdx */
-    stub[i++] = 0x48; stub[i++] = 0x89; stub[i++] = 0xf2;
-    /* mov %rdi, %rsi */
-    stub[i++] = 0x48; stub[i++] = 0x89; stub[i++] = 0xfe;
-  } else {
-    /* mov %rdi, %rdx (name is in rdi for single-arg version) */
-    stub[i++] = 0x48; stub[i++] = 0x89; stub[i++] = 0xfa;
-    /* xor %esi, %esi (handle = NULL) */
-    stub[i++] = 0x31; stub[i++] = 0xf6;
-  }
-  /* mov $idx, %edi */
-  stub[i++] = 0xbf;
-  WRITE32LE(stub + i, idx);
-  i += 4;
-  /* movabs $call_procaddr_and_wrap, %rax */
-  stub[i++] = 0x48; stub[i++] = 0xb8;
-  WRITE64LE(stub + i, (uintptr_t)call_procaddr_and_wrap);
-  i += 8;
-  /* jmp *%rax */
-  stub[i++] = 0xff; stub[i++] = 0xe0;
-
-  if (!foreign_seal(stub, i)) return NULL;
-  return stub;
-#elif defined(__aarch64__)
-  /* Similar for aarch64 - adjust register shuffling */
-  unsigned char *stub = foreign_alloc(48);
-  if (!stub) return NULL;
-
-  /* For aarch64, args are in x0, x1, x2...
-   * We need: x0=idx, x1=handle (or NULL), x2=name
-   */
-  int i = 0;
-  if (has_handle) {
-    /* mov x2, x1 (name -> x2) */
-    WRITE32LE(stub + i, 0xaa0103e2); i += 4;
-    /* mov x1, x0 (handle -> x1) */
-    WRITE32LE(stub + i, 0xaa0003e1); i += 4;
-  } else {
-    /* mov x2, x0 (name -> x2) */
-    WRITE32LE(stub + i, 0xaa0003e2); i += 4;
-    /* mov x1, xzr (handle = NULL) */
-    WRITE32LE(stub + i, 0xaa1f03e1); i += 4;
-  }
-  /* mov x0, #idx */
-  WRITE32LE(stub + i, 0xd2800000 | (idx << 5)); i += 4;
-  /* ldr x16, [pc, #12] */
-  WRITE32LE(stub + i, 0x58000070); i += 4;
-  /* br x16 */
-  WRITE32LE(stub + i, 0xd61f0200); i += 4;
-  /* nop (padding) */
-  WRITE32LE(stub + i, 0xd503201f); i += 4;
-  /* literal: call_procaddr_and_wrap address */
-  WRITE64LE(stub + i, (uintptr_t)call_procaddr_and_wrap);
-
-  /* seal i+8 bytes to cover the trailing 64-bit literal as well */
-  if (!foreign_seal(stub, i + 8)) return NULL;
-  return stub;
-#else
-#error "unsupported architecture"
-#endif
 }
 
 __attribute__((noinline))
 void *dlsym(void *handle, const char *name) {
   if (!foreign_init()) return NULL;
+  sigset_t old;
+  block_foreign_signals(&old);
   void *saved_tls = get_current_tls();
-  set_current_tls(get_thread_foreign_tls(get_current_tls()));
+  set_current_tls(get_thread_foreign_tls(saved_tls));
   void *real_func = __foreign.dlsym_real(handle, name);
   set_current_tls(saved_tls);
+  restore_signals(&old);
 #ifdef DLOPEN_DEBUG
   fprintf(stderr, "[DLSYM] %s -> %p\n", name, real_func);
 #endif
   if (!real_func) return NULL;
 
-  /*
-   * Special handling for GetProcAddress-style functions.
-   * These return function pointers that also need to be wrapped.
-   */
-  if (is_procaddr_function(name)) {
-    /* Determine if it takes a handle argument */
-    bool has_handle = (strcmp(name, "vkGetInstanceProcAddr") == 0 ||
-                       strcmp(name, "vkGetDeviceProcAddr") == 0);
-#ifdef DLOPEN_DEBUG
-    fprintf(stderr, "[DLSYM] %s is a procaddr function (has_handle=%d)\n", name, has_handle);
-#endif
-    return create_procaddr_wrapper(real_func, has_handle);
-  }
-
-  /* Wrap the function pointer with TLS switching trampoline */
+  /* Wrap the function pointer so calling it from native (musl) code switches to
+   * this thread's glibc TLS for the duration of the call. */
   return foreign_wrap(real_func);
 }
 
 int dlclose(void *handle) {
   if (!foreign_init()) return -1;
+  sigset_t old;
+  block_foreign_signals(&old);
   void *saved_tls = get_current_tls();
-  set_current_tls(get_thread_foreign_tls(get_current_tls()));
+  set_current_tls(get_thread_foreign_tls(saved_tls));
   int result = __foreign.dlclose_real(handle);
   set_current_tls(saved_tls);
+  restore_signals(&old);
   return result;
 }
 
 char *dlerror(void) {
   if (!foreign_init()) return dlerror_buf;
+  sigset_t old;
+  block_foreign_signals(&old);
   void *saved_tls = get_current_tls();
-  set_current_tls(get_thread_foreign_tls(get_current_tls()));
+  set_current_tls(get_thread_foreign_tls(saved_tls));
   char *e = __foreign.dlerror_real();
   set_current_tls(saved_tls);
+  restore_signals(&old);
   return e ? dlerror_set(e) : NULL;
-}
-
-/* Get raw function pointer without wrapping (for use with manual TLS switching) */
-__attribute__((noinline))
-void *dlsym_raw(void *handle, const char *name) {
-  if (!foreign_init()) return NULL;
-  void *saved_tls = get_current_tls();
-  set_current_tls(get_thread_foreign_tls(get_current_tls()));
-  void *real_func = __foreign.dlsym_real(handle, name);
-  set_current_tls(saved_tls);
-  return real_func;
-}
-
-/* Switch to foreign TLS (call before using foreign libraries extensively) */
-void dlopen_set_foreign_tls(void) {
-  if (!foreign_init()) return;
-  set_current_tls(get_thread_foreign_tls(get_current_tls()));
-}
-
-/* Switch back to native TLS (call when done with foreign libraries) */
-void dlopen_set_native_tls(void) {
-  if (!foreign_init()) return;
-  set_current_tls(__foreign.native_tls);
-}
-
-/*
- * Callback TLS recovery functions.
- *
- * Use these when a foreign library calls back into native code that needs
- * native TLS. The callback MUST call dlopen_callback_exit() before returning
- * to restore foreign TLS, otherwise the foreign library will crash.
- *
- * Usage:
- *   void my_callback(void *data) {
- *       void *saved = dlopen_callback_enter();
- *       // ... native code runs with native TLS ...
- *       dlopen_callback_exit(saved);
- *   }
- */
-
-/* Enter callback: save current TLS, switch to native TLS. Returns saved TLS. */
-void *dlopen_callback_enter(void) {
-  if (!__foreign.is_supported) return NULL;
-  void *saved = get_current_tls();
-  set_current_tls(__foreign.native_tls);
-  return saved;
-}
-
-/* Exit callback: restore the TLS that was saved at callback entry. */
-void dlopen_callback_exit(void *saved_tls) {
-  if (!__foreign.is_supported || !saved_tls) return;
-  set_current_tls(saved_tls);
 }
 
 #endif /* __GLIBC__ */
