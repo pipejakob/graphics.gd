@@ -174,10 +174,12 @@ func (ios IOS) BuildMain(args ...string) error {
 	// Compile dummy.cpp and swift_stubs.c to .o files using zig cc.
 	dummyObj := filepath.Join(apple_name+".app", "dummy.o")
 	stubsObj := filepath.Join(apple_name+".app", "swift_stubs.o")
-	if err := tooling.Zig.Exec("cc", "-c", "-target", "aarch64-ios", "-O2", filepath.Join(".", project.Name, "dummy.cpp"), "-o", dummyObj); err != nil {
+	dummyArgs := append([]string{"cc", "-c", "-target", "aarch64-ios", "-O2"}, tooling.CGOCFlags()...)
+	if err := tooling.Zig.Exec(append(dummyArgs, filepath.Join(".", project.Name, "dummy.cpp"), "-o", dummyObj)...); err != nil {
 		return xray.New(err)
 	}
-	if err := tooling.Zig.Exec("cc", "-c", "-target", "aarch64-ios", "-O2", swiftStubs, "-o", stubsObj); err != nil {
+	stubArgs := append([]string{"cc", "-c", "-target", "aarch64-ios", "-O2"}, tooling.CGOCFlags()...)
+	if err := tooling.Zig.Exec(append(stubArgs, swiftStubs, "-o", stubsObj)...); err != nil {
 		return xray.New(err)
 	}
 	// Link with ld64.lld to produce a Mach-O binary with LC_DYLD_CHAINED_FIXUPS.

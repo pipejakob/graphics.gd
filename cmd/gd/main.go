@@ -55,6 +55,34 @@ func main() {
 	}
 }
 
+// setupDeterministicCGO disables floating-point contraction for every
+// C compiler gd drives. A fused multiply-add rounds once where separate
+// mul+add round twice, so two machines whose compilers fuse differently
+// (a -march=native distro, a stock mingw on Windows, arm64 where fmadd
+// is baseline) compute different floats from identical source — which
+// silently breaks games that rely on cross-machine deterministic
+// simulation. gcc, clang, zig cc, mingw and emscripten all accept the
+// flag. Users keep the last word: flags they set in CGO_CFLAGS are
+// preserved, including their own -ffp-contract choice. Restates Go's
+// built-in "-g -O2" default because setting CGO_CFLAGS replaces it.
+func setupDeterministicCGO() error {
+	for _, env := range []string{"CGO_CFLAGS", "CGO_CXXFLAGS"} {
+		flags := os.Getenv(env)
+		switch {
+		case flags == "":
+			flags = "-g -O2 -ffp-contract=off"
+		case strings.Contains(flags, "-ffp-contract"):
+			continue
+		default:
+			flags += " -ffp-contract=off"
+		}
+		if err := os.Setenv(env, flags); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 type Builder interface {
 	Run(...string) error       // go run
 	Build(...string) error     // go build -buildmode=c-shared
@@ -135,6 +163,9 @@ func testArgs(args ...string) []string {
 }
 
 func gd(args ...string) error {
+	if err := setupDeterministicCGO(); err != nil {
+		return xray.New(err)
+	}
 	// Pass through go commands that don't need project setup.
 	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
 		switch args[0] {

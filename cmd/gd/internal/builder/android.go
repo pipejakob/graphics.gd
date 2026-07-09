@@ -233,8 +233,9 @@ func (android Android) build(testing bool, args ...string) error {
 			// x86_64-linux-android target.
 			liblog := filepath.Join(ANDROID_SDK, "usr", "lib", "liblog.so")
 			liblogSrc := filepath.Join(ANDROID_SDK, "usr", "lib", "liblog.c")
-			if err := exec.Command(zig, "cc", "-target", "x86_64-linux-android", "-shared", "-nostdlib",
-				"-Wl,-soname,liblog.so", "-o", liblog, liblogSrc).Run(); err != nil {
+			liblogArgs := append([]string{"cc", "-target", "x86_64-linux-android", "-shared", "-nostdlib"}, tooling.CGOCFlags()...)
+			liblogArgs = append(liblogArgs, "-Wl,-soname,liblog.so", "-o", liblog, liblogSrc)
+			if err := exec.Command(zig, liblogArgs...).Run(); err != nil {
 				return xray.New(fmt.Errorf("build liblog stub for amd64: %w", err))
 			}
 			if err := os.Setenv("CC", zig+" cc -target x86_64-linux-android -nostdlib -I"+ANDROID_SDK+"/usr/include -L"+ANDROID_SDK+"/usr/lib"); err != nil {
@@ -930,4 +931,3 @@ func loadAndroidPresets() ([]androidPreset, error) {
 	}
 	return out, nil
 }
-

@@ -126,6 +126,7 @@ func (musl Musl) Build(args ...string) (err error) {
 			zigArgs = append(zigArgs, flag)
 		}
 	}
+	zigArgs = append(zigArgs, tooling.CGOLDFlags()...)
 	zigArgs = append(zigArgs, "-lc++", "-o", musl.out)
 	if err := tooling.Zig.Exec(zigArgs...); err != nil {
 		return xray.New(err)
