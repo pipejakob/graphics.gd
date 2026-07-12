@@ -215,37 +215,52 @@ func (android Android) build(testing bool, args ...string) error {
 		if err != nil {
 			return xray.New(err)
 		}
+		var target string
 		switch GOARCH {
 		case "arm64":
-			if err := os.Setenv("CC", zig+" cc -target aarch64-linux-android -nostdlib -I"+ANDROID_SDK+"/usr/include -L"+ANDROID_SDK+"/usr/lib"); err != nil {
-				return xray.New(err)
-			}
-			if err := os.Setenv("GOARCH", "arm64"); err != nil {
-				return xray.New(err)
-			}
+			target = "aarch64-linux-android"
 		case "amd64":
-			// The bundled liblog.so stub is aarch64; for x86_64 we
-			// compile the same set of no-op shims from liblog.c into
-			// a fresh stub the linker can resolve `-llog` against.
-			// The dynamic linker substitutes the device's real
-			// liblog.so at runtime. -nostdlib is required because
-			// zig 0.15 doesn't ship a bundled libc for the
-			// x86_64-linux-android target.
-			liblog := filepath.Join(ANDROID_SDK, "usr", "lib", "liblog.so")
-			liblogSrc := filepath.Join(ANDROID_SDK, "usr", "lib", "liblog.c")
-			liblogArgs := append([]string{"cc", "-target", "x86_64-linux-android", "-shared", "-nostdlib"}, tooling.CGOCFlags()...)
-			liblogArgs = append(liblogArgs, "-Wl,-soname,liblog.so", "-o", liblog, liblogSrc)
-			if err := exec.Command(zig, liblogArgs...).Run(); err != nil {
-				return xray.New(fmt.Errorf("build liblog stub for amd64: %w", err))
-			}
-			if err := os.Setenv("CC", zig+" cc -target x86_64-linux-android -nostdlib -I"+ANDROID_SDK+"/usr/include -L"+ANDROID_SDK+"/usr/lib"); err != nil {
-				return xray.New(err)
-			}
-			if err := os.Setenv("GOARCH", "amd64"); err != nil {
-				return xray.New(err)
-			}
+			target = "x86_64-linux-android"
 		default:
 			return fmt.Errorf("gd build: cannot cross-compile android/%v on %v", GOARCH, runtime.GOOS)
+		}
+		// Stub libraries for `-l` flags naming libraries that only exist
+		// on-device: with -nostdlib zig has nothing to resolve -lm or
+		// -lpthread against (zig 0.15 ships no bundled libc for android
+		// targets), so compile stubs from the bundled sources for the
+		// linker to find. See the .c files for why they stay empty.
+		buildStub := func(name string) error {
+			args := append([]string{"cc", "-target", target, "-shared", "-nostdlib"}, tooling.CGOCFlags()...)
+			args = append(args,
+				"-Wl,-soname,"+name+".so",
+				"-o", filepath.Join(ANDROID_SDK, "usr", "lib", name+".so"),
+				filepath.Join(ANDROID_SDK, "usr", "lib", name+".c"),
+			)
+			if err := exec.Command(zig, args...).Run(); err != nil {
+				return fmt.Errorf("build %s stub for %s: %w", name, GOARCH, err)
+			}
+			return nil
+		}
+		if err := buildStub("libm"); err != nil {
+			return xray.New(err)
+		}
+		if err := buildStub("libpthread"); err != nil {
+			return xray.New(err)
+		}
+		if GOARCH != "arm64" {
+			// The bundled liblog.so (no-op shims the dynamic linker
+			// substitutes with the device's real liblog.so at runtime)
+			// is prebuilt for aarch64 only; rebuild it from source for
+			// other targets.
+			if err := buildStub("liblog"); err != nil {
+				return xray.New(err)
+			}
+		}
+		if err := os.Setenv("CC", zig+" cc -target "+target+" -nostdlib -I"+ANDROID_SDK+"/usr/include -L"+ANDROID_SDK+"/usr/lib"); err != nil {
+			return xray.New(err)
+		}
+		if err := os.Setenv("GOARCH", GOARCH); err != nil {
+			return xray.New(err)
 		}
 	}
 	out := filepath.Join(project.GraphicsDirectory, fmt.Sprintf("libandroid_%v.so", GOARCH))
