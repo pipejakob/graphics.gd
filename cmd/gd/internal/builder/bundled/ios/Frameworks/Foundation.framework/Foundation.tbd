@@ -12,7 +12,31 @@ exports:
     - _NSRunLoopCommonModes
     - _NSLog
     - _NSLocalizedDescriptionKey
+    - _NSBundleDidLoadNotification
+    - _NSBundleResourceRequestLowDiskSpaceNotification
+    - _NSCocoaErrorDomain
+    - _NSDebugDescriptionErrorKey
+    - _NSDeviceCertificationiPhonePerformanceGaming
+    - _NSFilePathErrorKey
+    - _NSHelpAnchorErrorKey
+    - _NSLocalizedFailureErrorKey
+    - _NSLocalizedFailureReasonErrorKey
+    - _NSLocalizedRecoveryOptionsErrorKey
+    - _NSLocalizedRecoverySuggestionErrorKey
+    - _NSMachErrorDomain
+    - _NSOSStatusErrorDomain
+    - _NSPOSIXErrorDomain
+    - _NSProcessInfoPerformanceProfileDidChangeNotification
+    - _NSProcessInfoPowerStateDidChangeNotification
+    - _NSProcessInfoThermalStateDidChangeNotification
+    - _NSProcessPerformanceProfileDefault
+    - _NSProcessPerformanceProfileSustained
+    - _NSRecoveryAttempterErrorKey
+    - _NSStringEncodingErrorKey
+    - _NSURLErrorKey
+    - _NSUnderlyingErrorKey
    objc-classes:
+    - NSPredicate
     - NSUUID
     - NSURL
     - NSTimer

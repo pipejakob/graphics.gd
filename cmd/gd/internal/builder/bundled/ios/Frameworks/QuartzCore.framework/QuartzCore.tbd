@@ -19,6 +19,10 @@ exports:
     - _kCAGravityBottom
     - _kCAFilterNearest
     - _kCAFilterLinear
+    - _CADynamicRangeAutomatic
+    - _CADynamicRangeConstrainedHigh
+    - _CADynamicRangeHigh
+    - _CADynamicRangeStandard
    objc-classes:
     - CAMetalLayer
     - CAEAGLLayer

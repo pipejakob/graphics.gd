@@ -101,4 +101,5 @@ exports:
     - _objc_msgLookup
     - _objc_msgLookupSuper2
     - __objc_empty_cache
+    - ___objc_personality_v0
 ...

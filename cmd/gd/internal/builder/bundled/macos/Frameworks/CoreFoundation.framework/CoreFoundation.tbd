@@ -48,4 +48,5 @@ exports:
     - _CFStringGetCStringPtr
     - _CFStringGetFastestEncoding
     - _CFStringGetBytes
+    - ___kCFBooleanTrue
 ...

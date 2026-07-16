@@ -54,6 +54,20 @@ extern int32_t __isPlatformVersionAtLeast(uint32_t platform, uint32_t major, uin
     (void)platform; (void)major; (void)minor; (void)subminor;
     return 1;
 }
+
+// SDL device-type helpers: Godot vendors SDL's joypad driver but not the
+// Objective-C file that implements these, so provide them here. This build
+// only targets iPhone/iPad devices, never Apple TV.
+extern int sysctlbyname(const char *, void *, unsigned long *, void *, unsigned long);
+int SDL_IsAppleTV(void) { return 0; }
+int SDL_IsIPad(void) {
+    char model[256];
+    unsigned long len = sizeof model;
+    if (sysctlbyname("hw.machine", model, &len, 0, 0) != 0) {
+        return 0;
+    }
+    return model[0] == 'i' && model[1] == 'P' && model[2] == 'a' && model[3] == 'd';
+}
 `
 
 type IOS struct{}
@@ -67,11 +81,14 @@ func (IOS) Build(args ...string) error {
 	if err != nil {
 		return xray.New(err)
 	}
+	// macos first, then ios: files that exist in both bundles need their
+	// ios-specific variant to win (install-names differ between platforms,
+	// e.g. Security.framework has no Versions/A directory on iOS).
+	project.SetupFiles(macos_sdk, "bundled/macos", filepath.Join(project.ReleasesDirectory, "ios", "sdk"))
 	if err := project.SetupFiles(ios_sdk, "bundled/ios", filepath.Join(project.ReleasesDirectory, "ios", "sdk")); err != nil {
 		return xray.New(err)
 	}
 	project.SetupIcon()
-	project.SetupFiles(macos_sdk, "bundled/macos", filepath.Join(project.ReleasesDirectory, "ios", "sdk"))
 	DARWIN_SDK, err := filepath.Abs(filepath.Join(project.ReleasesDirectory, "ios", "sdk"))
 	if err != nil {
 		return xray.New(err)
@@ -200,12 +217,12 @@ func (ios IOS) BuildMain(args ...string) error {
 	lld_args = append(lld_args,
 		"-o", filepath.Join(apple_name+".app", apple_name),
 		"-F", filepath.Join("..", "sdk", "Frameworks"), "-L", filepath.Join("..", "sdk", "lib"),
-		"-lSystem", "-lobjc", "-lc++", "-lc++abi",
+		"-lSystem", "-lobjc", "-lc++", "-lc++abi", "-lresolv",
 		"-framework", "IOSurface", "-framework", "OpenGLES", "-framework", "CoreText", "-framework", "CoreGraphics",
 		"-framework", "CoreFoundation", "-framework", "QuartzCore", "-framework", "UIKit", "-framework", "Foundation",
 		"-framework", "Metal", "-framework", "GameController", "-framework", "CoreMotion",
 		"-framework", "CoreHaptics", "-framework", "AVFAudio", "-framework", "AudioToolbox",
-		"-framework", "SwiftUI",
+		"-framework", "SwiftUI", "-framework", "Security",
 		"-lswiftCore", "-lswift_Concurrency", "-lswiftos",
 		"-lswiftCoreFoundation", "-lswiftCoreImage", "-lswiftDarwin",
 		"-lswiftDispatch", "-lswiftFoundation", "-lswiftMetal",

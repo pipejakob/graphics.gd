@@ -17,6 +17,8 @@ exports:
     - _UIEdgeInsetsZero
     - _UIApplicationMain
    objc-classes:
+    - UISceneConfiguration
+    - UIWindowSceneGeometryPreferencesIOS
     - UIViewController
     - UIView
     - UITextView

@@ -10,7 +10,29 @@ exports:
     - _MTLCommonCounterTimestamp
     - _MTLCommonCounterSetTimestamp
     - _MTLCommandBufferEncoderInfoErrorKey
+    - _MTLBinaryArchiveDomain
+    - _MTLCommonCounterClipperInvocations
+    - _MTLCommonCounterClipperPrimitivesOut
+    - _MTLCommonCounterComputeKernelInvocations
+    - _MTLCommonCounterFragmentCycles
+    - _MTLCommonCounterFragmentInvocations
+    - _MTLCommonCounterFragmentsPassed
+    - _MTLCommonCounterPostTessellationVertexCycles
+    - _MTLCommonCounterPostTessellationVertexInvocations
+    - _MTLCommonCounterRenderTargetWriteCycles
+    - _MTLCommonCounterSetStageUtilization
+    - _MTLCommonCounterSetStatistic
+    - _MTLCommonCounterTessellationCycles
+    - _MTLCommonCounterTessellationInputPatches
+    - _MTLCommonCounterTotalCycles
+    - _MTLCommonCounterVertexCycles
+    - _MTLCommonCounterVertexInvocations
+    - _MTLCounterErrorDomain
+    - _MTLIOErrorDomain
+    - _MTLLogStateErrorDomain
+    - _MTLTensorDomain
    objc-classes:
+    - MTLResidencySetDescriptor
     - MTLVertexDescriptor
     - MTLTextureDescriptor
     - MTLStencilDescriptor

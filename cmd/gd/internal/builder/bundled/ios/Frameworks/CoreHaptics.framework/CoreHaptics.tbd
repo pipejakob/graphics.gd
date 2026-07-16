@@ -16,7 +16,11 @@ exports:
     - _CHHapticPatternKeyEvent
     - _CHHapticEventTypeHapticContinuous
     - _CHHapticEventParameterIDHapticIntensity
+    - _CHHapticDynamicParameterIDHapticIntensityControl
    objc-classes:
     - CHHapticEngine
     - CHHapticPattern
+    - CHHapticDynamicParameter
+    - CHHapticEvent
+    - CHHapticEventParameter
 ...

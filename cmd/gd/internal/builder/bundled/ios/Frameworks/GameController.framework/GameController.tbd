@@ -31,8 +31,19 @@ exports:
     - _GCInputButtonHome
     - _GCInputButtonB
     - _GCInputButtonA
+    - _GCHapticsLocalityHandles
+    - _GCHapticsLocalityLeftTrigger
+    - _GCHapticsLocalityRightTrigger
+    - _GCHapticsLocalityTriggers
+    - _GCInputDirectionPad
+    - _GCInputDualShockTouchpadButton
+    - _GCInputDualShockTouchpadOne
+    - _GCInputDualShockTouchpadTwo
    objc-classes:
     - GCXboxGamepad
     - GCKeyboard
     - GCController
+    - GCColor
+    - GCControllerAxisInput
+    - GCControllerButtonInput
 ...
