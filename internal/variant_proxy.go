@@ -30,7 +30,13 @@ import (
 )
 
 func InternalVariant(extract VariantPkg.Any) Variant {
-	return NewVariant(extract)
+	if extract.Type() == VariantPkg.TypeNil {
+		return Variant{}
+	}
+	_, state := VariantPkg.Proxy(extract, func() (VariantProxy, complex128) {
+		return VariantProxy{}, 0
+	})
+	return pointers.Load[Variant](state)
 }
 
 type VariantProxy struct{}
@@ -93,7 +99,7 @@ func (VariantProxy) Color(raw complex128) ColorType.RGBA {
 	return variantAsValueType[ColorType.RGBA](pointers.Load[Variant](raw), gdextension.TypeColor)
 }
 func (VariantProxy) Interface(raw complex128) any {
-	return pointers.Load[Variant](raw).Interface()
+	return pointers.Load[Variant](raw).ConvenientInterface()
 }
 func (VariantProxy) RID(raw complex128) RIDType.Any {
 	return variantAsValueType[RIDType.Any](pointers.Load[Variant](raw), gdextension.TypeRID)

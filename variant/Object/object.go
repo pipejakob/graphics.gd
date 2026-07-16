@@ -316,5 +316,5 @@ func (obj Instance) SetMeta(property string, value any) { //gd:Object.set_meta
 // editor-only. Editor-only metadata is not displayed in the Inspector and should
 // not be edited, although it can still be found by this method.
 func (obj Instance) GetMeta(property string) any { //gd:Object.get_meta
-	return gd.ObjectGetMeta(obj.AsObject()[0], gd.NewStringName(property)).Interface()
+	return gd.ObjectGetMeta(obj.AsObject()[0], gd.NewStringName(property)).ConvenientInterface()
 }

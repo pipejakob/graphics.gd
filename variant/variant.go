@@ -268,6 +268,9 @@ func (a Any) Type() Type { //gd:typeof
 	if a.value == nil {
 		return TypeNil
 	}
+	if proxy, ok := a.value.(API); ok {
+		return proxy.Type(a.local)
+	}
 	rtype := reflect.TypeOf(a.value)
 	switch a.value.(type) {
 	case bool:

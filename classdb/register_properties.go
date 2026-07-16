@@ -132,7 +132,7 @@ func (instance *instanceImplementation) Set(name gd.StringName, value gd.Variant
 			tag, hasTag := rfield.Tag.Lookup("gd")
 			if tag == "-" {
 				if hasSetter {
-					return setter.Set(sname, value.Interface())
+					return setter.Set(sname, value.ConvenientInterface())
 				}
 				return false
 			}
@@ -147,7 +147,7 @@ func (instance *instanceImplementation) Set(name gd.StringName, value gd.Variant
 		}
 		if !field.IsValid() || !field.CanSet() {
 			if hasSetter {
-				return setter.Set(sname, value.Interface())
+				return setter.Set(sname, value.ConvenientInterface())
 			}
 			return false
 		}

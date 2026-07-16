@@ -32,9 +32,9 @@ func convertVariantToDesiredGoType(value Variant, rtype reflect.Type) (reflect.V
 	}
 	switch rtype {
 	case reflect.TypeFor[any]():
-		return reflect.ValueOf(value.Interface()), nil
+		return reflect.ValueOf(value.ConvenientInterface()), nil
 	case reflect.TypeFor[VariantPkg.Any]():
-		return reflect.ValueOf(VariantPkg.New(value.Interface())), nil
+		return reflect.ValueOf(VariantPkg.Implementation(VariantProxy{}, pointers.Pack(value.Copy()))), nil
 	}
 	switch rtype.Kind() {
 	case reflect.Bool:
@@ -61,7 +61,10 @@ func convertVariantToDesiredGoType(value Variant, rtype reflect.Type) (reflect.V
 func VariantAs[T any](value Variant) T {
 	switch reflect.TypeFor[T]() {
 	case reflect.TypeFor[VariantPkg.Any]():
-		return any(VariantPkg.New(value.Interface())).(T)
+		if value.Type() == gdextension.TypeNil {
+			return any(VariantPkg.Nil).(T)
+		}
+		return any(VariantPkg.Implementation(VariantProxy{}, pointers.Pack(value.Copy()))).(T)
 	case reflect.TypeFor[any]():
 		// A NIL Godot Variant produces a Go nil interface, which cannot
 		// be type-asserted to any (even though T == any); the assertion
@@ -69,7 +72,7 @@ func VariantAs[T any](value Variant) T {
 		// interface {}". Return the zero value of T (== nil for any)
 		// instead, which is how callers like ArrayAs naturally treat
 		// missing slots in e.g. Mesh.SurfaceGetArrays.
-		iface := value.Interface()
+		iface := value.ConvenientInterface()
 		if iface == nil {
 			var zero T
 			return zero
@@ -87,6 +90,13 @@ func ConvertToDesiredGoType(value any, rtype reflect.Type) (reflect.Value, error
 	if reflect.TypeOf(value) == rtype {
 		return reflect.ValueOf(value), nil
 	}
+	if variant, ok := value.(Variant); ok {
+		val, err := convertVariantToDesiredGoType(variant, rtype)
+		if err != nil {
+			return reflect.Value{}, xray.New(err)
+		}
+		return val, err
+	}
 	if reflect.TypeOf(value).ConvertibleTo(rtype) {
 		return reflect.ValueOf(value).Convert(rtype), nil
 	}
@@ -100,14 +110,6 @@ func ConvertToDesiredGoType(value any, rtype reflect.Type) (reflect.Value, error
 		default:
 			return reflect.Value{}, xray.New(fmt.Errorf("cannot convert %T to %s", value, rtype))
 		}
-	}
-	variant, ok := value.(Variant)
-	if ok {
-		val, err := convertVariantToDesiredGoType(variant, rtype)
-		if err != nil {
-			return reflect.Value{}, xray.New(err)
-		}
-		return val, err
 	}
 	switch rtype.Kind() {
 	case reflect.Bool:
@@ -168,8 +170,17 @@ func ConvertToDesiredGoType(value any, rtype reflect.Type) (reflect.Value, error
 		}
 	case reflect.Array:
 		if rtype.Implements(reflect.TypeFor[IsClass]()) {
+			var object gdreference.Object
+			switch value := value.(type) {
+			case gdreference.Object:
+				object = value
+			case IsClass:
+				object = value.AsObject()[0]
+			default:
+				return reflect.Value{}, xray.New(fmt.Errorf("cannot convert %T to %s", value, rtype))
+			}
 			var obj = reflect.New(rtype)
-			obj.Interface().(IsClassCastable).SetObject([1]gdreference.Object{VariantAsObject(variant)})
+			obj.Interface().(IsClassCastable).SetObject([1]gdreference.Object{object})
 			return obj.Elem(), nil
 		}
 		val, err := convertToGoArrayOf(rtype.Elem(), rtype.Len(), value)

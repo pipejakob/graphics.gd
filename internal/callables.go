@@ -151,15 +151,15 @@ func (CallableProxy) Call(state complex128, args ...VariantPkg.Any) VariantPkg.A
 	c := pointers.Load[Callable](state)
 	vargs := make([]Variant, len(args))
 	for i, arg := range args {
-		vargs[i] = NewVariant(arg.Interface())
+		vargs[i] = InternalVariant(arg)
 	}
-	return VariantPkg.New(c.Call(vargs...).Interface())
+	return VariantPkg.Implementation(VariantProxy{}, pointers.Pack(c.Call(vargs...)))
 }
 func (CallableProxy) Bind(state complex128, args ...VariantPkg.Any) (CallableType.Proxy, complex128) {
 	c := pointers.Load[Callable](state)
 	vargs := make([]Variant, len(args))
 	for i, arg := range args {
-		vargs[i] = NewVariant(arg.Interface())
+		vargs[i] = InternalVariant(arg)
 	}
 	return CallableProxy{}, pointers.Pack(c.Bind(vargs...))
 }

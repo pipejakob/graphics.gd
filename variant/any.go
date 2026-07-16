@@ -65,82 +65,134 @@ func (a Any) Bool() bool {
 	}
 	return load[bool](a)
 }
+
+// loadInteger returns any locally-stored integer value as an int64, regardless
+// of the width or signedness it was stored with.
+func loadInteger(a Any) (int64, bool) {
+	rvalue := reflect.ValueOf(a.value)
+	if rvalue.Kind() == reflect.Pointer {
+		switch rvalue.Type().Elem().Kind() {
+		case reflect.Int8:
+			return int64(*(*int8)(unsafe.Pointer(&a.local))), true
+		case reflect.Int16:
+			return int64(*(*int16)(unsafe.Pointer(&a.local))), true
+		case reflect.Int32:
+			return int64(*(*int32)(unsafe.Pointer(&a.local))), true
+		case reflect.Int64:
+			return *(*int64)(unsafe.Pointer(&a.local)), true
+		case reflect.Int:
+			return int64(*(*int)(unsafe.Pointer(&a.local))), true
+		case reflect.Uint8:
+			return int64(*(*uint8)(unsafe.Pointer(&a.local))), true
+		case reflect.Uint16:
+			return int64(*(*uint16)(unsafe.Pointer(&a.local))), true
+		case reflect.Uint32:
+			return int64(*(*uint32)(unsafe.Pointer(&a.local))), true
+		case reflect.Uint64:
+			return int64(*(*uint64)(unsafe.Pointer(&a.local))), true
+		case reflect.Uint:
+			return int64(*(*uint)(unsafe.Pointer(&a.local))), true
+		case reflect.Uintptr:
+			return int64(*(*uintptr)(unsafe.Pointer(&a.local))), true
+		}
+		return 0, false
+	}
+	switch rvalue.Kind() {
+	case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Int:
+		return rvalue.Int(), true
+	case reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uint, reflect.Uintptr:
+		return int64(rvalue.Uint()), true
+	}
+	return 0, false
+}
+
+// loadFloat returns any locally-stored float value as a float64, regardless of
+// the precision it was stored with.
+func loadFloat(a Any) (float64, bool) {
+	rvalue := reflect.ValueOf(a.value)
+	if rvalue.Kind() == reflect.Pointer {
+		switch rvalue.Type().Elem().Kind() {
+		case reflect.Float32:
+			return float64(*(*float32)(unsafe.Pointer(&a.local))), true
+		case reflect.Float64:
+			return *(*float64)(unsafe.Pointer(&a.local)), true
+		}
+		return 0, false
+	}
+	switch rvalue.Kind() {
+	case reflect.Float32, reflect.Float64:
+		return rvalue.Float(), true
+	}
+	return 0, false
+}
+
+func integer[T int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64 | uintptr](a Any) T {
+	i, ok := loadInteger(a)
+	if !ok {
+		panic("variant conversion: variant is " + reflect.TypeOf(a.value).String() + ", not " + reflect.TypeFor[T]().String())
+	}
+	return T(i)
+}
+
 func (a Any) Int() int {
 	if proxy, ok := a.value.(API); ok {
 		return int(proxy.Int(a.local))
 	}
-	rtype := reflect.TypeOf(a.value)
-	if rtype.Kind() != reflect.Pointer {
-		panic("variant conversion: variant is " + a.Type().String() + ", not " + reflect.TypeFor[int]().String())
-	}
-	switch rtype.Elem().Kind() {
-	case reflect.Int8:
-		return int(*(*int8)(unsafe.Pointer(&a.local)))
-	case reflect.Int16:
-		return int(*(*int16)(unsafe.Pointer(&a.local)))
-	case reflect.Int32:
-		return int(*(*int32)(unsafe.Pointer(&a.local)))
-	case reflect.Int64:
-		return int(*(*int64)(unsafe.Pointer(&a.local)))
-	case reflect.Int:
-		return int(*(*int)(unsafe.Pointer(&a.local)))
-	default:
-		panic("variant conversion: variant is " + a.Type().String() + ", not " + reflect.TypeFor[int]().String())
-	}
+	return integer[int](a)
 }
 func (a Any) Int8() int8 {
 	if proxy, ok := a.value.(API); ok {
 		return int8(proxy.Int(a.local))
 	}
-	return load[int8](a)
+	return integer[int8](a)
 }
 func (a Any) Int16() int16 {
 	if proxy, ok := a.value.(API); ok {
 		return int16(proxy.Int(a.local))
 	}
-	return load[int16](a)
+	return integer[int16](a)
 }
 func (a Any) Int32() int32 {
 	if proxy, ok := a.value.(API); ok {
 		return int32(proxy.Int(a.local))
 	}
-	return load[int32](a)
+	return integer[int32](a)
 }
 func (a Any) Int64() int64 {
 	if proxy, ok := a.value.(API); ok {
 		return int64(proxy.Int(a.local))
 	}
-	return load[int64](a)
+	return integer[int64](a)
 }
 func (a Any) Uint() uint {
 	if proxy, ok := a.value.(API); ok {
 		return uint(proxy.RID(a.local))
 	}
-	return uint(load[uint](a))
+	return integer[uint](a)
 }
 func (a Any) Uint8() uint8 {
 	if proxy, ok := a.value.(API); ok {
 		return uint8(proxy.Int(a.local))
 	}
-	return load[uint8](a)
+	return integer[uint8](a)
 }
 func (a Any) Uint16() uint16 {
 	if proxy, ok := a.value.(API); ok {
 		return uint16(proxy.Int(a.local))
 	}
-	return load[uint16](a)
+	return integer[uint16](a)
 }
 func (a Any) Uint32() uint32 {
 	if proxy, ok := a.value.(API); ok {
 		return uint32(proxy.Int(a.local))
 	}
-	return load[uint32](a)
+	return integer[uint32](a)
 }
 func (a Any) Uint64() uint64 {
 	if proxy, ok := a.value.(API); ok {
 		return uint64(proxy.RID(a.local))
 	}
-	return load[uint64](a)
+	return integer[uint64](a)
 }
 func (a Any) RID() RID.Any {
 	return RID.Any(a.Uint64())
@@ -149,19 +201,27 @@ func (a Any) Float32() float32 {
 	if proxy, ok := a.value.(API); ok {
 		return float32(proxy.Float(a.local))
 	}
-	return load[float32](a)
+	f, ok := loadFloat(a)
+	if !ok {
+		panic("variant conversion: variant is " + reflect.TypeOf(a.value).String() + ", not float32")
+	}
+	return float32(f)
 }
 func (a Any) Float64() float64 {
 	if proxy, ok := a.value.(API); ok {
 		return float64(proxy.Float(a.local))
 	}
-	return load[float64](a)
+	f, ok := loadFloat(a)
+	if !ok {
+		panic("variant conversion: variant is " + reflect.TypeOf(a.value).String() + ", not float64")
+	}
+	return f
 }
 func (a Any) Uintptr() uintptr {
 	if proxy, ok := a.value.(API); ok {
 		return uintptr(proxy.RID(a.local))
 	}
-	return uintptr(load[uintptr](a))
+	return integer[uintptr](a)
 }
 func (a Any) Complex64() complex64 {
 	if proxy, ok := a.value.(API); ok {

@@ -26,7 +26,7 @@ func Set(object Any, property string, value any) { //gd:Object.set
 //
 // Note: property must be in snake_case when referring to built-in Godot properties.
 func Get(object Any, property string) any { //gd:Object.get
-	return gd.ObjectGet(object.AsObject()[0], gd.NewStringName(property)).Interface()
+	return gd.ObjectGet(object.AsObject()[0], gd.NewStringName(property)).ConvenientInterface()
 }
 
 // HasMethod returns true if the given method name exists in the object.
@@ -46,7 +46,7 @@ func Call(object Any, method string, args ...any) any { //gd:Object.call Object.
 	if err != nil {
 		panic(err)
 	}
-	return result.Interface()
+	return result.ConvenientInterface()
 }
 
 // InstanceIsValid returns true if the given object instance is valid (the reference has not been
@@ -71,7 +71,7 @@ func SetIndex(object Any, index int, value any) { //gd:Object[]=
 
 // Index returns the Variant value at the given index in the object. If the index is out of range,
 func Index(object Any, index int) any { //gd:Object[]
-	return gd.ObjectGetIndex(object.AsObject()[0], index).Interface()
+	return gd.ObjectGetIndex(object.AsObject()[0], index).ConvenientInterface()
 }
 
 // Iter returns an iterator over the elements of an Object that implements Iterable.
@@ -79,7 +79,7 @@ func Iter(object Any) iter.Seq[any] {
 	iter := gd.NewVariant(object).Iterator()
 	return func(yield func(any) bool) {
 		for iter.Next() {
-			if !yield(iter.Value()) {
+			if !yield(iter.Value().ConvenientInterface()) {
 				return
 			}
 		}
