@@ -304,6 +304,9 @@ func (android Android) Run(args ...string) error {
 	if err := os.MkdirAll(filepath.Dir(apkPath), 0755); err != nil {
 		return xray.New(err)
 	}
+	if err := ensureProjectIcon(); err != nil {
+		return xray.New(err)
+	}
 	if err := os.Chdir(project.GraphicsDirectory); err != nil {
 		return xray.New(err)
 	}
@@ -430,6 +433,9 @@ func (android Android) Test(args ...string) error {
 	defer restoreHeadless()
 	apkPath := filepath.Join(project.GraphicsDirectory, exportPath)
 	if err := os.MkdirAll(filepath.Dir(apkPath), 0755); err != nil {
+		return xray.New(err)
+	}
+	if err := ensureProjectIcon(); err != nil {
 		return xray.New(err)
 	}
 	if err := os.Chdir(project.GraphicsDirectory); err != nil {
@@ -622,6 +628,9 @@ func (android Android) BuildMain(...string) error {
 	}
 	apkPath := filepath.Join(project.GraphicsDirectory, exportPath)
 	if err := os.MkdirAll(filepath.Dir(apkPath), 0755); err != nil {
+		return xray.New(err)
+	}
+	if err := ensureProjectIcon(); err != nil {
 		return xray.New(err)
 	}
 	if err := os.Chdir(project.GraphicsDirectory); err != nil {

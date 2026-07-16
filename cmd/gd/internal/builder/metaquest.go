@@ -49,13 +49,48 @@ type MetaQuest struct {
 
 func (mq MetaQuest) Build(args ...string) error {
 	// Force arm64 — Quest has no other targets — and delegate to the
-	// regular Android compile path. The post-processing is only done
-	// in BuildMain / Run after Godot has produced the APK.
-	if os.Getenv("GOARCH") == "" {
-		os.Setenv("GOARCH", "arm64")
+	// regular Android compile path (which carries all the android
+	// cross-compile fixes: libc header/stub SDK, deterministic flags,
+	// debug keystore + adb provisioning). The post-processing is only
+	// done in BuildMain / Run after Godot has produced the APK.
+	if arch := os.Getenv("GOARCH"); arch != "" && arch != "arm64" {
+		return fmt.Errorf("gd build: metaquest only supports arm64, not GOARCH=%s", arch)
 	}
+	os.Setenv("GOARCH", "arm64")
 	os.Setenv("GOOS", "android")
 	return mq.Android.Build(args...)
+}
+
+// pickMetaQuestPreset resolves the Godot export preset for Quest builds
+// the same way the plain android path picks its preset: an explicit
+// GD_ANDROID_PRESET wins, otherwise the preset named "Meta Quest".
+// Returns the preset name and its declared project-relative export_path
+// — hardcoding releases/metaquest/<project>.apk broke as soon as a
+// preset exported somewhere else, since Godot writes the APK where the
+// preset says while the injection step looked at the guessed path.
+func pickMetaQuestPreset() (name, exportPath string, err error) {
+	presets, err := loadAndroidPresets()
+	if err != nil {
+		return "", "", xray.New(err)
+	}
+	want := os.Getenv("GD_ANDROID_PRESET")
+	explicit := want != ""
+	if !explicit {
+		want = "Meta Quest"
+	}
+	for _, p := range presets {
+		if p.name != want {
+			continue
+		}
+		if p.exportPath == "" {
+			return "", "", fmt.Errorf("gd: preset %q in graphics/export_presets.cfg has no export_path", want)
+		}
+		return p.name, p.exportPath, nil
+	}
+	if explicit {
+		return "", "", fmt.Errorf("gd: GD_ANDROID_PRESET=%q not found in graphics/export_presets.cfg", want)
+	}
+	return "", "", fmt.Errorf(`gd: no "Meta Quest" preset in graphics/export_presets.cfg (an Android-platform preset with xr_features/xr_mode=1)`)
 }
 
 func (mq MetaQuest) Test(args ...string) error {
@@ -63,7 +98,23 @@ func (mq MetaQuest) Test(args ...string) error {
 }
 
 func (mq MetaQuest) BuildMain(args ...string) error {
+	// Assert the signing tool up front: discovering it is missing after
+	// the compile + export + inject pipeline wastes minutes.
+	if _, err := tooling.AndroidPackageSigner.Lookup(); err != nil {
+		return xray.New(err)
+	}
 	if err := mq.Build(args...); err != nil {
+		return xray.New(err)
+	}
+	presetName, exportPath, err := pickMetaQuestPreset()
+	if err != nil {
+		return xray.New(err)
+	}
+	apk := filepath.Join(project.GraphicsDirectory, exportPath)
+	if err := os.MkdirAll(filepath.Dir(apk), 0755); err != nil {
+		return xray.New(err)
+	}
+	if err := ensureProjectIcon(); err != nil {
 		return xray.New(err)
 	}
 	if err := os.Chdir(project.GraphicsDirectory); err != nil {
@@ -74,10 +125,9 @@ func (mq MetaQuest) BuildMain(args ...string) error {
 	if err != nil {
 		return xray.New(err)
 	}
-	if err := tooling.Godot.Exec("--headless", "--export-release", "Meta Quest"); err != nil {
+	if err := tooling.Godot.Exec("--headless", "--export-release", presetName); err != nil {
 		return xray.New(err)
 	}
-	apk := filepath.Join(project.ReleasesDirectory, "metaquest", project.Name+".apk")
 	if err := injectMetaQuest(apk); err != nil {
 		return xray.New(err)
 	}
@@ -95,7 +145,15 @@ func (mq MetaQuest) Run(args ...string) error {
 	if _, err := tooling.AndroidPackageSigner.Lookup(); err != nil {
 		return xray.New(err)
 	}
-	if err := os.MkdirAll(filepath.Join(project.ReleasesDirectory, "metaquest"), 0755); err != nil {
+	presetName, exportPath, err := pickMetaQuestPreset()
+	if err != nil {
+		return xray.New(err)
+	}
+	apk := filepath.Join(project.GraphicsDirectory, exportPath)
+	if err := os.MkdirAll(filepath.Dir(apk), 0755); err != nil {
+		return xray.New(err)
+	}
+	if err := ensureProjectIcon(); err != nil {
 		return xray.New(err)
 	}
 	if err := os.Chdir(project.GraphicsDirectory); err != nil {
@@ -106,10 +164,9 @@ func (mq MetaQuest) Run(args ...string) error {
 	if err != nil {
 		return xray.New(err)
 	}
-	if err := tooling.Godot.Exec("--headless", "--export-debug", "Meta Quest"); err != nil {
+	if err := tooling.Godot.Exec("--headless", "--export-debug", presetName); err != nil {
 		return xray.New(err)
 	}
-	apk := filepath.Join(project.ReleasesDirectory, "metaquest", project.Name+".apk")
 	if err := injectMetaQuest(apk); err != nil {
 		return xray.New(err)
 	}
