@@ -14,6 +14,8 @@ import (
 
 func (d Dictionary) Index(key Variant) Variant {
 	var raw [3]uint64
+	// Dictionaries.Get fills a shallow variant header; Copy() is required for
+	// independent ownership (same as Array.Index).
 	gdextension.Host.Dictionaries.Get(pointers.Get(d), pointers.Get(key), gdextension.CallReturns[gdextension.Variant](&raw))
 	return pointers.Raw[Variant](raw).Copy()
 }

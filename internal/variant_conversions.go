@@ -256,12 +256,11 @@ func CutVariant(v any, cut bool) Variant {
 		case Variant:
 			return val
 		case VariantPkg.Any:
-			extracted := InternalVariant(val)
-			if !cut || extracted == (Variant{}) {
-				return extracted
-			}
-			copied, _ := pointers.End(extracted.Copy())
-			return pointers.Let[Variant](copied)
+			// Prefer the value's Go representation so local Anys (and proxy-backed
+			// ones after Interface/ConvenientInterface) rebuild a fresh engine
+			// variant. Extracting a shared proxy handle and Copy/End-ing it has
+			// caused wasm memory corruption when the same handle was still live.
+			return CutVariant(val.Interface(), cut)
 		case Vector2:
 			var arg = val
 			((*noescape.Variant)(&ret)).LoadNative(gdextension.TypeVector2, gdextension.SizeVector2, unsafe.Pointer(&arg))
@@ -597,42 +596,86 @@ func (variant Variant) ConvenientInterface() any {
 		return variantAsPointerType[NodePath](variant, vtype).String()
 	case gdextension.TypeDictionary:
 		dictionary := variantAsPointerType[Dictionary](variant, vtype)
-		var converted = make(map[any]any, int(dictionary.Size()))
-		for _, key := range dictionary.Keys().Iter() {
+		// Array.Get / Dictionaries.Get return shallow variant headers (memcpy of
+		// the engine's in-place element, no refcount bump — see gd_array_get).
+		// Convert through Raw so we never Free a shallow header and never call
+		// Variants.Copy on one (that combination has corrupted wasm under load).
+		keys := dictionary.Keys()
+		n := int(keys.Size())
+		converted := make(map[any]any, n)
+		for i := 0; i < n; i++ {
+			var keyRaw [3]uint64
+			gdextension.Host.Array.Get(pointers.Get(keys), i, gdextension.CallReturns[gdextension.Variant](&keyRaw[0]))
+			key := pointers.Raw[Variant](keyRaw)
 			index := key.ConvenientInterface()
 			if index != nil && !reflect.TypeOf(index).Comparable() {
 				index = key.Interface()
 			}
-			converted[index] = dictionary.Index(key).ConvenientInterface()
+			var valRaw [3]uint64
+			gdextension.Host.Dictionaries.Get(pointers.Get(dictionary), pointers.Get(key), gdextension.CallReturns[gdextension.Variant](&valRaw))
+			converted[index] = pointers.Raw[Variant](valRaw).ConvenientInterface()
 		}
 		return converted
 	case gdextension.TypeArray:
 		array := variantAsPointerType[Array](variant, vtype)
-		var converted = make([]any, array.Size())
-		for i := range converted {
-			converted[i] = array.Index(Int(i)).ConvenientInterface()
+		n := int(array.Size())
+		converted := make([]any, n)
+		for i := 0; i < n; i++ {
+			var raw [3]uint64
+			gdextension.Host.Array.Get(pointers.Get(array), i, gdextension.CallReturns[gdextension.Variant](&raw[0]))
+			converted[i] = pointers.Raw[Variant](raw).ConvenientInterface()
 		}
 		return converted
 	case gdextension.TypePackedByteArray:
-		return variantAsPointerType[PackedByteArray](variant, vtype).Bytes()
+		tmp := variantAsPointerType[PackedByteArray](variant, vtype)
+		out := tmp.Bytes()
+		tmp.Free()
+		return out
 	case gdextension.TypePackedInt32Array:
-		return variantAsPointerType[PackedInt32Array](variant, vtype).AsSlice()
+		tmp := variantAsPointerType[PackedInt32Array](variant, vtype)
+		out := append([]int32(nil), tmp.AsSlice()...)
+		tmp.Free()
+		return out
 	case gdextension.TypePackedInt64Array:
-		return variantAsPointerType[PackedInt64Array](variant, vtype).AsSlice()
+		tmp := variantAsPointerType[PackedInt64Array](variant, vtype)
+		out := append([]int64(nil), tmp.AsSlice()...)
+		tmp.Free()
+		return out
 	case gdextension.TypePackedFloat32Array:
-		return variantAsPointerType[PackedFloat32Array](variant, vtype).AsSlice()
+		tmp := variantAsPointerType[PackedFloat32Array](variant, vtype)
+		out := append([]float32(nil), tmp.AsSlice()...)
+		tmp.Free()
+		return out
 	case gdextension.TypePackedFloat64Array:
-		return variantAsPointerType[PackedFloat64Array](variant, vtype).AsSlice()
+		tmp := variantAsPointerType[PackedFloat64Array](variant, vtype)
+		out := append([]float64(nil), tmp.AsSlice()...)
+		tmp.Free()
+		return out
 	case gdextension.TypePackedStringArray:
-		return variantAsPointerType[PackedStringArray](variant, vtype).Strings()
+		tmp := variantAsPointerType[PackedStringArray](variant, vtype)
+		out := tmp.Strings()
+		tmp.Free()
+		return out
 	case gdextension.TypePackedVector2Array:
-		return variantAsPointerType[PackedVector2Array](variant, vtype).AsSlice()
+		tmp := variantAsPointerType[PackedVector2Array](variant, vtype)
+		out := append([]Vector2(nil), tmp.AsSlice()...)
+		tmp.Free()
+		return out
 	case gdextension.TypePackedVector3Array:
-		return variantAsPointerType[PackedVector3Array](variant, vtype).AsSlice()
+		tmp := variantAsPointerType[PackedVector3Array](variant, vtype)
+		out := append([]Vector3(nil), tmp.AsSlice()...)
+		tmp.Free()
+		return out
 	case gdextension.TypePackedVector4Array:
-		return variantAsPointerType[PackedVector4Array](variant, vtype).AsSlice()
+		tmp := variantAsPointerType[PackedVector4Array](variant, vtype)
+		out := append([]Vector4(nil), tmp.AsSlice()...)
+		tmp.Free()
+		return out
 	case gdextension.TypePackedColorArray:
-		return variantAsPointerType[PackedColorArray](variant, vtype).AsSlice()
+		tmp := variantAsPointerType[PackedColorArray](variant, vtype)
+		out := append([]Color(nil), tmp.AsSlice()...)
+		tmp.Free()
+		return out
 	default:
 		return variant.Interface()
 	}

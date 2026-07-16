@@ -842,6 +842,7 @@ void gd_packed_dictionary_access(uintptr_t dict, UINT64(k1), UINT64(k2), UINT64(
     uint64_t key[3] = {UINT64_FROM(k1), UINT64_FROM(k2), UINT64_FROM(k3)};
     uint64_t *value = (uint64_t*)gdextension_dictionary_operator_index_const((GDExtensionTypePtr)&dict, &key[0]);
     if (!value) return;
+    // Shallow header copy — callers must Variants.Copy before Free (see gd_array_get).
     uint64_t * result = (uint64_t*)args;
     result[0] = value[0];
     result[1] = value[1];
@@ -1164,7 +1165,8 @@ void gd_object_script_placeholder_update(uintptr_t p_placeholder, uintptr_t p_pr
 };
 uintptr_t gd_packed_byte_array_unsafe(UINT a1, UINT a2) {
     uintptr_t packed_array[2] = {a1, a2};
-    return (uintptr_t)gdextension_packed_byte_array_operator_index(&packed_array[0], 0);
+    // Const index: writable operator_index can COW and invalidate bulk reads.
+    return (uintptr_t)gdextension_packed_byte_array_operator_index_const(&packed_array[0], 0);
 };
 uint8_t gd_packed_byte_array_access(UINT a1, UINT a2, INT i) {
     uintptr_t packed_array[2] = {a1, a2};
@@ -1226,6 +1228,10 @@ void gd_array_set(uintptr_t a, INT i, UINT64(v1), UINT64(v2), UINT64(v3)) {
     variant[2] = UINT64_FROM(v3);
 };
 void gd_array_get(uintptr_t a, INT i, ANY result) {
+    // operator_index_const returns a pointer into the array's storage.
+    // Callers (Array.Index) must Variants.Copy before taking ownership.
+    // TODO: switch to gdextension_variant_new_copy here and drop the Go-side
+    // Copy once all export templates ship that change together.
     uint64_t *packed = (uint64_t*)gdextension_array_operator_index_const(&a, i);
     memcpy((uint64_t*)result, packed, sizeof(uint64_t)*3);
 };

@@ -22,6 +22,9 @@ func IntsCollectAs[T, S ~int | ~int64 | ~int32](seq iter.Seq[S]) []T {
 
 func (a Array) Index(index int64) Variant {
 	var raw [3]uint64
+	// Array.Get is a shallow memcpy of the element header (see gd_array_get);
+	// it does not add a reference. Copy() performs a real variant_new_copy so
+	// the returned Variant owns an independent value that is safe to Free.
 	gdextension.Host.Array.Get(pointers.Get(a), int(index), gdextension.CallReturns[gdextension.Variant](&raw[0]))
 	return pointers.Raw[Variant](raw).Copy()
 }

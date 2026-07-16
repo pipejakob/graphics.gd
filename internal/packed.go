@@ -62,8 +62,23 @@ func (p PackedByteArray) SetIndex(idx Int, value byte) {
 }
 
 // Bytes returns a copy of the byte array as a byte slice.
+//
+// Uses the const Access path rather than Unsafe (writable operator_index).
+// Unsafe goes through packed_byte_array_operator_index which can trigger
+// copy-on-write and return a pointer that is not stable for a bulk read —
+// that combination produced intermittent wasm "memory access out of bounds"
+// when convenient []byte round-trips ran under load.
 func (p PackedByteArray) Bytes() []byte {
-	return gdmemory.IntoSlice[byte](gdextension.Host.Packed.Bytes.Unsafe(pointers.Get(p)), int(p.Size()))
+	n := int(p.Size())
+	if n == 0 {
+		return []byte{}
+	}
+	out := make([]byte, n)
+	raw := pointers.Get(p)
+	for i := range out {
+		out[i] = gdextension.Host.Packed.Bytes.Access(raw, i)
+	}
+	return out
 }
 
 func (p PackedByteArray) Len() int { return int(p.Size()) }

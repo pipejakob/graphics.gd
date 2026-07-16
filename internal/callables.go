@@ -151,15 +151,18 @@ func (CallableProxy) Call(state complex128, args ...VariantPkg.Any) VariantPkg.A
 	c := pointers.Load[Callable](state)
 	vargs := make([]Variant, len(args))
 	for i, arg := range args {
-		vargs[i] = InternalVariant(arg)
+		// Rebuild engine variants from the Go representation. InternalVariant on a
+		// proxy-backed Any reuses the shared handle; packing Call's return the same
+		// way leaked/double-freed under the web GC cycle.
+		vargs[i] = NewVariant(arg.Interface())
 	}
-	return VariantPkg.Implementation(VariantProxy{}, pointers.Pack(c.Call(vargs...)))
+	return VariantPkg.New(c.Call(vargs...).ConvenientInterface())
 }
 func (CallableProxy) Bind(state complex128, args ...VariantPkg.Any) (CallableType.Proxy, complex128) {
 	c := pointers.Load[Callable](state)
 	vargs := make([]Variant, len(args))
 	for i, arg := range args {
-		vargs[i] = InternalVariant(arg)
+		vargs[i] = NewVariant(arg.Interface())
 	}
 	return CallableProxy{}, pointers.Pack(c.Bind(vargs...))
 }

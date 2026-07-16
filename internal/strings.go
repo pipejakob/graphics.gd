@@ -66,7 +66,9 @@ func (s String) String() string {
 	}
 	var buf = make([]byte, s.Length())
 	gdextension.Host.Strings.Encode.UTF8(pointers.Get(s), buf)
-	return unsafe.String(&buf[0], len(buf))
+	// string(buf) copies; unsafe.String would alias buf without keeping it
+	// alive for the GC, so the returned value could dangle after collection.
+	return string(buf)
 }
 
 func StringFromStringName(s StringName) String {

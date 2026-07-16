@@ -34,7 +34,13 @@ func convertVariantToDesiredGoType(value Variant, rtype reflect.Type) (reflect.V
 	case reflect.TypeFor[any]():
 		return reflect.ValueOf(value.ConvenientInterface()), nil
 	case reflect.TypeFor[VariantPkg.Any]():
-		return reflect.ValueOf(VariantPkg.Implementation(VariantProxy{}, pointers.Pack(value.Copy()))), nil
+		// Build a local Any from the convenience representation rather than
+		// proxy-wrapping an engine handle. Callable args (e.g. Function.Call's
+		// ...variant.Any) are consumed synchronously, and sharing or copying
+		// borrowed engine variants here has caused wasm "memory access out of
+		// bounds" under load. Advanced round-trips that need the engine handle
+		// construct Implementation(VariantProxy{}, ...) explicitly.
+		return reflect.ValueOf(VariantPkg.New(value.ConvenientInterface())), nil
 	}
 	switch rtype.Kind() {
 	case reflect.Bool:
@@ -64,7 +70,7 @@ func VariantAs[T any](value Variant) T {
 		if value.Type() == gdextension.TypeNil {
 			return any(VariantPkg.Nil).(T)
 		}
-		return any(VariantPkg.Implementation(VariantProxy{}, pointers.Pack(value.Copy()))).(T)
+		return any(VariantPkg.New(value.ConvenientInterface())).(T)
 	case reflect.TypeFor[any]():
 		// A NIL Godot Variant produces a Go nil interface, which cannot
 		// be type-asserted to any (even though T == any); the assertion
