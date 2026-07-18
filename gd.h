@@ -61,6 +61,19 @@ typedef uintptr_t ExtensionBindingID;
 typedef uintptr_t PropertyList;
 typedef uintptr_t MethodList;
 
+#ifdef __EMSCRIPTEN__
+// On the web, the engine→Go callbacks (gd_on_*) are provided by generated
+// EM_JS trampolines that dispatch into the Go module through the GD
+// JavaScript glue object. Their wasm signatures differ from the native
+// declarations below: pointers are 32 bits and 64-bit integer arguments are
+// split into 32-bit pairs for the JavaScript boundary, matching the UINT64/
+// INT/ANY macro expansions in gd.c. The exported gd_* functions are not
+// declared here on the web for the same reason — their definitions in gd.c
+// (registered with JavaScript via EMSCRIPTEN_BINDINGS) are the only
+// declarations, so the two can never disagree.
+#include "gd_web_callbacks.h"
+#else
+
 extern void gd_on_callable_call(CallableID c, Variant* result, int64_t arg_count, Variant* args, CallError* err);
 extern bool gd_on_callable_validation(CallableID c);
 extern void gd_on_callable_free(CallableID c);
@@ -79,9 +92,9 @@ extern ExtensionBindingID gd_on_extension_binding_created(ExtensionInstanceID in
 extern void gd_on_extension_binding_removed(ExtensionInstanceID inst, ExtensionBindingID p1);
 extern bool gd_on_extension_binding_reference(ExtensionInstanceID inst, bool p1);
 
-extern Object gd_on_extension_class_create(ExtensionClassID class, bool notify_postinitialize);
-extern FunctionID gd_on_extension_class_method(ExtensionClassID class, StringName method, uint32_t hash);
-extern FunctionID gd_on_extension_class_caller(ExtensionClassID class, StringName method, uint32_t hash);
+extern Object gd_on_extension_class_create(ExtensionClassID class_name, bool notify_postinitialize);
+extern FunctionID gd_on_extension_class_method(ExtensionClassID class_name, StringName method, uint32_t hash);
+extern FunctionID gd_on_extension_class_caller(ExtensionClassID class_name, StringName method, uint32_t hash);
 
 extern bool gd_on_extension_instance_set(ExtensionInstanceID inst, uintptr_t p1, uint64_t p2, uint64_t p3, uint64_t p4);
 extern bool gd_on_extension_instance_get(ExtensionInstanceID inst, uintptr_t p1, Variant* p2);
@@ -176,31 +189,31 @@ String gd_property_info_hint_string(PropertyList info);
 uint32_t gd_property_info_usage(PropertyList info);
 
 void gd_classdb_register(
-    StringName class, StringName parent_class,
+    StringName class_name, StringName parent_class,
     ExtensionClassID id, bool is_virtual, bool is_abstract,
     bool is_exposed, bool is_runtime, String icon_path
 );
-void gd_classdb_register_methods(StringName class, MethodList methods);
+void gd_classdb_register_methods(StringName class_name, MethodList methods);
 void gd_classdb_register_constant(
-    StringName class, StringName enum_name, StringName constant_name,
+    StringName class_name, StringName enum_name, StringName constant_name,
     int64_t value, bool bitfield
 );
-void gd_classdb_register_property(StringName class, PropertyList property, StringName setter, StringName getter);
+void gd_classdb_register_property(StringName class_name, PropertyList property, StringName setter, StringName getter);
 void gd_classdb_register_property_indexed(
-    StringName class, PropertyList property,
+    StringName class_name, PropertyList property,
     StringName setter, StringName getter, int64_t index
 );
-void gd_classdb_register_property_group(StringName class, String group, String prefix);
-void gd_classdb_register_property_sub_group(StringName class, String subgroup, String prefix);
-void gd_classdb_register_signal(StringName class, StringName signal, PropertyList args);
-void gd_classdb_register_removal(StringName class);
+void gd_classdb_register_property_group(StringName class_name, String group, String prefix);
+void gd_classdb_register_property_sub_group(StringName class_name, String subgroup, String prefix);
+void gd_classdb_register_signal(StringName class_name, StringName signal, PropertyList args);
+void gd_classdb_register_removal(StringName class_name);
 
 void gd_packed_dictionary_access(Dictionary d, uint64_t i1, uint64_t i2, uint64_t i3, void* result);
 void gd_packed_dictionary_modify(Dictionary d, uint64_t i1, uint64_t i2, uint64_t i3, uint64_t v1, uint64_t v2, uint64_t v3);
 
 void gd_editor_add_documentation(const char* xml, int64_t len);
-void gd_editor_add_plugin(StringName class);
-void gd_editor_end_plugin(StringName class);
+void gd_editor_add_plugin(StringName class_name);
+void gd_editor_end_plugin(StringName class_name);
 
 void gd_iterator_make(uint64_t v1, uint64_t v2, uint64_t v3, void* result_iter, void* err);
 bool gd_iterator_next(uint64_t v1, uint64_t v2, uint64_t v3, void* iter, void* err);
@@ -246,7 +259,7 @@ ObjectType gd_object_type(StringName name);
 Object gd_object_cast(Object obj, ObjectType to);
 Object gd_object_lookup(ObjectID id);
 Object gd_object_global(StringName name);
-void gd_object_extension_setup(Object obj, StringName name, ExtensionInstanceID class);
+void gd_object_extension_setup(Object obj, StringName name, ExtensionInstanceID class_name);
 ExtensionInstanceID gd_object_extension_fetch(Object obj);
 void gd_object_extension_close(Object obj);
 void gd_object_id(Object obj, void* id);
@@ -347,3 +360,5 @@ String gd_version_build();
 String gd_version_hash();
 void gd_version_timestamp(void*);
 String gd_version_string();
+
+#endif /* !__EMSCRIPTEN__ */

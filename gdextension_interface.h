@@ -1463,7 +1463,7 @@ typedef GDExtensionTypeFromVariantConstructorFunc (*GDExtensionInterfaceGetVaria
  *
  * @return A pointer to a type-specific function that returns a pointer to the internal value of a variant. Check the implementation of this function (gdextension_variant_get_ptr_internal_getter) for pointee type info of each variant type.
  */
-typedef GDExtensionVariantGetInternalPtrFunc (*GDExtensionInterfaceGetVariantGetInternalPtrFunc)(GDExtensionVariantType p_type);
+typedef GDExtensionVariantGetInternalPtrFunc (*GDExtensionInterfaceVariantGetPtrInternalGetter)(GDExtensionVariantType p_type);
 
 /**
  * @name variant_get_ptr_operator_evaluator
@@ -2735,7 +2735,7 @@ typedef GDExtensionScriptInstancePtr (*GDExtensionInterfaceScriptInstanceCreate3
  *
  * @return A pointer to a PlaceHolderScriptInstance object.
  */
-typedef GDExtensionScriptInstancePtr (*GDExtensionInterfacePlaceHolderScriptInstanceCreate)(GDExtensionObjectPtr p_language, GDExtensionObjectPtr p_script, GDExtensionObjectPtr p_owner);
+typedef GDExtensionScriptInstancePtr (*GDExtensionInterfacePlaceholderScriptInstanceCreate)(GDExtensionObjectPtr p_language, GDExtensionObjectPtr p_script, GDExtensionObjectPtr p_owner);
 
 /**
  * @name placeholder_script_instance_update
@@ -2750,7 +2750,7 @@ typedef GDExtensionScriptInstancePtr (*GDExtensionInterfacePlaceHolderScriptInst
  * @param p_properties A pointer to an Array of Dictionary representing PropertyInfo.
  * @param p_values A pointer to a Dictionary mapping StringName to Variant values.
  */
-typedef void (*GDExtensionInterfacePlaceHolderScriptInstanceUpdate)(GDExtensionScriptInstancePtr p_placeholder, GDExtensionConstTypePtr p_properties, GDExtensionConstTypePtr p_values);
+typedef void (*GDExtensionInterfacePlaceholderScriptInstanceUpdate)(GDExtensionScriptInstancePtr p_placeholder, GDExtensionConstTypePtr p_properties, GDExtensionConstTypePtr p_values);
 
 /**
  * @name object_get_script_instance
@@ -2816,7 +2816,7 @@ typedef void (*GDExtensionInterfaceCallableCustomCreate2)(GDExtensionUninitializ
  *
  * @return The userdata pointer given when creating this custom Callable.
  */
-typedef void *(*GDExtensionInterfaceCallableCustomGetUserData)(GDExtensionConstTypePtr p_callable, void *p_token);
+typedef void *(*GDExtensionInterfaceCallableCustomGetUserdata)(GDExtensionConstTypePtr p_callable, void *p_token);
 
 /**
  * @name classdb_construct_object
@@ -3167,7 +3167,7 @@ typedef void (*GDExtensionInterfaceEditorRemovePlugin)(GDExtensionConstStringNam
  *
  * @param p_data A pointer to a UTF-8 encoded C string (null terminated).
  */
-typedef void (*GDExtensionsInterfaceEditorHelpLoadXmlFromUtf8Chars)(const char *p_data);
+typedef void (*GDExtensionInterfaceEditorHelpLoadXmlFromUtf8Chars)(const char *p_data);
 
 /**
  * @name editor_help_load_xml_from_utf8_chars_and_len
@@ -3180,7 +3180,7 @@ typedef void (*GDExtensionsInterfaceEditorHelpLoadXmlFromUtf8Chars)(const char *
  * @param p_data A pointer to a UTF-8 encoded C string.
  * @param p_size The number of bytes (not code units).
  */
-typedef void (*GDExtensionsInterfaceEditorHelpLoadXmlFromUtf8CharsAndLen)(const char *p_data, GDExtensionInt p_size);
+typedef void (*GDExtensionInterfaceEditorHelpLoadXmlFromUtf8CharsAndLen)(const char *p_data, GDExtensionInt p_size);
 
 /**
  * @name editor_register_get_classes_used_callback
