@@ -6,6 +6,7 @@ package startup
 import "graphics.gd/internal/gdextension"
 
 import "graphics.gd/internal/gdmemory"
+import "graphics.gd/internal/threadcheck"
 
 //go:wasmimport gd array_get
 func gd_array_get(p0 uintptr, p1 int32, p2 uintptr)
@@ -543,236 +544,283 @@ func gd_version_string() uintptr
 
 //go:wasmexport on_callable_call
 func on_callable_call(p0 uintptr, p1 uintptr, p2 int32, p3 uintptr, p4 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Callables.Call(gdextension.FunctionID(p0), gdextension.Returns[gdextension.Variant](p1), int(p2), gdextension.Accepts[gdextension.Variant](p3), gdextension.Returns[gdextension.CallError](p4))
 }
 
 //go:wasmexport on_callable_validation
 func on_callable_validation(p0 uintptr) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Callables.Validation(gdextension.FunctionID(p0)))
 }
 
 //go:wasmexport on_callable_free
 func on_callable_free(p0 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Callables.Free(gdextension.FunctionID(p0))
 }
 
 //go:wasmexport on_callable_hash
 func on_callable_hash(p0 uintptr) uint32 {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uint32(gdextension.On.Callables.Hash(gdextension.FunctionID(p0)))
 }
 
 //go:wasmexport on_callable_compare
 func on_callable_compare(p0 uintptr, p1 uintptr) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Callables.Compare(gdextension.FunctionID(p0), gdextension.FunctionID(p1)))
 }
 
 //go:wasmexport on_callable_less_than
 func on_callable_less_than(p0 uintptr, p1 uintptr) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Callables.LessThan(gdextension.FunctionID(p0), gdextension.FunctionID(p1)))
 }
 
 //go:wasmexport on_callable_stringify
 func on_callable_stringify(p0 uintptr, p1 uintptr) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Callables.Stringify(gdextension.FunctionID(p0), gdextension.Returns[gdextension.CallError](p1))[0])
 }
 
 //go:wasmexport on_callable_get_argument_count
 func on_callable_get_argument_count(p0 uintptr, p1 uintptr) int32 {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return int32(gdextension.On.Callables.ArgumentCount(gdextension.FunctionID(p0), gdextension.Returns[gdextension.CallError](p1)))
 }
 
 //go:wasmexport on_editor_class_in_use_detection
 func on_editor_class_in_use_detection(p0 uint64, p1 uint64, p2 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Editor.ClassInUseDetection(gdextension.PackedArray[gdextension.String]{uint64(p0), uint64(p1)}, gdextension.Returns[gdextension.PackedArray[gdextension.String]](p2))
 }
 
 //go:wasmexport on_engine_init
 func on_engine_init(p0 uint32) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Engine.Init(gdextension.InitializationLevel(p0))
 }
 
 //go:wasmexport on_engine_exit
 func on_engine_exit(p0 uint32) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Engine.Exit(gdextension.InitializationLevel(p0))
 }
 
 //go:wasmexport on_extension_binding_created
 func on_extension_binding_created(p0 uintptr) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Extension.Binding.Created(gdextension.ExtensionInstanceID(p0)))
 }
 
 //go:wasmexport on_extension_binding_removed
 func on_extension_binding_removed(p0 uintptr, p1 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Extension.Binding.Removed(gdextension.ExtensionInstanceID(p0), gdextension.ExtensionBindingID(p1))
 }
 
 //go:wasmexport on_extension_binding_reference
 func on_extension_binding_reference(p0 uintptr, p1 bool) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Extension.Binding.Reference(gdextension.ExtensionInstanceID(p0), bool(p1)))
 }
 
 //go:wasmexport on_extension_class_create
 func on_extension_class_create(p0 uintptr, p1 bool) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Extension.Class.Create(gdextension.ExtensionClassID(p0), bool(p1)))
 }
 
 //go:wasmexport on_extension_class_method
 func on_extension_class_method(p0 uintptr, p1 uintptr, p2 uint32) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Extension.Class.Method(gdextension.ExtensionClassID(p0), gdextension.StringName{gdextension.Pointer(p1)}, uint32(p2)))
 }
 
 //go:wasmexport on_extension_class_caller
 func on_extension_class_caller(p0 uintptr, p1 uintptr, p2 uint32) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Extension.Class.Caller(gdextension.ExtensionClassID(p0), gdextension.StringName{gdextension.Pointer(p1)}, uint32(p2)))
 }
 
 //go:wasmexport on_extension_instance_set
 func on_extension_instance_set(p0 uintptr, p1 uintptr, p2 uint64, p3 uint64, p4 uint64) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Extension.Instance.Set(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}, gdextension.Variant{uint64(p2), uint64(p3), uint64(p4)}))
 }
 
 //go:wasmexport on_extension_instance_get
 func on_extension_instance_get(p0 uintptr, p1 uintptr, p2 uintptr) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Extension.Instance.Get(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}, gdextension.Returns[gdextension.Variant](p2)))
 }
 
 //go:wasmexport on_extension_instance_property_list
 func on_extension_instance_property_list(p0 uintptr) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Extension.Instance.PropertyList(gdextension.ExtensionInstanceID(p0)))
 }
 
 //go:wasmexport on_extension_instance_property_has_default
 func on_extension_instance_property_has_default(p0 uintptr, p1 uintptr) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Extension.Instance.PropertyHasDefault(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}))
 }
 
 //go:wasmexport on_extension_instance_property_get_default
 func on_extension_instance_property_get_default(p0 uintptr, p1 uintptr, p2 uintptr) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Extension.Instance.PropertyGetDefault(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}, gdextension.Returns[gdextension.Variant](p2)))
 }
 
 //go:wasmexport on_extension_instance_property_validation
 func on_extension_instance_property_validation(p0 uintptr, p1 uintptr) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Extension.Instance.PropertyValidation(gdextension.ExtensionInstanceID(p0), gdextension.PropertyList(p1)))
 }
 
 //go:wasmexport on_extension_instance_notification
 func on_extension_instance_notification(p0 uintptr, p1 int32, p2 bool) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Extension.Instance.Notification(gdextension.ExtensionInstanceID(p0), int32(p1), bool(p2))
 }
 
 //go:wasmexport on_extension_instance_stringify
 func on_extension_instance_stringify(p0 uintptr) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Extension.Instance.Stringify(gdextension.ExtensionInstanceID(p0))[0])
 }
 
 //go:wasmexport on_extension_instance_reference
 func on_extension_instance_reference(p0 uintptr, p1 bool) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Extension.Instance.Reference(gdextension.ExtensionInstanceID(p0), bool(p1)))
 }
 
 //go:wasmexport on_extension_instance_rid
 func on_extension_instance_rid(p0 uintptr, p1 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Extension.Instance.RID(gdextension.ExtensionInstanceID(p0), gdextension.Returns[uint64](p1))
 }
 
 //go:wasmexport on_extension_instance_checked_call
 func on_extension_instance_checked_call(p0 uintptr, p1 uintptr, p2 uintptr, p3 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Extension.Instance.CheckedCall(gdextension.ExtensionInstanceID(p0), gdextension.FunctionID(p1), gdextension.Returns[interface{}](p2), gdextension.Accepts[interface{}](p3))
 }
 
 //go:wasmexport on_extension_instance_called
 func on_extension_instance_called(p0 uintptr, p1 uintptr, p2 uintptr, p3 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Extension.Instance.Called(gdextension.ExtensionInstanceID(p0), gdextension.Pointer(p1), gdextension.Returns[interface{}](p2), gdextension.Accepts[interface{}](p3))
 }
 
 //go:wasmexport on_extension_instance_variant_call
 func on_extension_instance_variant_call(p0 uintptr, p1 uintptr, p2 uintptr, p3 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Extension.Instance.VariantCall(gdextension.ExtensionInstanceID(p0), gdextension.FunctionID(p1), gdextension.Returns[gdextension.Variant](p2), gdextension.Accepts[gdextension.Variant](p3))
 }
 
 //go:wasmexport on_extension_instance_dynamic_call
 func on_extension_instance_dynamic_call(p0 uintptr, p1 uintptr, p2 uintptr, p3 int32, p4 uintptr, p5 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Extension.Instance.DynamicCall(gdextension.ExtensionInstanceID(p0), gdextension.FunctionID(p1), gdextension.Returns[gdextension.Variant](p2), int(p3), gdextension.Accepts[gdextension.Variant](p4), gdextension.Returns[gdextension.CallError](p5))
 }
 
 //go:wasmexport on_extension_instance_free
 func on_extension_instance_free(p0 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Extension.Instance.Free(gdextension.ExtensionInstanceID(p0))
 }
 
 //go:wasmexport on_extension_script_categorization
 func on_extension_script_categorization(p0 uintptr, p1 uintptr) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Extension.Script.Categorization(gdextension.ExtensionInstanceID(p0), gdextension.PropertyList(p1)))
 }
 
 //go:wasmexport on_extension_script_get_property_type
 func on_extension_script_get_property_type(p0 uintptr, p1 uintptr) uint32 {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uint32(gdextension.On.Extension.Script.PropertyType(gdextension.StringName{gdextension.Pointer(p0)}, gdextension.Returns[gdextension.CallError](p1)))
 }
 
 //go:wasmexport on_extension_script_get_owner
 func on_extension_script_get_owner(p0 uintptr) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Extension.Script.Owner(gdextension.ExtensionInstanceID(p0)))
 }
 
 //go:wasmexport on_extension_script_get_property_state
 func on_extension_script_get_property_state(p0 uintptr, p1 uintptr, p2 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Extension.Script.PropertyState(gdextension.ExtensionInstanceID(p0), gdextension.FunctionID(p1), gdextension.Pointer(p2))
 }
 
 //go:wasmexport on_extension_script_get_methods
 func on_extension_script_get_methods(p0 uintptr) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Extension.Script.Methods(gdextension.ExtensionInstanceID(p0)))
 }
 
 //go:wasmexport on_extension_script_has_method
 func on_extension_script_has_method(p0 uintptr, p1 uintptr) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Extension.Script.HasMethod(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}))
 }
 
 //go:wasmexport on_extension_script_get_method_argument_count
 func on_extension_script_get_method_argument_count(p0 uintptr, p1 uintptr) int32 {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return int32(gdextension.On.Extension.Script.MethodArgumentCount(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}))
 }
 
 //go:wasmexport on_extension_script_get
 func on_extension_script_get(p0 uintptr) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Extension.Script.Get(gdextension.ExtensionInstanceID(p0)))
 }
 
 //go:wasmexport on_extension_script_is_placeholder
 func on_extension_script_is_placeholder(p0 uintptr) bool {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return bool(gdextension.On.Extension.Script.IsPlaceholder(gdextension.ExtensionInstanceID(p0)))
 }
 
 //go:wasmexport on_extension_script_get_language
 func on_extension_script_get_language(p0 uintptr) uintptr {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	return uintptr(gdextension.On.Extension.Script.Language(gdextension.ExtensionInstanceID(p0)))
 }
 
 //go:wasmexport on_first_frame
 func on_first_frame() {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.MainLoop.FirstFrame()
 }
 
 //go:wasmexport on_every_frame
 func on_every_frame() {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.MainLoop.EveryFrame()
 }
 
 //go:wasmexport on_final_frame
 func on_final_frame() {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.MainLoop.FinalFrame()
 }
 
 //go:wasmexport on_worker_thread_pool_task
 func on_worker_thread_pool_task(p0 uintptr) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Threading.Run(gdextension.TaskID(p0))
 }
 
 //go:wasmexport on_worker_thread_pool_group_task
 func on_worker_thread_pool_group_task(p0 uintptr, p1 uint32) {
+	defer threadcheck.LeaveFrame(threadcheck.EnterFrame())
 	gdextension.On.Threading.RunInGroup(gdextension.TaskID(p0), uint32(p1))
 }
 
@@ -1252,10 +1300,7 @@ func init() {
 		G float32
 		B float32
 		A float32
-	}]) (result gdextension.Pointer) {
-		result = gdextension.Pointer(gd_packed_color_array_unsafe(uint64(p0[0]), uint64(p0[1])))
-		return
-	}
+	}]) (result gdextension.Pointer) { result = gdextension.Pointer(gd_packed_color_array_unsafe(uint64(p0[0]), uint64(p0[1]))); return }
 	gdextension.Host.Packed.Colors.Access = func(p0 gdextension.PackedArray[struct {
 		R float32
 		G float32
@@ -1266,12 +1311,7 @@ func init() {
 		G float32
 		B float32
 		A float32
-	}]) {
-		mem2 := gdmemory.MakeResult(gdextension.SizeColor)
-		gd_packed_color_array_access(uint64(p0[0]), uint64(p0[1]), int32(p1), uintptr(mem2))
-		gdmemory.LoadResult(gdextension.SizeColor, p2, mem2)
-		return
-	}
+	}]) { mem2 := gdmemory.MakeResult(gdextension.SizeColor); gd_packed_color_array_access(uint64(p0[0]), uint64(p0[1]), int32(p1), uintptr(mem2)); gdmemory.LoadResult(gdextension.SizeColor, p2, mem2); return }
 	gdextension.Host.Packed.Float32s.Unsafe = func(p0 gdextension.PackedArray[float32]) (result gdextension.Pointer) {
 		result = gdextension.Pointer(gd_packed_float32_array_unsafe(uint64(p0[0]), uint64(p0[1])))
 		return
@@ -1317,30 +1357,19 @@ func init() {
 	gdextension.Host.Packed.Vector2s.Unsafe = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
-	}]) (result gdextension.Pointer) {
-		result = gdextension.Pointer(gd_packed_vector2_array_unsafe(uint64(p0[0]), uint64(p0[1])))
-		return
-	}
+	}]) (result gdextension.Pointer) { result = gdextension.Pointer(gd_packed_vector2_array_unsafe(uint64(p0[0]), uint64(p0[1]))); return }
 	gdextension.Host.Packed.Vector2s.Access = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
 	}], p1 int, p2 gdextension.CallReturns[struct {
 		X float32
 		Y float32
-	}]) {
-		mem2 := gdmemory.MakeResult(gdextension.SizeVector2)
-		gd_packed_vector2_array_access(uint64(p0[0]), uint64(p0[1]), int32(p1), uintptr(mem2))
-		gdmemory.LoadResult(gdextension.SizeVector2, p2, mem2)
-		return
-	}
+	}]) { mem2 := gdmemory.MakeResult(gdextension.SizeVector2); gd_packed_vector2_array_access(uint64(p0[0]), uint64(p0[1]), int32(p1), uintptr(mem2)); gdmemory.LoadResult(gdextension.SizeVector2, p2, mem2); return }
 	gdextension.Host.Packed.Vector3s.Unsafe = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
 		Z float32
-	}]) (result gdextension.Pointer) {
-		result = gdextension.Pointer(gd_packed_vector3_array_unsafe(uint64(p0[0]), uint64(p0[1])))
-		return
-	}
+	}]) (result gdextension.Pointer) { result = gdextension.Pointer(gd_packed_vector3_array_unsafe(uint64(p0[0]), uint64(p0[1]))); return }
 	gdextension.Host.Packed.Vector3s.Access = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
@@ -1349,21 +1378,13 @@ func init() {
 		X float32
 		Y float32
 		Z float32
-	}]) {
-		mem2 := gdmemory.MakeResult(gdextension.SizeVariant)
-		gd_packed_vector3_array_access(uint64(p0[0]), uint64(p0[1]), int32(p1), uintptr(mem2))
-		gdmemory.LoadResult(gdextension.SizeVector3, p2, mem2)
-		return
-	}
+	}]) { mem2 := gdmemory.MakeResult(gdextension.SizeVariant); gd_packed_vector3_array_access(uint64(p0[0]), uint64(p0[1]), int32(p1), uintptr(mem2)); gdmemory.LoadResult(gdextension.SizeVector3, p2, mem2); return }
 	gdextension.Host.Packed.Vector4s.Unsafe = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
 		Z float32
 		W float32
-	}]) (result gdextension.Pointer) {
-		result = gdextension.Pointer(gd_packed_vector4_array_unsafe(uint64(p0[0]), uint64(p0[1])))
-		return
-	}
+	}]) (result gdextension.Pointer) { result = gdextension.Pointer(gd_packed_vector4_array_unsafe(uint64(p0[0]), uint64(p0[1]))); return }
 	gdextension.Host.Packed.Vector4s.Access = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
@@ -1374,12 +1395,7 @@ func init() {
 		Y float32
 		Z float32
 		W float32
-	}]) {
-		mem2 := gdmemory.MakeResult(gdextension.SizeVector4)
-		gd_packed_vector4_array_access(uint64(p0[0]), uint64(p0[1]), int32(p1), uintptr(mem2))
-		gdmemory.LoadResult(gdextension.SizeVector4, p2, mem2)
-		return
-	}
+	}]) { mem2 := gdmemory.MakeResult(gdextension.SizeVector4); gd_packed_vector4_array_access(uint64(p0[0]), uint64(p0[1]), int32(p1), uintptr(mem2)); gdmemory.LoadResult(gdextension.SizeVector4, p2, mem2); return }
 	gdextension.Host.RefCounted.Get = func(p0 gdextension.RefCounted) (result gdextension.Object) {
 		result = gdextension.Object(gd_ref_get_object(uintptr(p0)))
 		return

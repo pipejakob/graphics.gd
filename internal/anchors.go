@@ -78,12 +78,13 @@ func anchored[T pointers.Generic[T, P], P pointers.Size](value T) (*T, complex12
 }
 
 // WrapString prepares proxy state for a [String] wrapper: tracked
-// frame-temporary state on the main thread, anchored GC-managed state
-// elsewhere. The remaining Wrap functions do the same for the other
-// reference types; generated bindings and internal conversions must use
-// these instead of packing tracked pointers directly.
+// frame-temporary state where that model is sound (the main thread, see
+// [threadcheck.FrameTemporaries]), anchored GC-managed state elsewhere.
+// The remaining Wrap functions do the same for the other reference types;
+// generated bindings and internal conversions must use these instead of
+// packing tracked pointers directly.
 func WrapString(s String) (StringProxy, complex128) {
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		return StringProxy{}, pointers.Pack(s)
 	}
 	anchor, state := anchored(s)
@@ -92,7 +93,7 @@ func WrapString(s String) (StringProxy, complex128) {
 
 // WrapStringName prepares proxy state for a [StringName] wrapper, see [WrapString].
 func WrapStringName(s StringName) (StringNameProxy, complex128) {
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		return StringNameProxy{}, pointers.Pack(s)
 	}
 	anchor, state := anchored(s)
@@ -101,7 +102,7 @@ func WrapStringName(s StringName) (StringNameProxy, complex128) {
 
 // WrapNodePath prepares proxy state for a [NodePath] wrapper, see [WrapString].
 func WrapNodePath(n NodePath) (NodePathProxy, complex128) {
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		return NodePathProxy{}, pointers.Pack(n)
 	}
 	anchor, state := anchored(n)
@@ -110,7 +111,7 @@ func WrapNodePath(n NodePath) (NodePathProxy, complex128) {
 
 // WrapArray prepares proxy state for an [Array] wrapper, see [WrapString].
 func WrapArray[T any](a Array) (ArrayProxy[T], complex128) {
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		return ArrayProxy[T]{}, pointers.Pack(a)
 	}
 	anchor, state := anchored(a)
@@ -119,7 +120,7 @@ func WrapArray[T any](a Array) (ArrayProxy[T], complex128) {
 
 // WrapDictionary prepares proxy state for a [Dictionary] wrapper, see [WrapString].
 func WrapDictionary[K comparable, V any](d Dictionary) (DictionaryProxy[K, V], complex128) {
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		return DictionaryProxy[K, V]{}, pointers.Pack(d)
 	}
 	anchor, state := anchored(d)
@@ -128,7 +129,7 @@ func WrapDictionary[K comparable, V any](d Dictionary) (DictionaryProxy[K, V], c
 
 // WrapPacked prepares proxy state for a packed array wrapper, see [WrapString].
 func WrapPacked[P Packed[P, V], V gdextension.Packable](p P) (PackedProxy[P, V], complex128) {
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		return PackedProxy[P, V]{}, pointers.Pack[P, PackedPointers](p)
 	}
 	anchor, state := anchored[P, PackedPointers](p)
@@ -137,7 +138,7 @@ func WrapPacked[P Packed[P, V], V gdextension.Packable](p P) (PackedProxy[P, V],
 
 // WrapPackedStrings prepares proxy state for a [PackedStringArray] wrapper, see [WrapString].
 func WrapPackedStrings(p PackedStringArray) (PackedStringArrayProxy, complex128) {
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		return PackedStringArrayProxy{}, pointers.Pack(p)
 	}
 	anchor, state := anchored(p)
@@ -146,7 +147,7 @@ func WrapPackedStrings(p PackedStringArray) (PackedStringArrayProxy, complex128)
 
 // WrapVariant prepares proxy state for a [Variant] wrapper, see [WrapString].
 func WrapVariant(v Variant) (VariantProxy, complex128) {
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		return VariantProxy{}, pointers.Pack(v)
 	}
 	anchor, state := anchored(v)
@@ -155,7 +156,7 @@ func WrapVariant(v Variant) (VariantProxy, complex128) {
 
 // WrapCallable prepares proxy state for a [Callable] wrapper, see [WrapString].
 func WrapCallable(c Callable) (CallableProxy, complex128) {
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		return CallableProxy{}, pointers.Pack(c)
 	}
 	anchor, state := anchored(c)
@@ -164,7 +165,7 @@ func WrapCallable(c Callable) (CallableProxy, complex128) {
 
 // WrapSignal prepares proxy state for a [Signal] wrapper, see [WrapString].
 func WrapSignal(s Signal) (SignalProxy, complex128) {
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		return SignalProxy{}, pointers.Pack(s)
 	}
 	anchor, state := anchored(s)

@@ -22,6 +22,7 @@ func generate_startup_wasip1() error {
 	fmt.Fprint(f, "package startup\n\n")
 	fmt.Fprint(f, "import \"graphics.gd/internal/gdextension\"\n\n")
 	fmt.Fprint(f, "import \"graphics.gd/internal/gdmemory\"\n")
+	fmt.Fprint(f, "import \"graphics.gd/internal/threadcheck\"\n")
 	//fmt.Fprint(f, "import \"unsafe\"\n")
 	//fmt.Fprint(f, "import \"sync\"\n\n")
 
@@ -58,6 +59,9 @@ func generate_startup_wasip1() error {
 			fmt.Fprintf(f, " %s", wasiTypeOf(fn.Type.Out(0)))
 		}
 		fmt.Fprintln(f, "{")
+		// The calling goroutine drives this engine callback, so its wrappers
+		// are frame-temporaries for the duration (see threadcheck.EnterFrame).
+		fmt.Fprintln(f, "defer threadcheck.LeaveFrame(threadcheck.EnterFrame())")
 
 		if result := getReturn(fn.Type); fn.NumOut() == 1 && result != nil {
 			fmt.Fprintf(f, "return %s(", wasiTypeOf(result))

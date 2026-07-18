@@ -32,7 +32,22 @@ func TestThreadCheck(t *testing.T) {
 		if !threadcheck.Main() {
 			t.Fail()
 		}
+		// Code running in an engine callback is frame-aligned on every
+		// platform (native: the main thread; wasm: the frame goroutine).
+		if !threadcheck.FrameTemporaries() {
+			t.Error("expected frame-temporaries inside an engine callback")
+		}
 	})
+	// A free-running goroutine is never frame-aligned: its wrappers must be
+	// anchored, or the per-frame collection would free them mid-use.
+	finished := make(chan struct{})
+	go func() {
+		defer close(finished)
+		if threadcheck.FrameTemporaries() {
+			t.Error("expected no frame-temporaries on a goroutine")
+		}
+	}()
+	<-finished
 }
 
 func TestGetGodotVersion(t *testing.T) {

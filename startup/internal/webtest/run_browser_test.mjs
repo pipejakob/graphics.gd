@@ -56,12 +56,17 @@ let proc, ws, done = false, timer;
 function finish(code, reason) {
   if (done) return;
   done = true;
-  console.log(`\n[runner] ${reason} -> exit ${code}`);
   clearTimeout(timer);
-  try { ws && ws.close(); } catch {}
-  try { proc && proc.kill("SIGKILL"); } catch {}
-  try { rmSync(profile, { recursive: true, force: true }); } catch {}
-  process.exit(code);
+  const exit = () => {
+    console.log(`\n[runner] ${reason} -> exit ${code}`);
+    try { ws && ws.close(); } catch {}
+    try { proc && proc.kill("SIGKILL"); } catch {}
+    try { rmSync(profile, { recursive: true, force: true }); } catch {}
+    process.exit(code);
+  };
+  // On failure, linger briefly so the page's trailing console output (e.g.
+  // the Go panic stack trace) streams into the log before we tear down.
+  if (code === 0) exit(); else setTimeout(exit, 3000);
 }
 
 function classify(text) {

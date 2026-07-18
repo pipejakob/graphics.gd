@@ -34,6 +34,15 @@ func Main() bool {
 	return currentm() == mainM
 }
 
+// FrameTemporaries reports whether reference wrappers created by the caller
+// may be tracked as main-thread frame-temporaries (collected by the per-frame
+// [pointers.Cycle]). Code running on the main thread is frame-aligned by
+// construction; everything else must anchor its wrappers to the Go garbage
+// collector instead (see gd.Wrap*).
+func FrameTemporaries() bool {
+	return Main()
+}
+
 // engineMs records the m pointers of OS threads owned by the engine: threads
 // (other than main) on which the engine has called into Go, such as the
 // dedicated resource-loading thread or WorkerThreadPool threads. Calls made

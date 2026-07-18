@@ -12,6 +12,12 @@ func Main() bool {
 	return gdextension.Host.Threads.Main()
 }
 
+// FrameTemporaries reports whether the caller's wrappers may be tracked as
+// main-thread frame-temporaries, see the amd64/arm64 implementation.
+func FrameTemporaries() bool {
+	return Main()
+}
+
 // Mark is a no-op on platforms without fast thread identification.
 func Mark() {}
 

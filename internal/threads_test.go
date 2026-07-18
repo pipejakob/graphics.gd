@@ -112,7 +112,18 @@ func TestGoroutineSceneTree(t *testing.T) {
 		if got := child.Position(); got != Vector2.New(1, 2) {
 			t.Errorf("expected position (1, 2), got %v", got)
 		}
-		if !parent.IsInsideTree() {
+		// SceneTree.Add falls back to the engine's deferred queue when the
+		// tree is still setting up its first frames, so give the add a few
+		// frames to land before judging it.
+		inTree := parent.IsInsideTree()
+		for range 120 {
+			if inTree {
+				break
+			}
+			waitFrames(1)
+			inTree = parent.IsInsideTree()
+		}
+		if !inTree {
 			t.Error("expected parent to be inside the scene tree")
 		}
 		parent.QueueFree()

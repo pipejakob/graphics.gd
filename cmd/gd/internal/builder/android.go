@@ -517,12 +517,16 @@ func (android Android) Test(args ...string) error {
 
 // printAndroidResults prints each distinct go test result line once. The system
 // relaunches the app after it exits, so by the time we read the verdict the log
-// contains the suite repeated many times.
+// contains the suite repeated many times. Failure details (the indented
+// "foo_test.go:12: ..." assertion lines and panics) are kept, or a --- FAIL
+// verdict is impossible to act on.
 func printAndroidResults(log string) {
 	seen := make(map[string]bool)
 	for _, line := range strings.Split(log, "\n") {
 		t := strings.TrimSpace(line)
-		if (strings.HasPrefix(t, "--- PASS") || strings.HasPrefix(t, "--- FAIL")) && !seen[t] {
+		result := strings.HasPrefix(t, "--- PASS") || strings.HasPrefix(t, "--- FAIL")
+		detail := strings.Contains(t, "_test.go:") || strings.HasPrefix(t, "panic:")
+		if (result || detail) && !seen[t] {
 			seen[t] = true
 			fmt.Println(t)
 		}
