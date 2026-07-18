@@ -319,7 +319,7 @@ func (self class) SetStageSource(stage Rendering.ShaderStage, source String.Read
 }
 func (self class) GetStageSource(stage Rendering.ShaderStage) String.Readable { //gd:RDShaderSource.get_stage_source
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_stage_source, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ stage Rendering.ShaderStage }{stage})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetLanguage(language Rendering.ShaderLanguage) { //gd:RDShaderSource.set_language

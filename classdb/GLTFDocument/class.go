@@ -477,7 +477,7 @@ func (self class) SetImageFormat(image_format String.Readable) { //gd:GLTFDocume
 }
 func (self class) GetImageFormat() String.Readable { //gd:GLTFDocument.get_image_format
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_image_format, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetLossyQuality(lossy_quality float64) { //gd:GLTFDocument.set_lossy_quality
@@ -493,7 +493,7 @@ func (self class) SetFallbackImageFormat(fallback_image_format String.Readable) 
 }
 func (self class) GetFallbackImageFormat() String.Readable { //gd:GLTFDocument.get_fallback_image_format
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_fallback_image_format, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetFallbackImageQuality(fallback_image_quality float64) { //gd:GLTFDocument.set_fallback_image_quality
@@ -569,7 +569,7 @@ func (self class) GenerateScene(state [1]gdclass.GLTFState, bake_fps float64, tr
 }
 func (self class) GenerateBuffer(state [1]gdclass.GLTFState) Packed.Bytes { //gd:GLTFDocument.generate_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.generate_buffer, gdextension.SizePackedArray|(gdextension.SizeObject<<4), &struct{ state gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetGLTFState(state[0])[0]))})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) WriteToFilesystem(state [1]gdclass.GLTFState, path String.Readable) Error.Code { //gd:GLTFDocument.write_to_filesystem
@@ -609,7 +609,7 @@ func (self class) UnregisterGltfDocumentExtension(extension [1]gdclass.GLTFDocum
 }
 func (self class) GetSupportedGltfExtensions() Packed.Strings { //gd:GLTFDocument.get_supported_gltf_extensions
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.get_supported_gltf_extensions, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (o class) AsGLTFDocument() Advanced              { return Advanced(o) }

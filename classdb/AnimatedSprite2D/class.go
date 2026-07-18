@@ -466,7 +466,7 @@ func (self class) SetAnimation(name String.Name) { //gd:AnimatedSprite2D.set_ani
 }
 func (self class) GetAnimation() String.Name { //gd:AnimatedSprite2D.get_animation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_animation, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetAutoplay(name String.Readable) { //gd:AnimatedSprite2D.set_autoplay
@@ -474,7 +474,7 @@ func (self class) SetAutoplay(name String.Readable) { //gd:AnimatedSprite2D.set_
 }
 func (self class) GetAutoplay() String.Readable { //gd:AnimatedSprite2D.get_autoplay
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_autoplay, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsPlaying() bool { //gd:AnimatedSprite2D.is_playing
@@ -581,7 +581,7 @@ func (self Instance) OnSpriteFramesChanged(cb func(), flags ...Signal.Flags) Ins
 }
 
 func (self class) SpriteFramesChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`sprite_frames_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`sprite_frames_changed`))))
 }
 
 /*
@@ -599,7 +599,7 @@ func (self Instance) OnAnimationChanged(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) AnimationChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_changed`))))
 }
 
 /*
@@ -617,7 +617,7 @@ func (self Instance) OnFrameChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) FrameChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`frame_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`frame_changed`))))
 }
 
 /*
@@ -633,7 +633,7 @@ func (self Instance) OnAnimationLooped(cb func(), flags ...Signal.Flags) Instanc
 }
 
 func (self class) AnimationLooped() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_looped`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_looped`))))
 }
 
 /*
@@ -651,7 +651,7 @@ func (self Instance) OnAnimationFinished(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) AnimationFinished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_finished`))))
 }
 
 func (o class) AsAnimatedSprite2D() Advanced              { return Advanced(o) }

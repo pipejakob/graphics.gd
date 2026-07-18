@@ -483,7 +483,7 @@ func (self class) SetTargetNode(target_nodepath Path.ToNode) { //gd:SkeletonModi
 }
 func (self class) GetTargetNode() Path.ToNode { //gd:SkeletonModification2DJiggle.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetJiggleDataChainLength(length int64) { //gd:SkeletonModification2DJiggle.set_jiggle_data_chain_length
@@ -561,7 +561,7 @@ func (self class) SetJiggleJointBone2dNode(joint_idx int64, bone2d_node Path.ToN
 }
 func (self class) GetJiggleJointBone2dNode(joint_idx int64) Path.ToNode { //gd:SkeletonModification2DJiggle.get_jiggle_joint_bone2d_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_jiggle_joint_bone2d_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetJiggleJointBoneIndex(joint_idx int64, bone_idx int64) { //gd:SkeletonModification2DJiggle.set_jiggle_joint_bone_index

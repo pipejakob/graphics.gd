@@ -1051,6 +1051,14 @@ void gd_ring_flush(void *entries, uint32_t tail, uint32_t head, uint32_t *crash_
         *crash_index = i & 0xFF;
         void *points[16];
         prepare_callframe(1, &points[0], e->shape, (ANY)e->args);
+        // The result slot must look like a default-constructed value before
+        // ptrcall writes to it: Godot's PtrToArg<T>::encode assigns through
+        // T::operator=, which unrefs whatever the destination bytes appear
+        // to point at. Entries are reused every lap of the ring, so stale
+        // result bytes from an earlier call would be unref'd here — freeing
+        // a value that a previous caller copied out and still owns (the
+        // direct call paths zero their local result buffer the same way).
+        __builtin_memset(e->result, 0, sizeof e->result);
         gdextension_object_method_bind_ptrcall(
             (GDExtensionMethodBindPtr)e->method,
             (GDExtensionObjectPtr)e->object,

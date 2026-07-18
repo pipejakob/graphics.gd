@@ -1140,12 +1140,12 @@ func (self class) CreateTemp(mode_flags ModeFlags, prefix String.Readable, exten
 }
 func (self class) GetFileAsBytes(path String.Readable) Packed.Bytes { //gd:FileAccess.get_file_as_bytes
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.get_file_as_bytes, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) GetFileAsString(path String.Readable) String.Readable { //gd:FileAccess.get_file_as_string
 	var r_ret = noescape.CallStatic[gdextension.String](methods.get_file_as_string, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) Resize(length int64) Error.Code { //gd:FileAccess.resize
@@ -1158,12 +1158,12 @@ func (self class) Flush() { //gd:FileAccess.flush
 }
 func (self class) GetPath() String.Readable { //gd:FileAccess.get_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetPathAbsolute() String.Readable { //gd:FileAccess.get_path_absolute
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_path_absolute, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsOpen() bool { //gd:FileAccess.is_open
@@ -1234,32 +1234,32 @@ func (self class) GetReal() float64 { //gd:FileAccess.get_real
 }
 func (self class) GetBuffer(length int64) Packed.Bytes { //gd:FileAccess.get_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_buffer, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ length int64 }{length})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) GetLine() String.Readable { //gd:FileAccess.get_line
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_line, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCsvLine(delim String.Readable) Packed.Strings { //gd:FileAccess.get_csv_line
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_csv_line, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ delim gdextension.String }{pointers.Get(gd.InternalString(delim))})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetAsText() String.Readable { //gd:FileAccess.get_as_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_as_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetMd5(path String.Readable) String.Readable { //gd:FileAccess.get_md5
 	var r_ret = noescape.CallStatic[gdextension.String](methods.get_md5, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSha256(path String.Readable) String.Readable { //gd:FileAccess.get_sha256
 	var r_ret = noescape.CallStatic[gdextension.String](methods.get_sha256, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsBigEndian() bool { //gd:FileAccess.is_big_endian
@@ -1277,7 +1277,7 @@ func (self class) GetError() Error.Code { //gd:FileAccess.get_error
 }
 func (self class) GetVar(allow_objects bool) variant.Any { //gd:FileAccess.get_var
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_var, gdextension.SizeVariant|(gdextension.SizeBool<<4), &struct{ allow_objects bool }{allow_objects})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Store8(value int64) bool { //gd:FileAccess.store_8
@@ -1358,7 +1358,7 @@ func (self class) StorePascalString(s String.Readable) bool { //gd:FileAccess.st
 }
 func (self class) GetPascalString() String.Readable { //gd:FileAccess.get_pascal_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_pascal_string, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) Close() { //gd:FileAccess.close
@@ -1428,7 +1428,7 @@ func (self class) GetExtendedAttribute(file String.Readable, attribute_name Stri
 		file           gdextension.String
 		attribute_name gdextension.String
 	}{pointers.Get(gd.InternalString(file)), pointers.Get(gd.InternalString(attribute_name))})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) GetExtendedAttributeString(file String.Readable, attribute_name String.Readable) String.Readable { //gd:FileAccess.get_extended_attribute_string
@@ -1436,7 +1436,7 @@ func (self class) GetExtendedAttributeString(file String.Readable, attribute_nam
 		file           gdextension.String
 		attribute_name gdextension.String
 	}{pointers.Get(gd.InternalString(file)), pointers.Get(gd.InternalString(attribute_name))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetExtendedAttribute(file String.Readable, attribute_name String.Readable, data Packed.Bytes) Error.Code { //gd:FileAccess.set_extended_attribute
@@ -1467,7 +1467,7 @@ func (self class) RemoveExtendedAttribute(file String.Readable, attribute_name S
 }
 func (self class) GetExtendedAttributesList(file String.Readable) Packed.Strings { //gd:FileAccess.get_extended_attributes_list
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.get_extended_attributes_list, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ file gdextension.String }{pointers.Get(gd.InternalString(file))})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (o class) AsFileAccess() Advanced         { return Advanced(o) }

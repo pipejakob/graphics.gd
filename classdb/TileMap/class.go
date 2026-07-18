@@ -1242,7 +1242,7 @@ func (self class) SetLayerName(layer int64, name String.Readable) { //gd:TileMap
 }
 func (self class) GetLayerName(layer int64) String.Readable { //gd:TileMap.get_layer_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_layer_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ layer int64 }{layer})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetLayerEnabled(layer int64, enabled bool) { //gd:TileMap.set_layer_enabled
@@ -1493,12 +1493,12 @@ func (self class) NotifyRuntimeTileDataUpdate(layer int64) { //gd:TileMap.notify
 }
 func (self class) GetSurroundingCells(coords Vector2i.XY) Array.Contains[Vector2i.XY] { //gd:TileMap.get_surrounding_cells
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_surrounding_cells, gdextension.SizeArray|(gdextension.SizeVector2i<<4), &struct{ coords Vector2i.XY }{coords})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedCells(layer int64) Array.Contains[Vector2i.XY] { //gd:TileMap.get_used_cells
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_cells, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ layer int64 }{layer})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedCellsById(layer int64, source_id int64, atlas_coords Vector2i.XY, alternative_tile int64) Array.Contains[Vector2i.XY] { //gd:TileMap.get_used_cells_by_id
@@ -1508,7 +1508,7 @@ func (self class) GetUsedCellsById(layer int64, source_id int64, atlas_coords Ve
 		atlas_coords     Vector2i.XY
 		alternative_tile int64
 	}{layer, source_id, atlas_coords, alternative_tile})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedRect() Rect2i.PositionSize { //gd:TileMap.get_used_rect
@@ -1550,7 +1550,7 @@ func (self Instance) OnChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Changed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
 }
 
 func (o class) AsTileMap() Advanced                       { return Advanced(o) }

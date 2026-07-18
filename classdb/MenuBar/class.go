@@ -426,7 +426,7 @@ func (self class) SetLanguage(language String.Readable) { //gd:MenuBar.set_langu
 }
 func (self class) GetLanguage() String.Readable { //gd:MenuBar.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetFlat(enabled bool) { //gd:MenuBar.set_flat
@@ -453,7 +453,7 @@ func (self class) SetMenuTitle(menu int64, title String.Readable) { //gd:MenuBar
 }
 func (self class) GetMenuTitle(menu int64) String.Readable { //gd:MenuBar.get_menu_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_menu_title, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ menu int64 }{menu})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetMenuTooltip(menu int64, tooltip String.Readable) { //gd:MenuBar.set_menu_tooltip
@@ -464,7 +464,7 @@ func (self class) SetMenuTooltip(menu int64, tooltip String.Readable) { //gd:Men
 }
 func (self class) GetMenuTooltip(menu int64) String.Readable { //gd:MenuBar.get_menu_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_menu_tooltip, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ menu int64 }{menu})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetMenuDisabled(menu int64, disabled bool) { //gd:MenuBar.set_menu_disabled

@@ -486,7 +486,7 @@ func (self Instance) OnHistoryChanged(cb func(), flags ...Signal.Flags) Instance
 }
 
 func (self class) HistoryChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`history_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`history_changed`))))
 }
 
 /*
@@ -502,7 +502,7 @@ func (self Instance) OnVersionChanged(cb func(), flags ...Signal.Flags) Instance
 }
 
 func (self class) VersionChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`version_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`version_changed`))))
 }
 
 func (o class) AsEditorUndoRedoManager() Advanced         { return Advanced(o) }

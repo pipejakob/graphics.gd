@@ -279,7 +279,7 @@ func (self class) SetBoneName(bone_name String.Readable) { //gd:BoneAttachment3D
 }
 func (self class) GetBoneName() String.Readable { //gd:BoneAttachment3D.get_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_bone_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBoneIdx(bone_idx int64) { //gd:BoneAttachment3D.set_bone_idx
@@ -314,7 +314,7 @@ func (self class) SetExternalSkeleton(external_skeleton Path.ToNode) { //gd:Bone
 }
 func (self class) GetExternalSkeleton() Path.ToNode { //gd:BoneAttachment3D.get_external_skeleton
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_external_skeleton, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (o class) AsBoneAttachment3D() Advanced         { return Advanced(o) }

@@ -496,7 +496,7 @@ func (self class) ErasePreset(color Color.RGBA) { //gd:ColorPicker.erase_preset
 }
 func (self class) GetPresets() Packed.Array[Color.RGBA] { //gd:ColorPicker.get_presets
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_presets, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Color.RGBA](Array.Through(gd.PackedProxy[gd.PackedColorArray, Color.RGBA]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) AddRecentPreset(color Color.RGBA) { //gd:ColorPicker.add_recent_preset
@@ -507,7 +507,7 @@ func (self class) EraseRecentPreset(color Color.RGBA) { //gd:ColorPicker.erase_r
 }
 func (self class) GetRecentPresets() Packed.Array[Color.RGBA] { //gd:ColorPicker.get_recent_presets
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_recent_presets, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Color.RGBA](Array.Through(gd.PackedProxy[gd.PackedColorArray, Color.RGBA]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) SetPickerShape(shape PickerShapeType) { //gd:ColorPicker.set_picker_shape
@@ -532,7 +532,7 @@ func (self Instance) OnColorChanged(cb func(color Color.RGBA), flags ...Signal.F
 }
 
 func (self class) ColorChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`color_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`color_changed`))))
 }
 
 /*
@@ -548,7 +548,7 @@ func (self Instance) OnPresetAdded(cb func(color Color.RGBA), flags ...Signal.Fl
 }
 
 func (self class) PresetAdded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`preset_added`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`preset_added`))))
 }
 
 /*
@@ -564,7 +564,7 @@ func (self Instance) OnPresetRemoved(cb func(color Color.RGBA), flags ...Signal.
 }
 
 func (self class) PresetRemoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`preset_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`preset_removed`))))
 }
 
 func (o class) AsColorPicker() Advanced                         { return Advanced(o) }

@@ -236,7 +236,7 @@ func (self class) GetInterface(idx int64) [1]gdclass.TextServer { //gd:TextServe
 func (self class) GetInterfaces() Array.Contains[Dictionary.Any] { //gd:TextServerManager.get_interfaces
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.get_interfaces, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) FindInterface(name String.Readable) [1]gdclass.TextServer { //gd:TextServerManager.find_interface
@@ -270,7 +270,7 @@ func OnInterfaceAdded(cb func(interface_name string), flags ...Signal.Flags) {
 
 func (self class) InterfaceAdded() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`interface_added`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`interface_added`))))
 }
 
 /*
@@ -287,7 +287,7 @@ func OnInterfaceRemoved(cb func(interface_name string), flags ...Signal.Flags) {
 
 func (self class) InterfaceRemoved() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`interface_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`interface_removed`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

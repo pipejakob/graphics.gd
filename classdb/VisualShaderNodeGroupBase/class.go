@@ -366,7 +366,7 @@ func (self class) SetInputs(inputs String.Readable) { //gd:VisualShaderNodeGroup
 }
 func (self class) GetInputs() String.Readable { //gd:VisualShaderNodeGroupBase.get_inputs
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_inputs, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOutputs(outputs String.Readable) { //gd:VisualShaderNodeGroupBase.set_outputs
@@ -374,7 +374,7 @@ func (self class) SetOutputs(outputs String.Readable) { //gd:VisualShaderNodeGro
 }
 func (self class) GetOutputs() String.Readable { //gd:VisualShaderNodeGroupBase.get_outputs
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_outputs, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsValidPortName(name String.Readable) bool { //gd:VisualShaderNodeGroupBase.is_valid_port_name

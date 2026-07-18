@@ -1149,7 +1149,7 @@ func (self class) SetColumnTitle(column int64, title String.Readable) { //gd:Tre
 }
 func (self class) GetColumnTitle(column int64) String.Readable { //gd:Tree.get_column_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_column_title, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetColumnTitleTooltipText(column int64, tooltip_text String.Readable) { //gd:Tree.set_column_title_tooltip_text
@@ -1160,7 +1160,7 @@ func (self class) SetColumnTitleTooltipText(column int64, tooltip_text String.Re
 }
 func (self class) GetColumnTitleTooltipText(column int64) String.Readable { //gd:Tree.get_column_title_tooltip_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_column_title_tooltip_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetColumnTitleAlignment(column int64, title_alignment GUI.HorizontalAlignment) { //gd:Tree.set_column_title_alignment
@@ -1193,7 +1193,7 @@ func (self class) SetColumnTitleLanguage(column int64, language String.Readable)
 }
 func (self class) GetColumnTitleLanguage(column int64) String.Readable { //gd:Tree.get_column_title_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_column_title_language, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetScroll() Vector2.XY { //gd:Tree.get_scroll
@@ -1317,7 +1317,7 @@ func (self Instance) OnItemSelected(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) ItemSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_selected`))))
 }
 
 /*
@@ -1333,7 +1333,7 @@ func (self Instance) OnCellSelected(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) CellSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`cell_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`cell_selected`))))
 }
 
 /*
@@ -1352,7 +1352,7 @@ func (self Instance) OnMultiSelected(cb func(item TreeItem.Instance, column int,
 }
 
 func (self class) MultiSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`multi_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`multi_selected`))))
 }
 
 /*
@@ -1368,7 +1368,7 @@ func (self Instance) OnItemMouseSelected(cb func(mouse_position Vector2.XY, mous
 }
 
 func (self class) ItemMouseSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_mouse_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_mouse_selected`))))
 }
 
 /*
@@ -1384,7 +1384,7 @@ func (self Instance) OnEmptyClicked(cb func(click_position Vector2.XY, mouse_but
 }
 
 func (self class) EmptyClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`empty_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`empty_clicked`))))
 }
 
 /*
@@ -1400,7 +1400,7 @@ func (self Instance) OnItemEdited(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) ItemEdited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_edited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_edited`))))
 }
 
 /*
@@ -1416,7 +1416,7 @@ func (self Instance) OnCustomItemClicked(cb func(mouse_button_index int), flags 
 }
 
 func (self class) CustomItemClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`custom_item_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`custom_item_clicked`))))
 }
 
 /*
@@ -1434,7 +1434,7 @@ func (self Instance) OnItemIconDoubleClicked(cb func(), flags ...Signal.Flags) I
 }
 
 func (self class) ItemIconDoubleClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_icon_double_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_icon_double_clicked`))))
 }
 
 /*
@@ -1452,7 +1452,7 @@ func (self Instance) OnItemCollapsed(cb func(item TreeItem.Instance), flags ...S
 }
 
 func (self class) ItemCollapsed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_collapsed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_collapsed`))))
 }
 
 /*
@@ -1470,7 +1470,7 @@ func (self Instance) OnCheckPropagatedToItem(cb func(item TreeItem.Instance, col
 }
 
 func (self class) CheckPropagatedToItem() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`check_propagated_to_item`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`check_propagated_to_item`))))
 }
 
 /*
@@ -1488,7 +1488,7 @@ func (self Instance) OnButtonClicked(cb func(item TreeItem.Instance, column int,
 }
 
 func (self class) ButtonClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`button_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`button_clicked`))))
 }
 
 /*
@@ -1504,7 +1504,7 @@ func (self Instance) OnCustomPopupEdited(cb func(arrow_clicked bool), flags ...S
 }
 
 func (self class) CustomPopupEdited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`custom_popup_edited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`custom_popup_edited`))))
 }
 
 /*
@@ -1520,7 +1520,7 @@ func (self Instance) OnItemActivated(cb func(), flags ...Signal.Flags) Instance 
 }
 
 func (self class) ItemActivated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_activated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_activated`))))
 }
 
 /*
@@ -1536,7 +1536,7 @@ func (self Instance) OnColumnTitleClicked(cb func(column int, mouse_button_index
 }
 
 func (self class) ColumnTitleClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`column_title_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`column_title_clicked`))))
 }
 
 /*
@@ -1552,7 +1552,7 @@ func (self Instance) OnNothingSelected(cb func(), flags ...Signal.Flags) Instanc
 }
 
 func (self class) NothingSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`nothing_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`nothing_selected`))))
 }
 
 func (o class) AsTree() Advanced                          { return Advanced(o) }

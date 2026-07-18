@@ -39,7 +39,11 @@ func InternalVariant(extract VariantPkg.Any) Variant {
 	return pointers.Load[Variant](state)
 }
 
-type VariantProxy struct{}
+// VariantProxy is engine-backed proxy state for a variant, the anchor
+// carries the GC lifetime of goroutine-created variants — see anchors.go.
+type VariantProxy struct {
+	anchor *Variant
+}
 
 func (VariantProxy) Bool(raw complex128) bool {
 	return variantAsValueType[bool](pointers.Load[Variant](raw), gdextension.TypeBool)
@@ -257,7 +261,14 @@ func (VariantProxy) Type(raw complex128) VariantPkg.Type {
 	return VariantPkg.Type(pointers.Load[Variant](raw).Type())
 }
 func (VariantProxy) String(raw complex128) string {
-	return pointers.New[String](gdextension.Host.Variants.Text(pointers.Get(pointers.Load[Variant](raw)))).String()
+	// Untracked temporary conversion String, freed explicitly — a tracked
+	// temp here races the main-thread Cycle when called off-thread (same
+	// rationale as StringName.String).
+	tmp := pointers.Raw[String](gdextension.Host.Variants.Text(pointers.Get(pointers.Load[Variant](raw))))
+	out := tmp.String()
+	ptr := pointers.Get(tmp)
+	noescape.Free(gdextension.TypeString, &ptr)
+	return out
 }
 
 func (VariantProxy) KeepAlive(val complex128) bool {

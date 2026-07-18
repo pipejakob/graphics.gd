@@ -719,12 +719,12 @@ func (self class) HasPoint(id int64) bool { //gd:AStar2D.has_point
 }
 func (self class) GetPointConnections(id int64) Packed.Array[int64] { //gd:AStar2D.get_point_connections
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_point_connections, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
-	var ret = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) GetPointIds() Packed.Array[int64] { //gd:AStar2D.get_point_ids
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_point_ids, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) SetNeighborFilterEnabled(enabled bool) { //gd:AStar2D.set_neighbor_filter_enabled
@@ -804,7 +804,7 @@ func (self class) GetPointPath(from_id int64, to_id int64, allow_partial_path bo
 		to_id              int64
 		allow_partial_path bool
 	}{from_id, to_id, allow_partial_path})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) GetIdPath(from_id int64, to_id int64, allow_partial_path bool) Packed.Array[int64] { //gd:AStar2D.get_id_path
@@ -813,7 +813,7 @@ func (self class) GetIdPath(from_id int64, to_id int64, allow_partial_path bool)
 		to_id              int64
 		allow_partial_path bool
 	}{from_id, to_id, allow_partial_path})
-	var ret = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (o class) AsAStar2D() Advanced         { return Advanced(o) }

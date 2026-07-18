@@ -256,7 +256,7 @@ Override this method to define a custom parsing logic to extract the translatabl
 */
 func (Instance) _parse_file(impl func(ptr gdclass.Receiver, path string) [][]string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var path = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, path.String())
@@ -318,7 +318,7 @@ Called after parsing all files. You can modify the 'strings' array to add or rem
 */
 func (Instance) _customize_strings(impl func(ptr gdclass.Receiver, strings [][]string) [][]string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var strings = Array.Through(gd.ArrayProxy[Packed.Strings]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
+		var strings = Array.Through(gd.WrapArray[Packed.Strings](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(strings))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, gd.ArrayAs[[][]string](gd.InternalArray(strings)))
@@ -374,7 +374,7 @@ func New() Instance {
 }
 func (class) _parse_file(impl func(ptr gdclass.Receiver, path String.Readable) Array.Contains[Packed.Strings]) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var path = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, path)
@@ -400,7 +400,7 @@ func (class) _get_recognized_extensions(impl func(ptr gdclass.Receiver) Packed.S
 }
 func (class) _customize_strings(impl func(ptr gdclass.Receiver, strings Array.Contains[Packed.Strings]) Array.Contains[Packed.Strings]) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var strings = Array.Through(gd.ArrayProxy[Packed.Strings]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
+		var strings = Array.Through(gd.WrapArray[Packed.Strings](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(strings))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, strings)

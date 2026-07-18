@@ -370,7 +370,7 @@ func (self class) SetOffsets(offsets Packed.Array[float32]) { //gd:Gradient.set_
 }
 func (self class) GetOffsets() Packed.Array[float32] { //gd:Gradient.get_offsets
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_offsets, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) SetColors(colors Packed.Array[Color.RGBA]) { //gd:Gradient.set_colors
@@ -380,7 +380,7 @@ func (self class) SetColors(colors Packed.Array[Color.RGBA]) { //gd:Gradient.set
 }
 func (self class) GetColors() Packed.Array[Color.RGBA] { //gd:Gradient.get_colors
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_colors, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Color.RGBA](Array.Through(gd.PackedProxy[gd.PackedColorArray, Color.RGBA]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) SetInterpolationMode(interpolation_mode InterpolationMode) { //gd:Gradient.set_interpolation_mode

@@ -14,6 +14,25 @@ import (
 // for these methods instead of noescape.Call.
 var TrivialMethods map[string]map[string]bool
 
+// ThreadSafeSingletons are the engine singletons whose methods the engine
+// guards internally (command queues or locks), per
+// https://docs.godotengine.org/en/stable/tutorials/performance/thread_safe_apis.html
+// Their generated bindings call the engine directly from any thread instead
+// of routing through the cross-thread dispatch ring. The map value names an
+// atomic.Bool in package gd that gates the direct dispatch at runtime, for
+// singletons that are only thread-safe under certain project settings; empty
+// means unconditionally thread-safe.
+var ThreadSafeSingletons = map[string]string{
+	"RenderingServer":    "", // Godot 4: off-render-thread calls go through its locked command queue
+	"NavigationServer2D": "", // documented as "thread-safe and thread-friendly"
+	"NavigationServer3D": "",
+	"ResourceLoader":     "", // loading resources from threads is supported
+	"ResourceSaver":      "",
+	"WorkerThreadPool":   "", // built for use from threads
+	"PhysicsServer2D":    "PhysicsServer2DThreadSafe", // only when run_on_separate_thread is enabled
+	"PhysicsServer3D":    "PhysicsServer3DThreadSafe",
+}
+
 // allocatingResults are engine return types whose value is *constructed* into
 // the ptrcall return buffer and may heap-allocate (CoW containers, Strings,
 // Variant). jumponly runs the C++ method on the goroutine stack without the cgo
@@ -254,10 +273,21 @@ func Generate(w io.Writer, classDB map[string]gdjson.Class, pkg string, class gd
 		callResult = "struct{}"
 	}
 	callPkg := "noescape"
-	if TrivialMethods != nil && TrivialMethods[class.Name][method.Name] && !allocatingResults[callResult] {
+	callName := "Call" + static
+	callFlag := ""
+	if flag, threadSafe := ThreadSafeSingletons[class.Name]; threadSafe && !method.IsStatic {
+		// thread-safe singleton: cross into the engine directly from any
+		// thread instead of routing through the cross-thread dispatch ring.
+		if flag == "" {
+			callName = "CallThreadSafe"
+		} else {
+			callName = "CallThreadSafeIf"
+			callFlag = " &" + prefix + flag + ","
+		}
+	} else if TrivialMethods != nil && TrivialMethods[class.Name][method.Name] && !allocatingResults[callResult] {
 		callPkg = "jumponly"
 	}
-	fmt.Fprintf(w, "%s.Call%s[%s](%s methods.%v, %v, &struct{", callPkg, static, callResult, self, method.Name, shapeOf(class, method))
+	fmt.Fprintf(w, "%s.%s[%s](%s%s methods.%v, %v, &struct{", callPkg, callName, callResult, callFlag, self, method.Name, shapeOf(class, method))
 	for i, arg := range method.Arguments {
 		if i > 0 {
 			fmt.Fprint(w, "; ")

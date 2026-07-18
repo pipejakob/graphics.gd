@@ -443,12 +443,12 @@ func (self class) HasNode(name String.Name) bool { //gd:AnimationNodeStateMachin
 }
 func (self class) GetNodeName(node [1]gdclass.AnimationNode) String.Name { //gd:AnimationNodeStateMachine.get_node_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_node_name, gdextension.SizeStringName|(gdextension.SizeObject<<4), &struct{ node gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetAnimationNode(node[0])[0]))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetNodeList() Array.Contains[String.Name] { //gd:AnimationNodeStateMachine.get_node_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_node_list, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetNodePosition(name String.Name, position Vector2.XY) { //gd:AnimationNodeStateMachine.set_node_position
@@ -484,12 +484,12 @@ func (self class) GetTransition(idx int64) [1]gdclass.AnimationNodeStateMachineT
 }
 func (self class) GetTransitionFrom(idx int64) String.Name { //gd:AnimationNodeStateMachine.get_transition_from
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_transition_from, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetTransitionTo(idx int64) String.Name { //gd:AnimationNodeStateMachine.get_transition_to
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_transition_to, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetTransitionCount() int64 { //gd:AnimationNodeStateMachine.get_transition_count

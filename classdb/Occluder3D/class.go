@@ -181,12 +181,12 @@ func New() Instance {
 
 func (self class) GetVertices() Packed.Array[Vector3.XYZ] { //gd:Occluder3D.get_vertices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertices, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) GetIndices() Packed.Array[int32] { //gd:Occluder3D.get_indices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_indices, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (o class) AsOccluder3D() Advanced                { return Advanced(o) }

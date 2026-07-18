@@ -284,7 +284,7 @@ func (self class) SetName(name String.Name) { //gd:XRPose.set_name
 }
 func (self class) GetName() String.Name { //gd:XRPose.get_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_name, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetTransform(transform Transform3D.BasisOrigin) { //gd:XRPose.set_transform

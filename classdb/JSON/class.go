@@ -406,12 +406,12 @@ func (self class) Stringify(data variant.Any, indent String.Readable, sort_keys 
 		sort_keys      bool
 		full_precision bool
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(data))), pointers.Get(gd.InternalString(indent)), sort_keys, full_precision})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ParseString(json_string String.Readable) variant.Any { //gd:JSON.parse_string
 	var r_ret = noescape.CallStatic[gdextension.Variant](methods.parse_string, gdextension.SizeVariant|(gdextension.SizeString<<4), &struct{ json_string gdextension.String }{pointers.Get(gd.InternalString(json_string))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Parse(json_text String.Readable, keep_text bool) Error.Code { //gd:JSON.parse
@@ -424,7 +424,7 @@ func (self class) Parse(json_text String.Readable, keep_text bool) Error.Code { 
 }
 func (self class) GetData() variant.Any { //gd:JSON.get_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_data, gdextension.SizeVariant, &struct{}{})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetData(data variant.Any) { //gd:JSON.set_data
@@ -432,7 +432,7 @@ func (self class) SetData(data variant.Any) { //gd:JSON.set_data
 }
 func (self class) GetParsedText() String.Readable { //gd:JSON.get_parsed_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_parsed_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetErrorLine() int64 { //gd:JSON.get_error_line
@@ -442,7 +442,7 @@ func (self class) GetErrorLine() int64 { //gd:JSON.get_error_line
 }
 func (self class) GetErrorMessage() String.Readable { //gd:JSON.get_error_message
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_error_message, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) FromNative(v variant.Any, full_objects bool) variant.Any { //gd:JSON.from_native
@@ -450,7 +450,7 @@ func (self class) FromNative(v variant.Any, full_objects bool) variant.Any { //g
 		v            gdextension.Variant
 		full_objects bool
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(v))), full_objects})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) ToNative(json variant.Any, allow_objects bool) variant.Any { //gd:JSON.to_native
@@ -458,7 +458,7 @@ func (self class) ToNative(json variant.Any, allow_objects bool) variant.Any { /
 		json          gdextension.Variant
 		allow_objects bool
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(json))), allow_objects})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (o class) AsJSON() Advanced                      { return Advanced(o) }

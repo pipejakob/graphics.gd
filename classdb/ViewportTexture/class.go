@@ -222,7 +222,7 @@ func (self class) SetViewportPathInScene(path Path.ToNode) { //gd:ViewportTextur
 }
 func (self class) GetViewportPathInScene() Path.ToNode { //gd:ViewportTexture.get_viewport_path_in_scene
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_viewport_path_in_scene, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (o class) AsViewportTexture() Advanced             { return Advanced(o) }

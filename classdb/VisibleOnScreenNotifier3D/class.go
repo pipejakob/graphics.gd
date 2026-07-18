@@ -219,7 +219,7 @@ func (self Instance) OnScreenEntered(cb func(), flags ...Signal.Flags) Instance 
 }
 
 func (self class) ScreenEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`screen_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`screen_entered`))))
 }
 
 /*
@@ -237,7 +237,7 @@ func (self Instance) OnScreenExited(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) ScreenExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`screen_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`screen_exited`))))
 }
 
 func (o class) AsVisibleOnScreenNotifier3D() Advanced         { return Advanced(o) }

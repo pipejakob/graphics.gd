@@ -246,7 +246,7 @@ func (self class) SetColorAttachments(p_member Packed.Array[int32]) { //gd:RDFra
 }
 func (self class) GetColorAttachments() Packed.Array[int32] { //gd:RDFramebufferPass.get_color_attachments
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_color_attachments, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetInputAttachments(p_member Packed.Array[int32]) { //gd:RDFramebufferPass.set_input_attachments
@@ -256,7 +256,7 @@ func (self class) SetInputAttachments(p_member Packed.Array[int32]) { //gd:RDFra
 }
 func (self class) GetInputAttachments() Packed.Array[int32] { //gd:RDFramebufferPass.get_input_attachments
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_input_attachments, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetResolveAttachments(p_member Packed.Array[int32]) { //gd:RDFramebufferPass.set_resolve_attachments
@@ -266,7 +266,7 @@ func (self class) SetResolveAttachments(p_member Packed.Array[int32]) { //gd:RDF
 }
 func (self class) GetResolveAttachments() Packed.Array[int32] { //gd:RDFramebufferPass.get_resolve_attachments
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_resolve_attachments, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetPreserveAttachments(p_member Packed.Array[int32]) { //gd:RDFramebufferPass.set_preserve_attachments
@@ -276,7 +276,7 @@ func (self class) SetPreserveAttachments(p_member Packed.Array[int32]) { //gd:RD
 }
 func (self class) GetPreserveAttachments() Packed.Array[int32] { //gd:RDFramebufferPass.get_preserve_attachments
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_preserve_attachments, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetDepthAttachment(p_member int64) { //gd:RDFramebufferPass.set_depth_attachment

@@ -205,7 +205,7 @@ func (self class) SetHandTracker(tracker_name String.Name) { //gd:XRHandModifier
 }
 func (self class) GetHandTracker() String.Name { //gd:XRHandModifier3D.get_hand_tracker
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_hand_tracker, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetBoneUpdate(bone_update BoneUpdate) { //gd:XRHandModifier3D.set_bone_update

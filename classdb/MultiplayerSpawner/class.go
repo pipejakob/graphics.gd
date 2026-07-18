@@ -299,7 +299,7 @@ func (self class) GetSpawnableSceneCount() int64 { //gd:MultiplayerSpawner.get_s
 }
 func (self class) GetSpawnableScene(index int64) String.Readable { //gd:MultiplayerSpawner.get_spawnable_scene
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_spawnable_scene, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ClearSpawnableScenes() { //gd:MultiplayerSpawner.clear_spawnable_scenes
@@ -312,7 +312,7 @@ func (self class) Spawn(data variant.Any) [1]gdclass.Node { //gd:MultiplayerSpaw
 }
 func (self class) GetSpawnPath() Path.ToNode { //gd:MultiplayerSpawner.get_spawn_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_spawn_path, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetSpawnPath(path Path.ToNode) { //gd:MultiplayerSpawner.set_spawn_path
@@ -328,7 +328,7 @@ func (self class) SetSpawnLimit(limit int64) { //gd:MultiplayerSpawner.set_spawn
 }
 func (self class) GetSpawnFunction() Callable.Function { //gd:MultiplayerSpawner.get_spawn_function
 	var r_ret = jumponly.Call[gdextension.Callable](gd.ObjectChecked(self.AsObject()), methods.get_spawn_function, gdextension.SizeCallable, &struct{}{})
-	var ret = Callable.Through(gd.CallableProxy{}, pointers.Pack(pointers.New[gd.Callable](r_ret)))
+	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
 func (self class) SetSpawnFunction(spawn_function Callable.Function) { //gd:MultiplayerSpawner.set_spawn_function
@@ -348,7 +348,7 @@ func (self Instance) OnDespawned(cb func(node Node.Instance), flags ...Signal.Fl
 }
 
 func (self class) Despawned() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`despawned`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`despawned`))))
 }
 
 /*
@@ -364,7 +364,7 @@ func (self Instance) OnSpawned(cb func(node Node.Instance), flags ...Signal.Flag
 }
 
 func (self class) Spawned() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`spawned`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`spawned`))))
 }
 
 func (o class) AsMultiplayerSpawner() Advanced         { return Advanced(o) }

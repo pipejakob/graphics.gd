@@ -526,17 +526,17 @@ func (self class) PutData(data Packed.Bytes) Error.Code { //gd:StreamPeer.put_da
 }
 func (self class) PutPartialData(data Packed.Bytes) Array.Any { //gd:StreamPeer.put_partial_data
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.put_partial_data, gdextension.SizeArray|(gdextension.SizePackedArray<<4), &struct{ data gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetData(bytes int64) Array.Any { //gd:StreamPeer.get_data
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_data, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ bytes int64 }{bytes})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetPartialData(bytes int64) Array.Any { //gd:StreamPeer.get_partial_data
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_partial_data, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ bytes int64 }{bytes})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetAvailableBytes() int64 { //gd:StreamPeer.get_available_bytes
@@ -654,17 +654,17 @@ func (self class) GetDouble() float64 { //gd:StreamPeer.get_double
 }
 func (self class) GetString(bytes int64) String.Readable { //gd:StreamPeer.get_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_string, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ bytes int64 }{bytes})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetUtf8String(bytes int64) String.Readable { //gd:StreamPeer.get_utf8_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_utf8_string, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ bytes int64 }{bytes})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetVar(allow_objects bool) variant.Any { //gd:StreamPeer.get_var
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_var, gdextension.SizeVariant|(gdextension.SizeBool<<4), &struct{ allow_objects bool }{allow_objects})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (o class) AsStreamPeer() Advanced         { return Advanced(o) }

@@ -776,43 +776,43 @@ func (self class) GetMainLoop() [1]gdclass.MainLoop { //gd:Engine.get_main_loop
 func (self class) GetVersionInfo() Dictionary.Any { //gd:Engine.get_version_info
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.get_version_info, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetAuthorInfo() Dictionary.Any { //gd:Engine.get_author_info
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.get_author_info, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetCopyrightInfo() Array.Contains[Dictionary.Any] { //gd:Engine.get_copyright_info
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.get_copyright_info, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetDonorInfo() Dictionary.Any { //gd:Engine.get_donor_info
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.get_donor_info, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetLicenseInfo() Dictionary.Any { //gd:Engine.get_license_info
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.get_license_info, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetLicenseText() String.Readable { //gd:Engine.get_license_text
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_license_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetArchitectureName() String.Readable { //gd:Engine.get_architecture_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_architecture_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsInPhysicsFrame() bool { //gd:Engine.is_in_physics_frame
@@ -847,7 +847,7 @@ func (self class) UnregisterSingleton(name String.Name) { //gd:Engine.unregister
 func (self class) GetSingletonList() Packed.Strings { //gd:Engine.get_singleton_list
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_singleton_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) RegisterScriptLanguage(language [1]gdclass.ScriptLanguage) Error.Code { //gd:Engine.register_script_language
@@ -877,7 +877,7 @@ func (self class) GetScriptLanguage(index int64) [1]gdclass.ScriptLanguage { //g
 func (self class) CaptureScriptBacktraces(include_variables bool) Array.Contains[[1]gdclass.ScriptBacktrace] { //gd:Engine.capture_script_backtraces
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.capture_script_backtraces, gdextension.SizeArray|(gdextension.SizeBool<<4), &struct{ include_variables bool }{include_variables})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.ScriptBacktrace]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.ScriptBacktrace](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) IsEditorHint() bool { //gd:Engine.is_editor_hint
@@ -895,7 +895,7 @@ func (self class) IsEmbeddedInEditor() bool { //gd:Engine.is_embedded_in_editor
 func (self class) GetWriteMoviePath() String.Readable { //gd:Engine.get_write_movie_path
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_write_movie_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetPrintToStdout(enabled bool) { //gd:Engine.set_print_to_stdout

@@ -1743,7 +1743,7 @@ func (self Instance) SetStructuredTextBidiOverrideOptions(value []any) Instance 
 
 func (self class) GetParsedText() String.Readable { //gd:RichTextLabel.get_parsed_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_parsed_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) AddText(text String.Readable) { //gd:RichTextLabel.add_text
@@ -1979,7 +1979,7 @@ func (self class) SetStructuredTextBidiOverrideOptions(args Array.Any) { //gd:Ri
 }
 func (self class) GetStructuredTextBidiOverrideOptions() Array.Any { //gd:RichTextLabel.get_structured_text_bidi_override_options
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_structured_text_bidi_override_options, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetTextDirection(direction Control.TextDirection) { //gd:RichTextLabel.set_text_direction
@@ -1995,7 +1995,7 @@ func (self class) SetLanguage(language String.Readable) { //gd:RichTextLabel.set
 }
 func (self class) GetLanguage() String.Readable { //gd:RichTextLabel.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetHorizontalAlignment(alignment GUI.HorizontalAlignment) { //gd:RichTextLabel.set_horizontal_alignment
@@ -2029,7 +2029,7 @@ func (self class) SetTabStops(tab_stops Packed.Array[float32]) { //gd:RichTextLa
 }
 func (self class) GetTabStops() Packed.Array[float32] { //gd:RichTextLabel.get_tab_stops
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_tab_stops, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) SetAutowrapMode(autowrap_mode TextServer.AutowrapMode) { //gd:RichTextLabel.set_autowrap_mode
@@ -2178,7 +2178,7 @@ func (self class) SelectAll() { //gd:RichTextLabel.select_all
 }
 func (self class) GetSelectedText() String.Readable { //gd:RichTextLabel.get_selected_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_selected_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) Deselect() { //gd:RichTextLabel.deselect
@@ -2192,7 +2192,7 @@ func (self class) AppendText(bbcode String.Readable) { //gd:RichTextLabel.append
 }
 func (self class) GetText() String.Readable { //gd:RichTextLabel.get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsReady() bool { //gd:RichTextLabel.is_ready
@@ -2334,7 +2334,7 @@ func (self class) ParseExpressionsForValues(expressions Packed.Strings) Dictiona
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.parse_expressions_for_values, gdextension.SizeDictionary|(gdextension.SizePackedArray<<4), &struct {
 		expressions gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(expressions))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetEffects(effects Array.Any) { //gd:RichTextLabel.set_effects
@@ -2342,7 +2342,7 @@ func (self class) SetEffects(effects Array.Any) { //gd:RichTextLabel.set_effects
 }
 func (self class) GetEffects() Array.Any { //gd:RichTextLabel.get_effects
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_effects, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) InstallEffect(effect variant.Any) { //gd:RichTextLabel.install_effect
@@ -2384,7 +2384,7 @@ func (self Instance) OnMetaClicked(cb func(meta any), flags ...Signal.Flags) Ins
 }
 
 func (self class) MetaClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`meta_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`meta_clicked`))))
 }
 
 /*
@@ -2400,7 +2400,7 @@ func (self Instance) OnMetaHoverStarted(cb func(meta any), flags ...Signal.Flags
 }
 
 func (self class) MetaHoverStarted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`meta_hover_started`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`meta_hover_started`))))
 }
 
 /*
@@ -2416,7 +2416,7 @@ func (self Instance) OnMetaHoverEnded(cb func(meta any), flags ...Signal.Flags) 
 }
 
 func (self class) MetaHoverEnded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`meta_hover_ended`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`meta_hover_ended`))))
 }
 
 /*
@@ -2434,7 +2434,7 @@ func (self Instance) OnFinished(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Finished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
 }
 
 func (o class) AsRichTextLabel() Advanced                 { return Advanced(o) }

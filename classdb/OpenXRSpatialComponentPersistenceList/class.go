@@ -175,7 +175,7 @@ func New() Instance {
 
 func (self class) GetPersistentUuid(index int64) String.Readable { //gd:OpenXRSpatialComponentPersistenceList.get_persistent_uuid
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_persistent_uuid, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetPersistentState(index int64) int64 { //gd:OpenXRSpatialComponentPersistenceList.get_persistent_state

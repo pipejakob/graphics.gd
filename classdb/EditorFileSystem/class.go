@@ -292,7 +292,7 @@ func (self class) GetFilesystemPath(path String.Readable) [1]gdclass.EditorFileS
 }
 func (self class) GetFileType(path String.Readable) String.Readable { //gd:EditorFileSystem.get_file_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_file_type, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ReimportFiles(files Packed.Strings) { //gd:EditorFileSystem.reimport_files
@@ -314,7 +314,7 @@ func (self Instance) OnFilesystemChanged(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) FilesystemChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`filesystem_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`filesystem_changed`))))
 }
 
 /*
@@ -330,7 +330,7 @@ func (self Instance) OnScriptClassesUpdated(cb func(), flags ...Signal.Flags) In
 }
 
 func (self class) ScriptClassesUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`script_classes_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`script_classes_updated`))))
 }
 
 /*
@@ -346,7 +346,7 @@ func (self Instance) OnSourcesChanged(cb func(exist bool), flags ...Signal.Flags
 }
 
 func (self class) SourcesChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`sources_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`sources_changed`))))
 }
 
 /*
@@ -362,7 +362,7 @@ func (self Instance) OnResourcesReimporting(cb func(resources []string), flags .
 }
 
 func (self class) ResourcesReimporting() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resources_reimporting`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resources_reimporting`))))
 }
 
 /*
@@ -378,7 +378,7 @@ func (self Instance) OnResourcesReimported(cb func(resources []string), flags ..
 }
 
 func (self class) ResourcesReimported() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resources_reimported`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resources_reimported`))))
 }
 
 /*
@@ -394,7 +394,7 @@ func (self Instance) OnResourcesReload(cb func(resources []string), flags ...Sig
 }
 
 func (self class) ResourcesReload() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resources_reload`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resources_reload`))))
 }
 
 func (o class) AsEditorFileSystem() Advanced         { return Advanced(o) }

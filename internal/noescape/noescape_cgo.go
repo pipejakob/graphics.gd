@@ -22,6 +22,7 @@ package noescape
 import "C"
 import (
 	"reflect"
+	"sync/atomic"
 	"unsafe"
 
 	"graphics.gd/internal/callerpc"
@@ -41,11 +42,34 @@ func Call[T any](object gdextension.Object, method gdextension.MethodForClass, s
 			ring.Main.Buffer(uintptr(object), uintptr(method), uint64(shape), argptr, callerpc.Callerpc())
 			return result
 		}
+		if !threadcheck.Engine() {
+			// user goroutine: the engine is not thread-safe, so record the
+			// call in the cross-thread ring for the main thread to execute.
+			ring.Threads.Buffer(uintptr(object), uintptr(method), uint64(shape), argptr, callerpc.Callerpc())
+			return result
+		}
 		call_noescape(object, method, unsafe.Pointer(&result), shape, argptr)
 		return result
 	}
-	if threadcheck.Main() && ring.Main.Pending() {
-		ring.Main.Flush()
+	if threadcheck.Main() {
+		if ring.Main.Pending() {
+			ring.Main.Flush()
+		}
+	} else if !threadcheck.Engine() {
+		// user goroutine: queue the call and block until the main thread has
+		// executed it and delivered the return value.
+		ring.Threads.Call(uintptr(object), uintptr(method), uint64(shape), argptr, callerpc.Callerpc(), unsafe.Pointer(&result), unsafe.Sizeof(result))
+		return result
+	}
+	return direct[T](object, method, shape, argptr)
+}
+
+// direct performs the engine crossing on the calling thread.
+func direct[T any](object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, argptr unsafe.Pointer) T {
+	var result T
+	if unsafe.Sizeof(result) == 0 {
+		call_noescape(object, method, unsafe.Pointer(&result), shape, argptr)
+		return result
 	}
 	switch {
 	case unsafe.Sizeof(result) <= 8:
@@ -64,6 +88,36 @@ func Call[T any](object gdextension.Object, method gdextension.MethodForClass, s
 		panic("return size too large")
 	}
 	return result
+}
+
+// CallThreadSafe is like Call, for methods of the engine singletons that the
+// engine guards internally against concurrent access (see
+// gdfunc.ThreadSafeSingletons): goroutines cross into the engine directly
+// instead of queueing for the main thread. On the main thread it behaves
+// exactly like Call, preserving command-buffer ordering.
+func CallThreadSafe[T any](object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, args any) T {
+	if threadcheck.Main() {
+		return Call[T](object, method, shape, args)
+	}
+	var argptr unsafe.Pointer
+	if args != nil {
+		argptr = reflect.ValueOf(args).UnsafePointer()
+	}
+	return direct[T](object, method, shape, argptr)
+}
+
+// CallThreadSafeIf is CallThreadSafe gated on a runtime condition, for
+// singletons that are only thread-safe under certain project settings (the
+// physics servers); when the condition is false it behaves like Call.
+func CallThreadSafeIf[T any](safe *atomic.Bool, object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, args any) T {
+	if safe.Load() && !threadcheck.Main() {
+		var argptr unsafe.Pointer
+		if args != nil {
+			argptr = reflect.ValueOf(args).UnsafePointer()
+		}
+		return direct[T](object, method, shape, argptr)
+	}
+	return Call[T](object, method, shape, args)
 }
 
 //go:noescape
@@ -114,7 +168,15 @@ func call_64(object gdextension.Object, method gdextension.MethodForClass, shape
 func (method MethodForClass) Call(self gdextension.Object, args ...gdextension.Variant) (gdextension.Variant, error) {
 	var result gdextension.Variant
 	var err gdextension.CallError
-	object_method_call_noescape(self, gdextension.MethodForClass(method), &result, args, &err)
+	if threadcheck.Main() || threadcheck.Engine() {
+		object_method_call_noescape(self, gdextension.MethodForClass(method), &result, args, &err)
+	} else {
+		// user goroutine: variadic variant calls cannot be encoded as a ring
+		// entry, so run the whole call on the main thread in queue order.
+		ring.Threads.Run(func() {
+			object_method_call_noescape(self, gdextension.MethodForClass(method), &result, args, &err)
+		})
+	}
 	return result, err.Err()
 }
 

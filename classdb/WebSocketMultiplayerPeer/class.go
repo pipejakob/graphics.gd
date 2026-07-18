@@ -365,7 +365,7 @@ func (self class) GetPeer(peer_id int64) [1]gdclass.WebSocketPeer { //gd:WebSock
 }
 func (self class) GetPeerAddress(id int64) String.Readable { //gd:WebSocketMultiplayerPeer.get_peer_address
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_peer_address, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetPeerPort(id int64) int64 { //gd:WebSocketMultiplayerPeer.get_peer_port
@@ -375,7 +375,7 @@ func (self class) GetPeerPort(id int64) int64 { //gd:WebSocketMultiplayerPeer.ge
 }
 func (self class) GetSupportedProtocols() Packed.Strings { //gd:WebSocketMultiplayerPeer.get_supported_protocols
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_supported_protocols, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetSupportedProtocols(protocols Packed.Strings) { //gd:WebSocketMultiplayerPeer.set_supported_protocols
@@ -385,7 +385,7 @@ func (self class) SetSupportedProtocols(protocols Packed.Strings) { //gd:WebSock
 }
 func (self class) GetHandshakeHeaders() Packed.Strings { //gd:WebSocketMultiplayerPeer.get_handshake_headers
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_handshake_headers, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetHandshakeHeaders(protocols Packed.Strings) { //gd:WebSocketMultiplayerPeer.set_handshake_headers

@@ -745,7 +745,7 @@ func (self class) GenerateLod(nd_threshold float64, target_index_count int64) Pa
 		nd_threshold       float64
 		target_index_count int64
 	}{nd_threshold, target_index_count})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetMaterial(material [1]gdclass.Material) { //gd:SurfaceTool.set_material
@@ -795,7 +795,7 @@ func (self class) Commit(existing [1]gdclass.ArrayMesh, flags int64) [1]gdclass.
 }
 func (self class) CommitToArrays() Array.Any { //gd:SurfaceTool.commit_to_arrays
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.commit_to_arrays, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsSurfaceTool() Advanced         { return Advanced(o) }

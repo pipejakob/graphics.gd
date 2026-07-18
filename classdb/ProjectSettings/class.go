@@ -437,19 +437,19 @@ func (self class) GetSetting(name String.Readable, default_value variant.Any) va
 		name          gdextension.String
 		default_value gdextension.Variant
 	}{pointers.Get(gd.InternalString(name)), gdextension.Variant(pointers.Get(gd.InternalVariant(default_value)))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetSettingWithOverride(name String.Name) variant.Any { //gd:ProjectSettings.get_setting_with_override
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Variant](gdreference.GetObject(self.AsObject()[0]), methods.get_setting_with_override, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetGlobalClassList() Array.Contains[Dictionary.Any] { //gd:ProjectSettings.get_global_class_list
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.get_global_class_list, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetSettingWithOverrideAndCustomFeatures(name String.Name, features Packed.Strings) variant.Any { //gd:ProjectSettings.get_setting_with_override_and_custom_features
@@ -458,7 +458,7 @@ func (self class) GetSettingWithOverrideAndCustomFeatures(name String.Name, feat
 		name     gdextension.StringName
 		features gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalPackedStrings(features))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetOrder(name String.Readable, position int64) { //gd:ProjectSettings.set_order
@@ -513,13 +513,13 @@ func (self class) Clear(name String.Readable) { //gd:ProjectSettings.clear
 func (self class) LocalizePath(path String.Readable) String.Readable { //gd:ProjectSettings.localize_path
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.localize_path, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GlobalizePath(path String.Readable) String.Readable { //gd:ProjectSettings.globalize_path
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.globalize_path, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) Save() Error.Code { //gd:ProjectSettings.save
@@ -547,7 +547,7 @@ func (self class) SaveCustom(file String.Readable) Error.Code { //gd:ProjectSett
 func (self class) GetChangedSettings() Packed.Strings { //gd:ProjectSettings.get_changed_settings
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_changed_settings, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) CheckChangedSettingsInGroup(setting_prefix String.Readable) bool { //gd:ProjectSettings.check_changed_settings_in_group
@@ -571,7 +571,7 @@ func OnSettingsChanged(cb func(), flags ...Signal.Flags) {
 
 func (self class) SettingsChanged() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`settings_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`settings_changed`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

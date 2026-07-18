@@ -752,7 +752,7 @@ func (self class) RemoveShapeOwner(owner_id int64) { //gd:CollisionObject2D.remo
 }
 func (self class) GetShapeOwners() Packed.Array[int32] { //gd:CollisionObject2D.get_shape_owners
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_shape_owners, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ShapeOwnerSetTransform(owner_id int64, transform Transform2D.OriginXY) { //gd:CollisionObject2D.shape_owner_set_transform
@@ -874,7 +874,7 @@ func (self Instance) OnInputEvent(cb func(viewport Node.Instance, event InputEve
 }
 
 func (self class) InputEvent() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`input_event`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`input_event`))))
 }
 
 /*
@@ -896,7 +896,7 @@ func (self Instance) OnMouseEntered(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) MouseEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_entered`))))
 }
 
 /*
@@ -918,7 +918,7 @@ func (self Instance) OnMouseExited(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) MouseExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_exited`))))
 }
 
 /*
@@ -938,7 +938,7 @@ func (self Instance) OnMouseShapeEntered(cb func(shape_idx int), flags ...Signal
 }
 
 func (self class) MouseShapeEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_shape_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_shape_entered`))))
 }
 
 /*
@@ -958,7 +958,7 @@ func (self Instance) OnMouseShapeExited(cb func(shape_idx int), flags ...Signal.
 }
 
 func (self class) MouseShapeExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_shape_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_shape_exited`))))
 }
 
 func (o class) AsCollisionObject2D() Advanced             { return Advanced(o) }

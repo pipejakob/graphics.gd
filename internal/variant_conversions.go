@@ -482,7 +482,7 @@ func (variant Variant) Interface() any {
 		return variantAsValueType[Float](variant, vtype)
 	case gdextension.TypeString:
 		s := variantAsPointerType[String](variant, vtype)
-		return StringType.Via(StringProxy{}, pointers.Pack(s))
+		return StringType.Via(WrapString(s))
 	case gdextension.TypeVector2:
 		return variantAsValueType[Vector2](variant, vtype)
 	case gdextension.TypeVector2i:
@@ -517,10 +517,10 @@ func (variant Variant) Interface() any {
 		return variantAsValueType[Color](variant, vtype)
 	case gdextension.TypeStringName:
 		s := variantAsPointerType[StringName](variant, vtype)
-		return StringType.Name(StringType.Via(StringNameProxy{}, pointers.Pack(s)))
+		return StringType.Name(StringType.Via(WrapStringName(s)))
 	case gdextension.TypeNodePath:
 		s := variantAsPointerType[NodePath](variant, vtype)
-		return Path.ToNode(StringType.Via(NodePathProxy{}, pointers.Pack(s)))
+		return Path.ToNode(StringType.Via(WrapNodePath(s)))
 	case gdextension.TypeRID:
 		return variantAsValueType[RID](variant, vtype)
 	case gdextension.TypeObject:
@@ -531,46 +531,46 @@ func (variant Variant) Interface() any {
 		return ObjectAs(ObjectGetClass(obj).String(), obj)
 	case gdextension.TypeCallable:
 		callable := variantAsPointerType[Callable](variant, vtype)
-		return CallableType.Through(CallableProxy{}, pointers.Pack(callable))
+		return CallableType.Through(WrapCallable(callable))
 	case gdextension.TypeSignal:
 		signal := variantAsPointerType[Signal](variant, vtype)
-		return SignalType.Via(SignalProxy{}, pointers.Pack(signal))
+		return SignalType.Via(WrapSignal(signal))
 	case gdextension.TypeDictionary:
 		dict := variantAsPointerType[Dictionary](variant, vtype)
-		return DictionaryType.Through(DictionaryProxy[VariantPkg.Any, VariantPkg.Any]{}, pointers.Pack(dict))
+		return DictionaryType.Through(WrapDictionary[VariantPkg.Any, VariantPkg.Any](dict))
 	case gdextension.TypeArray:
 		array := variantAsPointerType[Array](variant, vtype)
-		return ArrayType.Through(ArrayProxy[VariantPkg.Any]{}, pointers.Pack(array))
+		return ArrayType.Through(WrapArray[VariantPkg.Any](array))
 	case gdextension.TypePackedByteArray:
 		array := variantAsPointerType[PackedByteArray](variant, vtype)
-		return PackedType.Bytes{Array: PackedType.Array[byte](ArrayType.Through(PackedProxy[PackedByteArray, byte]{}, pointers.Pack(array)))}
+		return PackedType.Bytes{Array: PackedType.Array[byte](ArrayType.Through(WrapPacked[PackedByteArray, byte](array)))}
 	case gdextension.TypePackedInt32Array:
 		array := variantAsPointerType[PackedInt32Array](variant, vtype)
-		return PackedType.Array[int32](ArrayType.Through(PackedProxy[PackedInt32Array, int32]{}, pointers.Pack(array)))
+		return PackedType.Array[int32](ArrayType.Through(WrapPacked[PackedInt32Array, int32](array)))
 	case gdextension.TypePackedInt64Array:
 		array := variantAsPointerType[PackedInt64Array](variant, vtype)
-		return PackedType.Array[int64](ArrayType.Through(PackedProxy[PackedInt64Array, int64]{}, pointers.Pack(array)))
+		return PackedType.Array[int64](ArrayType.Through(WrapPacked[PackedInt64Array, int64](array)))
 	case gdextension.TypePackedFloat32Array:
 		array := variantAsPointerType[PackedFloat32Array](variant, vtype)
-		return PackedType.Array[float32](ArrayType.Through(PackedProxy[PackedFloat32Array, float32]{}, pointers.Pack(array)))
+		return PackedType.Array[float32](ArrayType.Through(WrapPacked[PackedFloat32Array, float32](array)))
 	case gdextension.TypePackedFloat64Array:
 		array := variantAsPointerType[PackedFloat64Array](variant, vtype)
-		return PackedType.Array[float64](ArrayType.Through(PackedProxy[PackedFloat64Array, float64]{}, pointers.Pack(array)))
+		return PackedType.Array[float64](ArrayType.Through(WrapPacked[PackedFloat64Array, float64](array)))
 	case gdextension.TypePackedStringArray:
 		array := variantAsPointerType[PackedStringArray](variant, vtype)
-		return PackedType.Strings(ArrayType.Through(PackedStringArrayProxy{}, pointers.Pack(array)))
+		return PackedType.Strings(ArrayType.Through(WrapPackedStrings(array)))
 	case gdextension.TypePackedVector2Array:
 		array := variantAsPointerType[PackedVector2Array](variant, vtype)
-		return PackedType.Array[Vector2](ArrayType.Through(PackedProxy[PackedVector2Array, Vector2]{}, pointers.Pack(array)))
+		return PackedType.Array[Vector2](ArrayType.Through(WrapPacked[PackedVector2Array, Vector2](array)))
 	case gdextension.TypePackedVector3Array:
 		array := variantAsPointerType[PackedVector3Array](variant, vtype)
-		return PackedType.Array[Vector3](ArrayType.Through(PackedProxy[PackedVector3Array, Vector3]{}, pointers.Pack(array)))
+		return PackedType.Array[Vector3](ArrayType.Through(WrapPacked[PackedVector3Array, Vector3](array)))
 	case gdextension.TypePackedVector4Array:
 		array := variantAsPointerType[PackedVector4Array](variant, vtype)
-		return PackedType.Array[Vector4](ArrayType.Through(PackedProxy[PackedVector4Array, Vector4]{}, pointers.Pack(array)))
+		return PackedType.Array[Vector4](ArrayType.Through(WrapPacked[PackedVector4Array, Vector4](array)))
 	case gdextension.TypePackedColorArray:
 		array := variantAsPointerType[PackedColorArray](variant, vtype)
-		return PackedType.Array[Color](ArrayType.Through(PackedProxy[PackedColorArray, Color]{}, pointers.Pack(array)))
+		return PackedType.Array[Color](ArrayType.Through(WrapPacked[PackedColorArray, Color](array)))
 	default:
 		panic("gd.Variant.Interface: invalid variant type " + fmt.Sprint(uint32(vtype)))
 	}

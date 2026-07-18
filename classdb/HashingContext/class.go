@@ -219,7 +219,7 @@ func (self class) Update(chunk Packed.Bytes) Error.Code { //gd:HashingContext.up
 }
 func (self class) Finish() Packed.Bytes { //gd:HashingContext.finish
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.finish, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (o class) AsHashingContext() Advanced         { return Advanced(o) }

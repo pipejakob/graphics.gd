@@ -255,7 +255,7 @@ func (self class) SetPath(path Packed.Array[Vector3.XYZ]) { //gd:NavigationPathQ
 }
 func (self class) GetPath() Packed.Array[Vector3.XYZ] { //gd:NavigationPathQueryResult3D.get_path
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_path, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) SetPathTypes(path_types Packed.Array[int32]) { //gd:NavigationPathQueryResult3D.set_path_types
@@ -265,7 +265,7 @@ func (self class) SetPathTypes(path_types Packed.Array[int32]) { //gd:Navigation
 }
 func (self class) GetPathTypes() Packed.Array[int32] { //gd:NavigationPathQueryResult3D.get_path_types
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_path_types, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetPathRids(path_rids Array.Contains[RID.Any]) { //gd:NavigationPathQueryResult3D.set_path_rids
@@ -273,7 +273,7 @@ func (self class) SetPathRids(path_rids Array.Contains[RID.Any]) { //gd:Navigati
 }
 func (self class) GetPathRids() Array.Contains[RID.Any] { //gd:NavigationPathQueryResult3D.get_path_rids
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_path_rids, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[RID.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetPathOwnerIds(path_owner_ids Packed.Array[int64]) { //gd:NavigationPathQueryResult3D.set_path_owner_ids
@@ -283,7 +283,7 @@ func (self class) SetPathOwnerIds(path_owner_ids Packed.Array[int64]) { //gd:Nav
 }
 func (self class) GetPathOwnerIds() Packed.Array[int64] { //gd:NavigationPathQueryResult3D.get_path_owner_ids
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_path_owner_ids, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) SetPathLength(length float64) { //gd:NavigationPathQueryResult3D.set_path_length

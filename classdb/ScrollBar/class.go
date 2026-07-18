@@ -201,7 +201,7 @@ func (self Instance) OnScrolling(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Scrolling() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scrolling`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scrolling`))))
 }
 
 func (o class) AsScrollBar() Advanced                     { return Advanced(o) }

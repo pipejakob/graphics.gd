@@ -526,7 +526,7 @@ func (self class) GetBlendShapeCount() int64 { //gd:ArrayMesh.get_blend_shape_co
 }
 func (self class) GetBlendShapeName(index int64) String.Name { //gd:ArrayMesh.get_blend_shape_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_blend_shape_name, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetBlendShapeName(index int64, name String.Name) { //gd:ArrayMesh.set_blend_shape_name
@@ -615,7 +615,7 @@ func (self class) SurfaceSetName(surf_idx int64, name String.Readable) { //gd:Ar
 }
 func (self class) SurfaceGetName(surf_idx int64) String.Readable { //gd:ArrayMesh.surface_get_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.surface_get_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ surf_idx int64 }{surf_idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) RegenNormalMaps() { //gd:ArrayMesh.regen_normal_maps

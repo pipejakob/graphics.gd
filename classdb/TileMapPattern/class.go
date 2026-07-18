@@ -305,7 +305,7 @@ func (self class) GetCellAlternativeTile(coords Vector2i.XY) int64 { //gd:TileMa
 }
 func (self class) GetUsedCells() Array.Contains[Vector2i.XY] { //gd:TileMapPattern.get_used_cells
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_cells, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetSize() Vector2i.XY { //gd:TileMapPattern.get_size

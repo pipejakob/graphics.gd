@@ -193,7 +193,7 @@ func (self class) GetVertices(snapshot RID.Any, index int64) Packed.Array[Vector
 		snapshot RID.Any
 		index    int64
 	}{snapshot, index})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) GetIndices(snapshot RID.Any, index int64) Packed.Array[int32] { //gd:OpenXRSpatialComponentMesh2DList.get_indices
@@ -201,7 +201,7 @@ func (self class) GetIndices(snapshot RID.Any, index int64) Packed.Array[int32] 
 		snapshot RID.Any
 		index    int64
 	}{snapshot, index})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (o class) AsOpenXRSpatialComponentMesh2DList() Advanced         { return Advanced(o) }

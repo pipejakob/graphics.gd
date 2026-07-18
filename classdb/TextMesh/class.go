@@ -484,7 +484,7 @@ func (self class) SetText(text String.Readable) { //gd:TextMesh.set_text
 }
 func (self class) GetText() String.Readable { //gd:TextMesh.get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetFont(font [1]gdclass.Font) { //gd:TextMesh.set_font
@@ -580,7 +580,7 @@ func (self class) SetLanguage(language String.Readable) { //gd:TextMesh.set_lang
 }
 func (self class) GetLanguage() String.Readable { //gd:TextMesh.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetStructuredTextBidiOverride(parser TextServer.StructuredTextParser) { //gd:TextMesh.set_structured_text_bidi_override
@@ -598,7 +598,7 @@ func (self class) SetStructuredTextBidiOverrideOptions(args Array.Any) { //gd:Te
 }
 func (self class) GetStructuredTextBidiOverrideOptions() Array.Any { //gd:TextMesh.get_structured_text_bidi_override_options
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_structured_text_bidi_override_options, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetUppercase(enable bool) { //gd:TextMesh.set_uppercase

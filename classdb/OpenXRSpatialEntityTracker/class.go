@@ -301,7 +301,7 @@ func (self Instance) OnNextChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) NextChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`next_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`next_changed`))))
 }
 
 func (self Instance) OnSpatialTrackingStateChanged(cb func(spatial_tracking_state int), flags ...Signal.Flags) Instance {
@@ -314,7 +314,7 @@ func (self Instance) OnSpatialTrackingStateChanged(cb func(spatial_tracking_stat
 }
 
 func (self class) SpatialTrackingStateChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`spatial_tracking_state_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`spatial_tracking_state_changed`))))
 }
 
 func (o class) AsOpenXRSpatialEntityTracker() Advanced         { return Advanced(o) }

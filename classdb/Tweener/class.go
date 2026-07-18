@@ -172,7 +172,7 @@ func (self Instance) OnFinished(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Finished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
 }
 
 func (o class) AsTweener() Advanced         { return Advanced(o) }

@@ -180,7 +180,7 @@ func (self class) SetCompositorEffects(compositor_effects Array.Contains[[1]gdcl
 }
 func (self class) GetCompositorEffects() Array.Contains[[1]gdclass.CompositorEffect] { //gd:Compositor.get_compositor_effects
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_compositor_effects, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.CompositorEffect]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.CompositorEffect](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsCompositor() Advanced                { return Advanced(o) }

@@ -410,7 +410,7 @@ func (self class) GetValue(section String.Readable, key String.Readable, def var
 		key     gdextension.String
 		def     gdextension.Variant
 	}{pointers.Get(gd.InternalString(section)), pointers.Get(gd.InternalString(key)), gdextension.Variant(pointers.Get(gd.InternalVariant(def)))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) HasSection(section String.Readable) bool { //gd:ConfigFile.has_section
@@ -428,12 +428,12 @@ func (self class) HasSectionKey(section String.Readable, key String.Readable) bo
 }
 func (self class) GetSections() Packed.Strings { //gd:ConfigFile.get_sections
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_sections, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetSectionKeys(section String.Readable) Packed.Strings { //gd:ConfigFile.get_section_keys
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_section_keys, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ section gdextension.String }{pointers.Get(gd.InternalString(section))})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) EraseSection(section String.Readable) { //gd:ConfigFile.erase_section
@@ -462,7 +462,7 @@ func (self class) Save(path String.Readable) Error.Code { //gd:ConfigFile.save
 }
 func (self class) EncodeToText() String.Readable { //gd:ConfigFile.encode_to_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.encode_to_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) LoadEncrypted(path String.Readable, key Packed.Bytes) Error.Code { //gd:ConfigFile.load_encrypted

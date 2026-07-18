@@ -347,7 +347,7 @@ func (self class) SetTitle(text String.Readable) { //gd:FoldableContainer.set_ti
 }
 func (self class) GetTitle() String.Readable { //gd:FoldableContainer.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTitleAlignment(alignment GUI.HorizontalAlignment) { //gd:FoldableContainer.set_title_alignment
@@ -363,7 +363,7 @@ func (self class) SetLanguage(language String.Readable) { //gd:FoldableContainer
 }
 func (self class) GetLanguage() String.Readable { //gd:FoldableContainer.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTitleTextDirection(text_direction Control.TextDirection) { //gd:FoldableContainer.set_title_text_direction
@@ -410,7 +410,7 @@ func (self Instance) OnFoldingChanged(cb func(is_folded bool), flags ...Signal.F
 }
 
 func (self class) FoldingChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`folding_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`folding_changed`))))
 }
 
 func (o class) AsFoldableContainer() Advanced             { return Advanced(o) }

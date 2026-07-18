@@ -258,7 +258,7 @@ func (self Instance) Strings() []string { //gd:RegExMatch.strings
 
 func (self class) GetSubject() String.Readable { //gd:RegExMatch.get_subject
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_subject, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetGroupCount() int64 { //gd:RegExMatch.get_group_count
@@ -268,17 +268,17 @@ func (self class) GetGroupCount() int64 { //gd:RegExMatch.get_group_count
 }
 func (self class) GetNames() Dictionary.Any { //gd:RegExMatch.get_names
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_names, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetStrings() Packed.Strings { //gd:RegExMatch.get_strings
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_strings, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetString(name variant.Any) String.Readable { //gd:RegExMatch.get_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_string, gdextension.SizeString|(gdextension.SizeVariant<<4), &struct{ name gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(name)))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetStart(name variant.Any) int64 { //gd:RegExMatch.get_start

@@ -474,7 +474,7 @@ func (self class) GetAudioTrack() int64 { //gd:VideoStreamPlayer.get_audio_track
 }
 func (self class) GetStreamName() String.Readable { //gd:VideoStreamPlayer.get_stream_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_stream_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetStreamLength() float64 { //gd:VideoStreamPlayer.get_stream_length
@@ -519,7 +519,7 @@ func (self class) SetBus(bus String.Name) { //gd:VideoStreamPlayer.set_bus
 }
 func (self class) GetBus() String.Name { //gd:VideoStreamPlayer.get_bus
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bus, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetVideoTexture() [1]gdclass.Texture2D { //gd:VideoStreamPlayer.get_video_texture
@@ -541,7 +541,7 @@ func (self Instance) OnFinished(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Finished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
 }
 
 func (o class) AsVideoStreamPlayer() Advanced             { return Advanced(o) }

@@ -351,12 +351,12 @@ func (self class) HasPeer(peer_id int64) bool { //gd:WebRTCMultiplayerPeer.has_p
 }
 func (self class) GetPeer(peer_id int64) Dictionary.Any { //gd:WebRTCMultiplayerPeer.get_peer
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_peer, gdextension.SizeDictionary|(gdextension.SizeInt<<4), &struct{ peer_id int64 }{peer_id})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetPeers() Dictionary.Any { //gd:WebRTCMultiplayerPeer.get_peers
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_peers, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (o class) AsWebRTCMultiplayerPeer() Advanced         { return Advanced(o) }

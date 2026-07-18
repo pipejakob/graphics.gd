@@ -208,7 +208,7 @@ func (self class) SetFaces(faces Packed.Array[Vector3.XYZ]) { //gd:ConcavePolygo
 }
 func (self class) GetFaces() Packed.Array[Vector3.XYZ] { //gd:ConcavePolygonShape3D.get_faces
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_faces, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) SetBackfaceCollisionEnabled(enabled bool) { //gd:ConcavePolygonShape3D.set_backface_collision_enabled

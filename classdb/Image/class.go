@@ -1134,7 +1134,7 @@ func (self class) GetFormat() Format { //gd:Image.get_format
 }
 func (self class) GetData() Packed.Bytes { //gd:Image.get_data
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_data, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) GetDataSize() int64 { //gd:Image.get_data_size
@@ -1253,7 +1253,7 @@ func (self class) SavePng(path String.Readable) Error.Code { //gd:Image.save_png
 }
 func (self class) SavePngToBuffer() Packed.Bytes { //gd:Image.save_png_to_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.save_png_to_buffer, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SaveJpg(path String.Readable, quality float64) Error.Code { //gd:Image.save_jpg
@@ -1266,7 +1266,7 @@ func (self class) SaveJpg(path String.Readable, quality float64) Error.Code { //
 }
 func (self class) SaveJpgToBuffer(quality float64) Packed.Bytes { //gd:Image.save_jpg_to_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.save_jpg_to_buffer, gdextension.SizePackedArray|(gdextension.SizeFloat<<4), &struct{ quality float64 }{quality})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SaveExr(path String.Readable, grayscale bool, color_image bool, max_linear_value float64) Error.Code { //gd:Image.save_exr
@@ -1285,7 +1285,7 @@ func (self class) SaveExrToBuffer(grayscale bool, color_image bool, max_linear_v
 		color_image      bool
 		max_linear_value float64
 	}{grayscale, color_image, max_linear_value})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SaveDds(path String.Readable) Error.Code { //gd:Image.save_dds
@@ -1295,7 +1295,7 @@ func (self class) SaveDds(path String.Readable) Error.Code { //gd:Image.save_dds
 }
 func (self class) SaveDdsToBuffer() Packed.Bytes { //gd:Image.save_dds_to_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.save_dds_to_buffer, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SaveWebp(path String.Readable, lossy bool, quality float64) Error.Code { //gd:Image.save_webp
@@ -1312,7 +1312,7 @@ func (self class) SaveWebpToBuffer(lossy bool, quality float64) Packed.Bytes { /
 		lossy   bool
 		quality float64
 	}{lossy, quality})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) DetectAlpha() AlphaMode { //gd:Image.detect_alpha
@@ -1392,7 +1392,7 @@ func (self class) ComputeImageMetrics(compared_image [1]gdclass.Image, use_luma 
 		compared_image gdextension.Object
 		use_luma       bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(compared_image[0])[0])), use_luma})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) BlitRect(src [1]gdclass.Image, src_rect Rect2i.PositionSize, dst Vector2i.XY) { //gd:Image.blit_rect

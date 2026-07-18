@@ -608,7 +608,7 @@ func (self class) SetText(text String.Readable) { //gd:Label.set_text
 }
 func (self class) GetText() String.Readable { //gd:Label.get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetLabelSettings(settings [1]gdclass.LabelSettings) { //gd:Label.set_label_settings
@@ -632,7 +632,7 @@ func (self class) SetLanguage(language String.Readable) { //gd:Label.set_languag
 }
 func (self class) GetLanguage() String.Readable { //gd:Label.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetParagraphSeparator(paragraph_separator String.Readable) { //gd:Label.set_paragraph_separator
@@ -640,7 +640,7 @@ func (self class) SetParagraphSeparator(paragraph_separator String.Readable) { /
 }
 func (self class) GetParagraphSeparator() String.Readable { //gd:Label.get_paragraph_separator
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_paragraph_separator, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetAutowrapMode(autowrap_mode TextServer.AutowrapMode) { //gd:Label.set_autowrap_mode
@@ -682,7 +682,7 @@ func (self class) SetTabStops(tab_stops Packed.Array[float32]) { //gd:Label.set_
 }
 func (self class) GetTabStops() Packed.Array[float32] { //gd:Label.get_tab_stops
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_tab_stops, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) SetTextOverrunBehavior(overrun_behavior TextServer.OverrunBehavior) { //gd:Label.set_text_overrun_behavior
@@ -698,7 +698,7 @@ func (self class) SetEllipsisChar(char String.Readable) { //gd:Label.set_ellipsi
 }
 func (self class) GetEllipsisChar() String.Readable { //gd:Label.get_ellipsis_char
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_ellipsis_char, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetUppercase(enable bool) { //gd:Label.set_uppercase
@@ -786,7 +786,7 @@ func (self class) SetStructuredTextBidiOverrideOptions(args Array.Any) { //gd:La
 }
 func (self class) GetStructuredTextBidiOverrideOptions() Array.Any { //gd:Label.get_structured_text_bidi_override_options
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_structured_text_bidi_override_options, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetCharacterBounds(pos int64) Rect2.PositionSize { //gd:Label.get_character_bounds

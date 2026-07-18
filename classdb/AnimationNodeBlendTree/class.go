@@ -327,7 +327,7 @@ func (self class) DisconnectNode(input_node String.Name, input_index int64) { //
 }
 func (self class) GetNodeList() Array.Contains[String.Name] { //gd:AnimationNodeBlendTree.get_node_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_node_list, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetNodePosition(name String.Name, position Vector2.XY) { //gd:AnimationNodeBlendTree.set_node_position
@@ -363,7 +363,7 @@ func (self Instance) OnNodeChanged(cb func(node_name string), flags ...Signal.Fl
 }
 
 func (self class) NodeChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`node_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`node_changed`))))
 }
 
 func (o class) AsAnimationNodeBlendTree() Advanced         { return Advanced(o) }

@@ -197,7 +197,7 @@ func (self class) SetSegments(segments Packed.Array[Vector2.XY]) { //gd:ConcaveP
 }
 func (self class) GetSegments() Packed.Array[Vector2.XY] { //gd:ConcavePolygonShape2D.get_segments
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_segments, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (o class) AsConcavePolygonShape2D() Advanced         { return Advanced(o) }

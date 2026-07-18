@@ -447,7 +447,7 @@ func (self class) SetClipName(clip_index int64, name String.Name) { //gd:AudioSt
 }
 func (self class) GetClipName(clip_index int64) String.Name { //gd:AudioStreamInteractive.get_clip_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_clip_name, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ clip_index int64 }{clip_index})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetClipStream(clip_index int64, stream [1]gdclass.AudioStream) { //gd:AudioStreamInteractive.set_clip_stream
@@ -512,7 +512,7 @@ func (self class) EraseTransition(from_clip int64, to_clip int64) { //gd:AudioSt
 }
 func (self class) GetTransitionList() Packed.Array[int32] { //gd:AudioStreamInteractive.get_transition_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_transition_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetTransitionFromTime(from_clip int64, to_clip int64) TransitionFromTime { //gd:AudioStreamInteractive.get_transition_from_time

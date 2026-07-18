@@ -806,7 +806,7 @@ func (self class) GetPointPosition(id Vector2i.XY) Vector2.XY { //gd:AStarGrid2D
 }
 func (self class) GetPointDataInRegion(region Rect2i.PositionSize) Array.Contains[Dictionary.Any] { //gd:AStarGrid2D.get_point_data_in_region
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_point_data_in_region, gdextension.SizeArray|(gdextension.SizeRect2i<<4), &struct{ region Rect2i.PositionSize }{region})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetPointPath(from_id Vector2i.XY, to_id Vector2i.XY, allow_partial_path bool) Packed.Array[Vector2.XY] { //gd:AStarGrid2D.get_point_path
@@ -815,7 +815,7 @@ func (self class) GetPointPath(from_id Vector2i.XY, to_id Vector2i.XY, allow_par
 		to_id              Vector2i.XY
 		allow_partial_path bool
 	}{from_id, to_id, allow_partial_path})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) GetIdPath(from_id Vector2i.XY, to_id Vector2i.XY, allow_partial_path bool) Array.Contains[Vector2i.XY] { //gd:AStarGrid2D.get_id_path
@@ -824,7 +824,7 @@ func (self class) GetIdPath(from_id Vector2i.XY, to_id Vector2i.XY, allow_partia
 		to_id              Vector2i.XY
 		allow_partial_path bool
 	}{from_id, to_id, allow_partial_path})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsAStarGrid2D() Advanced         { return Advanced(o) }

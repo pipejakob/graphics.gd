@@ -486,7 +486,7 @@ func (self class) SetSkeletonPath(skeleton_path Path.ToNode) { //gd:MeshInstance
 }
 func (self class) GetSkeletonPath() Path.ToNode { //gd:MeshInstance3D.get_skeleton_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_skeleton_path, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetSkin(skin [1]gdclass.Skin) { //gd:MeshInstance3D.set_skin

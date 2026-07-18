@@ -742,7 +742,7 @@ func (self class) SetWindSourcePath(wind_source_path Path.ToNode) { //gd:Area3D.
 }
 func (self class) GetWindSourcePath() Path.ToNode { //gd:Area3D.get_wind_source_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_wind_source_path, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetMonitorable(enable bool) { //gd:Area3D.set_monitorable
@@ -763,12 +763,12 @@ func (self class) IsMonitoring() bool { //gd:Area3D.is_monitoring
 }
 func (self class) GetOverlappingBodies() Array.Contains[[1]gdclass.Node3D] { //gd:Area3D.get_overlapping_bodies
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_overlapping_bodies, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Node3D]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node3D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetOverlappingAreas() Array.Contains[[1]gdclass.Area3D] { //gd:Area3D.get_overlapping_areas
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_overlapping_areas, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Area3D]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Area3D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) HasOverlappingBodies() bool { //gd:Area3D.has_overlapping_bodies
@@ -804,7 +804,7 @@ func (self class) SetAudioBusName(name String.Name) { //gd:Area3D.set_audio_bus_
 }
 func (self class) GetAudioBusName() String.Name { //gd:Area3D.get_audio_bus_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_audio_bus_name, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetUseReverbBus(enable bool) { //gd:Area3D.set_use_reverb_bus
@@ -820,7 +820,7 @@ func (self class) SetReverbBusName(name String.Name) { //gd:Area3D.set_reverb_bu
 }
 func (self class) GetReverbBusName() String.Name { //gd:Area3D.get_reverb_bus_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_reverb_bus_name, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetReverbAmount(amount float64) { //gd:Area3D.set_reverb_amount
@@ -869,7 +869,7 @@ func (self Instance) OnBodyShapeEntered(cb func(body_rid RID.Any, body Node3D.In
 }
 
 func (self class) BodyShapeEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_entered`))))
 }
 
 /*
@@ -897,7 +897,7 @@ func (self Instance) OnBodyShapeExited(cb func(body_rid RID.Any, body Node3D.Ins
 }
 
 func (self class) BodyShapeExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_exited`))))
 }
 
 /*
@@ -921,7 +921,7 @@ func (self Instance) OnBodyEntered(cb func(body Node3D.Instance), flags ...Signa
 }
 
 func (self class) BodyEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_entered`))))
 }
 
 /*
@@ -945,7 +945,7 @@ func (self Instance) OnBodyExited(cb func(body Node3D.Instance), flags ...Signal
 }
 
 func (self class) BodyExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_exited`))))
 }
 
 /*
@@ -971,7 +971,7 @@ func (self Instance) OnAreaShapeEntered(cb func(area_rid RID.Any, area Instance,
 }
 
 func (self class) AreaShapeEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_shape_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_shape_entered`))))
 }
 
 /*
@@ -993,7 +993,7 @@ func (self Instance) OnAreaShapeExited(cb func(area_rid RID.Any, area Instance, 
 }
 
 func (self class) AreaShapeExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_shape_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_shape_exited`))))
 }
 
 /*
@@ -1011,7 +1011,7 @@ func (self Instance) OnAreaEntered(cb func(area Instance), flags ...Signal.Flags
 }
 
 func (self class) AreaEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_entered`))))
 }
 
 /*
@@ -1029,7 +1029,7 @@ func (self Instance) OnAreaExited(cb func(area Instance), flags ...Signal.Flags)
 }
 
 func (self class) AreaExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_exited`))))
 }
 
 func (o class) AsArea3D() Advanced         { return Advanced(o) }

@@ -446,7 +446,7 @@ func (self Instance) SetVisible(value bool) Instance { //gd:GLTFNode.visible
 
 func (self class) GetOriginalName() String.Readable { //gd:GLTFNode.get_original_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_original_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOriginalName(original_name String.Readable) { //gd:GLTFNode.set_original_name
@@ -534,7 +534,7 @@ func (self class) SetScale(scale Vector3.XYZ) { //gd:GLTFNode.set_scale
 }
 func (self class) GetChildren() Packed.Array[int32] { //gd:GLTFNode.get_children
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_children, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetChildren(children Packed.Array[int32]) { //gd:GLTFNode.set_children
@@ -563,7 +563,7 @@ func (self class) SetVisible(visible bool) { //gd:GLTFNode.set_visible
 }
 func (self class) GetAdditionalData(extension_name String.Name) variant.Any { //gd:GLTFNode.get_additional_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_additional_data, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ extension_name gdextension.StringName }{pointers.Get(gd.InternalStringName(extension_name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetAdditionalData(extension_name String.Name, additional_data variant.Any) { //gd:GLTFNode.set_additional_data
@@ -577,7 +577,7 @@ func (self class) GetSceneNodePath(gltf_state [1]gdclass.GLTFState, handle_skele
 		gltf_state       gdextension.Object
 		handle_skeletons bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetGLTFState(gltf_state[0])[0])), handle_skeletons})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (o class) AsGLTFNode() Advanced                  { return Advanced(o) }

@@ -238,7 +238,7 @@ func New() Instance {
 
 func (self class) GetStoredValues(with_order bool) Dictionary.Any { //gd:InstancePlaceholder.get_stored_values
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_stored_values, gdextension.SizeDictionary|(gdextension.SizeBool<<4), &struct{ with_order bool }{with_order})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) CreateInstance(replace bool, custom_scene [1]gdclass.PackedScene) [1]gdclass.Node { //gd:InstancePlaceholder.create_instance
@@ -251,7 +251,7 @@ func (self class) CreateInstance(replace bool, custom_scene [1]gdclass.PackedSce
 }
 func (self class) GetInstancePath() String.Readable { //gd:InstancePlaceholder.get_instance_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_instance_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsInstancePlaceholder() Advanced         { return Advanced(o) }

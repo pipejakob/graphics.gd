@@ -299,7 +299,7 @@ func (self class) SetPlaneLabel(plane_label String.Readable) { //gd:OpenXRPlaneT
 }
 func (self class) GetPlaneLabel() String.Readable { //gd:OpenXRPlaneTracker.get_plane_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_plane_label, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetMeshData(origin Transform3D.BasisOrigin, vertices Packed.Array[Vector2.XY], indices Packed.Array[int32]) { //gd:OpenXRPlaneTracker.set_mesh_data
@@ -341,7 +341,7 @@ func (self Instance) OnMeshChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) MeshChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mesh_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mesh_changed`))))
 }
 
 func (o class) AsOpenXRPlaneTracker() Advanced         { return Advanced(o) }

@@ -1055,7 +1055,7 @@ func (self class) SetItemText(idx int64, text String.Readable) { //gd:ItemList.s
 }
 func (self class) GetItemText(idx int64) String.Readable { //gd:ItemList.get_item_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetItemIcon(idx int64, icon [1]gdclass.Texture2D) { //gd:ItemList.set_item_icon
@@ -1088,7 +1088,7 @@ func (self class) SetItemLanguage(idx int64, language String.Readable) { //gd:It
 }
 func (self class) GetItemLanguage(idx int64) String.Readable { //gd:ItemList.get_item_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_language, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetItemAutoTranslateMode(idx int64, mode Node.AutoTranslateMode) { //gd:ItemList.set_item_auto_translate_mode
@@ -1165,7 +1165,7 @@ func (self class) SetItemMetadata(idx int64, metadata variant.Any) { //gd:ItemLi
 }
 func (self class) GetItemMetadata(idx int64) variant.Any { //gd:ItemList.get_item_metadata
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_item_metadata, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetItemCustomBgColor(idx int64, custom_bg_color Color.RGBA) { //gd:ItemList.set_item_custom_bg_color
@@ -1217,7 +1217,7 @@ func (self class) SetItemTooltip(idx int64, tooltip String.Readable) { //gd:Item
 }
 func (self class) GetItemTooltip(idx int64) String.Readable { //gd:ItemList.get_item_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_tooltip, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) Select(idx int64, single bool) { //gd:ItemList.select_
@@ -1239,7 +1239,7 @@ func (self class) IsSelected(idx int64) bool { //gd:ItemList.is_selected
 }
 func (self class) GetSelectedItems() Packed.Array[int32] { //gd:ItemList.get_selected_items
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_selected_items, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) MoveItem(from_idx int64, to_idx int64) { //gd:ItemList.move_item
@@ -1454,7 +1454,7 @@ func (self Instance) OnItemSelected(cb func(index int), flags ...Signal.Flags) I
 }
 
 func (self class) ItemSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_selected`))))
 }
 
 /*
@@ -1472,7 +1472,7 @@ func (self Instance) OnEmptyClicked(cb func(at_position Vector2.XY, mouse_button
 }
 
 func (self class) EmptyClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`empty_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`empty_clicked`))))
 }
 
 /*
@@ -1490,7 +1490,7 @@ func (self Instance) OnItemClicked(cb func(index int, at_position Vector2.XY, mo
 }
 
 func (self class) ItemClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_clicked`))))
 }
 
 /*
@@ -1506,7 +1506,7 @@ func (self Instance) OnMultiSelected(cb func(index int, selected bool), flags ..
 }
 
 func (self class) MultiSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`multi_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`multi_selected`))))
 }
 
 /*
@@ -1522,7 +1522,7 @@ func (self Instance) OnItemActivated(cb func(index int), flags ...Signal.Flags) 
 }
 
 func (self class) ItemActivated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_activated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_activated`))))
 }
 
 func (o class) AsItemList() Advanced                      { return Advanced(o) }

@@ -215,7 +215,7 @@ func (self class) SetPacketData(packet_data Array.Contains[Array.Any]) { //gd:Og
 }
 func (self class) GetPacketData() Array.Contains[Array.Any] { //gd:OggPacketSequence.get_packet_data
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_packet_data, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Array.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Array.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetPacketGranulePositions(granule_positions Packed.Array[int64]) { //gd:OggPacketSequence.set_packet_granule_positions
@@ -225,7 +225,7 @@ func (self class) SetPacketGranulePositions(granule_positions Packed.Array[int64
 }
 func (self class) GetPacketGranulePositions() Packed.Array[int64] { //gd:OggPacketSequence.get_packet_granule_positions
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_packet_granule_positions, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) SetSamplingRate(sampling_rate float64) { //gd:OggPacketSequence.set_sampling_rate

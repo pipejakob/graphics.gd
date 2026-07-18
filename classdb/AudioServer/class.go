@@ -710,7 +710,7 @@ func (self class) SetBusName(bus_idx int64, name String.Readable) { //gd:AudioSe
 func (self class) GetBusName(bus_idx int64) String.Readable { //gd:AudioServer.get_bus_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_bus_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ bus_idx int64 }{bus_idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetBusIndex(bus_name String.Name) int64 { //gd:AudioServer.get_bus_index
@@ -761,7 +761,7 @@ func (self class) SetBusSend(bus_idx int64, send String.Name) { //gd:AudioServer
 func (self class) GetBusSend(bus_idx int64) String.Name { //gd:AudioServer.get_bus_send
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.StringName](gdreference.GetObject(self.AsObject()[0]), methods.get_bus_send, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ bus_idx int64 }{bus_idx})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetBusSolo(bus_idx int64, enable bool) { //gd:AudioServer.set_bus_solo
@@ -925,19 +925,19 @@ func (self class) GetInputMixRate() float64 { //gd:AudioServer.get_input_mix_rat
 func (self class) GetDriverName() String.Readable { //gd:AudioServer.get_driver_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_driver_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetOutputDeviceList() Packed.Strings { //gd:AudioServer.get_output_device_list
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_output_device_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetOutputDevice() String.Readable { //gd:AudioServer.get_output_device
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_output_device, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOutputDevice(name String.Readable) { //gd:AudioServer.set_output_device
@@ -965,13 +965,13 @@ func (self class) GetOutputLatency() float64 { //gd:AudioServer.get_output_laten
 func (self class) GetInputDeviceList() Packed.Strings { //gd:AudioServer.get_input_device_list
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_input_device_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetInputDevice() String.Readable { //gd:AudioServer.get_input_device
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_input_device, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetInputDevice(name String.Readable) { //gd:AudioServer.set_input_device
@@ -999,7 +999,7 @@ func (self class) GetInputBufferLengthFrames() int64 { //gd:AudioServer.get_inpu
 func (self class) GetInputFrames(frames int64) Packed.Array[Vector2.XY] { //gd:AudioServer.get_input_frames
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_input_frames, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ frames int64 }{frames})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetBusLayout(bus_layout [1]gdclass.AudioBusLayout) { //gd:AudioServer.set_bus_layout
@@ -1041,7 +1041,7 @@ func OnBusLayoutChanged(cb func(), flags ...Signal.Flags) {
 
 func (self class) BusLayoutChanged() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bus_layout_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bus_layout_changed`))))
 }
 
 /*
@@ -1058,7 +1058,7 @@ func OnBusRenamed(cb func(bus_index Bus, old_name string, new_name string), flag
 
 func (self class) BusRenamed() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bus_renamed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bus_renamed`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

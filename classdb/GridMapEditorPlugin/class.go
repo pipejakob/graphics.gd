@@ -283,7 +283,7 @@ func (self class) HasSelection() bool { //gd:GridMapEditorPlugin.has_selection
 }
 func (self class) GetSelectedCells() Array.Any { //gd:GridMapEditorPlugin.get_selected_cells
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_selected_cells, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetSelectedPaletteItem(item int64) { //gd:GridMapEditorPlugin.set_selected_palette_item

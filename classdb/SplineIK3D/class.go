@@ -288,7 +288,7 @@ func (self class) SetPath3d(index int64, path_3d Path.ToNode) { //gd:SplineIK3D.
 }
 func (self class) GetPath3d(index int64) Path.ToNode { //gd:SplineIK3D.get_path_3d
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_path_3d, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetTiltEnabled(index int64, enabled bool) { //gd:SplineIK3D.set_tilt_enabled

@@ -406,7 +406,7 @@ func (self class) ObjectConfigurationRemove(obj [1]gdreference.Object, configura
 }
 func (self class) GetPeers() Packed.Array[int32] { //gd:MultiplayerAPI.get_peers
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_peers, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetDefaultInterface(interface_name String.Name) { //gd:MultiplayerAPI.set_default_interface
@@ -414,7 +414,7 @@ func (self class) SetDefaultInterface(interface_name String.Name) { //gd:Multipl
 }
 func (self class) GetDefaultInterface() String.Name { //gd:MultiplayerAPI.get_default_interface
 	var r_ret = noescape.CallStatic[gdextension.StringName](methods.get_default_interface, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) CreateDefaultInterface() [1]gdclass.MultiplayerAPI { //gd:MultiplayerAPI.create_default_interface
@@ -438,7 +438,7 @@ func (self Instance) OnPeerConnected(cb func(id int), flags ...Signal.Flags) Ins
 }
 
 func (self class) PeerConnected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_connected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_connected`))))
 }
 
 /*
@@ -456,7 +456,7 @@ func (self Instance) OnPeerDisconnected(cb func(id int), flags ...Signal.Flags) 
 }
 
 func (self class) PeerDisconnected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_disconnected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_disconnected`))))
 }
 
 /*
@@ -474,7 +474,7 @@ func (self Instance) OnConnectedToServer(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) ConnectedToServer() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connected_to_server`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connected_to_server`))))
 }
 
 /*
@@ -492,7 +492,7 @@ func (self Instance) OnConnectionFailed(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) ConnectionFailed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_failed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_failed`))))
 }
 
 /*
@@ -510,7 +510,7 @@ func (self Instance) OnServerDisconnected(cb func(), flags ...Signal.Flags) Inst
 }
 
 func (self class) ServerDisconnected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`server_disconnected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`server_disconnected`))))
 }
 
 func (o class) AsMultiplayerAPI() Advanced         { return Advanced(o) }

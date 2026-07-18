@@ -709,7 +709,7 @@ func (self class) GetSearchBarFuzzySearchMaxMisses() int64 { //gd:OptionButton.g
 }
 func (self class) GetItemText(idx int64) String.Readable { //gd:OptionButton.get_item_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemIcon(idx int64) [1]gdclass.Texture2D { //gd:OptionButton.get_item_icon
@@ -729,12 +729,12 @@ func (self class) GetItemIndex(id int64) int64 { //gd:OptionButton.get_item_inde
 }
 func (self class) GetItemMetadata(idx int64) variant.Any { //gd:OptionButton.get_item_metadata
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_item_metadata, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetItemTooltip(idx int64) String.Readable { //gd:OptionButton.get_item_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_tooltip, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemAutoTranslateMode(idx int64) Node.AutoTranslateMode { //gd:OptionButton.get_item_auto_translate_mode
@@ -778,7 +778,7 @@ func (self class) GetSelectedId() int64 { //gd:OptionButton.get_selected_id
 }
 func (self class) GetSelectedMetadata() variant.Any { //gd:OptionButton.get_selected_metadata
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_selected_metadata, gdextension.SizeVariant, &struct{}{})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) RemoveItem(idx int64) { //gd:OptionButton.remove_item
@@ -847,7 +847,7 @@ func (self Instance) OnItemSelected(cb func(index int), flags ...Signal.Flags) I
 }
 
 func (self class) ItemSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_selected`))))
 }
 
 /*
@@ -865,7 +865,7 @@ func (self Instance) OnItemFocused(cb func(index int), flags ...Signal.Flags) In
 }
 
 func (self class) ItemFocused() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_focused`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_focused`))))
 }
 
 func (o class) AsOptionButton() Advanced                  { return Advanced(o) }

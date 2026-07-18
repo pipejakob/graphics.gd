@@ -394,7 +394,7 @@ func (self class) SetData(data Packed.Bytes) { //gd:AudioStreamWAV.set_data
 }
 func (self class) GetData() Packed.Bytes { //gd:AudioStreamWAV.get_data
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_data, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SetFormat(format Format) { //gd:AudioStreamWAV.set_format
@@ -450,7 +450,7 @@ func (self class) SetTags(tags Dictionary.Any) { //gd:AudioStreamWAV.set_tags
 }
 func (self class) GetTags() Dictionary.Any { //gd:AudioStreamWAV.get_tags
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_tags, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SaveToWav(path String.Readable) Error.Code { //gd:AudioStreamWAV.save_to_wav

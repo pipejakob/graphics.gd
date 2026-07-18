@@ -360,7 +360,7 @@ func (self Instance) OnOnRequestPermissionsResult(cb func(permission string, gra
 }
 
 func (self class) OnRequestPermissionsResult() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`on_request_permissions_result`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`on_request_permissions_result`))))
 }
 
 func (o class) AsMainLoop() Advanced         { return Advanced(o) }

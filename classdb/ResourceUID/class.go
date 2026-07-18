@@ -249,7 +249,7 @@ func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObj
 func (self class) IdToText(id int64) String.Readable { //gd:ResourceUID.id_to_text
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.id_to_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) TextToId(text_id String.Readable) int64 { //gd:ResourceUID.text_to_id
@@ -293,7 +293,7 @@ func (self class) SetId(id int64, path String.Readable) { //gd:ResourceUID.set_i
 func (self class) GetIdPath(id int64) String.Readable { //gd:ResourceUID.get_id_path
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_id_path, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) RemoveId(id int64) { //gd:ResourceUID.remove_id
@@ -303,19 +303,19 @@ func (self class) RemoveId(id int64) { //gd:ResourceUID.remove_id
 func (self class) UidToPath(uid String.Readable) String.Readable { //gd:ResourceUID.uid_to_path
 	once.Do(singleton)
 	var r_ret = noescape.CallStatic[gdextension.String](methods.uid_to_path, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ uid gdextension.String }{pointers.Get(gd.InternalString(uid))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) PathToUid(path String.Readable) String.Readable { //gd:ResourceUID.path_to_uid
 	once.Do(singleton)
 	var r_ret = noescape.CallStatic[gdextension.String](methods.path_to_uid, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) EnsurePath(path_or_uid String.Readable) String.Readable { //gd:ResourceUID.ensure_path
 	once.Do(singleton)
 	var r_ret = noescape.CallStatic[gdextension.String](methods.ensure_path, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path_or_uid gdextension.String }{pointers.Get(gd.InternalString(path_or_uid))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 

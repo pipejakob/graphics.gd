@@ -564,7 +564,7 @@ func (self class) GetString(spatial_snapshot RID.Any, buffer_id int64) String.Re
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetUint8Buffer(spatial_snapshot RID.Any, buffer_id int64) Packed.Bytes { //gd:OpenXRSpatialEntityExtension.get_uint8_buffer
@@ -572,7 +572,7 @@ func (self class) GetUint8Buffer(spatial_snapshot RID.Any, buffer_id int64) Pack
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) GetUint16Buffer(spatial_snapshot RID.Any, buffer_id int64) Packed.Array[int32] { //gd:OpenXRSpatialEntityExtension.get_uint16_buffer
@@ -580,7 +580,7 @@ func (self class) GetUint16Buffer(spatial_snapshot RID.Any, buffer_id int64) Pac
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetUint32Buffer(spatial_snapshot RID.Any, buffer_id int64) Packed.Array[int32] { //gd:OpenXRSpatialEntityExtension.get_uint32_buffer
@@ -588,7 +588,7 @@ func (self class) GetUint32Buffer(spatial_snapshot RID.Any, buffer_id int64) Pac
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetFloatBuffer(spatial_snapshot RID.Any, buffer_id int64) Packed.Array[float32] { //gd:OpenXRSpatialEntityExtension.get_float_buffer
@@ -596,7 +596,7 @@ func (self class) GetFloatBuffer(spatial_snapshot RID.Any, buffer_id int64) Pack
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) GetVector2Buffer(spatial_snapshot RID.Any, buffer_id int64) Packed.Array[Vector2.XY] { //gd:OpenXRSpatialEntityExtension.get_vector2_buffer
@@ -604,7 +604,7 @@ func (self class) GetVector2Buffer(spatial_snapshot RID.Any, buffer_id int64) Pa
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) GetVector3Buffer(spatial_snapshot RID.Any, buffer_id int64) Packed.Array[Vector3.XYZ] { //gd:OpenXRSpatialEntityExtension.get_vector3_buffer
@@ -612,7 +612,7 @@ func (self class) GetVector3Buffer(spatial_snapshot RID.Any, buffer_id int64) Pa
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) FindSpatialEntity(entity_id int64) RID.Any { //gd:OpenXRSpatialEntityExtension.find_spatial_entity
@@ -664,7 +664,7 @@ func (self Instance) OnSpatialDiscoveryRecommended(cb func(spatial_context RID.A
 }
 
 func (self class) SpatialDiscoveryRecommended() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`spatial_discovery_recommended`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`spatial_discovery_recommended`))))
 }
 
 func (o class) AsOpenXRSpatialEntityExtension() Advanced         { return Advanced(o) }

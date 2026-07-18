@@ -202,7 +202,7 @@ func (self class) SetSpecializationConstants(specialization_constants Array.Cont
 }
 func (self class) GetSpecializationConstants() Array.Contains[[1]gdclass.RDPipelineSpecializationConstant] { //gd:RDPipelineShader.get_specialization_constants
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_specialization_constants, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.RDPipelineSpecializationConstant]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.RDPipelineSpecializationConstant](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsRDPipelineShader() Advanced         { return Advanced(o) }

@@ -194,7 +194,7 @@ func (self class) RemovePersistenceContext(persistence_context RID.Any) { //gd:O
 }
 func (self class) GetPersistenceContexts() Array.Any { //gd:OpenXRSpatialContextPersistenceConfig.get_persistence_contexts
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_persistence_contexts, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsOpenXRSpatialContextPersistenceConfig() Advanced         { return Advanced(o) }

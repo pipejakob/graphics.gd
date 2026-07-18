@@ -232,7 +232,7 @@ func (self class) IsButtonPressed(name String.Name) bool { //gd:XRController3D.i
 }
 func (self class) GetInput(name String.Name) variant.Any { //gd:XRController3D.get_input
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_input, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetFloat(name String.Name) float64 { //gd:XRController3D.get_float
@@ -264,7 +264,7 @@ func (self Instance) OnButtonPressed(cb func(action_name string), flags ...Signa
 }
 
 func (self class) ButtonPressed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`button_pressed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`button_pressed`))))
 }
 
 /*
@@ -280,7 +280,7 @@ func (self Instance) OnButtonReleased(cb func(action_name string), flags ...Sign
 }
 
 func (self class) ButtonReleased() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`button_released`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`button_released`))))
 }
 
 /*
@@ -296,7 +296,7 @@ func (self Instance) OnInputFloatChanged(cb func(action_name string, value Float
 }
 
 func (self class) InputFloatChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`input_float_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`input_float_changed`))))
 }
 
 /*
@@ -312,7 +312,7 @@ func (self Instance) OnInputVector2Changed(cb func(action_name string, value Vec
 }
 
 func (self class) InputVector2Changed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`input_vector2_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`input_vector2_changed`))))
 }
 
 /*
@@ -328,7 +328,7 @@ func (self Instance) OnProfileChanged(cb func(role string), flags ...Signal.Flag
 }
 
 func (self class) ProfileChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`profile_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`profile_changed`))))
 }
 
 func (o class) AsXRController3D() Advanced            { return Advanced(o) }

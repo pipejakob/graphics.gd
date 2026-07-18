@@ -420,7 +420,7 @@ func (self Instance) SetArIsAnchorDetectionEnabled(value bool) Instance { //gd:X
 
 func (self class) GetName() String.Name { //gd:XRInterface.get_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_name, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetCapabilities() int64 { //gd:XRInterface.get_capabilities
@@ -451,7 +451,7 @@ func (self class) Uninitialize() { //gd:XRInterface.uninitialize
 }
 func (self class) GetSystemInfo() Dictionary.Any { //gd:XRInterface.get_system_info
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_system_info, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetTrackingStatus() TrackingStatus { //gd:XRInterface.get_tracking_status
@@ -496,7 +496,7 @@ func (self class) SetPlayAreaMode(mode PlayAreaMode) bool { //gd:XRInterface.set
 }
 func (self class) GetPlayArea() Packed.Array[Vector3.XYZ] { //gd:XRInterface.get_play_area
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_play_area, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) GetAnchorDetectionIsEnabled() bool { //gd:XRInterface.get_anchor_detection_is_enabled
@@ -550,7 +550,7 @@ func (self class) GetProjectionForView(view int64, aspect float64, near float64,
 }
 func (self class) GetSupportedEnvironmentBlendModes() Array.Any { //gd:XRInterface.get_supported_environment_blend_modes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_supported_environment_blend_modes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetEnvironmentBlendMode(mode EnvironmentBlendMode) bool { //gd:XRInterface.set_environment_blend_mode
@@ -577,7 +577,7 @@ func (self Instance) OnPlayAreaChanged(cb func(mode int), flags ...Signal.Flags)
 }
 
 func (self class) PlayAreaChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`play_area_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`play_area_changed`))))
 }
 
 func (o class) AsXRInterface() Advanced         { return Advanced(o) }

@@ -295,7 +295,7 @@ func (self class) SetCode(code String.Readable) { //gd:Shader.set_code
 }
 func (self class) GetCode() String.Readable { //gd:Shader.get_code
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_code, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetDefaultTextureParameter(name String.Name, texture [1]gdclass.Texture, index int64) { //gd:Shader.set_default_texture_parameter
@@ -315,7 +315,7 @@ func (self class) GetDefaultTextureParameter(name String.Name, index int64) [1]g
 }
 func (self class) GetShaderUniformList(get_groups bool) Array.Any { //gd:Shader.get_shader_uniform_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_shader_uniform_list, gdextension.SizeArray|(gdextension.SizeBool<<4), &struct{ get_groups bool }{get_groups})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) InspectNativeShaderCode() { //gd:Shader.inspect_native_shader_code

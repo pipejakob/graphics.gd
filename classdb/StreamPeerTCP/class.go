@@ -253,7 +253,7 @@ func (self class) ConnectToHost(host String.Readable, port int64) Error.Code { /
 }
 func (self class) GetConnectedHost() String.Readable { //gd:StreamPeerTCP.get_connected_host
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_connected_host, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetConnectedPort() int64 { //gd:StreamPeerTCP.get_connected_port

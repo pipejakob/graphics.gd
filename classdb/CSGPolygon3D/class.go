@@ -475,7 +475,7 @@ func (self class) SetPolygon(polygon Packed.Array[Vector2.XY]) { //gd:CSGPolygon
 }
 func (self class) GetPolygon() Packed.Array[Vector2.XY] { //gd:CSGPolygon3D.get_polygon
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_polygon, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetMode(mode Mode) { //gd:CSGPolygon3D.set_mode
@@ -515,7 +515,7 @@ func (self class) SetPathNode(path Path.ToNode) { //gd:CSGPolygon3D.set_path_nod
 }
 func (self class) GetPathNode() Path.ToNode { //gd:CSGPolygon3D.get_path_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_path_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetPathIntervalType(interval_type PathIntervalType) { //gd:CSGPolygon3D.set_path_interval_type

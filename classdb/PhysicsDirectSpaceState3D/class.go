@@ -366,12 +366,12 @@ func (self class) IntersectPoint(parameters [1]gdclass.PhysicsPointQueryParamete
 		parameters  gdextension.Object
 		max_results int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsPointQueryParameters3D(parameters[0])[0])), max_results})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) IntersectRay(parameters [1]gdclass.PhysicsRayQueryParameters3D) Dictionary.Any { //gd:PhysicsDirectSpaceState3D.intersect_ray
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.intersect_ray, gdextension.SizeDictionary|(gdextension.SizeObject<<4), &struct{ parameters gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsRayQueryParameters3D(parameters[0])[0]))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) IntersectShape(parameters [1]gdclass.PhysicsShapeQueryParameters3D, max_results int64) Array.Contains[Dictionary.Any] { //gd:PhysicsDirectSpaceState3D.intersect_shape
@@ -379,12 +379,12 @@ func (self class) IntersectShape(parameters [1]gdclass.PhysicsShapeQueryParamete
 		parameters  gdextension.Object
 		max_results int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsShapeQueryParameters3D(parameters[0])[0])), max_results})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) CastMotion(parameters [1]gdclass.PhysicsShapeQueryParameters3D) Packed.Array[float32] { //gd:PhysicsDirectSpaceState3D.cast_motion
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.cast_motion, gdextension.SizePackedArray|(gdextension.SizeObject<<4), &struct{ parameters gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsShapeQueryParameters3D(parameters[0])[0]))})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) CollideShape(parameters [1]gdclass.PhysicsShapeQueryParameters3D, max_results int64) Array.Contains[Vector3.XYZ] { //gd:PhysicsDirectSpaceState3D.collide_shape
@@ -392,12 +392,12 @@ func (self class) CollideShape(parameters [1]gdclass.PhysicsShapeQueryParameters
 		parameters  gdextension.Object
 		max_results int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsShapeQueryParameters3D(parameters[0])[0])), max_results})
-	var ret = Array.Through(gd.ArrayProxy[Vector3.XYZ]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector3.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetRestInfo(parameters [1]gdclass.PhysicsShapeQueryParameters3D) Dictionary.Any { //gd:PhysicsDirectSpaceState3D.get_rest_info
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_rest_info, gdextension.SizeDictionary|(gdextension.SizeObject<<4), &struct{ parameters gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsShapeQueryParameters3D(parameters[0])[0]))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (o class) AsPhysicsDirectSpaceState3D() Advanced         { return Advanced(o) }

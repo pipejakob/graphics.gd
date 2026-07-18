@@ -305,7 +305,7 @@ func (self class) SetLabel(label String.Readable) { //gd:EditorSpinSlider.set_la
 }
 func (self class) GetLabel() String.Readable { //gd:EditorSpinSlider.get_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_label, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetSuffix(suffix String.Readable) { //gd:EditorSpinSlider.set_suffix
@@ -313,7 +313,7 @@ func (self class) SetSuffix(suffix String.Readable) { //gd:EditorSpinSlider.set_
 }
 func (self class) GetSuffix() String.Readable { //gd:EditorSpinSlider.get_suffix
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_suffix, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetReadOnly(read_only bool) { //gd:EditorSpinSlider.set_read_only
@@ -378,7 +378,7 @@ func (self Instance) OnGrabbed(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Grabbed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`grabbed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`grabbed`))))
 }
 
 /*
@@ -394,7 +394,7 @@ func (self Instance) OnUngrabbed(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Ungrabbed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`ungrabbed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`ungrabbed`))))
 }
 
 /*
@@ -410,7 +410,7 @@ func (self Instance) OnUpdownPressed(cb func(), flags ...Signal.Flags) Instance 
 }
 
 func (self class) UpdownPressed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`updown_pressed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`updown_pressed`))))
 }
 
 /*
@@ -426,7 +426,7 @@ func (self Instance) OnValueFocusEntered(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) ValueFocusEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`value_focus_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`value_focus_entered`))))
 }
 
 /*
@@ -442,7 +442,7 @@ func (self Instance) OnValueFocusExited(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) ValueFocusExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`value_focus_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`value_focus_exited`))))
 }
 
 func (o class) AsEditorSpinSlider() Advanced              { return Advanced(o) }

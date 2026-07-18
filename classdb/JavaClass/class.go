@@ -201,12 +201,12 @@ func New() Instance {
 
 func (self class) GetJavaClassName() String.Readable { //gd:JavaClass.get_java_class_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_java_class_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetJavaMethodList() Array.Contains[Dictionary.Any] { //gd:JavaClass.get_java_method_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_java_method_list, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetJavaParentClass() [1]gdclass.JavaClass { //gd:JavaClass.get_java_parent_class

@@ -183,7 +183,7 @@ func New() Instance {
 
 func (self class) ListBuiltInIncludeFiles() Packed.Strings { //gd:ShaderIncludeDB.list_built_in_include_files
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.list_built_in_include_files, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) HasBuiltInIncludeFile(filename String.Readable) bool { //gd:ShaderIncludeDB.has_built_in_include_file
@@ -193,7 +193,7 @@ func (self class) HasBuiltInIncludeFile(filename String.Readable) bool { //gd:Sh
 }
 func (self class) GetBuiltInIncludeFile(filename String.Readable) String.Readable { //gd:ShaderIncludeDB.get_built_in_include_file
 	var r_ret = noescape.CallStatic[gdextension.String](methods.get_built_in_include_file, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ filename gdextension.String }{pointers.Get(gd.InternalString(filename))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsShaderIncludeDB() Advanced         { return Advanced(o) }

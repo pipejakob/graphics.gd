@@ -449,7 +449,7 @@ func (self class) ClearKeywordColors() { //gd:CodeHighlighter.clear_keyword_colo
 }
 func (self class) GetKeywordColors() Dictionary.Any { //gd:CodeHighlighter.get_keyword_colors
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_keyword_colors, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) AddMemberKeywordColor(member_keyword String.Readable, color Color.RGBA) { //gd:CodeHighlighter.add_member_keyword_color
@@ -479,7 +479,7 @@ func (self class) ClearMemberKeywordColors() { //gd:CodeHighlighter.clear_member
 }
 func (self class) GetMemberKeywordColors() Dictionary.Any { //gd:CodeHighlighter.get_member_keyword_colors
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_member_keyword_colors, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) AddColorRegion(start_key String.Readable, end_key String.Readable, color Color.RGBA, line_only bool) { //gd:CodeHighlighter.add_color_region
@@ -506,7 +506,7 @@ func (self class) ClearColorRegions() { //gd:CodeHighlighter.clear_color_regions
 }
 func (self class) GetColorRegions() Dictionary.Any { //gd:CodeHighlighter.get_color_regions
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_color_regions, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetFunctionColor(color Color.RGBA) { //gd:CodeHighlighter.set_function_color

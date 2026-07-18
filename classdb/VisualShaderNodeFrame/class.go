@@ -268,7 +268,7 @@ func (self class) SetTitle(title String.Readable) { //gd:VisualShaderNodeFrame.s
 }
 func (self class) GetTitle() String.Readable { //gd:VisualShaderNodeFrame.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTintColorEnabled(enable bool) { //gd:VisualShaderNodeFrame.set_tint_color_enabled
@@ -308,7 +308,7 @@ func (self class) SetAttachedNodes(attached_nodes Packed.Array[int32]) { //gd:Vi
 }
 func (self class) GetAttachedNodes() Packed.Array[int32] { //gd:VisualShaderNodeFrame.get_attached_nodes
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_attached_nodes, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (o class) AsVisualShaderNodeFrame() Advanced         { return Advanced(o) }

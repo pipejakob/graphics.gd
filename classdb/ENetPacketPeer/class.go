@@ -392,7 +392,7 @@ func (self class) GetPacketFlags() int64 { //gd:ENetPacketPeer.get_packet_flags
 }
 func (self class) GetRemoteAddress() String.Readable { //gd:ENetPacketPeer.get_remote_address
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_remote_address, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetRemotePort() int64 { //gd:ENetPacketPeer.get_remote_port

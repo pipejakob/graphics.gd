@@ -483,7 +483,7 @@ func (self class) SetIncludedRegions(regions Array.Contains[RID.Any]) { //gd:Nav
 }
 func (self class) GetIncludedRegions() Array.Contains[RID.Any] { //gd:NavigationPathQueryParameters2D.get_included_regions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_included_regions, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[RID.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetExcludedRegions(regions Array.Contains[RID.Any]) { //gd:NavigationPathQueryParameters2D.set_excluded_regions
@@ -491,7 +491,7 @@ func (self class) SetExcludedRegions(regions Array.Contains[RID.Any]) { //gd:Nav
 }
 func (self class) GetExcludedRegions() Array.Contains[RID.Any] { //gd:NavigationPathQueryParameters2D.get_excluded_regions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_excluded_regions, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[RID.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetPathReturnMaxLength(length float64) { //gd:NavigationPathQueryParameters2D.set_path_return_max_length

@@ -196,7 +196,7 @@ func (self class) GetMarkerData(snapshot RID.Any, index int64) variant.Any { //g
 		snapshot RID.Any
 		index    int64
 	}{snapshot, index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (o class) AsOpenXRSpatialComponentMarkerList() Advanced         { return Advanced(o) }

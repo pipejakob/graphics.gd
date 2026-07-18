@@ -423,7 +423,7 @@ func (self class) GetAxisLock(axis PhysicsServer3D.BodyAxis) bool { //gd:Physics
 }
 func (self class) GetCollisionExceptions() Array.Contains[[1]gdclass.PhysicsBody3D] { //gd:PhysicsBody3D.get_collision_exceptions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_collision_exceptions, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.PhysicsBody3D]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.PhysicsBody3D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AddCollisionExceptionWith(body [1]gdclass.Node) { //gd:PhysicsBody3D.add_collision_exception_with

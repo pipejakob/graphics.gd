@@ -198,7 +198,7 @@ func (self class) ConnectToHost(path String.Readable) Error.Code { //gd:StreamPe
 }
 func (self class) GetConnectedPath() String.Readable { //gd:StreamPeerUDS.get_connected_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_connected_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsStreamPeerUDS() Advanced         { return Advanced(o) }

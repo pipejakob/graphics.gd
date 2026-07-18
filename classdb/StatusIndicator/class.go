@@ -237,7 +237,7 @@ func (self class) SetTooltip(tooltip String.Readable) { //gd:StatusIndicator.set
 }
 func (self class) GetTooltip() String.Readable { //gd:StatusIndicator.get_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tooltip, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetIcon(texture [1]gdclass.Texture2D) { //gd:StatusIndicator.set_icon
@@ -261,7 +261,7 @@ func (self class) SetMenu(menu Path.ToNode) { //gd:StatusIndicator.set_menu
 }
 func (self class) GetMenu() Path.ToNode { //gd:StatusIndicator.get_menu
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_menu, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) GetRect() Rect2.PositionSize { //gd:StatusIndicator.get_rect
@@ -283,7 +283,7 @@ func (self Instance) OnPressed(cb func(mouse_button int, mouse_position Vector2i
 }
 
 func (self class) Pressed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pressed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pressed`))))
 }
 
 func (o class) AsStatusIndicator() Advanced         { return Advanced(o) }

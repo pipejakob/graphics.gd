@@ -232,7 +232,7 @@ func (self class) SetAction(action String.Name) { //gd:InputEventAction.set_acti
 }
 func (self class) GetAction() String.Name { //gd:InputEventAction.get_action
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_action, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetPressed(pressed bool) { //gd:InputEventAction.set_pressed

@@ -865,7 +865,7 @@ func (self class) GetDopplerTracking() DopplerTracking { //gd:Camera3D.get_doppl
 }
 func (self class) GetFrustum() Array.Contains[Plane.NormalD] { //gd:Camera3D.get_frustum
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_frustum, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Plane.NormalD]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Plane.NormalD](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) IsPositionInFrustum(world_point Vector3.XYZ) bool { //gd:Camera3D.is_position_in_frustum

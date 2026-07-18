@@ -269,12 +269,12 @@ func (self class) Start(mode Mode, key Packed.Bytes, iv Packed.Bytes) Error.Code
 }
 func (self class) Update(src Packed.Bytes) Packed.Bytes { //gd:AESContext.update
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.update, gdextension.SizePackedArray|(gdextension.SizePackedArray<<4), &struct{ src gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](src.Array)))})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) GetIvState() Packed.Bytes { //gd:AESContext.get_iv_state
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_iv_state, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) Finish() { //gd:AESContext.finish

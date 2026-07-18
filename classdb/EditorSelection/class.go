@@ -226,17 +226,17 @@ func (self class) RemoveNode(node [1]gdclass.Node) { //gd:EditorSelection.remove
 }
 func (self class) GetSelectedNodes() Array.Contains[[1]gdclass.Node] { //gd:EditorSelection.get_selected_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_selected_nodes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Node]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetTopSelectedNodes() Array.Contains[[1]gdclass.Node] { //gd:EditorSelection.get_top_selected_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_top_selected_nodes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Node]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetTransformableSelectedNodes() Array.Contains[[1]gdclass.Node] { //gd:EditorSelection.get_transformable_selected_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_transformable_selected_nodes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Node]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 
@@ -253,7 +253,7 @@ func (self Instance) OnSelectionChanged(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) SelectionChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`selection_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`selection_changed`))))
 }
 
 func (o class) AsEditorSelection() Advanced         { return Advanced(o) }

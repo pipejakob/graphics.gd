@@ -290,7 +290,7 @@ func (self class) SetActionSets(action_sets Array.Any) { //gd:OpenXRActionMap.se
 }
 func (self class) GetActionSets() Array.Any { //gd:OpenXRActionMap.get_action_sets
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_action_sets, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetActionSetCount() int64 { //gd:OpenXRActionMap.get_action_set_count
@@ -319,7 +319,7 @@ func (self class) SetInteractionProfiles(interaction_profiles Array.Any) { //gd:
 }
 func (self class) GetInteractionProfiles() Array.Any { //gd:OpenXRActionMap.get_interaction_profiles
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_interaction_profiles, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetInteractionProfileCount() int64 { //gd:OpenXRActionMap.get_interaction_profile_count

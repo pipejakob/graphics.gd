@@ -386,7 +386,7 @@ func (self class) SetVertices(vertices Packed.Array[Vector2.XY]) { //gd:Navigati
 }
 func (self class) GetVertices() Packed.Array[Vector2.XY] { //gd:NavigationObstacle2D.get_vertices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertices, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetAvoidanceLayers(layers int64) { //gd:NavigationObstacle2D.set_avoidance_layers

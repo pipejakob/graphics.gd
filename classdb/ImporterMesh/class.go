@@ -543,7 +543,7 @@ func (self class) GetBlendShapeCount() int64 { //gd:ImporterMesh.get_blend_shape
 }
 func (self class) GetBlendShapeName(blend_shape_idx int64) String.Readable { //gd:ImporterMesh.get_blend_shape_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_blend_shape_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ blend_shape_idx int64 }{blend_shape_idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBlendShapeMode(mode Mesh.BlendShapeMode) { //gd:ImporterMesh.set_blend_shape_mode
@@ -577,12 +577,12 @@ func (self class) GetSurfacePrimitiveType(surface_idx int64) Mesh.PrimitiveType 
 }
 func (self class) GetSurfaceName(surface_idx int64) String.Readable { //gd:ImporterMesh.get_surface_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_surface_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ surface_idx int64 }{surface_idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSurfaceArrays(surface_idx int64) Array.Any { //gd:ImporterMesh.get_surface_arrays
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_surface_arrays, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ surface_idx int64 }{surface_idx})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetSurfaceBlendShapeArrays(surface_idx int64, blend_shape_idx int64) Array.Any { //gd:ImporterMesh.get_surface_blend_shape_arrays
@@ -590,7 +590,7 @@ func (self class) GetSurfaceBlendShapeArrays(surface_idx int64, blend_shape_idx 
 		surface_idx     int64
 		blend_shape_idx int64
 	}{surface_idx, blend_shape_idx})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetSurfaceLodCount(surface_idx int64) int64 { //gd:ImporterMesh.get_surface_lod_count
@@ -611,7 +611,7 @@ func (self class) GetSurfaceLodIndices(surface_idx int64, lod_idx int64) Packed.
 		surface_idx int64
 		lod_idx     int64
 	}{surface_idx, lod_idx})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetSurfaceMaterial(surface_idx int64) [1]gdclass.Material { //gd:ImporterMesh.get_surface_material

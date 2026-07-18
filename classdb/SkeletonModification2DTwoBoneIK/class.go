@@ -322,7 +322,7 @@ func (self class) SetTargetNode(target_nodepath Path.ToNode) { //gd:SkeletonModi
 }
 func (self class) GetTargetNode() Path.ToNode { //gd:SkeletonModification2DTwoBoneIK.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetTargetMinimumDistance(minimum_distance float64) { //gd:SkeletonModification2DTwoBoneIK.set_target_minimum_distance
@@ -354,7 +354,7 @@ func (self class) SetJointOneBone2dNode(bone2d_node Path.ToNode) { //gd:Skeleton
 }
 func (self class) GetJointOneBone2dNode() Path.ToNode { //gd:SkeletonModification2DTwoBoneIK.get_joint_one_bone2d_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_joint_one_bone2d_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetJointOneBoneIdx(bone_idx int64) { //gd:SkeletonModification2DTwoBoneIK.set_joint_one_bone_idx
@@ -370,7 +370,7 @@ func (self class) SetJointTwoBone2dNode(bone2d_node Path.ToNode) { //gd:Skeleton
 }
 func (self class) GetJointTwoBone2dNode() Path.ToNode { //gd:SkeletonModification2DTwoBoneIK.get_joint_two_bone2d_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_joint_two_bone2d_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetJointTwoBoneIdx(bone_idx int64) { //gd:SkeletonModification2DTwoBoneIK.set_joint_two_bone_idx

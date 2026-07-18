@@ -1184,7 +1184,7 @@ func (self class) SetVisibilityParent(path Path.ToNode) { //gd:Node3D.set_visibi
 }
 func (self class) GetVisibilityParent() Path.ToNode { //gd:Node3D.get_visibility_parent
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_visibility_parent, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) UpdateGizmos() { //gd:Node3D.update_gizmos
@@ -1195,7 +1195,7 @@ func (self class) AddGizmo(gizmo [1]gdclass.Node3DGizmo) { //gd:Node3D.add_gizmo
 }
 func (self class) GetGizmos() Array.Contains[[1]gdclass.Node3DGizmo] { //gd:Node3D.get_gizmos
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_gizmos, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Node3DGizmo]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node3DGizmo](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClearGizmos() { //gd:Node3D.clear_gizmos
@@ -1338,7 +1338,7 @@ func (self Instance) OnVisibilityChanged(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) VisibilityChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_changed`))))
 }
 
 func (o class) AsNode3D() Advanced            { return Advanced(o) }

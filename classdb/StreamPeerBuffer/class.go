@@ -257,7 +257,7 @@ func (self class) SetDataArray(data Packed.Bytes) { //gd:StreamPeerBuffer.set_da
 }
 func (self class) GetDataArray() Packed.Bytes { //gd:StreamPeerBuffer.get_data_array
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_data_array, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) Clear() { //gd:StreamPeerBuffer.clear

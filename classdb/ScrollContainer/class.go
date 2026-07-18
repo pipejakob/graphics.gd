@@ -539,7 +539,7 @@ func (self Instance) OnScrollStarted(cb func(), flags ...Signal.Flags) Instance 
 }
 
 func (self class) ScrollStarted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scroll_started`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scroll_started`))))
 }
 
 /*
@@ -559,7 +559,7 @@ func (self Instance) OnScrollEnded(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) ScrollEnded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scroll_ended`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scroll_ended`))))
 }
 
 func (o class) AsScrollContainer() Advanced               { return Advanced(o) }

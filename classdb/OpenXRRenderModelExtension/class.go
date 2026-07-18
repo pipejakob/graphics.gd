@@ -293,7 +293,7 @@ func (self class) RenderModelDestroy(render_model RID.Any) { //gd:OpenXRRenderMo
 }
 func (self class) RenderModelGetAll() Array.Contains[RID.Any] { //gd:OpenXRRenderModelExtension.render_model_get_all
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.render_model_get_all, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[RID.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) RenderModelNewSceneInstance(render_model RID.Any) [1]gdclass.Node3D { //gd:OpenXRRenderModelExtension.render_model_new_scene_instance
@@ -303,12 +303,12 @@ func (self class) RenderModelNewSceneInstance(render_model RID.Any) [1]gdclass.N
 }
 func (self class) RenderModelGetSubactionPaths(render_model RID.Any) Packed.Strings { //gd:OpenXRRenderModelExtension.render_model_get_subaction_paths
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.render_model_get_subaction_paths, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ render_model RID.Any }{render_model})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) RenderModelGetTopLevelPath(render_model RID.Any) String.Readable { //gd:OpenXRRenderModelExtension.render_model_get_top_level_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.render_model_get_top_level_path, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ render_model RID.Any }{render_model})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) RenderModelGetConfidence(render_model RID.Any) XRPose.TrackingConfidence { //gd:OpenXRRenderModelExtension.render_model_get_confidence
@@ -331,7 +331,7 @@ func (self class) RenderModelGetAnimatableNodeName(render_model RID.Any, index i
 		render_model RID.Any
 		index        int64
 	}{render_model, index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) RenderModelIsAnimatableNodeVisible(render_model RID.Any, index int64) bool { //gd:OpenXRRenderModelExtension.render_model_is_animatable_node_visible
@@ -364,7 +364,7 @@ func (self Instance) OnRenderModelAdded(cb func(render_model RID.Any), flags ...
 }
 
 func (self class) RenderModelAdded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_added`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_added`))))
 }
 
 /*
@@ -380,7 +380,7 @@ func (self Instance) OnRenderModelRemoved(cb func(render_model RID.Any), flags .
 }
 
 func (self class) RenderModelRemoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_removed`))))
 }
 
 /*
@@ -396,7 +396,7 @@ func (self Instance) OnRenderModelTopLevelPathChanged(cb func(render_model RID.A
 }
 
 func (self class) RenderModelTopLevelPathChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_top_level_path_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_top_level_path_changed`))))
 }
 
 func (o class) AsOpenXRRenderModelExtension() Advanced         { return Advanced(o) }

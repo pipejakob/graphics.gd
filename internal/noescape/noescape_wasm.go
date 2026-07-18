@@ -4,11 +4,22 @@ package noescape
 
 import (
 	"reflect"
+	"sync/atomic"
 	"unsafe"
 
 	"graphics.gd/internal/gdextension"
 	"graphics.gd/internal/ring"
 )
+
+// CallThreadSafe behaves like Call on wasm, which is single-threaded.
+func CallThreadSafe[T any](object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, args any) T {
+	return Call[T](object, method, shape, args)
+}
+
+// CallThreadSafeIf behaves like Call on wasm, which is single-threaded.
+func CallThreadSafeIf[T any](safe *atomic.Bool, object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, args any) T {
+	return Call[T](object, method, shape, args)
+}
 
 func Call[T any](object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, args any) T {
 	var argptr unsafe.Pointer = nil

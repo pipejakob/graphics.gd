@@ -264,7 +264,7 @@ func (self class) HasCustomMonitor(id String.Name) bool { //gd:Performance.has_c
 func (self class) GetCustomMonitor(id String.Name) variant.Any { //gd:Performance.get_custom_monitor
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Variant](gdreference.GetObject(self.AsObject()[0]), methods.get_custom_monitor, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ id gdextension.StringName }{pointers.Get(gd.InternalStringName(id))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetMonitorModificationTime() int64 { //gd:Performance.get_monitor_modification_time
@@ -276,13 +276,13 @@ func (self class) GetMonitorModificationTime() int64 { //gd:Performance.get_moni
 func (self class) GetCustomMonitorNames() Array.Contains[String.Name] { //gd:Performance.get_custom_monitor_names
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.get_custom_monitor_names, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetCustomMonitorTypes() Packed.Array[int32] { //gd:Performance.get_custom_monitor_types
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_custom_monitor_types, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 

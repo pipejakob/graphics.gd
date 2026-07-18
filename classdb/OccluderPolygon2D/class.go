@@ -230,7 +230,7 @@ func (self class) SetPolygon(polygon Packed.Array[Vector2.XY]) { //gd:OccluderPo
 }
 func (self class) GetPolygon() Packed.Array[Vector2.XY] { //gd:OccluderPolygon2D.get_polygon
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_polygon, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (o class) AsOccluderPolygon2D() Advanced         { return Advanced(o) }

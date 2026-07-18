@@ -447,7 +447,7 @@ func (self class) SearchAll(subject String.Readable, offset int64, end int64) Ar
 		offset  int64
 		end     int64
 	}{pointers.Get(gd.InternalString(subject)), offset, end})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.RegExMatch]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.RegExMatch](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Sub(subject String.Readable, replacement String.Readable, all bool, offset int64, end int64) String.Readable { //gd:RegEx.sub
@@ -458,7 +458,7 @@ func (self class) Sub(subject String.Readable, replacement String.Readable, all 
 		offset      int64
 		end         int64
 	}{pointers.Get(gd.InternalString(subject)), pointers.Get(gd.InternalString(replacement)), all, offset, end})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsValid() bool { //gd:RegEx.is_valid
@@ -468,7 +468,7 @@ func (self class) IsValid() bool { //gd:RegEx.is_valid
 }
 func (self class) GetPattern() String.Readable { //gd:RegEx.get_pattern
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_pattern, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetGroupCount() int64 { //gd:RegEx.get_group_count
@@ -478,7 +478,7 @@ func (self class) GetGroupCount() int64 { //gd:RegEx.get_group_count
 }
 func (self class) GetNames() Packed.Strings { //gd:RegEx.get_names
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_names, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (o class) AsRegEx() Advanced           { return Advanced(o) }

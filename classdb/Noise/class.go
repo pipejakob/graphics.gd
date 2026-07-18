@@ -371,7 +371,7 @@ func (self class) GetImage3d(width int64, height int64, depth int64, invert bool
 		invert    bool
 		normalize bool
 	}{width, height, depth, invert, normalize})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Image]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Image](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetSeamlessImage3d(width int64, height int64, depth int64, invert bool, skirt float64, normalize bool) Array.Contains[[1]gdclass.Image] { //gd:Noise.get_seamless_image_3d
@@ -383,7 +383,7 @@ func (self class) GetSeamlessImage3d(width int64, height int64, depth int64, inv
 		skirt     float64
 		normalize bool
 	}{width, height, depth, invert, skirt, normalize})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Image]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Image](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsNoise() Advanced                     { return Advanced(o) }

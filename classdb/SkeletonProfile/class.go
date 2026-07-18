@@ -475,7 +475,7 @@ func (self class) SetRootBone(bone_name String.Name) { //gd:SkeletonProfile.set_
 }
 func (self class) GetRootBone() String.Name { //gd:SkeletonProfile.get_root_bone
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_root_bone, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetScaleBaseBone(bone_name String.Name) { //gd:SkeletonProfile.set_scale_base_bone
@@ -483,7 +483,7 @@ func (self class) SetScaleBaseBone(bone_name String.Name) { //gd:SkeletonProfile
 }
 func (self class) GetScaleBaseBone() String.Name { //gd:SkeletonProfile.get_scale_base_bone
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_scale_base_bone, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetGroupSize(size int64) { //gd:SkeletonProfile.set_group_size
@@ -496,7 +496,7 @@ func (self class) GetGroupSize() int64 { //gd:SkeletonProfile.get_group_size
 }
 func (self class) GetGroupName(group_idx int64) String.Name { //gd:SkeletonProfile.get_group_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_group_name, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ group_idx int64 }{group_idx})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetGroupName(group_idx int64, group_name String.Name) { //gd:SkeletonProfile.set_group_name
@@ -531,7 +531,7 @@ func (self class) FindBone(bone_name String.Name) int64 { //gd:SkeletonProfile.f
 }
 func (self class) GetBoneName(bone_idx int64) String.Name { //gd:SkeletonProfile.get_bone_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bone_name, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetBoneName(bone_idx int64, bone_name String.Name) { //gd:SkeletonProfile.set_bone_name
@@ -542,7 +542,7 @@ func (self class) SetBoneName(bone_idx int64, bone_name String.Name) { //gd:Skel
 }
 func (self class) GetBoneParent(bone_idx int64) String.Name { //gd:SkeletonProfile.get_bone_parent
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bone_parent, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetBoneParent(bone_idx int64, bone_parent String.Name) { //gd:SkeletonProfile.set_bone_parent
@@ -564,7 +564,7 @@ func (self class) SetTailDirection(bone_idx int64, tail_direction TailDirection)
 }
 func (self class) GetBoneTail(bone_idx int64) String.Name { //gd:SkeletonProfile.get_bone_tail
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bone_tail, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetBoneTail(bone_idx int64, bone_tail String.Name) { //gd:SkeletonProfile.set_bone_tail
@@ -597,7 +597,7 @@ func (self class) SetHandleOffset(bone_idx int64, handle_offset Vector2.XY) { //
 }
 func (self class) GetGroup(bone_idx int64) String.Name { //gd:SkeletonProfile.get_group
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_group, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetGroup(bone_idx int64, group String.Name) { //gd:SkeletonProfile.set_group
@@ -635,7 +635,7 @@ func (self Instance) OnProfileUpdated(cb func(), flags ...Signal.Flags) Instance
 }
 
 func (self class) ProfileUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`profile_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`profile_updated`))))
 }
 
 func (o class) AsSkeletonProfile() Advanced           { return Advanced(o) }

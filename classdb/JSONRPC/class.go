@@ -286,12 +286,12 @@ func (self class) ProcessAction(action variant.Any, recurse bool) variant.Any { 
 		action  gdextension.Variant
 		recurse bool
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(action))), recurse})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) ProcessString(action String.Readable) String.Readable { //gd:JSONRPC.process_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.process_string, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ action gdextension.String }{pointers.Get(gd.InternalString(action))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) MakeRequest(method String.Readable, params variant.Any, id variant.Any) Dictionary.Any { //gd:JSONRPC.make_request
@@ -300,7 +300,7 @@ func (self class) MakeRequest(method String.Readable, params variant.Any, id var
 		params gdextension.Variant
 		id     gdextension.Variant
 	}{pointers.Get(gd.InternalString(method)), gdextension.Variant(pointers.Get(gd.InternalVariant(params))), gdextension.Variant(pointers.Get(gd.InternalVariant(id)))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) MakeResponse(result variant.Any, id variant.Any) Dictionary.Any { //gd:JSONRPC.make_response
@@ -308,7 +308,7 @@ func (self class) MakeResponse(result variant.Any, id variant.Any) Dictionary.An
 		result gdextension.Variant
 		id     gdextension.Variant
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(result))), gdextension.Variant(pointers.Get(gd.InternalVariant(id)))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) MakeNotification(method String.Readable, params variant.Any) Dictionary.Any { //gd:JSONRPC.make_notification
@@ -316,7 +316,7 @@ func (self class) MakeNotification(method String.Readable, params variant.Any) D
 		method gdextension.String
 		params gdextension.Variant
 	}{pointers.Get(gd.InternalString(method)), gdextension.Variant(pointers.Get(gd.InternalVariant(params)))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) MakeResponseError(code int64, message String.Readable, id variant.Any) Dictionary.Any { //gd:JSONRPC.make_response_error
@@ -325,7 +325,7 @@ func (self class) MakeResponseError(code int64, message String.Readable, id vari
 		message gdextension.String
 		id      gdextension.Variant
 	}{code, pointers.Get(gd.InternalString(message)), gdextension.Variant(pointers.Get(gd.InternalVariant(id)))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (o class) AsJSONRPC() Advanced         { return Advanced(o) }

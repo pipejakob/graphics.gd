@@ -259,7 +259,7 @@ func (self class) SetHandSkeleton(hand_skeleton Path.ToNode) { //gd:OpenXRHand.s
 }
 func (self class) GetHandSkeleton() Path.ToNode { //gd:OpenXRHand.get_hand_skeleton
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_hand_skeleton, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetMotionRange(motion_range MotionRange) { //gd:OpenXRHand.set_motion_range

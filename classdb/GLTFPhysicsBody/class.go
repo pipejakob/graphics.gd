@@ -352,12 +352,12 @@ func (self class) FromDictionary(dictionary Dictionary.Any) [1]gdclass.GLTFPhysi
 }
 func (self class) ToDictionary() Dictionary.Any { //gd:GLTFPhysicsBody.to_dictionary
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.to_dictionary, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetBodyType() String.Readable { //gd:GLTFPhysicsBody.get_body_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_body_type, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBodyType(body_type String.Readable) { //gd:GLTFPhysicsBody.set_body_type

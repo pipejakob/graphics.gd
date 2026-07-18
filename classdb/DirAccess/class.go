@@ -758,7 +758,7 @@ func (self class) ListDirBegin() Error.Code { //gd:DirAccess.list_dir_begin
 }
 func (self class) GetNext() String.Readable { //gd:DirAccess.get_next
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_next, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) CurrentIsDir() bool { //gd:DirAccess.current_is_dir
@@ -771,22 +771,22 @@ func (self class) ListDirEnd() { //gd:DirAccess.list_dir_end
 }
 func (self class) GetFiles() Packed.Strings { //gd:DirAccess.get_files
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_files, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetFilesAt(path String.Readable) Packed.Strings { //gd:DirAccess.get_files_at
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.get_files_at, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetDirectories() Packed.Strings { //gd:DirAccess.get_directories
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_directories, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetDirectoriesAt(path String.Readable) Packed.Strings { //gd:DirAccess.get_directories_at
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.get_directories_at, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetDriveCount() int64 { //gd:DirAccess.get_drive_count
@@ -796,12 +796,12 @@ func (self class) GetDriveCount() int64 { //gd:DirAccess.get_drive_count
 }
 func (self class) GetDriveName(idx int64) String.Readable { //gd:DirAccess.get_drive_name
 	var r_ret = noescape.CallStatic[gdextension.String](methods.get_drive_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDriveLabel(idx int64) String.Readable { //gd:DirAccess.get_drive_label
 	var r_ret = noescape.CallStatic[gdextension.String](methods.get_drive_label, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCurrentDrive() int64 { //gd:DirAccess.get_current_drive
@@ -816,7 +816,7 @@ func (self class) ChangeDir(to_dir String.Readable) Error.Code { //gd:DirAccess.
 }
 func (self class) GetCurrentDir(include_drive bool) String.Readable { //gd:DirAccess.get_current_dir
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_current_dir, gdextension.SizeString|(gdextension.SizeBool<<4), &struct{ include_drive bool }{include_drive})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) MakeDir(path String.Readable) Error.Code { //gd:DirAccess.make_dir
@@ -910,7 +910,7 @@ func (self class) IsLink(path String.Readable) bool { //gd:DirAccess.is_link
 }
 func (self class) ReadLink(path String.Readable) String.Readable { //gd:DirAccess.read_link
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.read_link, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) CreateLink(source String.Readable, target String.Readable) Error.Code { //gd:DirAccess.create_link
@@ -944,7 +944,7 @@ func (self class) GetIncludeHidden() bool { //gd:DirAccess.get_include_hidden
 }
 func (self class) GetFilesystemType() String.Readable { //gd:DirAccess.get_filesystem_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_filesystem_type, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsCaseSensitive(path String.Readable) bool { //gd:DirAccess.is_case_sensitive

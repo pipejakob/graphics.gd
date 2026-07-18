@@ -219,7 +219,7 @@ func (self Instance) OnInherit(cb func(file string), flags ...Signal.Flags) Inst
 }
 
 func (self class) Inherit() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`inherit`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`inherit`))))
 }
 
 /*
@@ -235,7 +235,7 @@ func (self Instance) OnInstantiate(cb func(files []string), flags ...Signal.Flag
 }
 
 func (self class) Instantiate() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`instantiate`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`instantiate`))))
 }
 
 /*
@@ -251,7 +251,7 @@ func (self Instance) OnResourceRemoved(cb func(resource Resource.Instance), flag
 }
 
 func (self class) ResourceRemoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_removed`))))
 }
 
 /*
@@ -267,7 +267,7 @@ func (self Instance) OnFileRemoved(cb func(file string), flags ...Signal.Flags) 
 }
 
 func (self class) FileRemoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`file_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`file_removed`))))
 }
 
 /*
@@ -283,7 +283,7 @@ func (self Instance) OnFolderRemoved(cb func(folder string), flags ...Signal.Fla
 }
 
 func (self class) FolderRemoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`folder_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`folder_removed`))))
 }
 
 /*
@@ -299,7 +299,7 @@ func (self Instance) OnFilesMoved(cb func(old_file string, new_file string), fla
 }
 
 func (self class) FilesMoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`files_moved`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`files_moved`))))
 }
 
 /*
@@ -315,7 +315,7 @@ func (self Instance) OnFolderMoved(cb func(old_folder string, new_folder string)
 }
 
 func (self class) FolderMoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`folder_moved`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`folder_moved`))))
 }
 
 /*
@@ -331,7 +331,7 @@ func (self Instance) OnFolderColorChanged(cb func(), flags ...Signal.Flags) Inst
 }
 
 func (self class) FolderColorChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`folder_color_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`folder_color_changed`))))
 }
 
 /*
@@ -349,7 +349,7 @@ func (self Instance) OnSelectionChanged(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) SelectionChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`selection_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`selection_changed`))))
 }
 
 /*
@@ -365,7 +365,7 @@ func (self Instance) OnDisplayModeChanged(cb func(), flags ...Signal.Flags) Inst
 }
 
 func (self class) DisplayModeChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`display_mode_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`display_mode_changed`))))
 }
 
 func (o class) AsFileSystemDock() Advanced                { return Advanced(o) }

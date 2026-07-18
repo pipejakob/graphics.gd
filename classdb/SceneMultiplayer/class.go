@@ -401,7 +401,7 @@ func (self class) SetRootPath(path Path.ToNode) { //gd:SceneMultiplayer.set_root
 }
 func (self class) GetRootPath() Path.ToNode { //gd:SceneMultiplayer.get_root_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_root_path, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) Clear() { //gd:SceneMultiplayer.clear
@@ -412,7 +412,7 @@ func (self class) DisconnectPeer(id int64) { //gd:SceneMultiplayer.disconnect_pe
 }
 func (self class) GetAuthenticatingPeers() Packed.Array[int32] { //gd:SceneMultiplayer.get_authenticating_peers
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_authenticating_peers, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SendAuth(id int64, data Packed.Bytes) Error.Code { //gd:SceneMultiplayer.send_auth
@@ -433,7 +433,7 @@ func (self class) SetAuthCallback(callback Callable.Function) { //gd:SceneMultip
 }
 func (self class) GetAuthCallback() Callable.Function { //gd:SceneMultiplayer.get_auth_callback
 	var r_ret = jumponly.Call[gdextension.Callable](gd.ObjectChecked(self.AsObject()), methods.get_auth_callback, gdextension.SizeCallable, &struct{}{})
-	var ret = Callable.Through(gd.CallableProxy{}, pointers.Pack(pointers.New[gd.Callable](r_ret)))
+	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
 func (self class) SetAuthTimeout(timeout float64) { //gd:SceneMultiplayer.set_auth_timeout
@@ -516,7 +516,7 @@ func (self Instance) OnPeerAuthenticating(cb func(id int), flags ...Signal.Flags
 }
 
 func (self class) PeerAuthenticating() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_authenticating`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_authenticating`))))
 }
 
 /*
@@ -535,7 +535,7 @@ func (self Instance) OnPeerAuthenticationFailed(cb func(id int), flags ...Signal
 }
 
 func (self class) PeerAuthenticationFailed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_authentication_failed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_authentication_failed`))))
 }
 
 /*
@@ -554,7 +554,7 @@ func (self Instance) OnPeerPacket(cb func(id int, packet []byte), flags ...Signa
 }
 
 func (self class) PeerPacket() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_packet`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_packet`))))
 }
 
 func (o class) AsSceneMultiplayer() Advanced         { return Advanced(o) }

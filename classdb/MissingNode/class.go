@@ -226,7 +226,7 @@ func (self class) SetOriginalClass(name String.Readable) { //gd:MissingNode.set_
 }
 func (self class) GetOriginalClass() String.Readable { //gd:MissingNode.get_original_class
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_original_class, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOriginalScene(name String.Readable) { //gd:MissingNode.set_original_scene
@@ -234,7 +234,7 @@ func (self class) SetOriginalScene(name String.Readable) { //gd:MissingNode.set_
 }
 func (self class) GetOriginalScene() String.Readable { //gd:MissingNode.get_original_scene
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_original_scene, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetRecordingProperties(enable bool) { //gd:MissingNode.set_recording_properties

@@ -290,7 +290,7 @@ func (self class) SetTargetNode(target_nodepath Path.ToNode) { //gd:SkeletonModi
 }
 func (self class) GetTargetNode() Path.ToNode { //gd:SkeletonModification2DFABRIK.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetFabrikDataChainLength(length int64) { //gd:SkeletonModification2DFABRIK.set_fabrik_data_chain_length
@@ -309,7 +309,7 @@ func (self class) SetFabrikJointBone2dNode(joint_idx int64, bone2d_nodepath Path
 }
 func (self class) GetFabrikJointBone2dNode(joint_idx int64) Path.ToNode { //gd:SkeletonModification2DFABRIK.get_fabrik_joint_bone2d_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_fabrik_joint_bone2d_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetFabrikJointBoneIndex(joint_idx int64, bone_idx int64) { //gd:SkeletonModification2DFABRIK.set_fabrik_joint_bone_index

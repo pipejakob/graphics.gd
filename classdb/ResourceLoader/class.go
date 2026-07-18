@@ -169,7 +169,7 @@ Note: The recommended way of using this method is to call it during different fr
 [Node.Process]: https://pkg.go.dev/graphics.gd/classdb/Node#Instance.Process
 */
 func LoadThreadedGetStatus(path string) (float32, ThreadLoadStatus) { //gd:ResourceLoader.load_threaded_get_status
-	var returns_progress = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(gd.NewArray()))
+	var returns_progress = Array.Through(gd.WrapArray[variant.Any](gd.NewArray()))
 	results := Advanced().LoadThreadedGetStatus(String.From(path), returns_progress)
 	return gd.VariantAs[float32](gd.InternalArray(returns_progress).Index(0)), results
 }
@@ -377,7 +377,7 @@ func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObj
 
 func (self class) LoadThreadedRequest(path String.Readable, type_hint String.Readable, use_sub_threads bool, cache_mode CacheMode) Error.Code { //gd:ResourceLoader.load_threaded_request
 	once.Do(singleton)
-	var r_ret = noescape.Call[int64](gdreference.GetObject(self.AsObject()[0]), methods.load_threaded_request, gdextension.SizeInt|(gdextension.SizeString<<4)|(gdextension.SizeString<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeInt<<16), &struct {
+	var r_ret = noescape.CallThreadSafe[int64](gdreference.GetObject(self.AsObject()[0]), methods.load_threaded_request, gdextension.SizeInt|(gdextension.SizeString<<4)|(gdextension.SizeString<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeInt<<16), &struct {
 		path            gdextension.String
 		type_hint       gdextension.String
 		use_sub_threads bool
@@ -388,7 +388,7 @@ func (self class) LoadThreadedRequest(path String.Readable, type_hint String.Rea
 }
 func (self class) LoadThreadedGetStatus(path String.Readable, progress Array.Any) ThreadLoadStatus { //gd:ResourceLoader.load_threaded_get_status
 	once.Do(singleton)
-	var r_ret = noescape.Call[ThreadLoadStatus](gdreference.GetObject(self.AsObject()[0]), methods.load_threaded_get_status, gdextension.SizeInt|(gdextension.SizeString<<4)|(gdextension.SizeArray<<8), &struct {
+	var r_ret = noescape.CallThreadSafe[ThreadLoadStatus](gdreference.GetObject(self.AsObject()[0]), methods.load_threaded_get_status, gdextension.SizeInt|(gdextension.SizeString<<4)|(gdextension.SizeArray<<8), &struct {
 		path     gdextension.String
 		progress gdextension.Array
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalArray(progress))})
@@ -397,13 +397,13 @@ func (self class) LoadThreadedGetStatus(path String.Readable, progress Array.Any
 }
 func (self class) LoadThreadedGet(path String.Readable) [1]gdclass.Resource { //gd:ResourceLoader.load_threaded_get
 	once.Do(singleton)
-	var r_ret = noescape.Call[gdextension.Object](gdreference.GetObject(self.AsObject()[0]), methods.load_threaded_get, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	var r_ret = noescape.CallThreadSafe[gdextension.Object](gdreference.GetObject(self.AsObject()[0]), methods.load_threaded_get, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
 	var ret = [1]gdclass.Resource{gdclass.NewResource(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) Load(path String.Readable, type_hint String.Readable, cache_mode CacheMode) [1]gdclass.Resource { //gd:ResourceLoader.load
 	once.Do(singleton)
-	var r_ret = noescape.Call[gdextension.Object](gdreference.GetObject(self.AsObject()[0]), methods.load, gdextension.SizeObject|(gdextension.SizeString<<4)|(gdextension.SizeString<<8)|(gdextension.SizeInt<<12), &struct {
+	var r_ret = noescape.CallThreadSafe[gdextension.Object](gdreference.GetObject(self.AsObject()[0]), methods.load, gdextension.SizeObject|(gdextension.SizeString<<4)|(gdextension.SizeString<<8)|(gdextension.SizeInt<<12), &struct {
 		path       gdextension.String
 		type_hint  gdextension.String
 		cache_mode CacheMode
@@ -413,46 +413,46 @@ func (self class) Load(path String.Readable, type_hint String.Readable, cache_mo
 }
 func (self class) GetRecognizedExtensionsForType(atype String.Readable) Packed.Strings { //gd:ResourceLoader.get_recognized_extensions_for_type
 	once.Do(singleton)
-	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_recognized_extensions_for_type, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ atype gdextension.String }{pointers.Get(gd.InternalString(atype))})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var r_ret = noescape.CallThreadSafe[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_recognized_extensions_for_type, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ atype gdextension.String }{pointers.Get(gd.InternalString(atype))})
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) AddResourceFormatLoader(format_loader [1]gdclass.ResourceFormatLoader, at_front bool) { //gd:ResourceLoader.add_resource_format_loader
 	once.Do(singleton)
-	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.add_resource_format_loader, 0|(gdextension.SizeObject<<4)|(gdextension.SizeBool<<8), &struct {
+	noescape.CallThreadSafe[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.add_resource_format_loader, 0|(gdextension.SizeObject<<4)|(gdextension.SizeBool<<8), &struct {
 		format_loader gdextension.Object
 		at_front      bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetResourceFormatLoader(format_loader[0])[0])), at_front})
 }
 func (self class) RemoveResourceFormatLoader(format_loader [1]gdclass.ResourceFormatLoader) { //gd:ResourceLoader.remove_resource_format_loader
 	once.Do(singleton)
-	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.remove_resource_format_loader, 0|(gdextension.SizeObject<<4), &struct{ format_loader gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetResourceFormatLoader(format_loader[0])[0]))})
+	noescape.CallThreadSafe[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.remove_resource_format_loader, 0|(gdextension.SizeObject<<4), &struct{ format_loader gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetResourceFormatLoader(format_loader[0])[0]))})
 }
 func (self class) SetAbortOnMissingResources(abort bool) { //gd:ResourceLoader.set_abort_on_missing_resources
 	once.Do(singleton)
-	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.set_abort_on_missing_resources, 0|(gdextension.SizeBool<<4), &struct{ abort bool }{abort})
+	noescape.CallThreadSafe[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.set_abort_on_missing_resources, 0|(gdextension.SizeBool<<4), &struct{ abort bool }{abort})
 }
 func (self class) GetDependencies(path String.Readable) Packed.Strings { //gd:ResourceLoader.get_dependencies
 	once.Do(singleton)
-	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_dependencies, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var r_ret = noescape.CallThreadSafe[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_dependencies, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) HasCached(path String.Readable) bool { //gd:ResourceLoader.has_cached
 	once.Do(singleton)
-	var r_ret = noescape.Call[bool](gdreference.GetObject(self.AsObject()[0]), methods.has_cached, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	var r_ret = noescape.CallThreadSafe[bool](gdreference.GetObject(self.AsObject()[0]), methods.has_cached, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCachedRef(path String.Readable) [1]gdclass.Resource { //gd:ResourceLoader.get_cached_ref
 	once.Do(singleton)
-	var r_ret = noescape.Call[gdextension.Object](gdreference.GetObject(self.AsObject()[0]), methods.get_cached_ref, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	var r_ret = noescape.CallThreadSafe[gdextension.Object](gdreference.GetObject(self.AsObject()[0]), methods.get_cached_ref, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
 	var ret = [1]gdclass.Resource{gdclass.NewResource(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) Exists(path String.Readable, type_hint String.Readable) bool { //gd:ResourceLoader.exists
 	once.Do(singleton)
-	var r_ret = noescape.Call[bool](gdreference.GetObject(self.AsObject()[0]), methods.exists, gdextension.SizeBool|(gdextension.SizeString<<4)|(gdextension.SizeString<<8), &struct {
+	var r_ret = noescape.CallThreadSafe[bool](gdreference.GetObject(self.AsObject()[0]), methods.exists, gdextension.SizeBool|(gdextension.SizeString<<4)|(gdextension.SizeString<<8), &struct {
 		path      gdextension.String
 		type_hint gdextension.String
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalString(type_hint))})
@@ -461,14 +461,14 @@ func (self class) Exists(path String.Readable, type_hint String.Readable) bool {
 }
 func (self class) GetResourceUid(path String.Readable) int64 { //gd:ResourceLoader.get_resource_uid
 	once.Do(singleton)
-	var r_ret = noescape.Call[int64](gdreference.GetObject(self.AsObject()[0]), methods.get_resource_uid, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	var r_ret = noescape.CallThreadSafe[int64](gdreference.GetObject(self.AsObject()[0]), methods.get_resource_uid, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
 	var ret = r_ret
 	return ret
 }
 func (self class) ListDirectory(directory_path String.Readable) Packed.Strings { //gd:ResourceLoader.list_directory
 	once.Do(singleton)
-	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.list_directory, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ directory_path gdextension.String }{pointers.Get(gd.InternalString(directory_path))})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var r_ret = noescape.CallThreadSafe[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.list_directory, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ directory_path gdextension.String }{pointers.Get(gd.InternalString(directory_path))})
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 

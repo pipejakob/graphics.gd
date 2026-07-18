@@ -731,7 +731,7 @@ func (self class) SetTargetNode(target_node Path.ToNode) { //gd:LookAtModifier3D
 }
 func (self class) GetTargetNode() Path.ToNode { //gd:LookAtModifier3D.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetBoneName(bone_name String.Readable) { //gd:LookAtModifier3D.set_bone_name
@@ -739,7 +739,7 @@ func (self class) SetBoneName(bone_name String.Readable) { //gd:LookAtModifier3D
 }
 func (self class) GetBoneName() String.Readable { //gd:LookAtModifier3D.get_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_bone_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBone(bone int64) { //gd:LookAtModifier3D.set_bone
@@ -803,7 +803,7 @@ func (self class) SetOriginBoneName(bone_name String.Readable) { //gd:LookAtModi
 }
 func (self class) GetOriginBoneName() String.Readable { //gd:LookAtModifier3D.get_origin_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_origin_bone_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOriginBone(bone int64) { //gd:LookAtModifier3D.set_origin_bone
@@ -819,7 +819,7 @@ func (self class) SetOriginExternalNode(external_node Path.ToNode) { //gd:LookAt
 }
 func (self class) GetOriginExternalNode() Path.ToNode { //gd:LookAtModifier3D.get_origin_external_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_origin_external_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetOriginOffset(offset Vector3.XYZ) { //gd:LookAtModifier3D.set_origin_offset

@@ -185,7 +185,7 @@ func (self class) SetColors(colors Packed.Array[Color.RGBA]) { //gd:ColorPalette
 }
 func (self class) GetColors() Packed.Array[Color.RGBA] { //gd:ColorPalette.get_colors
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_colors, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Color.RGBA](Array.Through(gd.PackedProxy[gd.PackedColorArray, Color.RGBA]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (o class) AsColorPalette() Advanced              { return Advanced(o) }

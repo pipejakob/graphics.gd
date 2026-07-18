@@ -514,7 +514,7 @@ func (self class) SetSessionMode(session_mode String.Readable) { //gd:WebXRInter
 }
 func (self class) GetSessionMode() String.Readable { //gd:WebXRInterface.get_session_mode
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_session_mode, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetRequiredFeatures(required_features String.Readable) { //gd:WebXRInterface.set_required_features
@@ -522,7 +522,7 @@ func (self class) SetRequiredFeatures(required_features String.Readable) { //gd:
 }
 func (self class) GetRequiredFeatures() String.Readable { //gd:WebXRInterface.get_required_features
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_required_features, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOptionalFeatures(optional_features String.Readable) { //gd:WebXRInterface.set_optional_features
@@ -530,17 +530,17 @@ func (self class) SetOptionalFeatures(optional_features String.Readable) { //gd:
 }
 func (self class) GetOptionalFeatures() String.Readable { //gd:WebXRInterface.get_optional_features
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_optional_features, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetReferenceSpaceType() String.Readable { //gd:WebXRInterface.get_reference_space_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_reference_space_type, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetEnabledFeatures() String.Readable { //gd:WebXRInterface.get_enabled_features
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_enabled_features, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetRequestedReferenceSpaceTypes(requested_reference_space_types String.Readable) { //gd:WebXRInterface.set_requested_reference_space_types
@@ -548,7 +548,7 @@ func (self class) SetRequestedReferenceSpaceTypes(requested_reference_space_type
 }
 func (self class) GetRequestedReferenceSpaceTypes() String.Readable { //gd:WebXRInterface.get_requested_reference_space_types
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_requested_reference_space_types, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsInputSourceActive(input_source_id int64) bool { //gd:WebXRInterface.is_input_source_active
@@ -568,7 +568,7 @@ func (self class) GetInputSourceTargetRayMode(input_source_id int64) TargetRayMo
 }
 func (self class) GetVisibilityState() String.Readable { //gd:WebXRInterface.get_visibility_state
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_visibility_state, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDisplayRefreshRate() float64 { //gd:WebXRInterface.get_display_refresh_rate
@@ -581,7 +581,7 @@ func (self class) SetDisplayRefreshRate(refresh_rate float64) { //gd:WebXRInterf
 }
 func (self class) GetAvailableDisplayRefreshRates() Array.Any { //gd:WebXRInterface.get_available_display_refresh_rates
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_available_display_refresh_rates, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 
@@ -600,7 +600,7 @@ func (self Instance) OnSessionSupported(cb func(session_mode string, supported b
 }
 
 func (self class) SessionSupported() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`session_supported`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`session_supported`))))
 }
 
 /*
@@ -620,7 +620,7 @@ func (self Instance) OnSessionStarted(cb func(), flags ...Signal.Flags) Instance
 }
 
 func (self class) SessionStarted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`session_started`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`session_started`))))
 }
 
 /*
@@ -638,7 +638,7 @@ func (self Instance) OnSessionEnded(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) SessionEnded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`session_ended`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`session_ended`))))
 }
 
 /*
@@ -658,7 +658,7 @@ func (self Instance) OnSessionFailed(cb func(message string), flags ...Signal.Fl
 }
 
 func (self class) SessionFailed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`session_failed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`session_failed`))))
 }
 
 /*
@@ -679,7 +679,7 @@ func (self Instance) OnSelectstart(cb func(input_source_id int), flags ...Signal
 }
 
 func (self class) Selectstart() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`selectstart`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`selectstart`))))
 }
 
 /*
@@ -700,7 +700,7 @@ func (self Instance) OnSelect(cb func(input_source_id int), flags ...Signal.Flag
 }
 
 func (self class) Select() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`select`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`select`))))
 }
 
 /*
@@ -721,7 +721,7 @@ func (self Instance) OnSelectend(cb func(input_source_id int), flags ...Signal.F
 }
 
 func (self class) Selectend() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`selectend`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`selectend`))))
 }
 
 /*
@@ -742,7 +742,7 @@ func (self Instance) OnSqueezestart(cb func(input_source_id int), flags ...Signa
 }
 
 func (self class) Squeezestart() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`squeezestart`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`squeezestart`))))
 }
 
 /*
@@ -763,7 +763,7 @@ func (self Instance) OnSqueeze(cb func(input_source_id int), flags ...Signal.Fla
 }
 
 func (self class) Squeeze() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`squeeze`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`squeeze`))))
 }
 
 /*
@@ -784,7 +784,7 @@ func (self Instance) OnSqueezeend(cb func(input_source_id int), flags ...Signal.
 }
 
 func (self class) Squeezeend() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`squeezeend`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`squeezeend`))))
 }
 
 /*
@@ -802,7 +802,7 @@ func (self Instance) OnVisibilityStateChanged(cb func(), flags ...Signal.Flags) 
 }
 
 func (self class) VisibilityStateChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_state_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_state_changed`))))
 }
 
 /*
@@ -825,7 +825,7 @@ func (self Instance) OnReferenceSpaceReset(cb func(), flags ...Signal.Flags) Ins
 }
 
 func (self class) ReferenceSpaceReset() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`reference_space_reset`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`reference_space_reset`))))
 }
 
 /*
@@ -841,7 +841,7 @@ func (self Instance) OnDisplayRefreshRateChanged(cb func(), flags ...Signal.Flag
 }
 
 func (self class) DisplayRefreshRateChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`display_refresh_rate_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`display_refresh_rate_changed`))))
 }
 
 func (o class) AsWebXRInterface() Advanced                  { return Advanced(o) }

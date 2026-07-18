@@ -607,12 +607,12 @@ func (self class) IsMonitorable() bool { //gd:Area2D.is_monitorable
 }
 func (self class) GetOverlappingBodies() Array.Contains[[1]gdclass.Node2D] { //gd:Area2D.get_overlapping_bodies
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_overlapping_bodies, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Node2D]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node2D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetOverlappingAreas() Array.Contains[[1]gdclass.Area2D] { //gd:Area2D.get_overlapping_areas
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_overlapping_areas, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Area2D]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Area2D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) HasOverlappingBodies() bool { //gd:Area2D.has_overlapping_bodies
@@ -640,7 +640,7 @@ func (self class) SetAudioBusName(name String.Name) { //gd:Area2D.set_audio_bus_
 }
 func (self class) GetAudioBusName() String.Name { //gd:Area2D.get_audio_bus_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_audio_bus_name, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetAudioBusOverride(enable bool) { //gd:Area2D.set_audio_bus_override
@@ -678,7 +678,7 @@ func (self Instance) OnBodyShapeEntered(cb func(body_rid RID.Any, body Node2D.In
 }
 
 func (self class) BodyShapeEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_entered`))))
 }
 
 /*
@@ -703,7 +703,7 @@ func (self Instance) OnBodyShapeExited(cb func(body_rid RID.Any, body Node2D.Ins
 }
 
 func (self class) BodyShapeExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_exited`))))
 }
 
 /*
@@ -724,7 +724,7 @@ func (self Instance) OnBodyEntered(cb func(body Node2D.Instance), flags ...Signa
 }
 
 func (self class) BodyEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_entered`))))
 }
 
 /*
@@ -745,7 +745,7 @@ func (self Instance) OnBodyExited(cb func(body Node2D.Instance), flags ...Signal
 }
 
 func (self class) BodyExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_exited`))))
 }
 
 /*
@@ -771,7 +771,7 @@ func (self Instance) OnAreaShapeEntered(cb func(area_rid RID.Any, area Instance,
 }
 
 func (self class) AreaShapeEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_shape_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_shape_entered`))))
 }
 
 /*
@@ -793,7 +793,7 @@ func (self Instance) OnAreaShapeExited(cb func(area_rid RID.Any, area Instance, 
 }
 
 func (self class) AreaShapeExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_shape_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_shape_exited`))))
 }
 
 /*
@@ -811,7 +811,7 @@ func (self Instance) OnAreaEntered(cb func(area Instance), flags ...Signal.Flags
 }
 
 func (self class) AreaEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_entered`))))
 }
 
 /*
@@ -829,7 +829,7 @@ func (self Instance) OnAreaExited(cb func(area Instance), flags ...Signal.Flags)
 }
 
 func (self class) AreaExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`area_exited`))))
 }
 
 func (o class) AsArea2D() Advanced         { return Advanced(o) }

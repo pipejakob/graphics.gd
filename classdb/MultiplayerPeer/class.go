@@ -424,7 +424,7 @@ func (self Instance) OnPeerConnected(cb func(id int), flags ...Signal.Flags) Ins
 }
 
 func (self class) PeerConnected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_connected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_connected`))))
 }
 
 /*
@@ -440,7 +440,7 @@ func (self Instance) OnPeerDisconnected(cb func(id int), flags ...Signal.Flags) 
 }
 
 func (self class) PeerDisconnected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_disconnected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`peer_disconnected`))))
 }
 
 func (o class) AsMultiplayerPeer() Advanced               { return Advanced(o) }

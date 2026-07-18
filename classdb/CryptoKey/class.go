@@ -268,7 +268,7 @@ func (self class) IsPublicOnly() bool { //gd:CryptoKey.is_public_only
 }
 func (self class) SaveToString(public_only bool) String.Readable { //gd:CryptoKey.save_to_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.save_to_string, gdextension.SizeString|(gdextension.SizeBool<<4), &struct{ public_only bool }{public_only})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) LoadFromString(string_key String.Readable, public_only bool) Error.Code { //gd:CryptoKey.load_from_string

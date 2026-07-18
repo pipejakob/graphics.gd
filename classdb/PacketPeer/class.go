@@ -272,7 +272,7 @@ func (self Instance) SetEncodeBufferMaxSize(value int) Instance { //gd:PacketPee
 
 func (self class) GetVar(allow_objects bool) variant.Any { //gd:PacketPeer.get_var
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_var, gdextension.SizeVariant|(gdextension.SizeBool<<4), &struct{ allow_objects bool }{allow_objects})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) PutVar(v variant.Any, full_objects bool) Error.Code { //gd:PacketPeer.put_var
@@ -285,7 +285,7 @@ func (self class) PutVar(v variant.Any, full_objects bool) Error.Code { //gd:Pac
 }
 func (self class) GetPacket() Packed.Bytes { //gd:PacketPeer.get_packet
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_packet, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) PutPacket(buffer Packed.Bytes) Error.Code { //gd:PacketPeer.put_packet

@@ -455,7 +455,7 @@ func (self class) ConnectToHost(address String.Readable, port int64, channels in
 }
 func (self class) Service(timeout int64) Array.Any { //gd:ENetConnection.service
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.service, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ timeout int64 }{timeout})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Flush() { //gd:ENetConnection.flush
@@ -513,7 +513,7 @@ func (self class) GetLocalPort() int64 { //gd:ENetConnection.get_local_port
 }
 func (self class) GetPeers() Array.Contains[[1]gdclass.ENetPacketPeer] { //gd:ENetConnection.get_peers
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_peers, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.ENetPacketPeer]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.ENetPacketPeer](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SocketSend(destination_address String.Readable, destination_port int64, packet Packed.Bytes) { //gd:ENetConnection.socket_send

@@ -341,7 +341,7 @@ func (self class) SetAdvanceCondition(name String.Name) { //gd:AnimationNodeStat
 }
 func (self class) GetAdvanceCondition() String.Name { //gd:AnimationNodeStateMachineTransition.get_advance_condition
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_advance_condition, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetXfadeTime(secs float64) { //gd:AnimationNodeStateMachineTransition.set_xfade_time
@@ -389,7 +389,7 @@ func (self class) SetAdvanceExpression(text String.Readable) { //gd:AnimationNod
 }
 func (self class) GetAdvanceExpression() String.Readable { //gd:AnimationNodeStateMachineTransition.get_advance_expression
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_advance_expression, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 
@@ -408,7 +408,7 @@ func (self Instance) OnAdvanceConditionChanged(cb func(), flags ...Signal.Flags)
 }
 
 func (self class) AdvanceConditionChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`advance_condition_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`advance_condition_changed`))))
 }
 
 func (o class) AsAnimationNodeStateMachineTransition() Advanced         { return Advanced(o) }

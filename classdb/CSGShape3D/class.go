@@ -524,7 +524,7 @@ func (self class) IsCalculatingTangents() bool { //gd:CSGShape3D.is_calculating_
 }
 func (self class) GetMeshes() Array.Any { //gd:CSGShape3D.get_meshes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_meshes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) BakeStaticMesh() [1]gdclass.ArrayMesh { //gd:CSGShape3D.bake_static_mesh

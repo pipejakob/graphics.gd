@@ -286,7 +286,7 @@ func (self class) SetSkinRoot(skin_root int64) { //gd:GLTFSkin.set_skin_root
 }
 func (self class) GetJointsOriginal() Packed.Array[int32] { //gd:GLTFSkin.get_joints_original
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_joints_original, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetJointsOriginal(joints_original Packed.Array[int32]) { //gd:GLTFSkin.set_joints_original
@@ -296,7 +296,7 @@ func (self class) SetJointsOriginal(joints_original Packed.Array[int32]) { //gd:
 }
 func (self class) GetInverseBinds() Array.Contains[Transform3D.BasisOrigin] { //gd:GLTFSkin.get_inverse_binds
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_inverse_binds, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Transform3D.BasisOrigin]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Transform3D.BasisOrigin](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetInverseBinds(inverse_binds Array.Contains[Transform3D.BasisOrigin]) { //gd:GLTFSkin.set_inverse_binds
@@ -304,7 +304,7 @@ func (self class) SetInverseBinds(inverse_binds Array.Contains[Transform3D.Basis
 }
 func (self class) GetJoints() Packed.Array[int32] { //gd:GLTFSkin.get_joints
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_joints, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetJoints(joints Packed.Array[int32]) { //gd:GLTFSkin.set_joints
@@ -314,7 +314,7 @@ func (self class) SetJoints(joints Packed.Array[int32]) { //gd:GLTFSkin.set_join
 }
 func (self class) GetNonJoints() Packed.Array[int32] { //gd:GLTFSkin.get_non_joints
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_non_joints, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetNonJoints(non_joints Packed.Array[int32]) { //gd:GLTFSkin.set_non_joints
@@ -324,7 +324,7 @@ func (self class) SetNonJoints(non_joints Packed.Array[int32]) { //gd:GLTFSkin.s
 }
 func (self class) GetRoots() Packed.Array[int32] { //gd:GLTFSkin.get_roots
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_roots, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetRoots(roots Packed.Array[int32]) { //gd:GLTFSkin.set_roots
@@ -342,7 +342,7 @@ func (self class) SetSkeleton(skeleton int64) { //gd:GLTFSkin.set_skeleton
 }
 func (self class) GetJointIToBoneI() Dictionary.Any { //gd:GLTFSkin.get_joint_i_to_bone_i
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_joint_i_to_bone_i, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetJointIToBoneI(joint_i_to_bone_i Dictionary.Any) { //gd:GLTFSkin.set_joint_i_to_bone_i
@@ -350,7 +350,7 @@ func (self class) SetJointIToBoneI(joint_i_to_bone_i Dictionary.Any) { //gd:GLTF
 }
 func (self class) GetJointIToName() Dictionary.Any { //gd:GLTFSkin.get_joint_i_to_name
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_joint_i_to_name, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetJointIToName(joint_i_to_name Dictionary.Any) { //gd:GLTFSkin.set_joint_i_to_name

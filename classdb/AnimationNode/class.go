@@ -289,7 +289,7 @@ When inheriting from [AnimationRootNode], implement this virtual method to retur
 */
 func (Instance) _get_child_by_name(impl func(ptr gdclass.Receiver, name string) Instance) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var name = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var name = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(name))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, name.String())
@@ -309,7 +309,7 @@ When inheriting from [AnimationRootNode], implement this virtual method to retur
 */
 func (Instance) _get_parameter_default_value(impl func(ptr gdclass.Receiver, parameter string) any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var parameter = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var parameter = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(parameter))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, parameter.String())
@@ -329,7 +329,7 @@ When inheriting from [AnimationRootNode], implement this virtual method to retur
 */
 func (Instance) _is_parameter_read_only(impl func(ptr gdclass.Receiver, parameter string) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var parameter = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var parameter = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(parameter))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, parameter.String())
@@ -631,7 +631,7 @@ func (class) _get_parameter_list(impl func(ptr gdclass.Receiver) Array.Any) (cb 
 }
 func (class) _get_child_by_name(impl func(ptr gdclass.Receiver, name String.Name) [1]gdclass.AnimationNode) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var name = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var name = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(name))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, name)
@@ -645,7 +645,7 @@ func (class) _get_child_by_name(impl func(ptr gdclass.Receiver, name String.Name
 }
 func (class) _get_parameter_default_value(impl func(ptr gdclass.Receiver, parameter String.Name) variant.Any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var parameter = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var parameter = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(parameter))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, parameter)
@@ -659,7 +659,7 @@ func (class) _get_parameter_default_value(impl func(ptr gdclass.Receiver, parame
 }
 func (class) _is_parameter_read_only(impl func(ptr gdclass.Receiver, parameter String.Name) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var parameter = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var parameter = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(parameter))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, parameter)
@@ -715,7 +715,7 @@ func (self class) SetInputName(input int64, name String.Readable) bool { //gd:An
 }
 func (self class) GetInputName(input int64) String.Readable { //gd:AnimationNode.get_input_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_input_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ input int64 }{input})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetInputCount() int64 { //gd:AnimationNode.get_input_count
@@ -805,7 +805,7 @@ func (self class) SetParameter(name String.Name, value variant.Any) { //gd:Anima
 }
 func (self class) GetParameter(name String.Name) variant.Any { //gd:AnimationNode.get_parameter
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_parameter, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 
@@ -828,7 +828,7 @@ func (self Instance) OnTreeChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) TreeChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tree_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tree_changed`))))
 }
 
 /*
@@ -848,7 +848,7 @@ func (self Instance) OnNodeUpdated(cb func(object_id int), flags ...Signal.Flags
 }
 
 func (self class) NodeUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`node_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`node_updated`))))
 }
 
 /*
@@ -869,7 +869,7 @@ func (self Instance) OnAnimationNodeRenamed(cb func(object_id int, old_name stri
 }
 
 func (self class) AnimationNodeRenamed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_node_renamed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_node_renamed`))))
 }
 
 /*
@@ -890,7 +890,7 @@ func (self Instance) OnAnimationNodeRemoved(cb func(object_id int, node_name str
 }
 
 func (self class) AnimationNodeRemoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_node_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_node_removed`))))
 }
 
 func (o class) AsAnimationNode() Advanced             { return Advanced(o) }

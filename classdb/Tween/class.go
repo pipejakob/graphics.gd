@@ -1066,7 +1066,7 @@ func (self class) InterpolateValue(initial_value variant.Any, delta_value varian
 		trans_type    TransitionType
 		ease_type     EaseType
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(initial_value))), gdextension.Variant(pointers.Get(gd.InternalVariant(delta_value))), elapsed_time, duration, trans_type, ease_type})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 
@@ -1086,7 +1086,7 @@ func (self Instance) OnStepFinished(cb func(idx int), flags ...Signal.Flags) Ins
 }
 
 func (self class) StepFinished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`step_finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`step_finished`))))
 }
 
 /*
@@ -1105,7 +1105,7 @@ func (self Instance) OnLoopFinished(cb func(loop_count int), flags ...Signal.Fla
 }
 
 func (self class) LoopFinished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`loop_finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`loop_finished`))))
 }
 
 /*
@@ -1124,7 +1124,7 @@ func (self Instance) OnFinished(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Finished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
 }
 
 func (o class) AsTween() Advanced           { return Advanced(o) }

@@ -216,7 +216,7 @@ func (self class) SetCancelButtonText(text String.Readable) { //gd:ConfirmationD
 }
 func (self class) GetCancelButtonText() String.Readable { //gd:ConfirmationDialog.get_cancel_button_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_cancel_button_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsConfirmationDialog() Advanced                { return Advanced(o) }

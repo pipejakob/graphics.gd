@@ -226,7 +226,7 @@ func (self class) IsInitialized() bool { //gd:GDScriptLanguageProtocol.is_initia
 func (self class) Initialize(params Dictionary.Any) variant.Any { //gd:GDScriptLanguageProtocol.initialize
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Variant](gdreference.GetObject(self.AsObject()[0]), methods.initialize, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Initialized(params variant.Any) { //gd:GDScriptLanguageProtocol.initialized

@@ -282,7 +282,7 @@ func (self class) SetPhysicalBoneNode(joint_idx int64, physicalbone2d_node Path.
 }
 func (self class) GetPhysicalBoneNode(joint_idx int64) Path.ToNode { //gd:SkeletonModification2DPhysicalBones.get_physical_bone_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_physical_bone_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) FetchPhysicalBones() { //gd:SkeletonModification2DPhysicalBones.fetch_physical_bones

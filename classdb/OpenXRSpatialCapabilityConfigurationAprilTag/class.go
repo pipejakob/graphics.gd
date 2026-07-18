@@ -188,7 +188,7 @@ func (self Instance) SetAprilDict(value AprilTagDict) Instance { //gd:OpenXRSpat
 
 func (self class) GetEnabledComponents() Packed.Array[int64] { //gd:OpenXRSpatialCapabilityConfigurationAprilTag.get_enabled_components
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_enabled_components, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) SetAprilDict(april_dict AprilTagDict) { //gd:OpenXRSpatialCapabilityConfigurationAprilTag.set_april_dict

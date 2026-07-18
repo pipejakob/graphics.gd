@@ -337,12 +337,12 @@ func (self class) GetNodeType() NodeType { //gd:XMLParser.get_node_type
 }
 func (self class) GetNodeName() String.Readable { //gd:XMLParser.get_node_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_node_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetNodeData() String.Readable { //gd:XMLParser.get_node_data
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_node_data, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetNodeOffset() int64 { //gd:XMLParser.get_node_offset
@@ -357,12 +357,12 @@ func (self class) GetAttributeCount() int64 { //gd:XMLParser.get_attribute_count
 }
 func (self class) GetAttributeName(idx int64) String.Readable { //gd:XMLParser.get_attribute_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_attribute_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetAttributeValue(idx int64) String.Readable { //gd:XMLParser.get_attribute_value
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_attribute_value, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) HasAttribute(name String.Readable) bool { //gd:XMLParser.has_attribute
@@ -372,12 +372,12 @@ func (self class) HasAttribute(name String.Readable) bool { //gd:XMLParser.has_a
 }
 func (self class) GetNamedAttributeValue(name String.Readable) String.Readable { //gd:XMLParser.get_named_attribute_value
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_named_attribute_value, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetNamedAttributeValueSafe(name String.Readable) String.Readable { //gd:XMLParser.get_named_attribute_value_safe
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_named_attribute_value_safe, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsEmpty() bool { //gd:XMLParser.is_empty

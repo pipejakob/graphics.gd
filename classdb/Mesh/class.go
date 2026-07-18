@@ -454,7 +454,7 @@ Virtual method to override the names of blend shapes for a custom class extendin
 func (Instance) _set_blend_shape_name(impl func(ptr gdclass.Receiver, index int, name string)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var index = gd.UnsafeGet[int64](p_args, 0)
-		var name = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
+		var name = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
 		defer pointers.End(gd.InternalStringName(name))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, int(index), name.String())
@@ -789,7 +789,7 @@ func (class) _get_blend_shape_name(impl func(ptr gdclass.Receiver, index int64) 
 func (class) _set_blend_shape_name(impl func(ptr gdclass.Receiver, index int64, name String.Name)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var index = gd.UnsafeGet[int64](p_args, 0)
-		var name = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
+		var name = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
 		defer pointers.End(gd.InternalStringName(name))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, index, name)
@@ -818,7 +818,7 @@ func (self class) GetAabb() AABB.PositionSize { //gd:Mesh.get_aabb
 }
 func (self class) GetFaces() Packed.Array[Vector3.XYZ] { //gd:Mesh.get_faces
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_faces, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) GetSurfaceCount() int64 { //gd:Mesh.get_surface_count
@@ -828,12 +828,12 @@ func (self class) GetSurfaceCount() int64 { //gd:Mesh.get_surface_count
 }
 func (self class) SurfaceGetArrays(surf_idx int64) Array.Any { //gd:Mesh.surface_get_arrays
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.surface_get_arrays, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ surf_idx int64 }{surf_idx})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SurfaceGetBlendShapeArrays(surf_idx int64) Array.Contains[Array.Any] { //gd:Mesh.surface_get_blend_shape_arrays
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.surface_get_blend_shape_arrays, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ surf_idx int64 }{surf_idx})
-	var ret = Array.Through(gd.ArrayProxy[Array.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Array.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SurfaceSetMaterial(surf_idx int64, material [1]gdclass.Material) { //gd:Mesh.surface_set_material

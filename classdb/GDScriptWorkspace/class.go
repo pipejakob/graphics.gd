@@ -208,17 +208,17 @@ func (self class) ApplyNewSignal(obj [1]gdreference.Object, function String.Read
 }
 func (self class) GetFilePath(uri String.Readable) String.Readable { //gd:GDScriptWorkspace.get_file_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_file_path, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ uri gdextension.String }{pointers.Get(gd.InternalString(uri))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetFileUri(path String.Readable) String.Readable { //gd:GDScriptWorkspace.get_file_uri
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_file_uri, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GenerateScriptApi(path String.Readable) Dictionary.Any { //gd:GDScriptWorkspace.generate_script_api
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.generate_script_api, gdextension.SizeDictionary|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) Diddeletefiles(params Dictionary.Any) { //gd:GDScriptWorkspace.didDeleteFiles

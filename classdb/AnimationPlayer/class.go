@@ -890,7 +890,7 @@ func (self class) AnimationSetNext(animation_from String.Name, animation_to Stri
 }
 func (self class) AnimationGetNext(animation_from String.Name) String.Name { //gd:AnimationPlayer.animation_get_next
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.animation_get_next, gdextension.SizeStringName|(gdextension.SizeStringName<<4), &struct{ animation_from gdextension.StringName }{pointers.Get(gd.InternalStringName(animation_from))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetBlendTime(animation_from String.Name, animation_to String.Name, sec float64) { //gd:AnimationPlayer.set_blend_time
@@ -1030,7 +1030,7 @@ func (self class) SetCurrentAnimation(animation String.Name) { //gd:AnimationPla
 }
 func (self class) GetCurrentAnimation() String.Name { //gd:AnimationPlayer.get_current_animation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_current_animation, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetAssignedAnimation(animation String.Name) { //gd:AnimationPlayer.set_assigned_animation
@@ -1038,7 +1038,7 @@ func (self class) SetAssignedAnimation(animation String.Name) { //gd:AnimationPl
 }
 func (self class) GetAssignedAnimation() String.Name { //gd:AnimationPlayer.get_assigned_animation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_assigned_animation, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) Queue(name String.Name) { //gd:AnimationPlayer.queue
@@ -1046,7 +1046,7 @@ func (self class) Queue(name String.Name) { //gd:AnimationPlayer.queue
 }
 func (self class) GetQueue() Array.Contains[String.Name] { //gd:AnimationPlayer.get_queue
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_queue, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClearQueue() { //gd:AnimationPlayer.clear_queue
@@ -1070,7 +1070,7 @@ func (self class) SetAutoplay(name String.Name) { //gd:AnimationPlayer.set_autop
 }
 func (self class) GetAutoplay() String.Name { //gd:AnimationPlayer.get_autoplay
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_autoplay, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetMovieQuitOnFinishEnabled(enabled bool) { //gd:AnimationPlayer.set_movie_quit_on_finish_enabled
@@ -1149,7 +1149,7 @@ func (self class) SetRoot(path Path.ToNode) { //gd:AnimationPlayer.set_root
 }
 func (self class) GetRoot() Path.ToNode { //gd:AnimationPlayer.get_root
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_root, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 
@@ -1168,7 +1168,7 @@ func (self Instance) OnCurrentAnimationChanged(cb func(anim_name string), flags 
 }
 
 func (self class) CurrentAnimationChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`current_animation_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`current_animation_changed`))))
 }
 
 /*
@@ -1190,7 +1190,7 @@ func (self Instance) OnAnimationChanged(cb func(old_name string, new_name string
 }
 
 func (self class) AnimationChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_changed`))))
 }
 
 func (o class) AsAnimationPlayer() Advanced         { return Advanced(o) }

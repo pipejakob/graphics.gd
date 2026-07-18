@@ -1498,19 +1498,19 @@ func (self class) GetJoyAxis(device int64, axis JoyAxis) float64 { //gd:Input.ge
 func (self class) GetJoyName(device int64) String.Readable { //gd:Input.get_joy_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_joy_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ device int64 }{device})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetJoyGuid(device int64) String.Readable { //gd:Input.get_joy_guid
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_joy_guid, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ device int64 }{device})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetJoyInfo(device int64) Dictionary.Any { //gd:Input.get_joy_info
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.get_joy_info, gdextension.SizeDictionary|(gdextension.SizeInt<<4), &struct{ device int64 }{device})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) ShouldIgnoreDevice(vendor_id int64, product_id int64) bool { //gd:Input.should_ignore_device
@@ -1525,7 +1525,7 @@ func (self class) ShouldIgnoreDevice(vendor_id int64, product_id int64) bool { /
 func (self class) GetConnectedJoypads() Array.Contains[int64] { //gd:Input.get_connected_joypads
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.get_connected_joypads, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[int64]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[int64](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetJoyVibrationStrength(device int64) Vector2.XY { //gd:Input.get_joy_vibration_strength
@@ -1670,7 +1670,7 @@ func (self class) ClearJoyMotionSensorsCalibration(device int64) { //gd:Input.cl
 func (self class) GetJoyMotionSensorsCalibration(device int64) Dictionary.Any { //gd:Input.get_joy_motion_sensors_calibration
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.get_joy_motion_sensors_calibration, gdextension.SizeDictionary|(gdextension.SizeInt<<4), &struct{ device int64 }{device})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetJoyMotionSensorsCalibration(device int64, calibration_info Dictionary.Any) { //gd:Input.set_joy_motion_sensors_calibration
@@ -1835,7 +1835,7 @@ func OnJoyConnectionChanged(cb func(device Device, connected bool), flags ...Sig
 
 func (self class) JoyConnectionChanged() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`joy_connection_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`joy_connection_changed`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

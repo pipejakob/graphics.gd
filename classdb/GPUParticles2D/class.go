@@ -898,7 +898,7 @@ func (self class) SetSubEmitter(path Path.ToNode) { //gd:GPUParticles2D.set_sub_
 }
 func (self class) GetSubEmitter() Path.ToNode { //gd:GPUParticles2D.get_sub_emitter
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_sub_emitter, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) EmitParticle(xform Transform2D.OriginXY, velocity Vector2.XY, color Color.RGBA, custom Color.RGBA, flags int64) { //gd:GPUParticles2D.emit_particle
@@ -991,7 +991,7 @@ func (self Instance) OnFinished(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Finished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
 }
 
 func (o class) AsGPUParticles2D() Advanced                { return Advanced(o) }

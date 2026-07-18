@@ -315,7 +315,7 @@ func (self class) SetEnumNames(names Packed.Strings) { //gd:VisualShaderNodeIntP
 }
 func (self class) GetEnumNames() Packed.Strings { //gd:VisualShaderNodeIntParameter.get_enum_names
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_enum_names, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetDefaultValueEnabled(enabled bool) { //gd:VisualShaderNodeIntParameter.set_default_value_enabled

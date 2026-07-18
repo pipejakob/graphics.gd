@@ -215,7 +215,7 @@ func (self class) GetPressedButton() [1]gdclass.BaseButton { //gd:ButtonGroup.ge
 }
 func (self class) GetButtons() Array.Contains[[1]gdclass.BaseButton] { //gd:ButtonGroup.get_buttons
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_buttons, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.BaseButton]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.BaseButton](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetAllowUnpress(enabled bool) { //gd:ButtonGroup.set_allow_unpress
@@ -240,7 +240,7 @@ func (self Instance) OnPressed(cb func(button BaseButton.Instance), flags ...Sig
 }
 
 func (self class) Pressed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pressed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pressed`))))
 }
 
 func (o class) AsButtonGroup() Advanced               { return Advanced(o) }

@@ -393,7 +393,7 @@ Called when a packet needs to be sent by the [MultiplayerAPI], if [PutPacket] is
 */
 func (Instance) _put_packet_script(impl func(ptr gdclass.Receiver, buffer []byte) error) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var buffer = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](gd.UnsafeGet[gd.PackedPointers](p_args, 0)))))}
+		var buffer = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](gd.UnsafeGet[gd.PackedPointers](p_args, 0)))))}
 		defer pointers.End(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, buffer.Bytes())
@@ -737,7 +737,7 @@ func (class) _get_packet_script(impl func(ptr gdclass.Receiver) Packed.Bytes) (c
 }
 func (class) _put_packet_script(impl func(ptr gdclass.Receiver, buffer Packed.Bytes) Error.Code) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var buffer = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](gd.UnsafeGet[gd.PackedPointers](p_args, 0)))))}
+		var buffer = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](gd.UnsafeGet[gd.PackedPointers](p_args, 0)))))}
 		defer pointers.End(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, buffer)

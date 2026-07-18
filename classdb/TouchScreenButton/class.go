@@ -374,7 +374,7 @@ func (self class) SetAction(action String.Readable) { //gd:TouchScreenButton.set
 }
 func (self class) GetAction() String.Readable { //gd:TouchScreenButton.get_action
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_action, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetVisibilityMode(mode VisibilityMode) { //gd:TouchScreenButton.set_visibility_mode
@@ -412,7 +412,7 @@ func (self Instance) OnPressed(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Pressed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pressed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pressed`))))
 }
 
 /*
@@ -428,7 +428,7 @@ func (self Instance) OnReleased(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Released() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`released`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`released`))))
 }
 
 func (o class) AsTouchScreenButton() Advanced             { return Advanced(o) }

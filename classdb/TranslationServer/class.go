@@ -451,13 +451,13 @@ func (self class) SetLocale(locale String.Readable) { //gd:TranslationServer.set
 func (self class) GetLocale() String.Readable { //gd:TranslationServer.get_locale
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_locale, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetToolLocale() String.Readable { //gd:TranslationServer.get_tool_locale
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_tool_locale, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) CompareLocales(locale_a String.Readable, locale_b String.Readable) int64 { //gd:TranslationServer.compare_locales
@@ -475,55 +475,55 @@ func (self class) StandardizeLocale(locale String.Readable, add_defaults bool) S
 		locale       gdextension.String
 		add_defaults bool
 	}{pointers.Get(gd.InternalString(locale)), add_defaults})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetAllLanguages() Packed.Strings { //gd:TranslationServer.get_all_languages
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_all_languages, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetLanguageName(language String.Readable) String.Readable { //gd:TranslationServer.get_language_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_language_name, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ language gdextension.String }{pointers.Get(gd.InternalString(language))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetAllScripts() Packed.Strings { //gd:TranslationServer.get_all_scripts
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_all_scripts, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetScriptName(script String.Readable) String.Readable { //gd:TranslationServer.get_script_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_script_name, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ script gdextension.String }{pointers.Get(gd.InternalString(script))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetAllCountries() Packed.Strings { //gd:TranslationServer.get_all_countries
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_all_countries, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetCountryName(country String.Readable) String.Readable { //gd:TranslationServer.get_country_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_country_name, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ country gdextension.String }{pointers.Get(gd.InternalString(country))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetLocaleName(locale String.Readable) String.Readable { //gd:TranslationServer.get_locale_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_locale_name, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ locale gdextension.String }{pointers.Get(gd.InternalString(locale))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetPluralRules(locale String.Readable) String.Readable { //gd:TranslationServer.get_plural_rules
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_plural_rules, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ locale gdextension.String }{pointers.Get(gd.InternalString(locale))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) Translate(message String.Name, context String.Name) String.Name { //gd:TranslationServer.translate
@@ -532,7 +532,7 @@ func (self class) Translate(message String.Name, context String.Name) String.Nam
 		message gdextension.StringName
 		context gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(message)), pointers.Get(gd.InternalStringName(context))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) TranslatePlural(message String.Name, plural_message String.Name, n int64, context String.Name) String.Name { //gd:TranslationServer.translate_plural
@@ -543,7 +543,7 @@ func (self class) TranslatePlural(message String.Name, plural_message String.Nam
 		n              int64
 		context        gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(message)), pointers.Get(gd.InternalStringName(plural_message)), n, pointers.Get(gd.InternalStringName(context))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) AddTranslation(translation [1]gdclass.Translation) { //gd:TranslationServer.add_translation
@@ -563,7 +563,7 @@ func (self class) GetTranslationObject(locale String.Readable) [1]gdclass.Transl
 func (self class) GetTranslations() Array.Contains[[1]gdclass.Translation] { //gd:TranslationServer.get_translations
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.get_translations, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Translation]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Translation](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) FindTranslations(locale String.Readable, exact bool) Array.Contains[[1]gdclass.Translation] { //gd:TranslationServer.find_translations
@@ -572,7 +572,7 @@ func (self class) FindTranslations(locale String.Readable, exact bool) Array.Con
 		locale gdextension.String
 		exact  bool
 	}{pointers.Get(gd.InternalString(locale)), exact})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Translation]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Translation](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) HasTranslationForLocale(locale String.Readable, exact bool) bool { //gd:TranslationServer.has_translation_for_locale
@@ -613,7 +613,7 @@ func (self class) Clear() { //gd:TranslationServer.clear
 func (self class) GetLoadedLocales() Packed.Strings { //gd:TranslationServer.get_loaded_locales
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_loaded_locales, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) FormatNumber(number String.Readable, locale String.Readable) String.Readable { //gd:TranslationServer.format_number
@@ -622,13 +622,13 @@ func (self class) FormatNumber(number String.Readable, locale String.Readable) S
 		number gdextension.String
 		locale gdextension.String
 	}{pointers.Get(gd.InternalString(number)), pointers.Get(gd.InternalString(locale))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetPercentSign(locale String.Readable) String.Readable { //gd:TranslationServer.get_percent_sign
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_percent_sign, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ locale gdextension.String }{pointers.Get(gd.InternalString(locale))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ParseNumber(number String.Readable, locale String.Readable) String.Readable { //gd:TranslationServer.parse_number
@@ -637,7 +637,7 @@ func (self class) ParseNumber(number String.Readable, locale String.Readable) St
 		number gdextension.String
 		locale gdextension.String
 	}{pointers.Get(gd.InternalString(number)), pointers.Get(gd.InternalString(locale))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsPseudolocalizationEnabled() bool { //gd:TranslationServer.is_pseudolocalization_enabled
@@ -657,7 +657,7 @@ func (self class) ReloadPseudolocalization() { //gd:TranslationServer.reload_pse
 func (self class) Pseudolocalize(message String.Name) String.Name { //gd:TranslationServer.pseudolocalize
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.StringName](gdreference.GetObject(self.AsObject()[0]), methods.pseudolocalize, gdextension.SizeStringName|(gdextension.SizeStringName<<4), &struct{ message gdextension.StringName }{pointers.Get(gd.InternalStringName(message))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 

@@ -484,7 +484,7 @@ func (self class) SetSetting(name String.Readable, value variant.Any) { //gd:Edi
 }
 func (self class) GetSetting(name String.Readable) variant.Any { //gd:EditorSettings.get_setting
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_setting, gdextension.SizeVariant|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Erase(property String.Readable) { //gd:EditorSettings.erase
@@ -513,7 +513,7 @@ func (self class) GetProjectMetadata(section String.Readable, key String.Readabl
 		key     gdextension.String
 		def     gdextension.Variant
 	}{pointers.Get(gd.InternalString(section)), pointers.Get(gd.InternalString(key)), gdextension.Variant(pointers.Get(gd.InternalVariant(def)))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetFavorites(dirs Packed.Strings) { //gd:EditorSettings.set_favorites
@@ -523,7 +523,7 @@ func (self class) SetFavorites(dirs Packed.Strings) { //gd:EditorSettings.set_fa
 }
 func (self class) GetFavorites() Packed.Strings { //gd:EditorSettings.get_favorites
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_favorites, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetRecentDirs(dirs Packed.Strings) { //gd:EditorSettings.set_recent_dirs
@@ -533,7 +533,7 @@ func (self class) SetRecentDirs(dirs Packed.Strings) { //gd:EditorSettings.set_r
 }
 func (self class) GetRecentDirs() Packed.Strings { //gd:EditorSettings.get_recent_dirs
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_recent_dirs, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetBuiltinActionOverride(name String.Readable, actions_list Array.Contains[[1]gdclass.InputEvent]) { //gd:EditorSettings.set_builtin_action_override
@@ -571,7 +571,7 @@ func (self class) GetShortcut(path String.Readable) [1]gdclass.Shortcut { //gd:E
 }
 func (self class) GetShortcutList() Packed.Strings { //gd:EditorSettings.get_shortcut_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_shortcut_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) CheckChangedSettingsInGroup(setting_prefix String.Readable) bool { //gd:EditorSettings.check_changed_settings_in_group
@@ -581,7 +581,7 @@ func (self class) CheckChangedSettingsInGroup(setting_prefix String.Readable) bo
 }
 func (self class) GetChangedSettings() Packed.Strings { //gd:EditorSettings.get_changed_settings
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_changed_settings, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) MarkSettingChanged(setting String.Readable) { //gd:EditorSettings.mark_setting_changed
@@ -601,7 +601,7 @@ func (self Instance) OnSettingsChanged(cb func(), flags ...Signal.Flags) Instanc
 }
 
 func (self class) SettingsChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`settings_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`settings_changed`))))
 }
 
 func (o class) AsEditorSettings() Advanced            { return Advanced(o) }

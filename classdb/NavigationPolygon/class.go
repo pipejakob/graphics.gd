@@ -544,7 +544,7 @@ func (self class) SetVertices(vertices Packed.Array[Vector2.XY]) { //gd:Navigati
 }
 func (self class) GetVertices() Packed.Array[Vector2.XY] { //gd:NavigationPolygon.get_vertices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertices, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) AddPolygon(polygon Packed.Array[int32]) { //gd:NavigationPolygon.add_polygon
@@ -559,7 +559,7 @@ func (self class) GetPolygonCount() int64 { //gd:NavigationPolygon.get_polygon_c
 }
 func (self class) GetPolygon(idx int64) Packed.Array[int32] { //gd:NavigationPolygon.get_polygon
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_polygon, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ClearPolygons() { //gd:NavigationPolygon.clear_polygons
@@ -594,7 +594,7 @@ func (self class) SetOutline(idx int64, outline Packed.Array[Vector2.XY]) { //gd
 }
 func (self class) GetOutline(idx int64) Packed.Array[Vector2.XY] { //gd:NavigationPolygon.get_outline
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_outline, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) RemoveOutline(idx int64) { //gd:NavigationPolygon.remove_outline
@@ -670,7 +670,7 @@ func (self class) SetSourceGeometryGroupName(group_name String.Name) { //gd:Navi
 }
 func (self class) GetSourceGeometryGroupName() String.Name { //gd:NavigationPolygon.get_source_geometry_group_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_source_geometry_group_name, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetAgentRadius(agent_radius float64) { //gd:NavigationPolygon.set_agent_radius

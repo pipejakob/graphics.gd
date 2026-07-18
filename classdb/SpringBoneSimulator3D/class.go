@@ -1099,7 +1099,7 @@ func (self class) SetRootBoneName(index int64, bone_name String.Readable) { //gd
 }
 func (self class) GetRootBoneName(index int64) String.Readable { //gd:SpringBoneSimulator3D.get_root_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_root_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetRootBone(index int64, bone int64) { //gd:SpringBoneSimulator3D.set_root_bone
@@ -1121,7 +1121,7 @@ func (self class) SetEndBoneName(index int64, bone_name String.Readable) { //gd:
 }
 func (self class) GetEndBoneName(index int64) String.Readable { //gd:SpringBoneSimulator3D.get_end_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_end_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetEndBone(index int64, bone int64) { //gd:SpringBoneSimulator3D.set_end_bone
@@ -1187,7 +1187,7 @@ func (self class) SetCenterNode(index int64, node_path Path.ToNode) { //gd:Sprin
 }
 func (self class) GetCenterNode(index int64) Path.ToNode { //gd:SpringBoneSimulator3D.get_center_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_center_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetCenterBoneName(index int64, bone_name String.Readable) { //gd:SpringBoneSimulator3D.set_center_bone_name
@@ -1198,7 +1198,7 @@ func (self class) SetCenterBoneName(index int64, bone_name String.Readable) { //
 }
 func (self class) GetCenterBoneName(index int64) String.Readable { //gd:SpringBoneSimulator3D.get_center_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_center_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetCenterBone(index int64, bone int64) { //gd:SpringBoneSimulator3D.set_center_bone
@@ -1360,7 +1360,7 @@ func (self class) GetJointBoneName(index int64, joint int64) String.Readable { /
 		index int64
 		joint int64
 	}{index, joint})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetJointBone(index int64, joint int64) int64 { //gd:SpringBoneSimulator3D.get_joint_bone
@@ -1504,7 +1504,7 @@ func (self class) GetExcludeCollisionPath(index int64, collision int64) Path.ToN
 		index     int64
 		collision int64
 	}{index, collision})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetExcludeCollisionCount(index int64, count int64) { //gd:SpringBoneSimulator3D.set_exclude_collision_count
@@ -1533,7 +1533,7 @@ func (self class) GetCollisionPath(index int64, collision int64) Path.ToNode { /
 		index     int64
 		collision int64
 	}{index, collision})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetCollisionCount(index int64, count int64) { //gd:SpringBoneSimulator3D.set_collision_count

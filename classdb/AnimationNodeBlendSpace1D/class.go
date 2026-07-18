@@ -451,7 +451,7 @@ func (self class) SetBlendPointName(point int64, name String.Name) { //gd:Animat
 }
 func (self class) GetBlendPointName(point int64) String.Name { //gd:AnimationNodeBlendSpace1D.get_blend_point_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_blend_point_name, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ point int64 }{point})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) FindBlendPointByName(name String.Name) int64 { //gd:AnimationNodeBlendSpace1D.find_blend_point_by_name
@@ -502,7 +502,7 @@ func (self class) SetValueLabel(text String.Readable) { //gd:AnimationNodeBlendS
 }
 func (self class) GetValueLabel() String.Readable { //gd:AnimationNodeBlendSpace1D.get_value_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_value_label, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBlendMode(mode BlendMode) { //gd:AnimationNodeBlendSpace1D.set_blend_mode

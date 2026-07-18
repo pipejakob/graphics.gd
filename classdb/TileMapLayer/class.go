@@ -324,7 +324,7 @@ Warning: Implementing this method may degrade the [TileMapLayer]'s performance.
 */
 func (Instance) _update_cells(impl func(ptr gdclass.Receiver, coords []Vector2i.XY, forced_cleanup bool)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var coords = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
+		var coords = Array.Through(gd.WrapArray[Vector2i.XY](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(coords))
 		var forced_cleanup = gd.UnsafeGet[bool](p_args, 1)
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
@@ -981,7 +981,7 @@ func (class) _tile_data_runtime_update(impl func(ptr gdclass.Receiver, coords Ve
 }
 func (class) _update_cells(impl func(ptr gdclass.Receiver, coords Array.Contains[Vector2i.XY], forced_cleanup bool)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var coords = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
+		var coords = Array.Through(gd.WrapArray[Vector2i.XY](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(coords))
 		var forced_cleanup = gd.UnsafeGet[bool](p_args, 1)
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
@@ -1043,7 +1043,7 @@ func (self class) IsCellTransposed(coords Vector2i.XY) bool { //gd:TileMapLayer.
 }
 func (self class) GetUsedCells() Array.Contains[Vector2i.XY] { //gd:TileMapLayer.get_used_cells
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_cells, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedCellsById(source_id int64, atlas_coords Vector2i.XY, alternative_tile int64) Array.Contains[Vector2i.XY] { //gd:TileMapLayer.get_used_cells_by_id
@@ -1052,7 +1052,7 @@ func (self class) GetUsedCellsById(source_id int64, atlas_coords Vector2i.XY, al
 		atlas_coords     Vector2i.XY
 		alternative_tile int64
 	}{source_id, atlas_coords, alternative_tile})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedRect() Rect2i.PositionSize { //gd:TileMapLayer.get_used_rect
@@ -1114,7 +1114,7 @@ func (self class) MapPattern(position_in_tilemap Vector2i.XY, coords_in_pattern 
 }
 func (self class) GetSurroundingCells(coords Vector2i.XY) Array.Contains[Vector2i.XY] { //gd:TileMapLayer.get_surrounding_cells
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_surrounding_cells, gdextension.SizeArray|(gdextension.SizeVector2i<<4), &struct{ coords Vector2i.XY }{coords})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetNeighborCell(coords Vector2i.XY, neighbor TileSet.CellNeighbor) Vector2i.XY { //gd:TileMapLayer.get_neighbor_cell
@@ -1140,7 +1140,7 @@ func (self class) SetTileMapDataFromArray(tile_map_layer_data Packed.Bytes) { //
 }
 func (self class) GetTileMapDataAsArray() Packed.Bytes { //gd:TileMapLayer.get_tile_map_data_as_array
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_tile_map_data_as_array, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SetEnabled(enabled bool) { //gd:TileMapLayer.set_enabled
@@ -1267,7 +1267,7 @@ func (self Instance) OnChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Changed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
 }
 
 func (o class) AsTileMapLayer() Advanced                  { return Advanced(o) }

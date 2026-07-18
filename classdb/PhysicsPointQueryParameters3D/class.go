@@ -267,7 +267,7 @@ func (self class) SetExclude(exclude Array.Contains[RID.Any]) { //gd:PhysicsPoin
 }
 func (self class) GetExclude() Array.Contains[RID.Any] { //gd:PhysicsPointQueryParameters3D.get_exclude
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_exclude, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[RID.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetCollideWithBodies(enable bool) { //gd:PhysicsPointQueryParameters3D.set_collide_with_bodies

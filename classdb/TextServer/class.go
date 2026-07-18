@@ -2638,7 +2638,7 @@ func (self class) HasFeature(feature Feature) bool { //gd:TextServer.has_feature
 }
 func (self class) GetName() String.Readable { //gd:TextServer.get_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetFeatures() int64 { //gd:TextServer.get_features
@@ -2653,12 +2653,12 @@ func (self class) LoadSupportData(filename String.Readable) bool { //gd:TextServ
 }
 func (self class) GetSupportDataFilename() String.Readable { //gd:TextServer.get_support_data_filename
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_support_data_filename, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSupportDataInfo() String.Readable { //gd:TextServer.get_support_data_info
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_support_data_info, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SaveSupportData(filename String.Readable) bool { //gd:TextServer.save_support_data
@@ -2668,7 +2668,7 @@ func (self class) SaveSupportData(filename String.Readable) bool { //gd:TextServ
 }
 func (self class) GetSupportData() Packed.Bytes { //gd:TextServer.get_support_data
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_support_data, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) IsLocaleUsingSupportData(locale String.Readable) bool { //gd:TextServer.is_locale_using_support_data
@@ -2688,7 +2688,7 @@ func (self class) NameToTag(name String.Readable) int64 { //gd:TextServer.name_t
 }
 func (self class) TagToName(tag int64) String.Readable { //gd:TextServer.tag_to_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.tag_to_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ tag int64 }{tag})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) Has(rid RID.Any) bool { //gd:TextServer.has
@@ -2750,12 +2750,12 @@ func (self class) FontSetName(font_rid RID.Any, name String.Readable) { //gd:Tex
 }
 func (self class) FontGetName(font_rid RID.Any) String.Readable { //gd:TextServer.font_get_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.font_get_name, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) FontGetOtNameStrings(font_rid RID.Any) Dictionary.Any { //gd:TextServer.font_get_ot_name_strings
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.font_get_ot_name_strings, gdextension.SizeDictionary|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) FontSetStyleName(font_rid RID.Any, name String.Readable) { //gd:TextServer.font_set_style_name
@@ -2766,7 +2766,7 @@ func (self class) FontSetStyleName(font_rid RID.Any, name String.Readable) { //g
 }
 func (self class) FontGetStyleName(font_rid RID.Any) String.Readable { //gd:TextServer.font_get_style_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.font_get_style_name, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) FontSetWeight(font_rid RID.Any, weight int64) { //gd:TextServer.font_set_weight
@@ -2925,7 +2925,7 @@ func (self class) FontGetPaletteName(font_rid RID.Any, index int64) String.Reada
 		font_rid RID.Any
 		index    int64
 	}{font_rid, index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) FontGetPaletteColors(font_rid RID.Any, index int64) Packed.Array[Color.RGBA] { //gd:TextServer.font_get_palette_colors
@@ -2933,7 +2933,7 @@ func (self class) FontGetPaletteColors(font_rid RID.Any, index int64) Packed.Arr
 		font_rid RID.Any
 		index    int64
 	}{font_rid, index})
-	var ret = Packed.Array[Color.RGBA](Array.Through(gd.PackedProxy[gd.PackedColorArray, Color.RGBA]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) FontSetPaletteCustomColors(font_rid RID.Any, colors Packed.Array[Color.RGBA]) { //gd:TextServer.font_set_palette_custom_colors
@@ -2944,7 +2944,7 @@ func (self class) FontSetPaletteCustomColors(font_rid RID.Any, colors Packed.Arr
 }
 func (self class) FontGetPaletteCustomColors(font_rid RID.Any) Packed.Array[Color.RGBA] { //gd:TextServer.font_get_palette_custom_colors
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.font_get_palette_custom_colors, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Packed.Array[Color.RGBA](Array.Through(gd.PackedProxy[gd.PackedColorArray, Color.RGBA]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) FontGetUsedPalette(font_rid RID.Any) int64 { //gd:TextServer.font_get_used_palette
@@ -3047,7 +3047,7 @@ func (self class) FontSetVariationCoordinates(font_rid RID.Any, variation_coordi
 }
 func (self class) FontGetVariationCoordinates(font_rid RID.Any) Dictionary.Any { //gd:TextServer.font_get_variation_coordinates
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.font_get_variation_coordinates, gdextension.SizeDictionary|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) FontSetOversampling(font_rid RID.Any, oversampling float64) { //gd:TextServer.font_set_oversampling
@@ -3063,7 +3063,7 @@ func (self class) FontGetOversampling(font_rid RID.Any) float64 { //gd:TextServe
 }
 func (self class) FontGetSizeCacheList(font_rid RID.Any) Array.Contains[Vector2i.XY] { //gd:TextServer.font_get_size_cache_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.font_get_size_cache_list, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) FontClearSizeCache(font_rid RID.Any) { //gd:TextServer.font_clear_size_cache
@@ -3077,7 +3077,7 @@ func (self class) FontRemoveSizeCache(font_rid RID.Any, size Vector2i.XY) { //gd
 }
 func (self class) FontGetSizeCacheInfo(font_rid RID.Any) Array.Contains[Dictionary.Any] { //gd:TextServer.font_get_size_cache_info
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.font_get_size_cache_info, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) FontSetAscent(font_rid RID.Any, size int64, ascent float64) { //gd:TextServer.font_set_ascent
@@ -3207,7 +3207,7 @@ func (self class) FontGetTextureOffsets(font_rid RID.Any, size Vector2i.XY, text
 		size          Vector2i.XY
 		texture_index int64
 	}{font_rid, size, texture_index})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) FontGetGlyphList(font_rid RID.Any, size Vector2i.XY) Packed.Array[int32] { //gd:TextServer.font_get_glyph_list
@@ -3215,7 +3215,7 @@ func (self class) FontGetGlyphList(font_rid RID.Any, size Vector2i.XY) Packed.Ar
 		font_rid RID.Any
 		size     Vector2i.XY
 	}{font_rid, size})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) FontClearGlyphs(font_rid RID.Any, size Vector2i.XY) { //gd:TextServer.font_clear_glyphs
@@ -3340,7 +3340,7 @@ func (self class) FontGetGlyphContours(font RID.Any, size int64, index int64) Di
 		size  int64
 		index int64
 	}{font, size, index})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) FontGetKerningList(font_rid RID.Any, size int64) Array.Contains[Vector2i.XY] { //gd:TextServer.font_get_kerning_list
@@ -3348,7 +3348,7 @@ func (self class) FontGetKerningList(font_rid RID.Any, size int64) Array.Contain
 		font_rid RID.Any
 		size     int64
 	}{font_rid, size})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) FontClearKerningMap(font_rid RID.Any, size int64) { //gd:TextServer.font_clear_kerning_map
@@ -3410,12 +3410,12 @@ func (self class) FontHasChar(font_rid RID.Any, char int64) bool { //gd:TextServ
 }
 func (self class) FontGetSupportedChars(font_rid RID.Any) String.Readable { //gd:TextServer.font_get_supported_chars
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.font_get_supported_chars, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) FontGetSupportedGlyphs(font_rid RID.Any) Packed.Array[int32] { //gd:TextServer.font_get_supported_glyphs
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.font_get_supported_glyphs, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) FontRenderRange(font_rid RID.Any, size Vector2i.XY, start int64, end int64) { //gd:TextServer.font_render_range
@@ -3487,7 +3487,7 @@ func (self class) FontRemoveLanguageSupportOverride(font_rid RID.Any, language S
 }
 func (self class) FontGetLanguageSupportOverrides(font_rid RID.Any) Packed.Strings { //gd:TextServer.font_get_language_support_overrides
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.font_get_language_support_overrides, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) FontIsScriptSupported(font_rid RID.Any, script String.Readable) bool { //gd:TextServer.font_is_script_supported
@@ -3521,7 +3521,7 @@ func (self class) FontRemoveScriptSupportOverride(font_rid RID.Any, script Strin
 }
 func (self class) FontGetScriptSupportOverrides(font_rid RID.Any) Packed.Strings { //gd:TextServer.font_get_script_support_overrides
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.font_get_script_support_overrides, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) FontSetOpentypeFeatureOverrides(font_rid RID.Any, overrides Dictionary.Any) { //gd:TextServer.font_set_opentype_feature_overrides
@@ -3532,17 +3532,17 @@ func (self class) FontSetOpentypeFeatureOverrides(font_rid RID.Any, overrides Di
 }
 func (self class) FontGetOpentypeFeatureOverrides(font_rid RID.Any) Dictionary.Any { //gd:TextServer.font_get_opentype_feature_overrides
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.font_get_opentype_feature_overrides, gdextension.SizeDictionary|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) FontSupportedFeatureList(font_rid RID.Any) Dictionary.Any { //gd:TextServer.font_supported_feature_list
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.font_supported_feature_list, gdextension.SizeDictionary|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) FontSupportedVariationList(font_rid RID.Any) Dictionary.Any { //gd:TextServer.font_supported_variation_list
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.font_supported_variation_list, gdextension.SizeDictionary|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) FontGetGlobalOversampling() float64 { //gd:TextServer.font_get_global_oversampling
@@ -3616,7 +3616,7 @@ func (self class) ShapedTextSetCustomPunctuation(shaped RID.Any, punct String.Re
 }
 func (self class) ShapedTextGetCustomPunctuation(shaped RID.Any) String.Readable { //gd:TextServer.shaped_text_get_custom_punctuation
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_custom_punctuation, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ShapedTextSetCustomEllipsis(shaped RID.Any, char int64) { //gd:TextServer.shaped_text_set_custom_ellipsis
@@ -3724,7 +3724,7 @@ func (self class) ShapedTextHasObject(shaped RID.Any, key variant.Any) bool { //
 }
 func (self class) ShapedGetText(shaped RID.Any) String.Readable { //gd:TextServer.shaped_get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.shaped_get_text, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ShapedGetSpanCount(shaped RID.Any) int64 { //gd:TextServer.shaped_get_span_count
@@ -3737,7 +3737,7 @@ func (self class) ShapedGetSpanMeta(shaped RID.Any, index int64) variant.Any { /
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) ShapedGetSpanEmbeddedObject(shaped RID.Any, index int64) variant.Any { //gd:TextServer.shaped_get_span_embedded_object
@@ -3745,7 +3745,7 @@ func (self class) ShapedGetSpanEmbeddedObject(shaped RID.Any, index int64) varia
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) ShapedGetSpanText(shaped RID.Any, index int64) String.Readable { //gd:TextServer.shaped_get_span_text
@@ -3753,7 +3753,7 @@ func (self class) ShapedGetSpanText(shaped RID.Any, index int64) String.Readable
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ShapedGetSpanObject(shaped RID.Any, index int64) variant.Any { //gd:TextServer.shaped_get_span_object
@@ -3761,7 +3761,7 @@ func (self class) ShapedGetSpanObject(shaped RID.Any, index int64) variant.Any {
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) ShapedSetSpanUpdateFont(shaped RID.Any, index int64, fonts Array.Contains[RID.Any], size int64, opentype_features Dictionary.Any) { //gd:TextServer.shaped_set_span_update_font
@@ -3783,7 +3783,7 @@ func (self class) ShapedGetRunText(shaped RID.Any, index int64) String.Readable 
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ShapedGetRunRange(shaped RID.Any, index int64) Vector2i.XY { //gd:TextServer.shaped_get_run_range
@@ -3823,7 +3823,7 @@ func (self class) ShapedGetRunLanguage(shaped RID.Any, index int64) String.Reada
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ShapedGetRunDirection(shaped RID.Any, index int64) Direction { //gd:TextServer.shaped_get_run_direction
@@ -3839,7 +3839,7 @@ func (self class) ShapedGetRunObject(shaped RID.Any, index int64) variant.Any { 
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) ShapedTextSubstr(shaped RID.Any, start int64, length int64) RID.Any { //gd:TextServer.shaped_text_substr
@@ -3890,12 +3890,12 @@ func (self class) ShapedTextHasVisibleChars(shaped RID.Any) bool { //gd:TextServ
 }
 func (self class) ShapedTextGetGlyphs(shaped RID.Any) Array.Contains[Dictionary.Any] { //gd:TextServer.shaped_text_get_glyphs
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_glyphs, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ShapedTextSortLogical(shaped RID.Any) Array.Contains[Dictionary.Any] { //gd:TextServer.shaped_text_sort_logical
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.shaped_text_sort_logical, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ShapedTextGetGlyphCount(shaped RID.Any) int64 { //gd:TextServer.shaped_text_get_glyph_count
@@ -3916,7 +3916,7 @@ func (self class) ShapedTextGetLineBreaksAdv(shaped RID.Any, width Packed.Array[
 		once        bool
 		break_flags LineBreakFlag
 	}{shaped, pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](width)), start, once, break_flags})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ShapedTextGetLineBreaks(shaped RID.Any, width float64, start int64, break_flags LineBreakFlag) Packed.Array[int32] { //gd:TextServer.shaped_text_get_line_breaks
@@ -3926,7 +3926,7 @@ func (self class) ShapedTextGetLineBreaks(shaped RID.Any, width float64, start i
 		start       int64
 		break_flags LineBreakFlag
 	}{shaped, width, start, break_flags})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ShapedTextGetWordBreaks(shaped RID.Any, grapheme_flags GraphemeFlag, skip_grapheme_flags GraphemeFlag) Packed.Array[int32] { //gd:TextServer.shaped_text_get_word_breaks
@@ -3935,7 +3935,7 @@ func (self class) ShapedTextGetWordBreaks(shaped RID.Any, grapheme_flags Graphem
 		grapheme_flags      GraphemeFlag
 		skip_grapheme_flags GraphemeFlag
 	}{shaped, grapheme_flags, skip_grapheme_flags})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ShapedTextGetTrimPos(shaped RID.Any) int64 { //gd:TextServer.shaped_text_get_trim_pos
@@ -3950,7 +3950,7 @@ func (self class) ShapedTextGetEllipsisPos(shaped RID.Any) int64 { //gd:TextServ
 }
 func (self class) ShapedTextGetEllipsisGlyphs(shaped RID.Any) Array.Contains[Dictionary.Any] { //gd:TextServer.shaped_text_get_ellipsis_glyphs
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_ellipsis_glyphs, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ShapedTextGetEllipsisGlyphCount(shaped RID.Any) int64 { //gd:TextServer.shaped_text_get_ellipsis_glyph_count
@@ -3967,7 +3967,7 @@ func (self class) ShapedTextOverrunTrimToWidth(shaped RID.Any, width float64, ov
 }
 func (self class) ShapedTextGetObjects(shaped RID.Any) Array.Any { //gd:TextServer.shaped_text_get_objects
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_objects, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ShapedTextGetObjectRect(shaped RID.Any, key variant.Any) Rect2.PositionSize { //gd:TextServer.shaped_text_get_object_rect
@@ -4029,7 +4029,7 @@ func (self class) ShapedTextGetCarets(shaped RID.Any, position int64) Dictionary
 		shaped   RID.Any
 		position int64
 	}{shaped, position})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) ShapedTextGetSelection(shaped RID.Any, start int64, end int64) Packed.Array[Vector2.XY] { //gd:TextServer.shaped_text_get_selection
@@ -4038,7 +4038,7 @@ func (self class) ShapedTextGetSelection(shaped RID.Any, start int64, end int64)
 		start  int64
 		end    int64
 	}{shaped, start, end})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) ShapedTextHitTestGrapheme(shaped RID.Any, coords float64) int64 { //gd:TextServer.shaped_text_hit_test_grapheme
@@ -4083,7 +4083,7 @@ func (self class) ShapedTextPrevGraphemePos(shaped RID.Any, pos int64) int64 { /
 }
 func (self class) ShapedTextGetCharacterBreaks(shaped RID.Any) Packed.Array[int32] { //gd:TextServer.shaped_text_get_character_breaks
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_character_breaks, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ShapedTextNextCharacterPos(shaped RID.Any, pos int64) int64 { //gd:TextServer.shaped_text_next_character_pos
@@ -4147,7 +4147,7 @@ func (self class) FormatNumber(number String.Readable, language String.Readable)
 		number   gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(number)), pointers.Get(gd.InternalString(language))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ParseNumber(number String.Readable, language String.Readable) String.Readable { //gd:TextServer.parse_number
@@ -4155,12 +4155,12 @@ func (self class) ParseNumber(number String.Readable, language String.Readable) 
 		number   gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(number)), pointers.Get(gd.InternalString(language))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) PercentSign(language String.Readable) String.Readable { //gd:TextServer.percent_sign
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.percent_sign, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ language gdextension.String }{pointers.Get(gd.InternalString(language))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) StringGetWordBreaks(s String.Readable, language String.Readable, chars_per_line int64) Packed.Array[int32] { //gd:TextServer.string_get_word_breaks
@@ -4169,7 +4169,7 @@ func (self class) StringGetWordBreaks(s String.Readable, language String.Readabl
 		language       gdextension.String
 		chars_per_line int64
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalString(language)), chars_per_line})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) StringGetCharacterBreaks(s String.Readable, language String.Readable) Packed.Array[int32] { //gd:TextServer.string_get_character_breaks
@@ -4177,7 +4177,7 @@ func (self class) StringGetCharacterBreaks(s String.Readable, language String.Re
 		s        gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalString(language))})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) IsConfusable(s String.Readable, dict Packed.Strings) int64 { //gd:TextServer.is_confusable
@@ -4195,7 +4195,7 @@ func (self class) SpoofCheck(s String.Readable) bool { //gd:TextServer.spoof_che
 }
 func (self class) StripDiacritics(s String.Readable) String.Readable { //gd:TextServer.strip_diacritics
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.strip_diacritics, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ s gdextension.String }{pointers.Get(gd.InternalString(s))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsValidIdentifier(s String.Readable) bool { //gd:TextServer.is_valid_identifier
@@ -4213,7 +4213,7 @@ func (self class) StringToUpper(s String.Readable, language String.Readable) Str
 		s        gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalString(language))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) StringToLower(s String.Readable, language String.Readable) String.Readable { //gd:TextServer.string_to_lower
@@ -4221,7 +4221,7 @@ func (self class) StringToLower(s String.Readable, language String.Readable) Str
 		s        gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalString(language))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) StringToTitle(s String.Readable, language String.Readable) String.Readable { //gd:TextServer.string_to_title
@@ -4229,7 +4229,7 @@ func (self class) StringToTitle(s String.Readable, language String.Readable) Str
 		s        gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalString(language))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ParseStructuredText(parser_type StructuredTextParser, args Array.Any, text String.Readable) Array.Contains[Vector3i.XYZ] { //gd:TextServer.parse_structured_text
@@ -4238,7 +4238,7 @@ func (self class) ParseStructuredText(parser_type StructuredTextParser, args Arr
 		args        gdextension.Array
 		text        gdextension.String
 	}{parser_type, pointers.Get(gd.InternalArray(args)), pointers.Get(gd.InternalString(text))})
-	var ret = Array.Through(gd.ArrayProxy[Vector3i.XYZ]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsTextServer() Advanced         { return Advanced(o) }

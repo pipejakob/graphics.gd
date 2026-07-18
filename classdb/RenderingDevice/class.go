@@ -2405,7 +2405,7 @@ func (self class) TextureGetData(texture RID.Any, layer int64) Packed.Bytes { //
 		texture RID.Any
 		layer   int64
 	}{texture, layer})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) TextureGetDataAsync(texture RID.Any, layer int64, callback Callable.Function) Error.Code { //gd:RenderingDevice.texture_get_data_async
@@ -2629,7 +2629,7 @@ func (self class) ShaderCompileBinaryFromSpirv(spirv_data [1]gdclass.RDShaderSPI
 		spirv_data gdextension.Object
 		name       gdextension.String
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetRDShaderSPIRV(spirv_data[0])[0])), pointers.Get(gd.InternalString(name))})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) ShaderCreateFromSpirv(spirv_data [1]gdclass.RDShaderSPIRV, name String.Readable) RID.Any { //gd:RenderingDevice.shader_create_from_spirv
@@ -2736,7 +2736,7 @@ func (self class) BufferGetData(buffer RID.Any, offset_bytes int64, size_bytes i
 		offset_bytes int64
 		size_bytes   int64
 	}{buffer, offset_bytes, size_bytes})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) BufferGetDataAsync(buffer RID.Any, callback Callable.Function, offset_bytes int64, size_bytes int64) Error.Code { //gd:RenderingDevice.buffer_get_data_async
@@ -2925,7 +2925,7 @@ func (self class) DrawListBeginSplit(framebuffer RID.Any, splits int64, initial_
 		region               Rect2.PositionSize
 		storage_textures     gdextension.Array
 	}{framebuffer, splits, initial_color_action, final_color_action, initial_depth_action, final_depth_action, pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](clear_color_values)), clear_depth, clear_stencil, region, pointers.Get(gd.InternalArray(storage_textures))})
-	var ret = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) DrawListSetBlendConstants(draw_list int64, color Color.RGBA) { //gd:RenderingDevice.draw_list_set_blend_constants
@@ -3009,7 +3009,7 @@ func (self class) DrawListSwitchToNextPass() int64 { //gd:RenderingDevice.draw_l
 }
 func (self class) DrawListSwitchToNextPassSplit(splits int64) Packed.Array[int64] { //gd:RenderingDevice.draw_list_switch_to_next_pass_split
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.draw_list_switch_to_next_pass_split, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ splits int64 }{splits})
-	var ret = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) DrawListEnd() { //gd:RenderingDevice.draw_list_end
@@ -3127,7 +3127,7 @@ func (self class) GetCapturedTimestampCpuTime(index int64) int64 { //gd:Renderin
 }
 func (self class) GetCapturedTimestampName(index int64) String.Readable { //gd:RenderingDevice.get_captured_timestamp_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_captured_timestamp_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) HasFeature(feature Rendering.Features) bool { //gd:RenderingDevice.has_feature
@@ -3188,17 +3188,17 @@ func (self class) DrawCommandEndLabel() { //gd:RenderingDevice.draw_command_end_
 }
 func (self class) GetDeviceVendorName() String.Readable { //gd:RenderingDevice.get_device_vendor_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_device_vendor_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDeviceName() String.Readable { //gd:RenderingDevice.get_device_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_device_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDevicePipelineCacheUuid() String.Readable { //gd:RenderingDevice.get_device_pipeline_cache_uuid
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_device_pipeline_cache_uuid, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetMemoryUsage(atype Rendering.MemoryType) int64 { //gd:RenderingDevice.get_memory_usage
@@ -3217,17 +3217,17 @@ func (self class) GetDriverResource(resource Rendering.DriverResource, rid RID.A
 }
 func (self class) GetPerfReport() String.Readable { //gd:RenderingDevice.get_perf_report
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_perf_report, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDriverAndDeviceMemoryReport() String.Readable { //gd:RenderingDevice.get_driver_and_device_memory_report
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_driver_and_device_memory_report, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTrackedObjectName(type_index int64) String.Readable { //gd:RenderingDevice.get_tracked_object_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tracked_object_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ type_index int64 }{type_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTrackedObjectTypeCount() int64 { //gd:RenderingDevice.get_tracked_object_type_count

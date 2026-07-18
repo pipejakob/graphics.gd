@@ -306,7 +306,7 @@ func (self class) HasAction(action String.Name) bool { //gd:InputMap.has_action
 func (self class) GetActions() Array.Contains[String.Name] { //gd:InputMap.get_actions
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.get_actions, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AddAction(action String.Name, deadzone float64) { //gd:InputMap.add_action
@@ -323,7 +323,7 @@ func (self class) EraseAction(action String.Name) { //gd:InputMap.erase_action
 func (self class) GetActionDescription(action String.Name) String.Readable { //gd:InputMap.get_action_description
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_action_description, gdextension.SizeString|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ActionSetDeadzone(action String.Name, deadzone float64) { //gd:InputMap.action_set_deadzone
@@ -369,7 +369,7 @@ func (self class) ActionEraseEvents(action String.Name) { //gd:InputMap.action_e
 func (self class) ActionGetEvents(action String.Name) Array.Contains[[1]gdclass.InputEvent] { //gd:InputMap.action_get_events
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.action_get_events, gdextension.SizeArray|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.InputEvent]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.InputEvent](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) EventIsAction(event [1]gdclass.InputEvent, action String.Name, exact_match bool) bool { //gd:InputMap.event_is_action
@@ -404,7 +404,7 @@ func OnProjectSettingsLoaded(cb func(), flags ...Signal.Flags) {
 
 func (self class) ProjectSettingsLoaded() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`project_settings_loaded`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`project_settings_loaded`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

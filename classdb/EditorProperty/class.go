@@ -527,7 +527,7 @@ func (self class) SetLabel(text String.Readable) { //gd:EditorProperty.set_label
 }
 func (self class) GetLabel() String.Readable { //gd:EditorProperty.get_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_label, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetReadOnly(read_only bool) { //gd:EditorProperty.set_read_only
@@ -596,7 +596,7 @@ func (self class) IsDeletable() bool { //gd:EditorProperty.is_deletable
 }
 func (self class) GetEditedProperty() String.Name { //gd:EditorProperty.get_edited_property
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_edited_property, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetEditedObject() [1]gdreference.Object { //gd:EditorProperty.get_edited_object
@@ -681,7 +681,7 @@ func (self Instance) OnPropertyChanged(cb func(property string, value any, field
 }
 
 func (self class) PropertyChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_changed`))))
 }
 
 /*
@@ -699,7 +699,7 @@ func (self Instance) OnMultiplePropertiesChanged(cb func(properties []string, va
 }
 
 func (self class) MultiplePropertiesChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`multiple_properties_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`multiple_properties_changed`))))
 }
 
 /*
@@ -715,7 +715,7 @@ func (self Instance) OnPropertyKeyed(cb func(property string), flags ...Signal.F
 }
 
 func (self class) PropertyKeyed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_keyed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_keyed`))))
 }
 
 /*
@@ -731,7 +731,7 @@ func (self Instance) OnPropertyDeleted(cb func(property string), flags ...Signal
 }
 
 func (self class) PropertyDeleted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_deleted`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_deleted`))))
 }
 
 /*
@@ -747,7 +747,7 @@ func (self Instance) OnPropertyKeyedWithValue(cb func(property string, value any
 }
 
 func (self class) PropertyKeyedWithValue() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_keyed_with_value`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_keyed_with_value`))))
 }
 
 /*
@@ -763,7 +763,7 @@ func (self Instance) OnPropertyChecked(cb func(property string, checked bool), f
 }
 
 func (self class) PropertyChecked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_checked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_checked`))))
 }
 
 /*
@@ -779,7 +779,7 @@ func (self Instance) OnPropertyOverridden(cb func(), flags ...Signal.Flags) Inst
 }
 
 func (self class) PropertyOverridden() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_overridden`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_overridden`))))
 }
 
 /*
@@ -795,7 +795,7 @@ func (self Instance) OnPropertyFavorited(cb func(property string, favorited bool
 }
 
 func (self class) PropertyFavorited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_favorited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_favorited`))))
 }
 
 /*
@@ -813,7 +813,7 @@ func (self Instance) OnPropertyPinned(cb func(property string, pinned bool), fla
 }
 
 func (self class) PropertyPinned() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_pinned`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_pinned`))))
 }
 
 /*
@@ -829,7 +829,7 @@ func (self Instance) OnPropertyCanRevertChanged(cb func(property string, can_rev
 }
 
 func (self class) PropertyCanRevertChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_can_revert_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_can_revert_changed`))))
 }
 
 /*
@@ -845,7 +845,7 @@ func (self Instance) OnResourceSelected(cb func(path string, resource Resource.I
 }
 
 func (self class) ResourceSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_selected`))))
 }
 
 /*
@@ -861,7 +861,7 @@ func (self Instance) OnObjectIdSelected(cb func(property string, id int), flags 
 }
 
 func (self class) ObjectIdSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`object_id_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`object_id_selected`))))
 }
 
 /*
@@ -877,7 +877,7 @@ func (self Instance) OnSelected(cb func(path string, focusable_idx int), flags .
 }
 
 func (self class) Selected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`selected`))))
 }
 
 func (o class) AsEditorProperty() Advanced                { return Advanced(o) }

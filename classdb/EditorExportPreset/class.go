@@ -388,12 +388,12 @@ func (self class) Has(property String.Name) bool { //gd:EditorExportPreset.has
 }
 func (self class) GetFilesToExport() Packed.Strings { //gd:EditorExportPreset.get_files_to_export
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_files_to_export, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetCustomizedFiles() Dictionary.Any { //gd:EditorExportPreset.get_customized_files
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_customized_files, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetCustomizedFilesCount() int64 { //gd:EditorExportPreset.get_customized_files_count
@@ -416,12 +416,12 @@ func (self class) GetFileExportMode(path String.Readable, def FileExportMode) Fi
 }
 func (self class) GetProjectSetting(name String.Name) variant.Any { //gd:EditorExportPreset.get_project_setting
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_project_setting, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetPresetName() String.Readable { //gd:EditorExportPreset.get_preset_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_preset_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsRunnable() bool { //gd:EditorExportPreset.is_runnable
@@ -446,37 +446,37 @@ func (self class) GetExportFilter() ExportFilter { //gd:EditorExportPreset.get_e
 }
 func (self class) GetIncludeFilter() String.Readable { //gd:EditorExportPreset.get_include_filter
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_include_filter, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetExcludeFilter() String.Readable { //gd:EditorExportPreset.get_exclude_filter
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_exclude_filter, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCustomFeatures() String.Readable { //gd:EditorExportPreset.get_custom_features
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_custom_features, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetPatches() Packed.Strings { //gd:EditorExportPreset.get_patches
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_patches, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetExportPath() String.Readable { //gd:EditorExportPreset.get_export_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_export_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetEncryptionInFilter() String.Readable { //gd:EditorExportPreset.get_encryption_in_filter
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_encryption_in_filter, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetEncryptionExFilter() String.Readable { //gd:EditorExportPreset.get_encryption_ex_filter
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_encryption_ex_filter, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetEncryptPck() bool { //gd:EditorExportPreset.get_encrypt_pck
@@ -491,7 +491,7 @@ func (self class) GetEncryptDirectory() bool { //gd:EditorExportPreset.get_encry
 }
 func (self class) GetEncryptionKey() String.Readable { //gd:EditorExportPreset.get_encryption_key
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_encryption_key, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetScriptExportMode() ScriptExportMode { //gd:EditorExportPreset.get_script_export_mode
@@ -504,7 +504,7 @@ func (self class) GetOrEnv(name String.Name, env_var String.Readable) variant.An
 		name    gdextension.StringName
 		env_var gdextension.String
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalString(env_var))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetVersion(name String.Name, windows_version bool) String.Readable { //gd:EditorExportPreset.get_version
@@ -512,7 +512,7 @@ func (self class) GetVersion(name String.Name, windows_version bool) String.Read
 		name            gdextension.StringName
 		windows_version bool
 	}{pointers.Get(gd.InternalStringName(name)), windows_version})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsEditorExportPreset() Advanced         { return Advanced(o) }

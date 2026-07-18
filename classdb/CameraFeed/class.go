@@ -198,7 +198,7 @@ Override this method to set the format of the camera feed.
 func (Instance) _set_format(impl func(ptr gdclass.Receiver, index int, parameters FormatParameters) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var index = gd.UnsafeGet[int64](p_args, 0)
-		var parameters = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 1)))))
+		var parameters = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 1)))))
 		defer pointers.End(gd.InternalDictionary(parameters))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, int(index), gd.DictionaryAs[FormatParameters](parameters))
@@ -422,7 +422,7 @@ func (class) _deactivate_feed(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionC
 func (class) _set_format(impl func(ptr gdclass.Receiver, index int64, parameters Dictionary.Any) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var index = gd.UnsafeGet[int64](p_args, 0)
-		var parameters = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 1)))))
+		var parameters = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 1)))))
 		defer pointers.End(gd.InternalDictionary(parameters))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, index, parameters)
@@ -457,7 +457,7 @@ func (self class) SetActive(active bool) { //gd:CameraFeed.set_active
 }
 func (self class) GetName() String.Readable { //gd:CameraFeed.get_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetName(name String.Readable) { //gd:CameraFeed.set_name
@@ -509,7 +509,7 @@ func (self class) GetDatatype() FeedDataType { //gd:CameraFeed.get_datatype
 }
 func (self class) GetFormats() Array.Any { //gd:CameraFeed.get_formats
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_formats, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetFormat(index int64, parameters Dictionary.Any) bool { //gd:CameraFeed.set_format
@@ -534,7 +534,7 @@ func (self Instance) OnFrameChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) FrameChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`frame_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`frame_changed`))))
 }
 
 /*
@@ -550,7 +550,7 @@ func (self Instance) OnFormatChanged(cb func(), flags ...Signal.Flags) Instance 
 }
 
 func (self class) FormatChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`format_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`format_changed`))))
 }
 
 func (o class) AsCameraFeed() Advanced         { return Advanced(o) }

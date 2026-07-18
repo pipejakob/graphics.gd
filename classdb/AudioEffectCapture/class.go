@@ -258,7 +258,7 @@ func (self class) CanGetBuffer(frames int64) bool { //gd:AudioEffectCapture.can_
 }
 func (self class) GetBuffer(frames int64) Packed.Array[Vector2.XY] { //gd:AudioEffectCapture.get_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_buffer, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ frames int64 }{frames})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) ClearBuffer() { //gd:AudioEffectCapture.clear_buffer

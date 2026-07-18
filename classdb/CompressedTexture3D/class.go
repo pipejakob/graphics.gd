@@ -191,7 +191,7 @@ func (self class) Load(path String.Readable) Error.Code { //gd:CompressedTexture
 }
 func (self class) GetLoadPath() String.Readable { //gd:CompressedTexture3D.get_load_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_load_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsCompressedTexture3D() Advanced         { return Advanced(o) }

@@ -288,7 +288,7 @@ func (self class) SetTraversableOutlines(traversable_outlines Array.Contains[Pac
 }
 func (self class) GetTraversableOutlines() Array.Contains[Packed.Array[Vector2.XY]] { //gd:NavigationMeshSourceGeometryData2D.get_traversable_outlines
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_traversable_outlines, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetObstructionOutlines(obstruction_outlines Array.Contains[Packed.Array[Vector2.XY]]) { //gd:NavigationMeshSourceGeometryData2D.set_obstruction_outlines
@@ -296,7 +296,7 @@ func (self class) SetObstructionOutlines(obstruction_outlines Array.Contains[Pac
 }
 func (self class) GetObstructionOutlines() Array.Contains[Packed.Array[Vector2.XY]] { //gd:NavigationMeshSourceGeometryData2D.get_obstruction_outlines
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_obstruction_outlines, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AppendTraversableOutlines(traversable_outlines Array.Contains[Packed.Array[Vector2.XY]]) { //gd:NavigationMeshSourceGeometryData2D.append_traversable_outlines
@@ -332,7 +332,7 @@ func (self class) SetProjectedObstructions(projected_obstructions Array.Any) { /
 }
 func (self class) GetProjectedObstructions() Array.Any { //gd:NavigationMeshSourceGeometryData2D.get_projected_obstructions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_projected_obstructions, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBounds() Rect2.PositionSize { //gd:NavigationMeshSourceGeometryData2D.get_bounds

@@ -171,12 +171,12 @@ Virtual method to override [GetPluralMessage].
 */
 func (Instance) _get_plural_message(impl func(ptr gdclass.Receiver, src_message string, src_plural_message string, n int, context string) string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var src_message = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var src_message = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(src_message))
-		var src_plural_message = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
+		var src_plural_message = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
 		defer pointers.End(gd.InternalStringName(src_plural_message))
 		var n = gd.UnsafeGet[int64](p_args, 2)
-		var context = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 3))))))
+		var context = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 3))))))
 		defer pointers.End(gd.InternalStringName(context))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, src_message.String(), src_plural_message.String(), int(n), context.String())
@@ -196,9 +196,9 @@ Virtual method to override [GetMessage].
 */
 func (Instance) _get_message(impl func(ptr gdclass.Receiver, src_message string, context string) string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var src_message = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var src_message = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(src_message))
-		var context = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
+		var context = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
 		defer pointers.End(gd.InternalStringName(context))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, src_message.String(), context.String())
@@ -410,12 +410,12 @@ func (self Instance) SetPluralRulesOverride(value string) Instance { //gd:Transl
 }
 func (class) _get_plural_message(impl func(ptr gdclass.Receiver, src_message String.Name, src_plural_message String.Name, n int64, context String.Name) String.Name) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var src_message = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var src_message = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(src_message))
-		var src_plural_message = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
+		var src_plural_message = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
 		defer pointers.End(gd.InternalStringName(src_plural_message))
 		var n = gd.UnsafeGet[int64](p_args, 2)
-		var context = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 3))))))
+		var context = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 3))))))
 		defer pointers.End(gd.InternalStringName(context))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, src_message, src_plural_message, n, context)
@@ -429,9 +429,9 @@ func (class) _get_plural_message(impl func(ptr gdclass.Receiver, src_message Str
 }
 func (class) _get_message(impl func(ptr gdclass.Receiver, src_message String.Name, context String.Name) String.Name) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var src_message = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var src_message = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(src_message))
-		var context = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
+		var context = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
 		defer pointers.End(gd.InternalStringName(context))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, src_message, context)
@@ -449,7 +449,7 @@ func (self class) SetLocale(locale String.Readable) { //gd:Translation.set_local
 }
 func (self class) GetLocale() String.Readable { //gd:Translation.get_locale
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_locale, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) AddMessage(src_message String.Name, xlated_message String.Name, context String.Name) { //gd:Translation.add_message
@@ -471,7 +471,7 @@ func (self class) GetMessage(src_message String.Name, context String.Name) Strin
 		src_message gdextension.StringName
 		context     gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(src_message)), pointers.Get(gd.InternalStringName(context))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetPluralMessage(src_message String.Name, src_plural_message String.Name, n int64, context String.Name) String.Name { //gd:Translation.get_plural_message
@@ -481,7 +481,7 @@ func (self class) GetPluralMessage(src_message String.Name, src_plural_message S
 		n                  int64
 		context            gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(src_message)), pointers.Get(gd.InternalStringName(src_plural_message)), n, pointers.Get(gd.InternalStringName(context))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) EraseMessage(src_message String.Name, context String.Name) { //gd:Translation.erase_message
@@ -492,12 +492,12 @@ func (self class) EraseMessage(src_message String.Name, context String.Name) { /
 }
 func (self class) GetMessageList() Packed.Strings { //gd:Translation.get_message_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_message_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetTranslatedMessageList() Packed.Strings { //gd:Translation.get_translated_message_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_translated_message_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetMessageCount() int64 { //gd:Translation.get_message_count
@@ -510,7 +510,7 @@ func (self class) SetPluralRulesOverride(rules String.Readable) { //gd:Translati
 }
 func (self class) GetPluralRulesOverride() String.Readable { //gd:Translation.get_plural_rules_override
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_plural_rules_override, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsTranslation() Advanced               { return Advanced(o) }

@@ -454,7 +454,7 @@ func (self class) SetTargetNode(index int64, target_node Path.ToNode) { //gd:Ite
 }
 func (self class) GetTargetNode(index int64) Path.ToNode { //gd:IterateIK3D.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetJointRotationAxis(index int64, joint int64, axis SkeletonModifier3D.RotationAxis) { //gd:IterateIK3D.set_joint_rotation_axis

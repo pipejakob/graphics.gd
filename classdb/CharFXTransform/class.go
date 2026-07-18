@@ -446,7 +446,7 @@ func (self class) SetColor(color Color.RGBA) { //gd:CharFXTransform.set_color
 }
 func (self class) GetEnvironment() Dictionary.Any { //gd:CharFXTransform.get_environment
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_environment, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetEnvironment(environment Dictionary.Any) { //gd:CharFXTransform.set_environment

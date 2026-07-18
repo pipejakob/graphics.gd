@@ -324,7 +324,7 @@ func (class) _update_cache(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClas
 
 func (self class) GetLineSyntaxHighlighting(line int64) Dictionary.Any { //gd:SyntaxHighlighter.get_line_syntax_highlighting
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_line_syntax_highlighting, gdextension.SizeDictionary|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) UpdateCache() { //gd:SyntaxHighlighter.update_cache

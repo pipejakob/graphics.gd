@@ -526,7 +526,7 @@ func (self class) IsEcho() bool { //gd:InputEvent.is_echo
 }
 func (self class) AsText() String.Readable { //gd:InputEvent.as_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.as_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsMatch(event [1]gdclass.InputEvent, exact_match bool) bool { //gd:InputEvent.is_match

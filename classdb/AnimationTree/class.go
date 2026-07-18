@@ -251,7 +251,7 @@ func (self class) SetAdvanceExpressionBaseNode(path Path.ToNode) { //gd:Animatio
 }
 func (self class) GetAdvanceExpressionBaseNode() Path.ToNode { //gd:AnimationTree.get_advance_expression_base_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_advance_expression_base_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetAnimationPlayer(path Path.ToNode) { //gd:AnimationTree.set_animation_player
@@ -259,7 +259,7 @@ func (self class) SetAnimationPlayer(path Path.ToNode) { //gd:AnimationTree.set_
 }
 func (self class) GetAnimationPlayer() Path.ToNode { //gd:AnimationTree.get_animation_player
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_animation_player, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetProcessCallback(mode AnimationProcessCallback) { //gd:AnimationTree.set_process_callback
@@ -286,7 +286,7 @@ func (self Instance) OnAnimationPlayerChanged(cb func(), flags ...Signal.Flags) 
 }
 
 func (self class) AnimationPlayerChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_player_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_player_changed`))))
 }
 
 func (o class) AsAnimationTree() Advanced         { return Advanced(o) }

@@ -281,7 +281,7 @@ func (self class) SetInputPortDefaultValue(port int64, value variant.Any, prev_v
 }
 func (self class) GetInputPortDefaultValue(port int64) variant.Any { //gd:VisualShaderNode.get_input_port_default_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_input_port_default_value, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ port int64 }{port})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) RemoveInputPortDefaultValue(port int64) { //gd:VisualShaderNode.remove_input_port_default_value
@@ -295,7 +295,7 @@ func (self class) SetDefaultInputValues(values Array.Any) { //gd:VisualShaderNod
 }
 func (self class) GetDefaultInputValues() Array.Any { //gd:VisualShaderNode.get_default_input_values
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_default_input_values, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetFrame(frame_ int64) { //gd:VisualShaderNode.set_frame

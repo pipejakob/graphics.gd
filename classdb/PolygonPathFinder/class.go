@@ -224,7 +224,7 @@ func (self class) FindPath(from Vector2.XY, to Vector2.XY) Packed.Array[Vector2.
 		from Vector2.XY
 		to   Vector2.XY
 	}{from, to})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) GetIntersections(from Vector2.XY, to Vector2.XY) Packed.Array[Vector2.XY] { //gd:PolygonPathFinder.get_intersections
@@ -232,7 +232,7 @@ func (self class) GetIntersections(from Vector2.XY, to Vector2.XY) Packed.Array[
 		from Vector2.XY
 		to   Vector2.XY
 	}{from, to})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) GetClosestPoint(point Vector2.XY) Vector2.XY { //gd:PolygonPathFinder.get_closest_point

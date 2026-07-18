@@ -338,7 +338,7 @@ func New() Instance {
 
 func (self class) GenerateRandomBytes(size int64) Packed.Bytes { //gd:Crypto.generate_random_bytes
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.generate_random_bytes, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) GenerateRsa(size int64) [1]gdclass.CryptoKey { //gd:Crypto.generate_rsa
@@ -362,7 +362,7 @@ func (self class) Sign(hash_type HashingContext.HashType, hash Packed.Bytes, key
 		hash      gdextension.PackedArray[byte]
 		key       gdextension.Object
 	}{hash_type, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](hash.Array))), gdextension.Object(gdreference.GetObject(gdclass.GetCryptoKey(key[0])[0]))})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) Verify(hash_type HashingContext.HashType, hash Packed.Bytes, signature Packed.Bytes, key [1]gdclass.CryptoKey) bool { //gd:Crypto.verify
@@ -380,7 +380,7 @@ func (self class) Encrypt(key [1]gdclass.CryptoKey, plaintext Packed.Bytes) Pack
 		key       gdextension.Object
 		plaintext gdextension.PackedArray[byte]
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetCryptoKey(key[0])[0])), pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](plaintext.Array)))})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) Decrypt(key [1]gdclass.CryptoKey, ciphertext Packed.Bytes) Packed.Bytes { //gd:Crypto.decrypt
@@ -388,7 +388,7 @@ func (self class) Decrypt(key [1]gdclass.CryptoKey, ciphertext Packed.Bytes) Pac
 		key        gdextension.Object
 		ciphertext gdextension.PackedArray[byte]
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetCryptoKey(key[0])[0])), pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](ciphertext.Array)))})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) HmacDigest(hash_type HashingContext.HashType, key Packed.Bytes, msg Packed.Bytes) Packed.Bytes { //gd:Crypto.hmac_digest
@@ -397,7 +397,7 @@ func (self class) HmacDigest(hash_type HashingContext.HashType, key Packed.Bytes
 		key       gdextension.PackedArray[byte]
 		msg       gdextension.PackedArray[byte]
 	}{hash_type, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](key.Array))), pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](msg.Array)))})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) ConstantTimeCompare(trusted Packed.Bytes, received Packed.Bytes) bool { //gd:Crypto.constant_time_compare

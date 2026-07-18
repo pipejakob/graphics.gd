@@ -320,7 +320,7 @@ func (self class) SetBone2dNodepath(nodepath Path.ToNode) { //gd:PhysicalBone2D.
 }
 func (self class) GetBone2dNodepath() Path.ToNode { //gd:PhysicalBone2D.get_bone2d_nodepath
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_bone2d_nodepath, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetBone2dIndex(bone_index int64) { //gd:PhysicalBone2D.set_bone2d_index

@@ -676,7 +676,7 @@ func (self class) SetTitle(title String.Readable) { //gd:GraphNode.set_title
 }
 func (self class) GetTitle() String.Readable { //gd:GraphNode.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTitlebarHbox() [1]gdclass.HBoxContainer { //gd:GraphNode.get_titlebar_hbox
@@ -756,7 +756,7 @@ func (self class) SetSlotMetadataLeft(slot_index int64, value variant.Any) { //g
 }
 func (self class) GetSlotMetadataLeft(slot_index int64) variant.Any { //gd:GraphNode.get_slot_metadata_left
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_slot_metadata_left, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) IsSlotEnabledRight(slot_index int64) bool { //gd:GraphNode.is_slot_enabled_right
@@ -811,7 +811,7 @@ func (self class) SetSlotMetadataRight(slot_index int64, value variant.Any) { //
 }
 func (self class) GetSlotMetadataRight(slot_index int64) variant.Any { //gd:GraphNode.get_slot_metadata_right
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_slot_metadata_right, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) IsSlotDrawStylebox(slot_index int64) bool { //gd:GraphNode.is_slot_draw_stylebox
@@ -905,7 +905,7 @@ func (self Instance) OnSlotUpdated(cb func(slot_index int), flags ...Signal.Flag
 }
 
 func (self class) SlotUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`slot_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`slot_updated`))))
 }
 
 /*
@@ -921,7 +921,7 @@ func (self Instance) OnSlotSizesChanged(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) SlotSizesChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`slot_sizes_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`slot_sizes_changed`))))
 }
 
 func (o class) AsGraphNode() Advanced                         { return Advanced(o) }

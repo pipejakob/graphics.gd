@@ -279,7 +279,7 @@ func (self class) Execute(inputs Array.Any, base_instance [1]gdreference.Object,
 		show_error       bool
 		const_calls_only bool
 	}{pointers.Get(gd.InternalArray(inputs)), gdextension.Object(gdreference.GetObject(gdclass.GetObject(base_instance[0])[0])), show_error, const_calls_only})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) HasExecuteFailed() bool { //gd:Expression.has_execute_failed
@@ -289,7 +289,7 @@ func (self class) HasExecuteFailed() bool { //gd:Expression.has_execute_failed
 }
 func (self class) GetErrorText() String.Readable { //gd:Expression.get_error_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_error_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsExpression() Advanced         { return Advanced(o) }

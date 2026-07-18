@@ -377,12 +377,12 @@ func convertToGoStruct(rtype reflect.Type, engineValue any) (reflect.Value, erro
 		return reflect.Value{}, xray.New(fmt.Errorf("cannot convert %T to %s", value, rtype))
 	case StringName:
 		if reflect.TypeFor[StringType.Unicode]().ConvertibleTo(rtype) {
-			return reflect.ValueOf(StringType.Via(StringNameProxy{}, pointers.Pack(value))).Convert(rtype), nil
+			return reflect.ValueOf(StringType.Via(WrapStringName(value))).Convert(rtype), nil
 		}
 		return reflect.Value{}, xray.New(fmt.Errorf("cannot convert %T to %s", value, rtype))
 	case NodePath:
 		if reflect.TypeFor[StringType.Unicode]().ConvertibleTo(rtype) {
-			return reflect.ValueOf(StringType.Via(NodePathProxy{}, pointers.Pack(value))).Convert(rtype), nil
+			return reflect.ValueOf(StringType.Via(WrapNodePath(value))).Convert(rtype), nil
 		}
 		return reflect.Value{}, xray.New(fmt.Errorf("cannot convert %T to %s", value, rtype))
 	case DictionaryType.Any:

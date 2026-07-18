@@ -3558,7 +3558,7 @@ func (self class) HasFeature(feature Feature) bool { //gd:DisplayServer.has_feat
 func (self class) GetName() String.Readable { //gd:DisplayServer.get_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) HelpSetSearchCallbacks(search_callback Callable.Function, action_callback Callable.Function) { //gd:DisplayServer.help_set_search_callbacks
@@ -3750,7 +3750,7 @@ func (self class) GlobalMenuGetItemCallback(menu_root String.Readable, idx int64
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
-	var ret = Callable.Through(gd.CallableProxy{}, pointers.Pack(pointers.New[gd.Callable](r_ret)))
+	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
 func (self class) GlobalMenuGetItemKeyCallback(menu_root String.Readable, idx int64) Callable.Function { //gd:DisplayServer.global_menu_get_item_key_callback
@@ -3759,7 +3759,7 @@ func (self class) GlobalMenuGetItemKeyCallback(menu_root String.Readable, idx in
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
-	var ret = Callable.Through(gd.CallableProxy{}, pointers.Pack(pointers.New[gd.Callable](r_ret)))
+	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
 func (self class) GlobalMenuGetItemTag(menu_root String.Readable, idx int64) variant.Any { //gd:DisplayServer.global_menu_get_item_tag
@@ -3768,7 +3768,7 @@ func (self class) GlobalMenuGetItemTag(menu_root String.Readable, idx int64) var
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GlobalMenuGetItemText(menu_root String.Readable, idx int64) String.Readable { //gd:DisplayServer.global_menu_get_item_text
@@ -3777,7 +3777,7 @@ func (self class) GlobalMenuGetItemText(menu_root String.Readable, idx int64) St
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GlobalMenuGetItemSubmenu(menu_root String.Readable, idx int64) String.Readable { //gd:DisplayServer.global_menu_get_item_submenu
@@ -3786,7 +3786,7 @@ func (self class) GlobalMenuGetItemSubmenu(menu_root String.Readable, idx int64)
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GlobalMenuGetItemAccelerator(menu_root String.Readable, idx int64) Input.Key { //gd:DisplayServer.global_menu_get_item_accelerator
@@ -3822,7 +3822,7 @@ func (self class) GlobalMenuGetItemTooltip(menu_root String.Readable, idx int64)
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GlobalMenuGetItemState(menu_root String.Readable, idx int64) int64 { //gd:DisplayServer.global_menu_get_item_state
@@ -4017,7 +4017,7 @@ func (self class) GlobalMenuClear(menu_root String.Readable) { //gd:DisplayServe
 func (self class) GlobalMenuGetSystemMenuRoots() Dictionary.Any { //gd:DisplayServer.global_menu_get_system_menu_roots
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.global_menu_get_system_menu_roots, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) TtsIsSpeaking() bool { //gd:DisplayServer.tts_is_speaking
@@ -4035,13 +4035,13 @@ func (self class) TtsIsPaused() bool { //gd:DisplayServer.tts_is_paused
 func (self class) TtsGetVoices() Array.Contains[Dictionary.Any] { //gd:DisplayServer.tts_get_voices
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.tts_get_voices, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) TtsGetVoicesForLanguage(language String.Readable) Packed.Strings { //gd:DisplayServer.tts_get_voices_for_language
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.tts_get_voices_for_language, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ language gdextension.String }{pointers.Get(gd.InternalString(language))})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) TtsSpeak(text String.Readable, voice String.Readable, volume int64, pitch float64, rate float64, utterance_id int64, interrupt bool) { //gd:DisplayServer.tts_speak
@@ -4136,7 +4136,7 @@ func (self class) ClipboardSet(clipboard String.Readable) { //gd:DisplayServer.c
 func (self class) ClipboardGet() String.Readable { //gd:DisplayServer.clipboard_get
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.clipboard_get, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ClipboardGetImage() [1]gdclass.Image { //gd:DisplayServer.clipboard_get_image
@@ -4164,13 +4164,13 @@ func (self class) ClipboardSetPrimary(clipboard_primary String.Readable) { //gd:
 func (self class) ClipboardGetPrimary() String.Readable { //gd:DisplayServer.clipboard_get_primary
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.clipboard_get_primary, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDisplayCutouts() Array.Contains[Rect2.PositionSize] { //gd:DisplayServer.get_display_cutouts
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.get_display_cutouts, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Rect2.PositionSize]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Rect2.PositionSize](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetDisplaySafeArea() Rect2i.PositionSize { //gd:DisplayServer.get_display_safe_area
@@ -4295,7 +4295,7 @@ func (self class) ScreenIsKeptOn() bool { //gd:DisplayServer.screen_is_kept_on
 func (self class) GetWindowList() Packed.Array[int32] { //gd:DisplayServer.get_window_list
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_window_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetWindowAtScreenPosition(position Vector2i.XY) int64 { //gd:DisplayServer.get_window_at_screen_position
@@ -4775,7 +4775,7 @@ func (self class) AccessibilityElementSetMeta(id RID.Any, meta variant.Any) { //
 func (self class) AccessibilityElementGetMeta(id RID.Any) variant.Any { //gd:DisplayServer.accessibility_element_get_meta
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Variant](gdreference.GetObject(self.AsObject()[0]), methods.accessibility_element_get_meta, gdextension.SizeVariant|(gdextension.SizeRID<<4), &struct{ id RID.Any }{id})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) AccessibilitySetWindowRect(window_id int64, rect_out Rect2.PositionSize, rect_in Rect2.PositionSize) { //gd:DisplayServer.accessibility_set_window_rect
@@ -5252,7 +5252,7 @@ func (self class) ImeGetSelection() Vector2i.XY { //gd:DisplayServer.ime_get_sel
 func (self class) ImeGetText() String.Readable { //gd:DisplayServer.ime_get_text
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.ime_get_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) VirtualKeyboardShow(existing_text String.Readable, position Rect2.PositionSize, atype VirtualKeyboardType, max_length int64, cursor_start int64, cursor_end int64) { //gd:DisplayServer.virtual_keyboard_show
@@ -5391,13 +5391,13 @@ func (self class) KeyboardSetCurrentLayout(index int64) { //gd:DisplayServer.key
 func (self class) KeyboardGetLayoutLanguage(index int64) String.Readable { //gd:DisplayServer.keyboard_get_layout_language
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.keyboard_get_layout_language, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) KeyboardGetLayoutName(index int64) String.Readable { //gd:DisplayServer.keyboard_get_layout_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.keyboard_get_layout_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) KeyboardGetKeycodeFromPhysical(keycode Input.Key) Input.Key { //gd:DisplayServer.keyboard_get_keycode_from_physical
@@ -5495,13 +5495,13 @@ func (self class) TabletGetDriverCount() int64 { //gd:DisplayServer.tablet_get_d
 func (self class) TabletGetDriverName(idx int64) String.Readable { //gd:DisplayServer.tablet_get_driver_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.tablet_get_driver_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) TabletGetCurrentDriver() String.Readable { //gd:DisplayServer.tablet_get_current_driver
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.tablet_get_current_driver, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) TabletSetCurrentDriver(name String.Readable) { //gd:DisplayServer.tablet_set_current_driver
@@ -5572,7 +5572,7 @@ func OnOrientationChanged(cb func(orientation int), flags ...Signal.Flags) {
 
 func (self class) OrientationChanged() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`orientation_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`orientation_changed`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

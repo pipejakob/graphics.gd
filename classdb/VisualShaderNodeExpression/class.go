@@ -184,7 +184,7 @@ func (self class) SetExpression(expression String.Readable) { //gd:VisualShaderN
 }
 func (self class) GetExpression() String.Readable { //gd:VisualShaderNodeExpression.get_expression
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_expression, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsVisualShaderNodeExpression() Advanced         { return Advanced(o) }

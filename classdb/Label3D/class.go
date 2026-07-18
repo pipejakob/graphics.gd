@@ -734,7 +734,7 @@ func (self class) SetText(text String.Readable) { //gd:Label3D.set_text
 }
 func (self class) GetText() String.Readable { //gd:Label3D.get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTextDirection(direction TextServer.Direction) { //gd:Label3D.set_text_direction
@@ -750,7 +750,7 @@ func (self class) SetLanguage(language String.Readable) { //gd:Label3D.set_langu
 }
 func (self class) GetLanguage() String.Readable { //gd:Label3D.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetStructuredTextBidiOverride(parser TextServer.StructuredTextParser) { //gd:Label3D.set_structured_text_bidi_override
@@ -768,7 +768,7 @@ func (self class) SetStructuredTextBidiOverrideOptions(args Array.Any) { //gd:La
 }
 func (self class) GetStructuredTextBidiOverrideOptions() Array.Any { //gd:Label3D.get_structured_text_bidi_override_options
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_structured_text_bidi_override_options, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetUppercase(enable bool) { //gd:Label3D.set_uppercase

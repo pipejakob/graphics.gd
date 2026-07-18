@@ -316,7 +316,7 @@ func (self class) IsFeatureDisabled(feature Feature) bool { //gd:EditorFeaturePr
 }
 func (self class) GetFeatureName(feature Feature) String.Readable { //gd:EditorFeatureProfile.get_feature_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_feature_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ feature Feature }{feature})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SaveToFile(path String.Readable) Error.Code { //gd:EditorFeatureProfile.save_to_file

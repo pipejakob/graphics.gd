@@ -22,6 +22,12 @@ var PtrcallFn uintptr
 //
 // Call has the same signature as noescape.Call[T].
 func Call[T any](object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, args any) T {
+	// Off the main thread, defer to noescape.Call: engine-owned threads make
+	// the call directly, user goroutines are routed through the cross-thread
+	// dispatch ring so they observe their own queued writes in order.
+	if !threadcheck.Main() {
+		return noescape.Call[T](object, method, shape, args)
+	}
 	var result T
 	// Flush any pending ring buffer entries to maintain ordering.
 	if threadcheck.Main() && ring.Main.Pending() {

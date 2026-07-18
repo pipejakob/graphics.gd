@@ -705,7 +705,7 @@ func (self class) SetSourceGroupName(mask String.Name) { //gd:NavigationMesh.set
 }
 func (self class) GetSourceGroupName() String.Name { //gd:NavigationMesh.get_source_group_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_source_group_name, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetCellSize(cell_size float64) { //gd:NavigationMesh.set_cell_size
@@ -867,7 +867,7 @@ func (self class) SetVertices(vertices Packed.Array[Vector3.XYZ]) { //gd:Navigat
 }
 func (self class) GetVertices() Packed.Array[Vector3.XYZ] { //gd:NavigationMesh.get_vertices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertices, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) AddPolygon(polygon Packed.Array[int32]) { //gd:NavigationMesh.add_polygon
@@ -882,7 +882,7 @@ func (self class) GetPolygonCount() int64 { //gd:NavigationMesh.get_polygon_coun
 }
 func (self class) GetPolygon(idx int64) Packed.Array[int32] { //gd:NavigationMesh.get_polygon
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_polygon, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ClearPolygons() { //gd:NavigationMesh.clear_polygons

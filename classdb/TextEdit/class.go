@@ -3125,7 +3125,7 @@ func (self class) SetLanguage(language String.Readable) { //gd:TextEdit.set_lang
 }
 func (self class) GetLanguage() String.Readable { //gd:TextEdit.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetStructuredTextBidiOverride(parser TextServer.StructuredTextParser) { //gd:TextEdit.set_structured_text_bidi_override
@@ -3143,7 +3143,7 @@ func (self class) SetStructuredTextBidiOverrideOptions(args Array.Any) { //gd:Te
 }
 func (self class) GetStructuredTextBidiOverrideOptions() Array.Any { //gd:TextEdit.get_structured_text_bidi_override_options
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_structured_text_bidi_override_options, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetTabSize(size int64) { //gd:TextEdit.set_tab_size
@@ -3250,7 +3250,7 @@ func (self class) SetText(text String.Readable) { //gd:TextEdit.set_text
 }
 func (self class) GetText() String.Readable { //gd:TextEdit.get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetLineCount() int64 { //gd:TextEdit.get_line_count
@@ -3263,7 +3263,7 @@ func (self class) SetPlaceholder(text String.Readable) { //gd:TextEdit.set_place
 }
 func (self class) GetPlaceholder() String.Readable { //gd:TextEdit.get_placeholder
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_placeholder, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetLine(line int64, new_text String.Readable) { //gd:TextEdit.set_line
@@ -3274,12 +3274,12 @@ func (self class) SetLine(line int64, new_text String.Readable) { //gd:TextEdit.
 }
 func (self class) GetLine(line int64) String.Readable { //gd:TextEdit.get_line
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_line, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetLineWithIme(line int64) String.Readable { //gd:TextEdit.get_line_with_ime
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_line_with_ime, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetLineWidth(line int64, wrap_index int64) int64 { //gd:TextEdit.get_line_width
@@ -3453,7 +3453,7 @@ func (self class) GetLocalMousePos() Vector2.XY { //gd:TextEdit.get_local_mouse_
 }
 func (self class) GetWordAtPos(position Vector2.XY) String.Readable { //gd:TextEdit.get_word_at_pos
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_word_at_pos, gdextension.SizeString|(gdextension.SizeVector2<<4), &struct{ position Vector2.XY }{position})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetLineColumnAtPos(position Vector2i.XY, clamp_line bool, clamp_column bool) Vector2i.XY { //gd:TextEdit.get_line_column_at_pos
@@ -3579,7 +3579,7 @@ func (self class) AddCaretAtCarets(below bool) { //gd:TextEdit.add_caret_at_care
 }
 func (self class) GetSortedCarets(include_ignored_carets bool) Packed.Array[int32] { //gd:TextEdit.get_sorted_carets
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_sorted_carets, gdextension.SizePackedArray|(gdextension.SizeBool<<4), &struct{ include_ignored_carets bool }{include_ignored_carets})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) CollapseCarets(from_line int64, from_column int64, to_line int64, to_column int64, inclusive bool) { //gd:TextEdit.collapse_carets
@@ -3669,7 +3669,7 @@ func (self class) GetCaretWrapIndex(caret_index int64) int64 { //gd:TextEdit.get
 }
 func (self class) GetWordUnderCaret(caret_index int64) String.Readable { //gd:TextEdit.get_word_under_caret
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_word_under_caret, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ caret_index int64 }{caret_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetUseDefaultWordSeparators(enabled bool) { //gd:TextEdit.set_use_default_word_separators
@@ -3693,7 +3693,7 @@ func (self class) SetCustomWordSeparators(custom_word_separators String.Readable
 }
 func (self class) GetCustomWordSeparators() String.Readable { //gd:TextEdit.get_custom_word_separators
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_custom_word_separators, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetSelectingEnabled(enable bool) { //gd:TextEdit.set_selecting_enabled
@@ -3756,7 +3756,7 @@ func (self class) HasSelection(caret_index int64) bool { //gd:TextEdit.has_selec
 }
 func (self class) GetSelectedText(caret_index int64) String.Readable { //gd:TextEdit.get_selected_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_selected_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ caret_index int64 }{caret_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSelectionAtLineColumn(line int64, column int64, include_edges bool, only_selections bool) int64 { //gd:TextEdit.get_selection_at_line_column
@@ -3774,7 +3774,7 @@ func (self class) GetLineRangesFromCarets(only_selections bool, merge_adjacent b
 		only_selections bool
 		merge_adjacent  bool
 	}{only_selections, merge_adjacent})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetSelectionOriginLine(caret_index int64) int64 { //gd:TextEdit.get_selection_origin_line
@@ -3868,7 +3868,7 @@ func (self class) GetLineWrapIndexAtColumn(line int64, column int64) int64 { //g
 }
 func (self class) GetLineWrappedText(line int64) Packed.Strings { //gd:TextEdit.get_line_wrapped_text
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_line_wrapped_text, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetSmoothScrollEnabled(enable bool) { //gd:TextEdit.set_smooth_scroll_enabled
@@ -4047,7 +4047,7 @@ func (self class) SetGutterName(gutter int64, name String.Readable) { //gd:TextE
 }
 func (self class) GetGutterName(gutter int64) String.Readable { //gd:TextEdit.get_gutter_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_gutter_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ gutter int64 }{gutter})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetGutterType(gutter int64, atype GutterType) { //gd:TextEdit.set_gutter_type
@@ -4134,7 +4134,7 @@ func (self class) GetLineGutterMetadata(line int64, gutter int64) variant.Any { 
 		line   int64
 		gutter int64
 	}{line, gutter})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetLineGutterText(line int64, gutter int64, text String.Readable) { //gd:TextEdit.set_line_gutter_text
@@ -4149,7 +4149,7 @@ func (self class) GetLineGutterText(line int64, gutter int64) String.Readable { 
 		line   int64
 		gutter int64
 	}{line, gutter})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetLineGutterIcon(line int64, gutter int64, icon [1]gdclass.Texture2D) { //gd:TextEdit.set_line_gutter_icon
@@ -4280,7 +4280,7 @@ func (self class) AdjustCaretsAfterEdit(caret int64, from_line int64, from_col i
 }
 func (self class) GetCaretIndexEditOrder() Packed.Array[int32] { //gd:TextEdit.get_caret_index_edit_order
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_caret_index_edit_order, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetSelectionLine(caret_index int64) int64 { //gd:TextEdit.get_selection_line
@@ -4310,7 +4310,7 @@ func (self Instance) OnTextSet(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) TextSet() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`text_set`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`text_set`))))
 }
 
 /*
@@ -4326,7 +4326,7 @@ func (self Instance) OnTextChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) TextChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`text_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`text_changed`))))
 }
 
 /*
@@ -4344,7 +4344,7 @@ func (self Instance) OnLinesEditedFrom(cb func(from_line int, to_line int), flag
 }
 
 func (self class) LinesEditedFrom() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`lines_edited_from`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`lines_edited_from`))))
 }
 
 /*
@@ -4360,7 +4360,7 @@ func (self Instance) OnCaretChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) CaretChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`caret_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`caret_changed`))))
 }
 
 /*
@@ -4376,7 +4376,7 @@ func (self Instance) OnGutterClicked(cb func(line int, gutter int), flags ...Sig
 }
 
 func (self class) GutterClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`gutter_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`gutter_clicked`))))
 }
 
 /*
@@ -4392,7 +4392,7 @@ func (self Instance) OnGutterAdded(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) GutterAdded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`gutter_added`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`gutter_added`))))
 }
 
 /*
@@ -4408,7 +4408,7 @@ func (self Instance) OnGutterRemoved(cb func(), flags ...Signal.Flags) Instance 
 }
 
 func (self class) GutterRemoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`gutter_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`gutter_removed`))))
 }
 
 func (o class) AsTextEdit() Advanced                      { return Advanced(o) }

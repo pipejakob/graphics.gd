@@ -485,7 +485,7 @@ func (self class) SetPoints(points Packed.Array[Vector2.XY]) { //gd:Line2D.set_p
 }
 func (self class) GetPoints() Packed.Array[Vector2.XY] { //gd:Line2D.get_points
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_points, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetPointPosition(index int64, position Vector2.XY) { //gd:Line2D.set_point_position

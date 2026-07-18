@@ -299,7 +299,7 @@ func (self class) GetReadyState() ChannelState { //gd:WebRTCDataChannel.get_read
 }
 func (self class) GetLabel() String.Readable { //gd:WebRTCDataChannel.get_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_label, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsOrdered() bool { //gd:WebRTCDataChannel.is_ordered
@@ -324,7 +324,7 @@ func (self class) GetMaxRetransmits() int64 { //gd:WebRTCDataChannel.get_max_ret
 }
 func (self class) GetProtocol() String.Readable { //gd:WebRTCDataChannel.get_protocol
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_protocol, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsNegotiated() bool { //gd:WebRTCDataChannel.is_negotiated

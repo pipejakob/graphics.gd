@@ -282,7 +282,7 @@ func (self class) SetTitle(title String.Readable) { //gd:GraphFrame.set_title
 }
 func (self class) GetTitle() String.Readable { //gd:GraphFrame.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTitlebarHbox() [1]gdclass.HBoxContainer { //gd:GraphFrame.get_titlebar_hbox
@@ -347,7 +347,7 @@ func (self Instance) OnAutoshrinkChanged(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) AutoshrinkChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`autoshrink_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`autoshrink_changed`))))
 }
 
 func (o class) AsGraphFrame() Advanced                        { return Advanced(o) }

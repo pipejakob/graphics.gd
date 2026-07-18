@@ -198,7 +198,7 @@ func (self class) SetOriginalClass(name String.Readable) { //gd:MissingResource.
 }
 func (self class) GetOriginalClass() String.Readable { //gd:MissingResource.get_original_class
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_original_class, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetRecordingProperties(enable bool) { //gd:MissingResource.set_recording_properties

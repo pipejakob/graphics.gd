@@ -732,7 +732,7 @@ func (self class) SetTabTitle(tab_idx int64, title String.Readable) { //gd:TabBa
 }
 func (self class) GetTabTitle(tab_idx int64) String.Readable { //gd:TabBar.get_tab_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tab_title, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTabTooltip(tab_idx int64, tooltip String.Readable) { //gd:TabBar.set_tab_tooltip
@@ -743,7 +743,7 @@ func (self class) SetTabTooltip(tab_idx int64, tooltip String.Readable) { //gd:T
 }
 func (self class) GetTabTooltip(tab_idx int64) String.Readable { //gd:TabBar.get_tab_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tab_tooltip, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTabTextDirection(tab_idx int64, direction Control.TextDirection) { //gd:TabBar.set_tab_text_direction
@@ -765,7 +765,7 @@ func (self class) SetTabLanguage(tab_idx int64, language String.Readable) { //gd
 }
 func (self class) GetTabLanguage(tab_idx int64) String.Readable { //gd:TabBar.get_tab_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tab_language, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTabIcon(tab_idx int64, icon [1]gdclass.Texture2D) { //gd:TabBar.set_tab_icon
@@ -831,7 +831,7 @@ func (self class) SetTabMetadata(tab_idx int64, metadata variant.Any) { //gd:Tab
 }
 func (self class) GetTabMetadata(tab_idx int64) variant.Any { //gd:TabBar.get_tab_metadata
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_tab_metadata, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) RemoveTab(tab_idx int64) { //gd:TabBar.remove_tab
@@ -985,7 +985,7 @@ func (self Instance) OnTabSelected(cb func(tab int), flags ...Signal.Flags) Inst
 }
 
 func (self class) TabSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_selected`))))
 }
 
 /*
@@ -1001,7 +1001,7 @@ func (self Instance) OnTabChanged(cb func(tab int), flags ...Signal.Flags) Insta
 }
 
 func (self class) TabChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_changed`))))
 }
 
 /*
@@ -1017,7 +1017,7 @@ func (self Instance) OnTabClicked(cb func(tab int), flags ...Signal.Flags) Insta
 }
 
 func (self class) TabClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_clicked`))))
 }
 
 /*
@@ -1033,7 +1033,7 @@ func (self Instance) OnTabRmbClicked(cb func(tab int), flags ...Signal.Flags) In
 }
 
 func (self class) TabRmbClicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_rmb_clicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_rmb_clicked`))))
 }
 
 /*
@@ -1053,7 +1053,7 @@ func (self Instance) OnTabClosePressed(cb func(tab int), flags ...Signal.Flags) 
 }
 
 func (self class) TabClosePressed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_close_pressed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_close_pressed`))))
 }
 
 /*
@@ -1071,7 +1071,7 @@ func (self Instance) OnTabButtonPressed(cb func(tab int), flags ...Signal.Flags)
 }
 
 func (self class) TabButtonPressed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_button_pressed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_button_pressed`))))
 }
 
 /*
@@ -1087,7 +1087,7 @@ func (self Instance) OnTabHovered(cb func(tab int), flags ...Signal.Flags) Insta
 }
 
 func (self class) TabHovered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_hovered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tab_hovered`))))
 }
 
 /*
@@ -1105,7 +1105,7 @@ func (self Instance) OnActiveTabRearranged(cb func(idx_to int), flags ...Signal.
 }
 
 func (self class) ActiveTabRearranged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`active_tab_rearranged`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`active_tab_rearranged`))))
 }
 
 func (o class) AsTabBar() Advanced                        { return Advanced(o) }

@@ -188,7 +188,7 @@ func (self Instance) SetRenderModel(value RID.RenderModel) Instance { //gd:OpenX
 
 func (self class) GetTopLevelPath() String.Readable { //gd:OpenXRRenderModel.get_top_level_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_top_level_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetRenderModel() RID.Any { //gd:OpenXRRenderModel.get_render_model
@@ -213,7 +213,7 @@ func (self Instance) OnRenderModelTopLevelPathChanged(cb func(), flags ...Signal
 }
 
 func (self class) RenderModelTopLevelPathChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_top_level_path_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_top_level_path_changed`))))
 }
 
 func (o class) AsOpenXRRenderModel() Advanced         { return Advanced(o) }

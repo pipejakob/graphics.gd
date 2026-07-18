@@ -366,7 +366,7 @@ func (self class) SetTags(tags Dictionary.Any) { //gd:AudioStreamOggVorbis.set_t
 }
 func (self class) GetTags() Dictionary.Any { //gd:AudioStreamOggVorbis.get_tags
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_tags, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (o class) AsAudioStreamOggVorbis() Advanced            { return Advanced(o) }

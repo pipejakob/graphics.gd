@@ -287,7 +287,7 @@ func (self class) CollideAndGetContacts(local_xform Transform2D.OriginXY, with_s
 		with_shape  gdextension.Object
 		shape_xform Transform2D.OriginXY
 	}{local_xform, gdextension.Object(gdreference.GetObject(gdclass.GetShape2D(with_shape[0])[0])), shape_xform})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) CollideWithMotionAndGetContacts(local_xform Transform2D.OriginXY, local_motion Vector2.XY, with_shape [1]gdclass.Shape2D, shape_xform Transform2D.OriginXY, shape_motion Vector2.XY) Packed.Array[Vector2.XY] { //gd:Shape2D.collide_with_motion_and_get_contacts
@@ -298,7 +298,7 @@ func (self class) CollideWithMotionAndGetContacts(local_xform Transform2D.Origin
 		shape_xform  Transform2D.OriginXY
 		shape_motion Vector2.XY
 	}{local_xform, local_motion, gdextension.Object(gdreference.GetObject(gdclass.GetShape2D(with_shape[0])[0])), shape_xform, shape_motion})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) Draw(canvas_item RID.Any, color Color.RGBA) { //gd:Shape2D.draw

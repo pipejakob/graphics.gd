@@ -318,7 +318,7 @@ func (self class) GetGravity() Vector2.XY { //gd:PhysicsBody2D.get_gravity
 }
 func (self class) GetCollisionExceptions() Array.Contains[[1]gdclass.PhysicsBody2D] { //gd:PhysicsBody2D.get_collision_exceptions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_collision_exceptions, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.PhysicsBody2D]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.PhysicsBody2D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AddCollisionExceptionWith(body [1]gdclass.Node) { //gd:PhysicsBody2D.add_collision_exception_with

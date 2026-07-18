@@ -264,7 +264,7 @@ func (Instance) _save_layout_to_config(impl func(ptr gdclass.Receiver, config Co
 		var config = [1]gdclass.ConfigFile{gdclass.NewConfigFile(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetConfigFile(config[0])[0])
-		var section = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
+		var section = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(section))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, config, section.String())
@@ -282,7 +282,7 @@ func (Instance) _load_layout_from_config(impl func(ptr gdclass.Receiver, config 
 		var config = [1]gdclass.ConfigFile{gdclass.NewConfigFile(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetConfigFile(config[0])[0])
-		var section = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
+		var section = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(section))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, config, section.String())
@@ -543,7 +543,7 @@ func (class) _save_layout_to_config(impl func(ptr gdclass.Receiver, config [1]gd
 		var config = [1]gdclass.ConfigFile{gdclass.NewConfigFile(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetConfigFile(config[0])[0])
-		var section = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
+		var section = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(section))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, config, section)
@@ -554,7 +554,7 @@ func (class) _load_layout_from_config(impl func(ptr gdclass.Receiver, config [1]
 		var config = [1]gdclass.ConfigFile{gdclass.NewConfigFile(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetConfigFile(config[0])[0])
-		var section = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
+		var section = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(section))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, config, section)
@@ -575,7 +575,7 @@ func (self class) SetTitle(title String.Readable) { //gd:EditorDock.set_title
 }
 func (self class) GetTitle() String.Readable { //gd:EditorDock.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetLayoutKey(layout_key String.Readable) { //gd:EditorDock.set_layout_key
@@ -583,7 +583,7 @@ func (self class) SetLayoutKey(layout_key String.Readable) { //gd:EditorDock.set
 }
 func (self class) GetLayoutKey() String.Readable { //gd:EditorDock.get_layout_key
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_layout_key, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetGlobal(global bool) { //gd:EditorDock.set_global
@@ -615,7 +615,7 @@ func (self class) SetIconName(icon_name String.Name) { //gd:EditorDock.set_icon_
 }
 func (self class) GetIconName() String.Name { //gd:EditorDock.get_icon_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_icon_name, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetDockIcon(icon [1]gdclass.Texture2D) { //gd:EditorDock.set_dock_icon
@@ -680,7 +680,7 @@ func (self Instance) OnOpened(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Opened() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`opened`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`opened`))))
 }
 
 /*
@@ -698,7 +698,7 @@ func (self Instance) OnClosed(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Closed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`closed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`closed`))))
 }
 
 func (o class) AsEditorDock() Advanced         { return Advanced(o) }

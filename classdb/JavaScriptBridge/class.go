@@ -280,7 +280,7 @@ func (self class) Eval(code String.Readable, use_global_execution_context bool) 
 		code                         gdextension.String
 		use_global_execution_context bool
 	}{pointers.Get(gd.InternalString(code)), use_global_execution_context})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetInterface(intf String.Readable) [1]gdclass.JavaScriptObject { //gd:JavaScriptBridge.get_interface
@@ -304,7 +304,7 @@ func (self class) IsJsBuffer(javascript_object [1]gdclass.JavaScriptObject) bool
 func (self class) JsBufferToPackedByteArray(javascript_buffer [1]gdclass.JavaScriptObject) Packed.Bytes { //gd:JavaScriptBridge.js_buffer_to_packed_byte_array
 	once.Do(singleton)
 	var r_ret = jumponly.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.js_buffer_to_packed_byte_array, gdextension.SizePackedArray|(gdextension.SizeObject<<4), &struct{ javascript_buffer gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetJavaScriptObject(javascript_buffer[0])[0]))})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) CreateObject(obj String.Readable, args ...gd.Variant) variant.Any { //gd:JavaScriptBridge.create_object
@@ -360,7 +360,7 @@ func OnPwaUpdateAvailable(cb func(), flags ...Signal.Flags) {
 
 func (self class) PwaUpdateAvailable() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pwa_update_available`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pwa_update_available`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

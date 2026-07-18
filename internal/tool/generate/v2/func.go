@@ -101,7 +101,7 @@ func (classDB ClassDB) signalCall(w io.Writer, class gdjson.Class, signal gdjson
 	if singleton {
 		fmt.Fprintf(w, "once.Do(singleton)\n\t")
 	}
-	fmt.Fprintf(w, "return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`%s`))))", signal.Name)
+	fmt.Fprintf(w, "return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`%s`))))", signal.Name)
 	fmt.Fprintf(w, "}\n")
 }
 
@@ -213,7 +213,7 @@ func (classDB ClassDB) simpleCall(w io.Writer, class gdjson.Class, method gdjson
 	}
 	fmt.Fprintf(w, "{ //gd:%s.%s\n\t", class.Name, method.Name)
 	for name := range skips {
-		fmt.Fprintf(w, "var returns_%s = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(gd.NewArray()))\n\t", name)
+		fmt.Fprintf(w, "var returns_%s = Array.Through(gd.WrapArray[variant.Any](gd.NewArray()))\n\t", name)
 	}
 	if method.IsStatic && !singleton {
 		fmt.Fprintf(w, "self := Instance{}\n")

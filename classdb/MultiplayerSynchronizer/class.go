@@ -344,7 +344,7 @@ func (self class) SetRootPath(path Path.ToNode) { //gd:MultiplayerSynchronizer.s
 }
 func (self class) GetRootPath() Path.ToNode { //gd:MultiplayerSynchronizer.get_root_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_root_path, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetReplicationInterval(milliseconds float64) { //gd:MultiplayerSynchronizer.set_replication_interval
@@ -421,7 +421,7 @@ func (self Instance) OnSynchronized(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Synchronized() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`synchronized`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`synchronized`))))
 }
 
 /*
@@ -437,7 +437,7 @@ func (self Instance) OnDeltaSynchronized(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) DeltaSynchronized() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`delta_synchronized`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`delta_synchronized`))))
 }
 
 /*
@@ -455,7 +455,7 @@ func (self Instance) OnVisibilityChanged(cb func(for_peer int), flags ...Signal.
 }
 
 func (self class) VisibilityChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_changed`))))
 }
 
 func (o class) AsMultiplayerSynchronizer() Advanced         { return Advanced(o) }

@@ -258,7 +258,7 @@ func (self class) Edit(obj [1]gdreference.Object) { //gd:EditorInspector.edit
 }
 func (self class) GetSelectedPath() String.Readable { //gd:EditorInspector.get_selected_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_selected_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetEditedObject() [1]gdreference.Object { //gd:EditorInspector.get_edited_object
@@ -307,7 +307,7 @@ func (self Instance) OnPropertySelected(cb func(property string), flags ...Signa
 }
 
 func (self class) PropertySelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_selected`))))
 }
 
 /*
@@ -323,7 +323,7 @@ func (self Instance) OnPropertyKeyed(cb func(property string, value any, advance
 }
 
 func (self class) PropertyKeyed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_keyed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_keyed`))))
 }
 
 /*
@@ -339,7 +339,7 @@ func (self Instance) OnPropertyDeleted(cb func(property string), flags ...Signal
 }
 
 func (self class) PropertyDeleted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_deleted`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_deleted`))))
 }
 
 /*
@@ -355,7 +355,7 @@ func (self Instance) OnResourceSelected(cb func(resource Resource.Instance, path
 }
 
 func (self class) ResourceSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_selected`))))
 }
 
 /*
@@ -373,7 +373,7 @@ func (self Instance) OnObjectIdSelected(cb func(id int), flags ...Signal.Flags) 
 }
 
 func (self class) ObjectIdSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`object_id_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`object_id_selected`))))
 }
 
 /*
@@ -389,7 +389,7 @@ func (self Instance) OnPropertyEdited(cb func(property string), flags ...Signal.
 }
 
 func (self class) PropertyEdited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_edited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_edited`))))
 }
 
 /*
@@ -407,7 +407,7 @@ func (self Instance) OnPropertyToggled(cb func(property string, checked bool), f
 }
 
 func (self class) PropertyToggled() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_toggled`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`property_toggled`))))
 }
 
 /*
@@ -423,7 +423,7 @@ func (self Instance) OnEditedObjectChanged(cb func(), flags ...Signal.Flags) Ins
 }
 
 func (self class) EditedObjectChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`edited_object_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`edited_object_changed`))))
 }
 
 /*
@@ -439,7 +439,7 @@ func (self Instance) OnRestartRequested(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) RestartRequested() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`restart_requested`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`restart_requested`))))
 }
 
 func (o class) AsEditorInspector() Advanced         { return Advanced(o) }

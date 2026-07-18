@@ -410,7 +410,7 @@ func (self class) FromDictionary(dictionary Dictionary.Any) [1]gdclass.GLTFAcces
 }
 func (self class) ToDictionary() Dictionary.Any { //gd:GLTFAccessor.to_dictionary
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.to_dictionary, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetBufferView() int64 { //gd:GLTFAccessor.get_buffer_view
@@ -471,7 +471,7 @@ func (self class) SetType(atype int64) { //gd:GLTFAccessor.set_type
 }
 func (self class) GetMin() Packed.Array[float64] { //gd:GLTFAccessor.get_min
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_min, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[float64](Array.Through(gd.PackedProxy[gd.PackedFloat64Array, float64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float64](Array.Through(gd.WrapPacked[gd.PackedFloat64Array, float64](pointers.Let[gd.PackedFloat64Array](r_ret))))
 	return ret
 }
 func (self class) SetMin(min Packed.Array[float64]) { //gd:GLTFAccessor.set_min
@@ -481,7 +481,7 @@ func (self class) SetMin(min Packed.Array[float64]) { //gd:GLTFAccessor.set_min
 }
 func (self class) GetMax() Packed.Array[float64] { //gd:GLTFAccessor.get_max
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_max, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[float64](Array.Through(gd.PackedProxy[gd.PackedFloat64Array, float64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float64](Array.Through(gd.WrapPacked[gd.PackedFloat64Array, float64](pointers.Let[gd.PackedFloat64Array](r_ret))))
 	return ret
 }
 func (self class) SetMax(max Packed.Array[float64]) { //gd:GLTFAccessor.set_max

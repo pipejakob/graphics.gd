@@ -298,7 +298,7 @@ func (self class) SetData(data Packed.Bytes) { //gd:AudioStreamMP3.set_data
 }
 func (self class) GetData() Packed.Bytes { //gd:AudioStreamMP3.get_data
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_data, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SetLoop(enable bool) { //gd:AudioStreamMP3.set_loop

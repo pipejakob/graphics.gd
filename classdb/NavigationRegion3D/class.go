@@ -501,7 +501,7 @@ func (self Instance) OnNavigationMeshChanged(cb func(), flags ...Signal.Flags) I
 }
 
 func (self class) NavigationMeshChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`navigation_mesh_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`navigation_mesh_changed`))))
 }
 
 /*
@@ -517,7 +517,7 @@ func (self Instance) OnBakeFinished(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) BakeFinished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bake_finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bake_finished`))))
 }
 
 func (o class) AsNavigationRegion3D() Advanced         { return Advanced(o) }

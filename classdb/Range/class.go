@@ -527,7 +527,7 @@ func (self Instance) OnValueChanged(cb func(value Float.X), flags ...Signal.Flag
 }
 
 func (self class) ValueChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`value_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`value_changed`))))
 }
 
 /*
@@ -548,7 +548,7 @@ func (self Instance) OnChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Changed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
 }
 
 func (o class) AsRange() Advanced                         { return Advanced(o) }

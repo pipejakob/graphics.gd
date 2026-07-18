@@ -397,7 +397,7 @@ func (self Instance) OnModificationProcessed(cb func(), flags ...Signal.Flags) I
 }
 
 func (self class) ModificationProcessed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`modification_processed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`modification_processed`))))
 }
 
 func (o class) AsSkeletonModifier3D() Advanced         { return Advanced(o) }

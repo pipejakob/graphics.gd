@@ -560,7 +560,7 @@ func (self class) GetCurrentAction() int64 { //gd:UndoRedo.get_current_action
 }
 func (self class) GetActionName(id int64) String.Readable { //gd:UndoRedo.get_action_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_action_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ClearHistory(increase_version bool) { //gd:UndoRedo.clear_history
@@ -568,7 +568,7 @@ func (self class) ClearHistory(increase_version bool) { //gd:UndoRedo.clear_hist
 }
 func (self class) GetCurrentActionName() String.Readable { //gd:UndoRedo.get_current_action_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_current_action_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) HasUndo() bool { //gd:UndoRedo.has_undo
@@ -621,7 +621,7 @@ func (self Instance) OnVersionChanged(cb func(), flags ...Signal.Flags) Instance
 }
 
 func (self class) VersionChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`version_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`version_changed`))))
 }
 
 func (o class) AsUndoRedo() Advanced         { return Advanced(o) }

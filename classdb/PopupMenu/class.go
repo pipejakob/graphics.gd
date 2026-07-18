@@ -1830,7 +1830,7 @@ func (self class) ToggleItemMultistate(index int64) { //gd:PopupMenu.toggle_item
 }
 func (self class) GetItemText(index int64) String.Readable { //gd:PopupMenu.get_item_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemTextDirection(index int64) Control.TextDirection { //gd:PopupMenu.get_item_text_direction
@@ -1840,7 +1840,7 @@ func (self class) GetItemTextDirection(index int64) Control.TextDirection { //gd
 }
 func (self class) GetItemLanguage(index int64) String.Readable { //gd:PopupMenu.get_item_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_language, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemAutoTranslateMode(index int64) Node.AutoTranslateMode { //gd:PopupMenu.get_item_auto_translate_mode
@@ -1885,7 +1885,7 @@ func (self class) GetItemAccelerator(index int64) Input.Key { //gd:PopupMenu.get
 }
 func (self class) GetItemMetadata(index int64) variant.Any { //gd:PopupMenu.get_item_metadata
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_item_metadata, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) IsItemDisabled(index int64) bool { //gd:PopupMenu.is_item_disabled
@@ -1895,7 +1895,7 @@ func (self class) IsItemDisabled(index int64) bool { //gd:PopupMenu.is_item_disa
 }
 func (self class) GetItemSubmenu(index int64) String.Readable { //gd:PopupMenu.get_item_submenu
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_submenu, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemSubmenuNode(index int64) [1]gdclass.PopupMenu { //gd:PopupMenu.get_item_submenu_node
@@ -1925,7 +1925,7 @@ func (self class) IsItemShortcutDisabled(index int64) bool { //gd:PopupMenu.is_i
 }
 func (self class) GetItemTooltip(index int64) String.Readable { //gd:PopupMenu.get_item_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_tooltip, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemShortcut(index int64) [1]gdclass.Shortcut { //gd:PopupMenu.get_item_shortcut
@@ -2096,7 +2096,7 @@ func (self Instance) OnIdPressed(cb func(id int), flags ...Signal.Flags) Instanc
 }
 
 func (self class) IdPressed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`id_pressed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`id_pressed`))))
 }
 
 /*
@@ -2114,7 +2114,7 @@ func (self Instance) OnIdFocused(cb func(id int), flags ...Signal.Flags) Instanc
 }
 
 func (self class) IdFocused() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`id_focused`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`id_focused`))))
 }
 
 /*
@@ -2130,7 +2130,7 @@ func (self Instance) OnIndexPressed(cb func(index int), flags ...Signal.Flags) I
 }
 
 func (self class) IndexPressed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`index_pressed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`index_pressed`))))
 }
 
 /*
@@ -2146,7 +2146,7 @@ func (self Instance) OnMenuChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) MenuChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`menu_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`menu_changed`))))
 }
 
 func (o class) AsPopupMenu() Advanced                 { return Advanced(o) }

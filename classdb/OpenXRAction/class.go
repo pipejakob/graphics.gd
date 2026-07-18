@@ -215,7 +215,7 @@ func (self class) SetLocalizedName(localized_name String.Readable) { //gd:OpenXR
 }
 func (self class) GetLocalizedName() String.Readable { //gd:OpenXRAction.get_localized_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_localized_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetActionType(action_type ActionType) { //gd:OpenXRAction.set_action_type
@@ -233,7 +233,7 @@ func (self class) SetToplevelPaths(toplevel_paths Packed.Strings) { //gd:OpenXRA
 }
 func (self class) GetToplevelPaths() Packed.Strings { //gd:OpenXRAction.get_toplevel_paths
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_toplevel_paths, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (o class) AsOpenXRAction() Advanced              { return Advanced(o) }

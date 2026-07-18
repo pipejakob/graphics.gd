@@ -383,7 +383,7 @@ func (self class) OpaqueToPolygons(rect Rect2i.PositionSize, epsilon float64) Ar
 		rect    Rect2i.PositionSize
 		epsilon float64
 	}{rect, epsilon})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsBitMap() Advanced                    { return Advanced(o) }

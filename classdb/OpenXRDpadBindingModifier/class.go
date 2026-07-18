@@ -319,7 +319,7 @@ func (self class) SetInputPath(input_path String.Readable) { //gd:OpenXRDpadBind
 }
 func (self class) GetInputPath() String.Readable { //gd:OpenXRDpadBindingModifier.get_input_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_input_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetThreshold(threshold float64) { //gd:OpenXRDpadBindingModifier.set_threshold

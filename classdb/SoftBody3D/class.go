@@ -593,7 +593,7 @@ func (self class) SetParentCollisionIgnore(parent_collision_ignore Path.ToNode) 
 }
 func (self class) GetParentCollisionIgnore() Path.ToNode { //gd:SoftBody3D.get_parent_collision_ignore
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_parent_collision_ignore, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetDisableMode(mode DisableMode) { //gd:SoftBody3D.set_disable_mode
@@ -606,7 +606,7 @@ func (self class) GetDisableMode() DisableMode { //gd:SoftBody3D.get_disable_mod
 }
 func (self class) GetCollisionExceptions() Array.Contains[[1]gdclass.PhysicsBody3D] { //gd:SoftBody3D.get_collision_exceptions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_collision_exceptions, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.PhysicsBody3D]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.PhysicsBody3D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AddCollisionExceptionWith(body [1]gdclass.Node) { //gd:SoftBody3D.add_collision_exception_with

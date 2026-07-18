@@ -4,6 +4,8 @@ import (
 	"unsafe"
 
 	"graphics.gd/internal/gdextension"
+	"graphics.gd/internal/ring"
+	"graphics.gd/internal/threadcheck"
 )
 
 type MethodForClass gdextension.MethodForClass
@@ -37,6 +39,15 @@ func variant_into_native(vtype gdextension.VariantType, variant gdextension.Vari
 }
 
 func Free[T gdextension.AnyVariant](vtype gdextension.VariantType, val *T) {
+	if !threadcheck.Main() && !threadcheck.Engine() {
+		// user goroutine (typically a garbage-collector cleanup): queue the
+		// destructor behind any buffered calls that still reference the value.
+		v := *val
+		ring.Threads.Defer(func() {
+			free_noescape(vtype, gdextension.SizeOf[T](), unsafe.Pointer(&v))
+		})
+		return
+	}
 	free_noescape(vtype, gdextension.SizeOf[T](), unsafe.Pointer(val))
 }
 

@@ -1547,7 +1547,7 @@ func (self class) SetEmissionPoints(array Packed.Array[Vector2.XY]) { //gd:CPUPa
 }
 func (self class) GetEmissionPoints() Packed.Array[Vector2.XY] { //gd:CPUParticles2D.get_emission_points
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_emission_points, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetEmissionNormals(array Packed.Array[Vector2.XY]) { //gd:CPUParticles2D.set_emission_normals
@@ -1557,7 +1557,7 @@ func (self class) SetEmissionNormals(array Packed.Array[Vector2.XY]) { //gd:CPUP
 }
 func (self class) GetEmissionNormals() Packed.Array[Vector2.XY] { //gd:CPUParticles2D.get_emission_normals
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_emission_normals, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetEmissionColors(array Packed.Array[Color.RGBA]) { //gd:CPUParticles2D.set_emission_colors
@@ -1567,7 +1567,7 @@ func (self class) SetEmissionColors(array Packed.Array[Color.RGBA]) { //gd:CPUPa
 }
 func (self class) GetEmissionColors() Packed.Array[Color.RGBA] { //gd:CPUParticles2D.get_emission_colors
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_emission_colors, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Color.RGBA](Array.Through(gd.PackedProxy[gd.PackedColorArray, Color.RGBA]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) SetEmissionRingInnerRadius(inner_radius float64) { //gd:CPUParticles2D.set_emission_ring_inner_radius
@@ -1637,7 +1637,7 @@ func (self Instance) OnFinished(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Finished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
 }
 
 func (o class) AsCPUParticles2D() Advanced                { return Advanced(o) }

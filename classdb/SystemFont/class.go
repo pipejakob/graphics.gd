@@ -526,7 +526,7 @@ func (self class) GetOversampling() float64 { //gd:SystemFont.get_oversampling
 }
 func (self class) GetFontNames() Packed.Strings { //gd:SystemFont.get_font_names
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_font_names, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetFontNames(names Packed.Strings) { //gd:SystemFont.set_font_names

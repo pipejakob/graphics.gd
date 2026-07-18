@@ -234,7 +234,7 @@ func (self class) SetLocalizedName(localized_name String.Readable) { //gd:OpenXR
 }
 func (self class) GetLocalizedName() String.Readable { //gd:OpenXRActionSet.get_localized_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_localized_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetPriority(priority int64) { //gd:OpenXRActionSet.set_priority
@@ -255,7 +255,7 @@ func (self class) SetActions(actions Array.Any) { //gd:OpenXRActionSet.set_actio
 }
 func (self class) GetActions() Array.Any { //gd:OpenXRActionSet.get_actions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_actions, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AddAction(action [1]gdclass.OpenXRAction) { //gd:OpenXRActionSet.add_action

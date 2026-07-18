@@ -335,7 +335,7 @@ func (self class) GetMaterial() [1]gdclass.Material { //gd:PrimitiveMesh.get_mat
 }
 func (self class) GetMeshArrays() Array.Any { //gd:PrimitiveMesh.get_mesh_arrays
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_mesh_arrays, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetCustomAabb(aabb AABB.PositionSize) { //gd:PrimitiveMesh.set_custom_aabb

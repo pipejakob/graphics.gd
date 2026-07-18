@@ -397,7 +397,7 @@ func (self class) RenameAnimation(anim String.Name, newname String.Name) { //gd:
 }
 func (self class) GetAnimationNames() Packed.Strings { //gd:SpriteFrames.get_animation_names
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_animation_names, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetAnimationSpeed(anim String.Name, fps float64) { //gd:SpriteFrames.set_animation_speed

@@ -185,7 +185,7 @@ func (self class) GetVertices(snapshot RID.Any, index int64) Packed.Array[Vector
 		snapshot RID.Any
 		index    int64
 	}{snapshot, index})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (o class) AsOpenXRSpatialComponentPolygon2DList() Advanced         { return Advanced(o) }

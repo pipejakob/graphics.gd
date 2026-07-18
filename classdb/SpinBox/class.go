@@ -384,7 +384,7 @@ func (self class) SetSuffix(suffix String.Readable) { //gd:SpinBox.set_suffix
 }
 func (self class) GetSuffix() String.Readable { //gd:SpinBox.get_suffix
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_suffix, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetPrefix(prefix String.Readable) { //gd:SpinBox.set_prefix
@@ -392,7 +392,7 @@ func (self class) SetPrefix(prefix String.Readable) { //gd:SpinBox.set_prefix
 }
 func (self class) GetPrefix() String.Readable { //gd:SpinBox.get_prefix
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_prefix, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetEditable(enabled bool) { //gd:SpinBox.set_editable

@@ -737,7 +737,7 @@ func (self class) SetFallbacks(fallbacks Array.Contains[[1]gdclass.Font]) { //gd
 }
 func (self class) GetFallbacks() Array.Contains[[1]gdclass.Font] { //gd:Font.get_fallbacks
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_fallbacks, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Font]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Font](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) FindVariation(variation_coordinates Dictionary.Any, face_index int64, strength float64, transform Transform2D.OriginXY, spacing_top int64, spacing_bottom int64, spacing_space int64, spacing_glyph int64, baseline_offset float64, palette_index int64, custom_colors Packed.Array[Color.RGBA]) RID.Any { //gd:Font.find_variation
@@ -759,7 +759,7 @@ func (self class) FindVariation(variation_coordinates Dictionary.Any, face_index
 }
 func (self class) GetRids() Array.Contains[RID.Any] { //gd:Font.get_rids
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_rids, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[RID.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetHeight(font_size int64) float64 { //gd:Font.get_height
@@ -789,17 +789,17 @@ func (self class) GetUnderlineThickness(font_size int64) float64 { //gd:Font.get
 }
 func (self class) GetFontName() String.Readable { //gd:Font.get_font_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_font_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetFontStyleName() String.Readable { //gd:Font.get_font_style_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_font_style_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetOtNameStrings() Dictionary.Any { //gd:Font.get_ot_name_strings
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_ot_name_strings, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetFontStyle() TextServer.FontStyle { //gd:Font.get_font_style
@@ -824,12 +824,12 @@ func (self class) GetPaletteCount() int64 { //gd:Font.get_palette_count
 }
 func (self class) GetPaletteName(index int64) String.Readable { //gd:Font.get_palette_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_palette_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetPaletteColors(index int64) Packed.Array[Color.RGBA] { //gd:Font.get_palette_colors
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_palette_colors, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = Packed.Array[Color.RGBA](Array.Through(gd.PackedProxy[gd.PackedColorArray, Color.RGBA]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) GetSpacing(spacing TextServer.SpacingType) int64 { //gd:Font.get_spacing
@@ -839,7 +839,7 @@ func (self class) GetSpacing(spacing TextServer.SpacingType) int64 { //gd:Font.g
 }
 func (self class) GetOpentypeFeatures() Dictionary.Any { //gd:Font.get_opentype_features
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_opentype_features, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetCacheCapacity(single_line int64, multi_line int64) { //gd:Font.set_cache_capacity
@@ -982,7 +982,7 @@ func (self class) HasChar(char int64) bool { //gd:Font.has_char
 }
 func (self class) GetSupportedChars() String.Readable { //gd:Font.get_supported_chars
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_supported_chars, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsLanguageSupported(language String.Readable) bool { //gd:Font.is_language_supported
@@ -997,12 +997,12 @@ func (self class) IsScriptSupported(script String.Readable) bool { //gd:Font.is_
 }
 func (self class) GetSupportedFeatureList() Dictionary.Any { //gd:Font.get_supported_feature_list
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_supported_feature_list, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetSupportedVariationList() Dictionary.Any { //gd:Font.get_supported_variation_list
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_supported_variation_list, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetFaceCount() int64 { //gd:Font.get_face_count

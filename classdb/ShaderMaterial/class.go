@@ -229,7 +229,7 @@ func (self class) SetShaderParameter(param String.Name, value variant.Any) { //g
 }
 func (self class) GetShaderParameter(param String.Name) variant.Any { //gd:ShaderMaterial.get_shader_parameter
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_shader_parameter, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ param gdextension.StringName }{pointers.Get(gd.InternalStringName(param))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (o class) AsShaderMaterial() Advanced            { return Advanced(o) }

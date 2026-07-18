@@ -262,7 +262,7 @@ func (self class) SetBoneName(bone_name String.Readable) { //gd:SpringBoneCollis
 }
 func (self class) GetBoneName() String.Readable { //gd:SpringBoneCollision3D.get_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_bone_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBone(bone int64) { //gd:SpringBoneCollision3D.set_bone

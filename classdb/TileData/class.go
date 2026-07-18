@@ -852,7 +852,7 @@ func (self class) GetCollisionPolygonPoints(layer_id int64, polygon_index int64)
 		layer_id      int64
 		polygon_index int64
 	}{layer_id, polygon_index})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetCollisionPolygonOneWay(layer_id int64, polygon_index int64, one_way bool) { //gd:TileData.set_collision_polygon_one_way
@@ -949,7 +949,7 @@ func (self class) SetCustomData(layer_name String.Readable, value variant.Any) {
 }
 func (self class) GetCustomData(layer_name String.Readable) variant.Any { //gd:TileData.get_custom_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_custom_data, gdextension.SizeVariant|(gdextension.SizeString<<4), &struct{ layer_name gdextension.String }{pointers.Get(gd.InternalString(layer_name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) HasCustomData(layer_name String.Readable) bool { //gd:TileData.has_custom_data
@@ -965,7 +965,7 @@ func (self class) SetCustomDataByLayerId(layer_id int64, value variant.Any) { //
 }
 func (self class) GetCustomDataByLayerId(layer_id int64) variant.Any { //gd:TileData.get_custom_data_by_layer_id
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_custom_data_by_layer_id, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ layer_id int64 }{layer_id})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 
@@ -982,7 +982,7 @@ func (self Instance) OnChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Changed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
 }
 
 func (o class) AsTileData() Advanced         { return Advanced(o) }

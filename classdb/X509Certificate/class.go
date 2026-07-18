@@ -206,7 +206,7 @@ func (self class) Load(path String.Readable) Error.Code { //gd:X509Certificate.l
 }
 func (self class) SaveToString() String.Readable { //gd:X509Certificate.save_to_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.save_to_string, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) LoadFromString(s String.Readable) Error.Code { //gd:X509Certificate.load_from_string

@@ -760,7 +760,7 @@ func (self class) SetCustomPunctuation(custom_punctuation String.Readable) { //g
 }
 func (self class) GetCustomPunctuation() String.Readable { //gd:TextParagraph.get_custom_punctuation
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_custom_punctuation, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOrientation(orientation TextServer.Orientation) { //gd:TextParagraph.set_orientation
@@ -883,7 +883,7 @@ func (self class) SetEllipsisChar(char String.Readable) { //gd:TextParagraph.set
 }
 func (self class) GetEllipsisChar() String.Readable { //gd:TextParagraph.get_ellipsis_char
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_ellipsis_char, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetWidth(width float64) { //gd:TextParagraph.set_width
@@ -947,7 +947,7 @@ func (self class) GetLineSpacing() float64 { //gd:TextParagraph.get_line_spacing
 }
 func (self class) GetLineObjects(line int64) Array.Any { //gd:TextParagraph.get_line_objects
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_line_objects, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetLineObjectRect(line int64, key variant.Any) Rect2.PositionSize { //gd:TextParagraph.get_line_object_rect

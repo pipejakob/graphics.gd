@@ -2183,7 +2183,7 @@ func (self class) SetTitle(title String.Readable) { //gd:Window.set_title
 }
 func (self class) GetTitle() String.Readable { //gd:Window.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetInitialPosition(initial_position WindowInitialPosition) { //gd:Window.set_initial_position
@@ -2448,7 +2448,7 @@ func (self class) SetMousePassthroughPolygon(polygon Packed.Array[Vector2.XY]) {
 }
 func (self class) GetMousePassthroughPolygon() Packed.Array[Vector2.XY] { //gd:Window.get_mouse_passthrough_polygon
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_mouse_passthrough_polygon, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetWrapControls(enable bool) { //gd:Window.set_wrap_controls
@@ -2475,7 +2475,7 @@ func (self class) SetThemeTypeVariation(theme_type String.Name) { //gd:Window.se
 }
 func (self class) GetThemeTypeVariation() String.Name { //gd:Window.get_theme_type_variation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_theme_type_variation, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) BeginBulkThemeOverride() { //gd:Window.begin_bulk_theme_override
@@ -2689,7 +2689,7 @@ func (self class) SetAccessibilityName(name String.Readable) { //gd:Window.set_a
 }
 func (self class) GetAccessibilityName() String.Readable { //gd:Window.get_accessibility_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityDescription(description String.Readable) { //gd:Window.set_accessibility_description
@@ -2697,7 +2697,7 @@ func (self class) SetAccessibilityDescription(description String.Readable) { //g
 }
 func (self class) GetAccessibilityDescription() String.Readable { //gd:Window.get_accessibility_description
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_description, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetFocusedWindow() [1]gdclass.Window { //gd:Window.get_focused_window
@@ -2799,7 +2799,7 @@ func (self Instance) OnWindowInput(cb func(event InputEvent.Instance), flags ...
 }
 
 func (self class) WindowInput() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`window_input`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`window_input`))))
 }
 
 /*
@@ -2817,7 +2817,7 @@ func (self Instance) OnNonclientWindowInput(cb func(event InputEvent.Instance), 
 }
 
 func (self class) NonclientWindowInput() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`nonclient_window_input`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`nonclient_window_input`))))
 }
 
 /*
@@ -2838,7 +2838,7 @@ func (self Instance) OnFilesDropped(cb func(files []string), flags ...Signal.Fla
 }
 
 func (self class) FilesDropped() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`files_dropped`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`files_dropped`))))
 }
 
 /*
@@ -2858,7 +2858,7 @@ func (self Instance) OnMouseEntered(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) MouseEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_entered`))))
 }
 
 /*
@@ -2878,7 +2878,7 @@ func (self Instance) OnMouseExited(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) MouseExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_exited`))))
 }
 
 /*
@@ -2896,7 +2896,7 @@ func (self Instance) OnFocusEntered(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) FocusEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`focus_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`focus_entered`))))
 }
 
 /*
@@ -2914,7 +2914,7 @@ func (self Instance) OnFocusExited(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) FocusExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`focus_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`focus_exited`))))
 }
 
 /*
@@ -2936,7 +2936,7 @@ func (self Instance) OnCloseRequested(cb func(), flags ...Signal.Flags) Instance
 }
 
 func (self class) CloseRequested() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`close_requested`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`close_requested`))))
 }
 
 /*
@@ -2952,7 +2952,7 @@ func (self Instance) OnGoBackRequested(cb func(), flags ...Signal.Flags) Instanc
 }
 
 func (self class) GoBackRequested() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`go_back_requested`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`go_back_requested`))))
 }
 
 /*
@@ -2970,7 +2970,7 @@ func (self Instance) OnVisibilityChanged(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) VisibilityChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_changed`))))
 }
 
 /*
@@ -2989,7 +2989,7 @@ func (self Instance) OnAboutToPopup(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) AboutToPopup() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`about_to_popup`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`about_to_popup`))))
 }
 
 /*
@@ -3005,7 +3005,7 @@ func (self Instance) OnThemeChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) ThemeChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`theme_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`theme_changed`))))
 }
 
 /*
@@ -3025,7 +3025,7 @@ func (self Instance) OnDpiChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) DpiChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`dpi_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`dpi_changed`))))
 }
 
 /*
@@ -3041,7 +3041,7 @@ func (self Instance) OnTitlebarChanged(cb func(), flags ...Signal.Flags) Instanc
 }
 
 func (self class) TitlebarChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`titlebar_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`titlebar_changed`))))
 }
 
 /*
@@ -3057,7 +3057,7 @@ func (self Instance) OnTitleChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) TitleChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`title_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`title_changed`))))
 }
 
 /*
@@ -3075,7 +3075,7 @@ func (self Instance) OnOutputMaxLinearValueChanged(cb func(output_max_linear_val
 }
 
 func (self class) OutputMaxLinearValueChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`output_max_linear_value_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`output_max_linear_value_changed`))))
 }
 
 func (o class) AsWindow() Advanced                    { return Advanced(o) }

@@ -783,9 +783,9 @@ Returns an slice of [Vector3i.XYZ] text ranges and text base directions, in the 
 */
 func (Instance) _structured_text_parser(impl func(ptr gdclass.Receiver, args []any, text string) []Vector3i.XYZ) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var args = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
+		var args = Array.Through(gd.WrapArray[variant.Any](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(args))
-		var text = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
+		var text = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(text))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, gd.ArrayAs[[]any](gd.InternalArray(args)), text.String())
@@ -931,7 +931,7 @@ Note: If the drag was initiated by a keyboard shortcut or [AccessibilityDrag], '
 func (Instance) _can_drop_data(impl func(ptr gdclass.Receiver, at_position Vector2.XY, data any) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var at_position = gd.UnsafeGet[Vector2.XY](p_args, 0)
-		var data = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 1)))))
+		var data = variant.Implementation(gd.WrapVariant(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 1)))))
 		defer pointers.End(gd.InternalVariant(data))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, at_position, data.Interface())
@@ -958,7 +958,7 @@ Note: If the drag was initiated by a keyboard shortcut or [AccessibilityDrag], '
 func (Instance) _drop_data(impl func(ptr gdclass.Receiver, at_position Vector2.XY, data any)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var at_position = gd.UnsafeGet[Vector2.XY](p_args, 0)
-		var data = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 1)))))
+		var data = variant.Implementation(gd.WrapVariant(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 1)))))
 		defer pointers.End(gd.InternalVariant(data))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, at_position, data.Interface())
@@ -1021,7 +1021,7 @@ Example: Use a scene instance as a tooltip:
 */
 func (Instance) _make_custom_tooltip(impl func(ptr gdclass.Receiver, for_text string) Object.Instance) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var for_text = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var for_text = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(for_text))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, for_text.String())
@@ -3510,9 +3510,9 @@ func (class) _has_point(impl func(ptr gdclass.Receiver, point Vector2.XY) bool) 
 }
 func (class) _structured_text_parser(impl func(ptr gdclass.Receiver, args Array.Any, text String.Readable) Array.Contains[Vector3i.XYZ]) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var args = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
+		var args = Array.Through(gd.WrapArray[variant.Any](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(args))
-		var text = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
+		var text = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(text))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, args, text)
@@ -3575,7 +3575,7 @@ func (class) _get_drag_data(impl func(ptr gdclass.Receiver, at_position Vector2.
 func (class) _can_drop_data(impl func(ptr gdclass.Receiver, at_position Vector2.XY, data variant.Any) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var at_position = gd.UnsafeGet[Vector2.XY](p_args, 0)
-		var data = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 1)))))
+		var data = variant.Implementation(gd.WrapVariant(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 1)))))
 		defer pointers.End(gd.InternalVariant(data))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, at_position, data)
@@ -3585,7 +3585,7 @@ func (class) _can_drop_data(impl func(ptr gdclass.Receiver, at_position Vector2.
 func (class) _drop_data(impl func(ptr gdclass.Receiver, at_position Vector2.XY, data variant.Any)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var at_position = gd.UnsafeGet[Vector2.XY](p_args, 0)
-		var data = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 1)))))
+		var data = variant.Implementation(gd.WrapVariant(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 1)))))
 		defer pointers.End(gd.InternalVariant(data))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, at_position, data)
@@ -3593,7 +3593,7 @@ func (class) _drop_data(impl func(ptr gdclass.Receiver, at_position Vector2.XY, 
 }
 func (class) _make_custom_tooltip(impl func(ptr gdclass.Receiver, for_text String.Readable) [1]gdreference.Object) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var for_text = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var for_text = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(for_text))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, for_text)
@@ -4019,7 +4019,7 @@ func (self class) SetThemeTypeVariation(theme_type String.Name) { //gd:Control.s
 }
 func (self class) GetThemeTypeVariation() String.Name { //gd:Control.get_theme_type_variation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_theme_type_variation, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) BeginBulkThemeOverride() { //gd:Control.begin_bulk_theme_override
@@ -4257,12 +4257,12 @@ func (self class) SetTooltipText(hint String.Readable) { //gd:Control.set_toolti
 }
 func (self class) GetTooltipText() String.Readable { //gd:Control.get_tooltip_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tooltip_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTooltip(at_position Vector2.XY) String.Readable { //gd:Control.get_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tooltip, gdextension.SizeString|(gdextension.SizeVector2<<4), &struct{ at_position Vector2.XY }{at_position})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTranslationContext(context String.Name) { //gd:Control.set_translation_context
@@ -4270,7 +4270,7 @@ func (self class) SetTranslationContext(context String.Name) { //gd:Control.set_
 }
 func (self class) GetTranslationContext() String.Name { //gd:Control.get_translation_context
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_translation_context, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetDefaultCursorShape(shape CursorShape) { //gd:Control.set_default_cursor_shape
@@ -4294,7 +4294,7 @@ func (self class) SetFocusNeighbor(side Rect2.Side, neighbor Path.ToNode) { //gd
 }
 func (self class) GetFocusNeighbor(side Rect2.Side) Path.ToNode { //gd:Control.get_focus_neighbor
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_focus_neighbor, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ side Rect2.Side }{side})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetFocusNext(next Path.ToNode) { //gd:Control.set_focus_next
@@ -4302,7 +4302,7 @@ func (self class) SetFocusNext(next Path.ToNode) { //gd:Control.set_focus_next
 }
 func (self class) GetFocusNext() Path.ToNode { //gd:Control.get_focus_next
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_focus_next, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetFocusPrevious(previous Path.ToNode) { //gd:Control.set_focus_previous
@@ -4310,7 +4310,7 @@ func (self class) SetFocusPrevious(previous Path.ToNode) { //gd:Control.set_focu
 }
 func (self class) GetFocusPrevious() Path.ToNode { //gd:Control.get_focus_previous
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_focus_previous, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) ForceDrag(data variant.Any, preview [1]gdclass.Control) { //gd:Control.force_drag
@@ -4330,7 +4330,7 @@ func (self class) SetAccessibilityName(name String.Readable) { //gd:Control.set_
 }
 func (self class) GetAccessibilityName() String.Readable { //gd:Control.get_accessibility_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityDescription(description String.Readable) { //gd:Control.set_accessibility_description
@@ -4338,7 +4338,7 @@ func (self class) SetAccessibilityDescription(description String.Readable) { //g
 }
 func (self class) GetAccessibilityDescription() String.Readable { //gd:Control.get_accessibility_description
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_description, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityLive(mode AccessibilityServer.AccessibilityLiveMode) { //gd:Control.set_accessibility_live
@@ -4356,7 +4356,7 @@ func (self class) SetAccessibilityControlsNodes(node_path Array.Contains[Path.To
 }
 func (self class) GetAccessibilityControlsNodes() Array.Contains[Path.ToNode] { //gd:Control.get_accessibility_controls_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_controls_nodes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Path.ToNode]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityDescribedByNodes(node_path Array.Contains[Path.ToNode]) { //gd:Control.set_accessibility_described_by_nodes
@@ -4364,7 +4364,7 @@ func (self class) SetAccessibilityDescribedByNodes(node_path Array.Contains[Path
 }
 func (self class) GetAccessibilityDescribedByNodes() Array.Contains[Path.ToNode] { //gd:Control.get_accessibility_described_by_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_described_by_nodes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Path.ToNode]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityLabeledByNodes(node_path Array.Contains[Path.ToNode]) { //gd:Control.set_accessibility_labeled_by_nodes
@@ -4372,7 +4372,7 @@ func (self class) SetAccessibilityLabeledByNodes(node_path Array.Contains[Path.T
 }
 func (self class) GetAccessibilityLabeledByNodes() Array.Contains[Path.ToNode] { //gd:Control.get_accessibility_labeled_by_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_labeled_by_nodes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Path.ToNode]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityFlowToNodes(node_path Array.Contains[Path.ToNode]) { //gd:Control.set_accessibility_flow_to_nodes
@@ -4380,7 +4380,7 @@ func (self class) SetAccessibilityFlowToNodes(node_path Array.Contains[Path.ToNo
 }
 func (self class) GetAccessibilityFlowToNodes() Array.Contains[Path.ToNode] { //gd:Control.get_accessibility_flow_to_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_flow_to_nodes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Path.ToNode]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetMouseFilter(filter MouseFilter) { //gd:Control.set_mouse_filter
@@ -4498,7 +4498,7 @@ func (self Instance) OnResized(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Resized() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resized`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resized`))))
 }
 
 /*
@@ -4516,7 +4516,7 @@ func (self Instance) OnGuiInput(cb func(event InputEvent.Instance), flags ...Sig
 }
 
 func (self class) GuiInput() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`gui_input`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`gui_input`))))
 }
 
 /*
@@ -4537,7 +4537,7 @@ func (self Instance) OnMouseEntered(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) MouseEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_entered`))))
 }
 
 /*
@@ -4560,7 +4560,7 @@ func (self Instance) OnMouseExited(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) MouseExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mouse_exited`))))
 }
 
 /*
@@ -4576,7 +4576,7 @@ func (self Instance) OnFocusEntered(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) FocusEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`focus_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`focus_entered`))))
 }
 
 /*
@@ -4592,7 +4592,7 @@ func (self Instance) OnFocusExited(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) FocusExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`focus_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`focus_exited`))))
 }
 
 /*
@@ -4611,7 +4611,7 @@ func (self Instance) OnSizeFlagsChanged(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) SizeFlagsChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`size_flags_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`size_flags_changed`))))
 }
 
 /*
@@ -4627,7 +4627,7 @@ func (self Instance) OnMaximumSizeChanged(cb func(), flags ...Signal.Flags) Inst
 }
 
 func (self class) MaximumSizeChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`maximum_size_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`maximum_size_changed`))))
 }
 
 /*
@@ -4643,7 +4643,7 @@ func (self Instance) OnMinimumSizeChanged(cb func(), flags ...Signal.Flags) Inst
 }
 
 func (self class) MinimumSizeChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`minimum_size_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`minimum_size_changed`))))
 }
 
 /*
@@ -4659,7 +4659,7 @@ func (self Instance) OnThemeChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) ThemeChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`theme_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`theme_changed`))))
 }
 
 func (o class) AsControl() Advanced                       { return Advanced(o) }

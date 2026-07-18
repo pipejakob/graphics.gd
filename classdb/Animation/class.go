@@ -1050,7 +1050,7 @@ func (self class) TrackGetType(track_idx int64) TrackType { //gd:Animation.track
 }
 func (self class) TrackGetPath(track_idx int64) Path.ToNode { //gd:Animation.track_get_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.track_get_path, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) TrackSetPath(track_idx int64, path Path.ToNode) { //gd:Animation.track_set_path
@@ -1240,7 +1240,7 @@ func (self class) TrackGetKeyValue(track_idx int64, key_idx int64) variant.Any {
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) TrackGetKeyTime(track_idx int64, key_idx int64) float64 { //gd:Animation.track_get_key_time
@@ -1306,7 +1306,7 @@ func (self class) ValueTrackInterpolate(track_idx int64, time_sec float64, backw
 		time_sec  float64
 		backward  bool
 	}{track_idx, time_sec, backward})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) MethodTrackGetName(track_idx int64, key_idx int64) String.Name { //gd:Animation.method_track_get_name
@@ -1314,7 +1314,7 @@ func (self class) MethodTrackGetName(track_idx int64, key_idx int64) String.Name
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) MethodTrackGetParams(track_idx int64, key_idx int64) Array.Any { //gd:Animation.method_track_get_params
@@ -1322,7 +1322,7 @@ func (self class) MethodTrackGetParams(track_idx int64, key_idx int64) Array.Any
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) BezierTrackInsertKey(track_idx int64, time float64, value float64, in_handle Vector2.XY, out_handle Vector2.XY) int64 { //gd:Animation.bezier_track_insert_key
@@ -1479,7 +1479,7 @@ func (self class) AnimationTrackGetKeyAnimation(track_idx int64, key_idx int64) 
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) AddMarker(name String.Name, time float64) { //gd:Animation.add_marker
@@ -1498,17 +1498,17 @@ func (self class) HasMarker(name String.Name) bool { //gd:Animation.has_marker
 }
 func (self class) GetMarkerAtTime(time float64) String.Name { //gd:Animation.get_marker_at_time
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_marker_at_time, gdextension.SizeStringName|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetNextMarker(time float64) String.Name { //gd:Animation.get_next_marker
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_next_marker, gdextension.SizeStringName|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetPrevMarker(time float64) String.Name { //gd:Animation.get_prev_marker
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_prev_marker, gdextension.SizeStringName|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetMarkerTime(name String.Name) float64 { //gd:Animation.get_marker_time
@@ -1518,7 +1518,7 @@ func (self class) GetMarkerTime(name String.Name) float64 { //gd:Animation.get_m
 }
 func (self class) GetMarkerNames() Packed.Strings { //gd:Animation.get_marker_names
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_marker_names, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetMarkerColor(name String.Name) Color.RGBA { //gd:Animation.get_marker_color

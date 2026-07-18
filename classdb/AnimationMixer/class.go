@@ -198,7 +198,7 @@ func (Instance) _post_process_key_value(impl func(ptr gdclass.Receiver, animatio
 
 		defer gdreference.EndObject(gdclass.GetAnimation(animation[0])[0])
 		var track = gd.UnsafeGet[int64](p_args, 1)
-		var value = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 2)))))
+		var value = variant.Implementation(gd.WrapVariant(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 2)))))
 		defer pointers.End(gd.InternalVariant(value))
 		var object_id = gd.UnsafeGet[int64](p_args, 3)
 		var object_sub_idx = gd.UnsafeGet[int64](p_args, 4)
@@ -808,7 +808,7 @@ func (class) _post_process_key_value(impl func(ptr gdclass.Receiver, animation [
 
 		defer gdreference.EndObject(gdclass.GetAnimation(animation[0])[0])
 		var track = gd.UnsafeGet[int64](p_args, 1)
-		var value = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 2)))))
+		var value = variant.Implementation(gd.WrapVariant(pointers.Pin(pointers.New[gd.Variant](gd.UnsafeGet[gdextension.Variant](p_args, 2)))))
 		defer pointers.End(gd.InternalVariant(value))
 		var object_id = gd.UnsafeGet[int64](p_args, 3)
 		var object_sub_idx = gd.UnsafeGet[int64](p_args, 4)
@@ -852,7 +852,7 @@ func (self class) GetAnimationLibrary(name String.Name) [1]gdclass.AnimationLibr
 }
 func (self class) GetAnimationLibraryList() Array.Contains[String.Name] { //gd:AnimationMixer.get_animation_library_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_animation_library_list, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) HasAnimation(name String.Name) bool { //gd:AnimationMixer.has_animation
@@ -867,7 +867,7 @@ func (self class) GetAnimation(name String.Name) [1]gdclass.Animation { //gd:Ani
 }
 func (self class) GetAnimationList() Packed.Strings { //gd:AnimationMixer.get_animation_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_animation_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetActive(active bool) { //gd:AnimationMixer.set_active
@@ -891,7 +891,7 @@ func (self class) SetRootNode(path Path.ToNode) { //gd:AnimationMixer.set_root_n
 }
 func (self class) GetRootNode() Path.ToNode { //gd:AnimationMixer.get_root_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_root_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetCallbackModeProcess(mode AnimationCallbackModeProcess) { //gd:AnimationMixer.set_callback_mode_process
@@ -931,7 +931,7 @@ func (self class) SetRootMotionTrack(path Path.ToNode) { //gd:AnimationMixer.set
 }
 func (self class) GetRootMotionTrack() Path.ToNode { //gd:AnimationMixer.get_root_motion_track
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_root_motion_track, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetRootMotionLocal(enabled bool) { //gd:AnimationMixer.set_root_motion_local
@@ -996,12 +996,12 @@ func (self class) IsResetOnSaveEnabled() bool { //gd:AnimationMixer.is_reset_on_
 }
 func (self class) FindAnimation(animation [1]gdclass.Animation) String.Name { //gd:AnimationMixer.find_animation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.find_animation, gdextension.SizeStringName|(gdextension.SizeObject<<4), &struct{ animation gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetAnimation(animation[0])[0]))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) FindAnimationLibrary(animation [1]gdclass.Animation) String.Name { //gd:AnimationMixer.find_animation_library
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.find_animation_library, gdextension.SizeStringName|(gdextension.SizeObject<<4), &struct{ animation gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetAnimation(animation[0])[0]))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 
@@ -1018,7 +1018,7 @@ func (self Instance) OnAnimationListChanged(cb func(), flags ...Signal.Flags) In
 }
 
 func (self class) AnimationListChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_list_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_list_changed`))))
 }
 
 /*
@@ -1034,7 +1034,7 @@ func (self Instance) OnAnimationLibrariesUpdated(cb func(), flags ...Signal.Flag
 }
 
 func (self class) AnimationLibrariesUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_libraries_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_libraries_updated`))))
 }
 
 /*
@@ -1052,7 +1052,7 @@ func (self Instance) OnAnimationFinished(cb func(anim_name string), flags ...Sig
 }
 
 func (self class) AnimationFinished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_finished`))))
 }
 
 /*
@@ -1070,7 +1070,7 @@ func (self Instance) OnAnimationStarted(cb func(anim_name string), flags ...Sign
 }
 
 func (self class) AnimationStarted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_started`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_started`))))
 }
 
 /*
@@ -1088,7 +1088,7 @@ func (self Instance) OnCachesCleared(cb func(), flags ...Signal.Flags) Instance 
 }
 
 func (self class) CachesCleared() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`caches_cleared`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`caches_cleared`))))
 }
 
 /*
@@ -1104,7 +1104,7 @@ func (self Instance) OnMixerApplied(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) MixerApplied() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mixer_applied`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mixer_applied`))))
 }
 
 /*
@@ -1120,7 +1120,7 @@ func (self Instance) OnMixerUpdated(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) MixerUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mixer_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`mixer_updated`))))
 }
 
 func (o class) AsAnimationMixer() Advanced         { return Advanced(o) }

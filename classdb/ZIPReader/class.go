@@ -319,7 +319,7 @@ func (self class) Close() Error.Code { //gd:ZIPReader.close
 }
 func (self class) GetFiles() Packed.Strings { //gd:ZIPReader.get_files
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_files, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) ReadFile(path String.Readable, case_sensitive bool) Packed.Bytes { //gd:ZIPReader.read_file
@@ -327,7 +327,7 @@ func (self class) ReadFile(path String.Readable, case_sensitive bool) Packed.Byt
 		path           gdextension.String
 		case_sensitive bool
 	}{pointers.Get(gd.InternalString(path)), case_sensitive})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) FileExists(path String.Readable, case_sensitive bool) bool { //gd:ZIPReader.file_exists

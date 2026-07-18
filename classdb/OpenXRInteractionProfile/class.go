@@ -247,7 +247,7 @@ func (self class) SetInteractionProfilePath(interaction_profile_path String.Read
 }
 func (self class) GetInteractionProfilePath() String.Readable { //gd:OpenXRInteractionProfile.get_interaction_profile_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_interaction_profile_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetBindingCount() int64 { //gd:OpenXRInteractionProfile.get_binding_count
@@ -265,7 +265,7 @@ func (self class) SetBindings(bindings Array.Any) { //gd:OpenXRInteractionProfil
 }
 func (self class) GetBindings() Array.Any { //gd:OpenXRInteractionProfile.get_bindings
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_bindings, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBindingModifierCount() int64 { //gd:OpenXRInteractionProfile.get_binding_modifier_count
@@ -283,7 +283,7 @@ func (self class) SetBindingModifiers(binding_modifiers Array.Any) { //gd:OpenXR
 }
 func (self class) GetBindingModifiers() Array.Any { //gd:OpenXRInteractionProfile.get_binding_modifiers
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_binding_modifiers, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsOpenXRInteractionProfile() Advanced         { return Advanced(o) }

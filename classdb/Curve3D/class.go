@@ -678,17 +678,17 @@ func (self class) SampleBakedUpVector(offset float64, apply_tilt bool) Vector3.X
 }
 func (self class) GetBakedPoints() Packed.Array[Vector3.XYZ] { //gd:Curve3D.get_baked_points
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_baked_points, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) GetBakedTilts() Packed.Array[float32] { //gd:Curve3D.get_baked_tilts
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_baked_tilts, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) GetBakedUpVectors() Packed.Array[Vector3.XYZ] { //gd:Curve3D.get_baked_up_vectors
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_baked_up_vectors, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) GetClosestPoint(to_point Vector3.XYZ) Vector3.XYZ { //gd:Curve3D.get_closest_point
@@ -706,7 +706,7 @@ func (self class) Tessellate(max_stages int64, tolerance_degrees float64) Packed
 		max_stages        int64
 		tolerance_degrees float64
 	}{max_stages, tolerance_degrees})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) TessellateEvenLength(max_stages int64, tolerance_length float64) Packed.Array[Vector3.XYZ] { //gd:Curve3D.tessellate_even_length
@@ -714,7 +714,7 @@ func (self class) TessellateEvenLength(max_stages int64, tolerance_length float6
 		max_stages       int64
 		tolerance_length float64
 	}{max_stages, tolerance_length})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (o class) AsCurve3D() Advanced                   { return Advanced(o) }

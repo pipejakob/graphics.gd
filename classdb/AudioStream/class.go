@@ -585,7 +585,7 @@ func (self Instance) OnParameterListChanged(cb func(), flags ...Signal.Flags) In
 }
 
 func (self class) ParameterListChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`parameter_list_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`parameter_list_changed`))))
 }
 
 func (o class) AsAudioStream() Advanced               { return Advanced(o) }

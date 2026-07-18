@@ -336,7 +336,7 @@ func New() Instance {
 
 func (self class) GetLanguageName() String.Readable { //gd:ScriptBacktrace.get_language_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsEmpty() bool { //gd:ScriptBacktrace.is_empty
@@ -351,12 +351,12 @@ func (self class) GetFrameCount() int64 { //gd:ScriptBacktrace.get_frame_count
 }
 func (self class) GetFrameFunction(index int64) String.Readable { //gd:ScriptBacktrace.get_frame_function
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_frame_function, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetFrameFile(index int64) String.Readable { //gd:ScriptBacktrace.get_frame_file
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_frame_file, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetFrameLine(index int64) int64 { //gd:ScriptBacktrace.get_frame_line
@@ -371,12 +371,12 @@ func (self class) GetGlobalVariableCount() int64 { //gd:ScriptBacktrace.get_glob
 }
 func (self class) GetGlobalVariableName(variable_index int64) String.Readable { //gd:ScriptBacktrace.get_global_variable_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_global_variable_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ variable_index int64 }{variable_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetGlobalVariableValue(variable_index int64) variant.Any { //gd:ScriptBacktrace.get_global_variable_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_global_variable_value, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ variable_index int64 }{variable_index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetLocalVariableCount(frame_index int64) int64 { //gd:ScriptBacktrace.get_local_variable_count
@@ -389,7 +389,7 @@ func (self class) GetLocalVariableName(frame_index int64, variable_index int64) 
 		frame_index    int64
 		variable_index int64
 	}{frame_index, variable_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetLocalVariableValue(frame_index int64, variable_index int64) variant.Any { //gd:ScriptBacktrace.get_local_variable_value
@@ -397,7 +397,7 @@ func (self class) GetLocalVariableValue(frame_index int64, variable_index int64)
 		frame_index    int64
 		variable_index int64
 	}{frame_index, variable_index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetMemberVariableCount(frame_index int64) int64 { //gd:ScriptBacktrace.get_member_variable_count
@@ -410,7 +410,7 @@ func (self class) GetMemberVariableName(frame_index int64, variable_index int64)
 		frame_index    int64
 		variable_index int64
 	}{frame_index, variable_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetMemberVariableValue(frame_index int64, variable_index int64) variant.Any { //gd:ScriptBacktrace.get_member_variable_value
@@ -418,7 +418,7 @@ func (self class) GetMemberVariableValue(frame_index int64, variable_index int64
 		frame_index    int64
 		variable_index int64
 	}{frame_index, variable_index})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Format(indent_all int64, indent_frames int64) String.Readable { //gd:ScriptBacktrace.format
@@ -426,7 +426,7 @@ func (self class) Format(indent_all int64, indent_frames int64) String.Readable 
 		indent_all    int64
 		indent_frames int64
 	}{indent_all, indent_frames})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsScriptBacktrace() Advanced         { return Advanced(o) }

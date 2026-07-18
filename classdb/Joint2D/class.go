@@ -249,7 +249,7 @@ func (self class) SetNodeA(node Path.ToNode) { //gd:Joint2D.set_node_a
 }
 func (self class) GetNodeA() Path.ToNode { //gd:Joint2D.get_node_a
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_node_a, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetNodeB(node Path.ToNode) { //gd:Joint2D.set_node_b
@@ -257,7 +257,7 @@ func (self class) SetNodeB(node Path.ToNode) { //gd:Joint2D.set_node_b
 }
 func (self class) GetNodeB() Path.ToNode { //gd:Joint2D.get_node_b
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_node_b, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetBias(bias float64) { //gd:Joint2D.set_bias

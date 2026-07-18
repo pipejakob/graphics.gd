@@ -2185,7 +2185,7 @@ func (self class) SetInstanceShaderParameter(name String.Name, value variant.Any
 }
 func (self class) GetInstanceShaderParameter(name String.Name) variant.Any { //gd:CanvasItem.get_instance_shader_parameter
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_instance_shader_parameter, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetUseParentMaterial(enable bool) { //gd:CanvasItem.set_use_parent_material
@@ -2295,7 +2295,7 @@ func (self Instance) OnDraw(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Draw() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`draw`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`draw`))))
 }
 
 /*
@@ -2317,7 +2317,7 @@ func (self Instance) OnVisibilityChanged(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) VisibilityChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_changed`))))
 }
 
 /*
@@ -2335,7 +2335,7 @@ func (self Instance) OnHidden(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Hidden() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`hidden`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`hidden`))))
 }
 
 /*
@@ -2354,7 +2354,7 @@ func (self Instance) OnItemRectChanged(cb func(), flags ...Signal.Flags) Instanc
 }
 
 func (self class) ItemRectChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_rect_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`item_rect_changed`))))
 }
 
 func (o class) AsCanvasItem() Advanced         { return Advanced(o) }

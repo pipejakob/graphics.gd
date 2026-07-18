@@ -237,7 +237,7 @@ func (self class) ClearIds() { //gd:RDUniform.clear_ids
 }
 func (self class) GetIds() Array.Contains[RID.Any] { //gd:RDUniform.get_ids
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_ids, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[RID.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsRDUniform() Advanced         { return Advanced(o) }

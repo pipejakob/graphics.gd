@@ -1188,7 +1188,7 @@ func (self class) HasSelection() bool { //gd:LineEdit.has_selection
 }
 func (self class) GetSelectedText() String.Readable { //gd:LineEdit.get_selected_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_selected_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSelectionFromColumn() int64 { //gd:LineEdit.get_selection_from_column
@@ -1206,7 +1206,7 @@ func (self class) SetText(text String.Readable) { //gd:LineEdit.set_text
 }
 func (self class) GetText() String.Readable { //gd:LineEdit.get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDrawControlChars() bool { //gd:LineEdit.get_draw_control_chars
@@ -1230,7 +1230,7 @@ func (self class) SetLanguage(language String.Readable) { //gd:LineEdit.set_lang
 }
 func (self class) GetLanguage() String.Readable { //gd:LineEdit.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetStructuredTextBidiOverride(parser TextServer.StructuredTextParser) { //gd:LineEdit.set_structured_text_bidi_override
@@ -1248,7 +1248,7 @@ func (self class) SetStructuredTextBidiOverrideOptions(args Array.Any) { //gd:Li
 }
 func (self class) GetStructuredTextBidiOverrideOptions() Array.Any { //gd:LineEdit.get_structured_text_bidi_override_options
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_structured_text_bidi_override_options, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetPlaceholder(text String.Readable) { //gd:LineEdit.set_placeholder
@@ -1256,7 +1256,7 @@ func (self class) SetPlaceholder(text String.Readable) { //gd:LineEdit.set_place
 }
 func (self class) GetPlaceholder() String.Readable { //gd:LineEdit.get_placeholder
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_placeholder, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetCaretColumn(position int64) { //gd:LineEdit.set_caret_column
@@ -1363,7 +1363,7 @@ func (self class) SetSecretCharacter(character String.Readable) { //gd:LineEdit.
 }
 func (self class) GetSecretCharacter() String.Readable { //gd:LineEdit.get_secret_character
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_secret_character, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) MenuOption(option int64) { //gd:LineEdit.menu_option
@@ -1529,7 +1529,7 @@ func (self Instance) OnTextChanged(cb func(new_text string), flags ...Signal.Fla
 }
 
 func (self class) TextChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`text_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`text_changed`))))
 }
 
 /*
@@ -1547,7 +1547,7 @@ func (self Instance) OnTextChangeRejected(cb func(rejected_substring string), fl
 }
 
 func (self class) TextChangeRejected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`text_change_rejected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`text_change_rejected`))))
 }
 
 /*
@@ -1565,7 +1565,7 @@ func (self Instance) OnTextSubmitted(cb func(new_text string), flags ...Signal.F
 }
 
 func (self class) TextSubmitted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`text_submitted`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`text_submitted`))))
 }
 
 /*
@@ -1583,7 +1583,7 @@ func (self Instance) OnEditingToggled(cb func(toggled_on bool), flags ...Signal.
 }
 
 func (self class) EditingToggled() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`editing_toggled`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`editing_toggled`))))
 }
 
 func (o class) AsLineEdit() Advanced                      { return Advanced(o) }

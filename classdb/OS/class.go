@@ -524,7 +524,7 @@ Note: On Android, system commands such as dumpsys can only be run on a rooted de
 [Thread]: https://pkg.go.dev/graphics.gd/classdb/Thread
 */
 func Execute(path string, arguments []string, read_stderr bool, open_console bool) ([]string, int) { //gd:OS.execute
-	var returns_output = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(gd.NewArray()))
+	var returns_output = Array.Through(gd.WrapArray[variant.Any](gd.NewArray()))
 	results := Advanced().Execute(String.From(path), Packed.MakeStrings(arguments...), returns_output, read_stderr, open_console)
 	return gd.ArrayAs[[]string](gd.InternalArray(returns_output)), int(results)
 }
@@ -1467,19 +1467,19 @@ func SetDeltaSmoothing(value bool) { //gd:OS.delta_smoothing
 func (self class) GetEntropy(size int64) Packed.Bytes { //gd:OS.get_entropy
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_entropy, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) GetSystemCaCertificates() String.Readable { //gd:OS.get_system_ca_certificates
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_system_ca_certificates, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetConnectedMidiInputs() Packed.Strings { //gd:OS.get_connected_midi_inputs
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_connected_midi_inputs, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) OpenMidiInputs() { //gd:OS.open_midi_inputs
@@ -1540,13 +1540,13 @@ func (self class) GetProcessorCount() int64 { //gd:OS.get_processor_count
 func (self class) GetProcessorName() String.Readable { //gd:OS.get_processor_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_processor_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSystemFonts() Packed.Strings { //gd:OS.get_system_fonts
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_system_fonts, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetSystemFontPath(font_name String.Readable, weight int64, stretch int64, italic bool) String.Readable { //gd:OS.get_system_font_path
@@ -1557,7 +1557,7 @@ func (self class) GetSystemFontPath(font_name String.Readable, weight int64, str
 		stretch   int64
 		italic    bool
 	}{pointers.Get(gd.InternalString(font_name)), weight, stretch, italic})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSystemFontPathForText(font_name String.Readable, text String.Readable, locale String.Readable, script String.Readable, weight int64, stretch int64, italic bool) Packed.Strings { //gd:OS.get_system_font_path_for_text
@@ -1571,25 +1571,25 @@ func (self class) GetSystemFontPathForText(font_name String.Readable, text Strin
 		stretch   int64
 		italic    bool
 	}{pointers.Get(gd.InternalString(font_name)), pointers.Get(gd.InternalString(text)), pointers.Get(gd.InternalString(locale)), pointers.Get(gd.InternalString(script)), weight, stretch, italic})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetExecutablePath() String.Readable { //gd:OS.get_executable_path
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_executable_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ReadStringFromStdin(buffer_size int64) String.Readable { //gd:OS.read_string_from_stdin
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.read_string_from_stdin, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ buffer_size int64 }{buffer_size})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ReadBufferFromStdin(buffer_size int64) Packed.Bytes { //gd:OS.read_buffer_from_stdin
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.read_buffer_from_stdin, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ buffer_size int64 }{buffer_size})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) GetStdinType() StdHandleType { //gd:OS.get_stdin_type
@@ -1629,7 +1629,7 @@ func (self class) ExecuteWithPipe(path String.Readable, arguments Packed.Strings
 		arguments gdextension.PackedArray[gdextension.String]
 		blocking  bool
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalPackedStrings(arguments)), blocking})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) CreateProcess(path String.Readable, arguments Packed.Strings, open_console bool) int64 { //gd:OS.create_process
@@ -1707,7 +1707,7 @@ func (self class) HasEnvironment(variable String.Readable) bool { //gd:OS.has_en
 func (self class) GetEnvironment(variable String.Readable) String.Readable { //gd:OS.get_environment
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_environment, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ variable gdextension.String }{pointers.Get(gd.InternalString(variable))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetEnvironment(variable String.Readable, value String.Readable) { //gd:OS.set_environment
@@ -1724,43 +1724,43 @@ func (self class) UnsetEnvironment(variable String.Readable) { //gd:OS.unset_env
 func (self class) GetName() String.Readable { //gd:OS.get_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDistributionName() String.Readable { //gd:OS.get_distribution_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_distribution_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetVersion() String.Readable { //gd:OS.get_version
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_version, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetVersionAlias() String.Readable { //gd:OS.get_version_alias
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_version_alias, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCmdlineArgs() Packed.Strings { //gd:OS.get_cmdline_args
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_cmdline_args, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetCmdlineUserArgs() Packed.Strings { //gd:OS.get_cmdline_user_args
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_cmdline_user_args, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetVideoAdapterDriverInfo() Packed.Strings { //gd:OS.get_video_adapter_driver_info
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_video_adapter_driver_info, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetRestartOnExit(restart bool, arguments Packed.Strings) { //gd:OS.set_restart_on_exit
@@ -1779,7 +1779,7 @@ func (self class) IsRestartOnExitSet() bool { //gd:OS.is_restart_on_exit_set
 func (self class) GetRestartOnExitArguments() Packed.Strings { //gd:OS.get_restart_on_exit_arguments
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_restart_on_exit_arguments, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) DelayUsec(usec int64) { //gd:OS.delay_usec
@@ -1793,19 +1793,19 @@ func (self class) DelayMsec(msec int64) { //gd:OS.delay_msec
 func (self class) GetLocale() String.Readable { //gd:OS.get_locale
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_locale, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetLocaleLanguage() String.Readable { //gd:OS.get_locale_language
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_locale_language, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetModelName() String.Readable { //gd:OS.get_model_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_model_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsUserfsPersistent() bool { //gd:OS.is_userfs_persistent
@@ -1841,7 +1841,7 @@ func (self class) GetStaticMemoryPeakUsage() int64 { //gd:OS.get_static_memory_p
 func (self class) GetMemoryInfo() Dictionary.Any { //gd:OS.get_memory_info
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.get_memory_info, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) MoveToTrash(path String.Readable) Error.Code { //gd:OS.move_to_trash
@@ -1853,7 +1853,7 @@ func (self class) MoveToTrash(path String.Readable) Error.Code { //gd:OS.move_to
 func (self class) GetUserDataDir() String.Readable { //gd:OS.get_user_data_dir
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_user_data_dir, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSystemDir(dir SystemDir, shared_storage bool) String.Readable { //gd:OS.get_system_dir
@@ -1862,43 +1862,43 @@ func (self class) GetSystemDir(dir SystemDir, shared_storage bool) String.Readab
 		dir            SystemDir
 		shared_storage bool
 	}{dir, shared_storage})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetConfigDir() String.Readable { //gd:OS.get_config_dir
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_config_dir, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDataDir() String.Readable { //gd:OS.get_data_dir
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_data_dir, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCacheDir() String.Readable { //gd:OS.get_cache_dir
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_cache_dir, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTempDir() String.Readable { //gd:OS.get_temp_dir
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_temp_dir, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetUniqueId() String.Readable { //gd:OS.get_unique_id
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_unique_id, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetKeycodeString(code Input.Key) String.Readable { //gd:OS.get_keycode_string
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_keycode_string, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ code Input.Key }{code})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsKeycodeUnicode(code int64) bool { //gd:OS.is_keycode_unicode
@@ -1962,7 +1962,7 @@ func (self class) RequestPermissions() bool { //gd:OS.request_permissions
 func (self class) GetGrantedPermissions() Packed.Strings { //gd:OS.get_granted_permissions
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_granted_permissions, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) RevokeGrantedPermissions() { //gd:OS.revoke_granted_permissions

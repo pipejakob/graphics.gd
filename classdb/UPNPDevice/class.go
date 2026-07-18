@@ -320,7 +320,7 @@ func (self class) IsValidGateway() bool { //gd:UPNPDevice.is_valid_gateway
 }
 func (self class) QueryExternalAddress() String.Readable { //gd:UPNPDevice.query_external_address
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.query_external_address, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) AddPortMapping(port int64, port_internal int64, desc String.Readable, proto String.Readable, duration int64) int64 { //gd:UPNPDevice.add_port_mapping
@@ -347,7 +347,7 @@ func (self class) SetDescriptionUrl(url String.Readable) { //gd:UPNPDevice.set_d
 }
 func (self class) GetDescriptionUrl() String.Readable { //gd:UPNPDevice.get_description_url
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_description_url, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetServiceType(atype String.Readable) { //gd:UPNPDevice.set_service_type
@@ -355,7 +355,7 @@ func (self class) SetServiceType(atype String.Readable) { //gd:UPNPDevice.set_se
 }
 func (self class) GetServiceType() String.Readable { //gd:UPNPDevice.get_service_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_service_type, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetIgdControlUrl(url String.Readable) { //gd:UPNPDevice.set_igd_control_url
@@ -363,7 +363,7 @@ func (self class) SetIgdControlUrl(url String.Readable) { //gd:UPNPDevice.set_ig
 }
 func (self class) GetIgdControlUrl() String.Readable { //gd:UPNPDevice.get_igd_control_url
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_igd_control_url, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetIgdServiceType(atype String.Readable) { //gd:UPNPDevice.set_igd_service_type
@@ -371,7 +371,7 @@ func (self class) SetIgdServiceType(atype String.Readable) { //gd:UPNPDevice.set
 }
 func (self class) GetIgdServiceType() String.Readable { //gd:UPNPDevice.get_igd_service_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_igd_service_type, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetIgdOurAddr(addr String.Readable) { //gd:UPNPDevice.set_igd_our_addr
@@ -379,7 +379,7 @@ func (self class) SetIgdOurAddr(addr String.Readable) { //gd:UPNPDevice.set_igd_
 }
 func (self class) GetIgdOurAddr() String.Readable { //gd:UPNPDevice.get_igd_our_addr
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_igd_our_addr, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetIgdStatus(status IGDStatus) { //gd:UPNPDevice.set_igd_status

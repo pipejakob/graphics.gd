@@ -322,7 +322,7 @@ func (self Instance) OnBoneSetupChanged(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) BoneSetupChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bone_setup_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bone_setup_changed`))))
 }
 
 func (o class) AsSkeleton2D() Advanced                    { return Advanced(o) }

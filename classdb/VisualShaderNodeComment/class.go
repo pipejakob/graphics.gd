@@ -183,7 +183,7 @@ func (self class) SetDescription(description String.Readable) { //gd:VisualShade
 }
 func (self class) GetDescription() String.Readable { //gd:VisualShaderNodeComment.get_description
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_description, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsVisualShaderNodeComment() Advanced         { return Advanced(o) }

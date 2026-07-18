@@ -320,7 +320,7 @@ func (self class) SetAnimation(name String.Name) { //gd:AnimationNodeAnimation.s
 }
 func (self class) GetAnimation() String.Name { //gd:AnimationNodeAnimation.get_animation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_animation, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetPlayMode(mode PlayMode) { //gd:AnimationNodeAnimation.set_play_mode

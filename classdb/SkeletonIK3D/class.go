@@ -418,7 +418,7 @@ func (self class) SetRootBone(root_bone String.Name) { //gd:SkeletonIK3D.set_roo
 }
 func (self class) GetRootBone() String.Name { //gd:SkeletonIK3D.get_root_bone
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_root_bone, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetTipBone(tip_bone String.Name) { //gd:SkeletonIK3D.set_tip_bone
@@ -426,7 +426,7 @@ func (self class) SetTipBone(tip_bone String.Name) { //gd:SkeletonIK3D.set_tip_b
 }
 func (self class) GetTipBone() String.Name { //gd:SkeletonIK3D.get_tip_bone
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_tip_bone, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetTargetTransform(target Transform3D.BasisOrigin) { //gd:SkeletonIK3D.set_target_transform
@@ -442,7 +442,7 @@ func (self class) SetTargetNode(node Path.ToNode) { //gd:SkeletonIK3D.set_target
 }
 func (self class) GetTargetNode() Path.ToNode { //gd:SkeletonIK3D.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetOverrideTipBasis(override bool) { //gd:SkeletonIK3D.set_override_tip_basis

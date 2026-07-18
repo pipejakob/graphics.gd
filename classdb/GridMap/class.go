@@ -927,27 +927,27 @@ func (self class) Clear() { //gd:GridMap.clear
 }
 func (self class) GetUsedCells() Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_cells
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_cells, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Vector3i.XYZ]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedCellsByItem(item int64) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_cells_by_item
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_cells_by_item, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ item int64 }{item})
-	var ret = Array.Through(gd.ArrayProxy[Vector3i.XYZ]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedOctants() Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_octants
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_octants, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Vector3i.XYZ]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedOctantsByItem(item int64) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_octants_by_item
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_octants_by_item, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ item int64 }{item})
-	var ret = Array.Through(gd.ArrayProxy[Vector3i.XYZ]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedCellsInOctant(octant_coords Vector3i.XYZ) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_cells_in_octant
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_cells_in_octant, gdextension.SizeArray|(gdextension.SizeVector3i<<4), &struct{ octant_coords Vector3i.XYZ }{octant_coords})
-	var ret = Array.Through(gd.ArrayProxy[Vector3i.XYZ]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedCellsInOctantByItem(octant_coords Vector3i.XYZ, item int64) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_cells_in_octant_by_item
@@ -955,17 +955,17 @@ func (self class) GetUsedCellsInOctantByItem(octant_coords Vector3i.XYZ, item in
 		octant_coords Vector3i.XYZ
 		item          int64
 	}{octant_coords, item})
-	var ret = Array.Through(gd.ArrayProxy[Vector3i.XYZ]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetOctantsInBounds(bounds AABB.PositionSize) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_octants_in_bounds
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_octants_in_bounds, gdextension.SizeArray|(gdextension.SizeAABB<<4), &struct{ bounds AABB.PositionSize }{bounds})
-	var ret = Array.Through(gd.ArrayProxy[Vector3i.XYZ]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedOctantsInBounds(bounds AABB.PositionSize) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_octants_in_bounds
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_octants_in_bounds, gdextension.SizeArray|(gdextension.SizeAABB<<4), &struct{ bounds AABB.PositionSize }{bounds})
-	var ret = Array.Through(gd.ArrayProxy[Vector3i.XYZ]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetOctantCoordsFromCellCoords(cell_coords Vector3i.XYZ) Vector3i.XYZ { //gd:GridMap.get_octant_coords_from_cell_coords
@@ -975,12 +975,12 @@ func (self class) GetOctantCoordsFromCellCoords(cell_coords Vector3i.XYZ) Vector
 }
 func (self class) GetMeshes() Array.Any { //gd:GridMap.get_meshes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_meshes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBakeMeshes() Array.Any { //gd:GridMap.get_bake_meshes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_bake_meshes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBakeMeshInstance(idx int64) RID.Any { //gd:GridMap.get_bake_mesh_instance
@@ -1013,7 +1013,7 @@ func (self Instance) OnCellSizeChanged(cb func(cell_size Vector3.XYZ), flags ...
 }
 
 func (self class) CellSizeChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`cell_size_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`cell_size_changed`))))
 }
 
 /*
@@ -1031,7 +1031,7 @@ func (self Instance) OnChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Changed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
 }
 
 func (o class) AsGridMap() Advanced               { return Advanced(o) }

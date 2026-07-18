@@ -446,7 +446,7 @@ func (self class) HasMipmaps() bool { //gd:Texture3D.has_mipmaps
 }
 func (self class) GetData() Array.Contains[[1]gdclass.Image] { //gd:Texture3D.get_data
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_data, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Image]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Image](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) CreatePlaceholder() [1]gdclass.Resource { //gd:Texture3D.create_placeholder

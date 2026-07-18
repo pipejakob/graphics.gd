@@ -646,7 +646,7 @@ func (self class) IsCollideWithBodiesEnabled() bool { //gd:ShapeCast2D.is_collid
 }
 func (self class) GetCollisionResult() Array.Any { //gd:ShapeCast2D.get_collision_result
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_collision_result, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsShapeCast2D() Advanced                   { return Advanced(o) }

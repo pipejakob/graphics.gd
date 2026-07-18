@@ -527,12 +527,12 @@ func (self class) GetResponseCode() int64 { //gd:HTTPClient.get_response_code
 }
 func (self class) GetResponseHeaders() Packed.Strings { //gd:HTTPClient.get_response_headers
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_response_headers, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetResponseHeadersAsDictionary() Dictionary.Any { //gd:HTTPClient.get_response_headers_as_dictionary
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_response_headers_as_dictionary, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetResponseBodyLength() int64 { //gd:HTTPClient.get_response_body_length
@@ -542,7 +542,7 @@ func (self class) GetResponseBodyLength() int64 { //gd:HTTPClient.get_response_b
 }
 func (self class) ReadResponseBodyChunk() Packed.Bytes { //gd:HTTPClient.read_response_body_chunk
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.read_response_body_chunk, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SetReadChunkSize(bytes int64) { //gd:HTTPClient.set_read_chunk_size
@@ -585,7 +585,7 @@ func (self class) SetHttpsProxy(host String.Readable, port int64) { //gd:HTTPCli
 }
 func (self class) QueryStringFromDict(fields Dictionary.Any) String.Readable { //gd:HTTPClient.query_string_from_dict
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.query_string_from_dict, gdextension.SizeString|(gdextension.SizeDictionary<<4), &struct{ fields gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(fields))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsHTTPClient() Advanced         { return Advanced(o) }

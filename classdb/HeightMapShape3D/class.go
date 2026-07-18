@@ -311,7 +311,7 @@ func (self class) SetMapData(data Packed.Array[float32]) { //gd:HeightMapShape3D
 }
 func (self class) GetMapData() Packed.Array[float32] { //gd:HeightMapShape3D.get_map_data
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_map_data, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) GetMinHeight() float64 { //gd:HeightMapShape3D.get_min_height

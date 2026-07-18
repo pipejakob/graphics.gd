@@ -294,7 +294,7 @@ func (self class) FromDictionary(dictionary Dictionary.Any) [1]gdclass.GLTFCamer
 }
 func (self class) ToDictionary() Dictionary.Any { //gd:GLTFCamera.to_dictionary
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.to_dictionary, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetPerspective() bool { //gd:GLTFCamera.get_perspective

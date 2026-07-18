@@ -5,6 +5,7 @@ package startup
 
 import "unsafe"
 import "graphics.gd/internal/gdextension"
+import "graphics.gd/internal/threadcheck"
 
 // #include "../gdextension_interface.h"
 // #include "../gd.h"
@@ -14,642 +15,891 @@ import "C"
 
 //export gd_on_callable_call
 func gd_on_callable_call(p0 C.uintptr_t, p1 *C.Variant, p2 C.int64_t, p3 *C.Variant, p4 *C.CallError) {
+	threadcheck.Mark()
 	gdextension.On.Callables.Call(gdextension.FunctionID(p0), gdextension.Returns[gdextension.Variant](p1), int(p2), gdextension.Accepts[gdextension.Variant](p3), gdextension.Returns[gdextension.CallError](p4))
 }
 
 //export gd_on_callable_validation
 func gd_on_callable_validation(p0 C.uintptr_t) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Callables.Validation(gdextension.FunctionID(p0)))
 }
 
 //export gd_on_callable_free
 func gd_on_callable_free(p0 C.uintptr_t) {
+	threadcheck.Mark()
 	gdextension.On.Callables.Free(gdextension.FunctionID(p0))
 }
 
 //export gd_on_callable_hash
 func gd_on_callable_hash(p0 C.uintptr_t) C.uint32_t {
+	threadcheck.Mark()
 	return C.uint32_t(gdextension.On.Callables.Hash(gdextension.FunctionID(p0)))
 }
 
 //export gd_on_callable_compare
 func gd_on_callable_compare(p0 C.uintptr_t, p1 C.uintptr_t) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Callables.Compare(gdextension.FunctionID(p0), gdextension.FunctionID(p1)))
 }
 
 //export gd_on_callable_less_than
 func gd_on_callable_less_than(p0 C.uintptr_t, p1 C.uintptr_t) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Callables.LessThan(gdextension.FunctionID(p0), gdextension.FunctionID(p1)))
 }
 
 //export gd_on_callable_stringify
 func gd_on_callable_stringify(p0 C.uintptr_t, p1 *C.CallError) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Callables.Stringify(gdextension.FunctionID(p0), gdextension.Returns[gdextension.CallError](p1))[0])
 }
 
 //export gd_on_callable_get_argument_count
 func gd_on_callable_get_argument_count(p0 C.uintptr_t, p1 *C.CallError) C.int64_t {
+	threadcheck.Mark()
 	return C.int64_t(gdextension.On.Callables.ArgumentCount(gdextension.FunctionID(p0), gdextension.Returns[gdextension.CallError](p1)))
 }
 
 //export gd_on_editor_class_in_use_detection
 func gd_on_editor_class_in_use_detection(p0 C.uint64_t, p1 C.uint64_t, p2 *C.PackedStringArray) {
+	threadcheck.Mark()
 	gdextension.On.Editor.ClassInUseDetection(gdextension.PackedArray[gdextension.String]{uint64(p0), uint64(p1)}, gdextension.Returns[gdextension.PackedArray[gdextension.String]](p2))
 }
 
 //export gd_on_engine_init
 func gd_on_engine_init(p0 C.uint32_t) {
+	threadcheck.Mark()
 	gdextension.On.Engine.Init(gdextension.InitializationLevel(p0))
 }
 
 //export gd_on_engine_exit
 func gd_on_engine_exit(p0 C.uint32_t) {
+	threadcheck.Mark()
 	gdextension.On.Engine.Exit(gdextension.InitializationLevel(p0))
 }
 
 //export gd_on_extension_binding_created
 func gd_on_extension_binding_created(p0 C.uintptr_t) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Extension.Binding.Created(gdextension.ExtensionInstanceID(p0)))
 }
 
 //export gd_on_extension_binding_removed
 func gd_on_extension_binding_removed(p0 C.uintptr_t, p1 C.uintptr_t) {
+	threadcheck.Mark()
 	gdextension.On.Extension.Binding.Removed(gdextension.ExtensionInstanceID(p0), gdextension.ExtensionBindingID(p1))
 }
 
 //export gd_on_extension_binding_reference
 func gd_on_extension_binding_reference(p0 C.uintptr_t, p1 C.bool) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Extension.Binding.Reference(gdextension.ExtensionInstanceID(p0), bool(p1)))
 }
 
 //export gd_on_extension_class_create
 func gd_on_extension_class_create(p0 C.uintptr_t, p1 C.bool) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Extension.Class.Create(gdextension.ExtensionClassID(p0), bool(p1)))
 }
 
 //export gd_on_extension_class_method
 func gd_on_extension_class_method(p0 C.uintptr_t, p1 C.uintptr_t, p2 C.uint32_t) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Extension.Class.Method(gdextension.ExtensionClassID(p0), gdextension.StringName{gdextension.Pointer(p1)}, uint32(p2)))
 }
 
 //export gd_on_extension_class_caller
 func gd_on_extension_class_caller(p0 C.uintptr_t, p1 C.uintptr_t, p2 C.uint32_t) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Extension.Class.Caller(gdextension.ExtensionClassID(p0), gdextension.StringName{gdextension.Pointer(p1)}, uint32(p2)))
 }
 
 //export gd_on_extension_instance_set
 func gd_on_extension_instance_set(p0 C.uintptr_t, p1 C.uintptr_t, p2 C.uint64_t, p3 C.uint64_t, p4 C.uint64_t) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Extension.Instance.Set(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}, gdextension.Variant{uint64(p2), uint64(p3), uint64(p4)}))
 }
 
 //export gd_on_extension_instance_get
 func gd_on_extension_instance_get(p0 C.uintptr_t, p1 C.uintptr_t, p2 *C.Variant) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Extension.Instance.Get(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}, gdextension.Returns[gdextension.Variant](p2)))
 }
 
 //export gd_on_extension_instance_property_list
 func gd_on_extension_instance_property_list(p0 C.uintptr_t) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Extension.Instance.PropertyList(gdextension.ExtensionInstanceID(p0)))
 }
 
 //export gd_on_extension_instance_property_has_default
 func gd_on_extension_instance_property_has_default(p0 C.uintptr_t, p1 C.uintptr_t) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Extension.Instance.PropertyHasDefault(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}))
 }
 
 //export gd_on_extension_instance_property_get_default
 func gd_on_extension_instance_property_get_default(p0 C.uintptr_t, p1 C.uintptr_t, p2 *C.Variant) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Extension.Instance.PropertyGetDefault(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}, gdextension.Returns[gdextension.Variant](p2)))
 }
 
 //export gd_on_extension_instance_property_validation
 func gd_on_extension_instance_property_validation(p0 C.uintptr_t, p1 C.uintptr_t) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Extension.Instance.PropertyValidation(gdextension.ExtensionInstanceID(p0), gdextension.PropertyList(p1)))
 }
 
 //export gd_on_extension_instance_notification
 func gd_on_extension_instance_notification(p0 C.uintptr_t, p1 C.int32_t, p2 C.bool) {
+	threadcheck.Mark()
 	gdextension.On.Extension.Instance.Notification(gdextension.ExtensionInstanceID(p0), int32(p1), bool(p2))
 }
 
 //export gd_on_extension_instance_stringify
 func gd_on_extension_instance_stringify(p0 C.uintptr_t) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Extension.Instance.Stringify(gdextension.ExtensionInstanceID(p0))[0])
 }
 
 //export gd_on_extension_instance_reference
 func gd_on_extension_instance_reference(p0 C.uintptr_t, p1 C.bool) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Extension.Instance.Reference(gdextension.ExtensionInstanceID(p0), bool(p1)))
 }
 
 //export gd_on_extension_instance_rid
 func gd_on_extension_instance_rid(p0 C.uintptr_t, p1 *C.uint64_t) {
+	threadcheck.Mark()
 	gdextension.On.Extension.Instance.RID(gdextension.ExtensionInstanceID(p0), gdextension.Returns[uint64](p1))
 }
 
 //export gd_on_extension_instance_checked_call
 func gd_on_extension_instance_checked_call(p0 C.uintptr_t, p1 C.uintptr_t, p2 *C.void, p3 *C.void) {
+	threadcheck.Mark()
 	gdextension.On.Extension.Instance.CheckedCall(gdextension.ExtensionInstanceID(p0), gdextension.FunctionID(p1), gdextension.Returns[interface{}](p2), gdextension.Accepts[interface{}](p3))
 }
 
 //export gd_on_extension_instance_called
 func gd_on_extension_instance_called(p0 C.uintptr_t, p1 C.uintptr_t, p2 *C.void, p3 *C.void) {
+	threadcheck.Mark()
 	gdextension.On.Extension.Instance.Called(gdextension.ExtensionInstanceID(p0), gdextension.Pointer(p1), gdextension.Returns[interface{}](p2), gdextension.Accepts[interface{}](p3))
 }
 
 //export gd_on_extension_instance_variant_call
 func gd_on_extension_instance_variant_call(p0 C.uintptr_t, p1 C.uintptr_t, p2 *C.Variant, p3 *C.Variant) {
+	threadcheck.Mark()
 	gdextension.On.Extension.Instance.VariantCall(gdextension.ExtensionInstanceID(p0), gdextension.FunctionID(p1), gdextension.Returns[gdextension.Variant](p2), gdextension.Accepts[gdextension.Variant](p3))
 }
 
 //export gd_on_extension_instance_dynamic_call
 func gd_on_extension_instance_dynamic_call(p0 C.uintptr_t, p1 C.uintptr_t, p2 *C.Variant, p3 C.int64_t, p4 *C.Variant, p5 *C.CallError) {
+	threadcheck.Mark()
 	gdextension.On.Extension.Instance.DynamicCall(gdextension.ExtensionInstanceID(p0), gdextension.FunctionID(p1), gdextension.Returns[gdextension.Variant](p2), int(p3), gdextension.Accepts[gdextension.Variant](p4), gdextension.Returns[gdextension.CallError](p5))
 }
 
 //export gd_on_extension_instance_free
 func gd_on_extension_instance_free(p0 C.uintptr_t) {
+	threadcheck.Mark()
 	gdextension.On.Extension.Instance.Free(gdextension.ExtensionInstanceID(p0))
 }
 
 //export gd_on_extension_script_categorization
 func gd_on_extension_script_categorization(p0 C.uintptr_t, p1 C.uintptr_t) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Extension.Script.Categorization(gdextension.ExtensionInstanceID(p0), gdextension.PropertyList(p1)))
 }
 
 //export gd_on_extension_script_get_property_type
 func gd_on_extension_script_get_property_type(p0 C.uintptr_t, p1 *C.CallError) C.uint32_t {
+	threadcheck.Mark()
 	return C.uint32_t(gdextension.On.Extension.Script.PropertyType(gdextension.StringName{gdextension.Pointer(p0)}, gdextension.Returns[gdextension.CallError](p1)))
 }
 
 //export gd_on_extension_script_get_owner
 func gd_on_extension_script_get_owner(p0 C.uintptr_t) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Extension.Script.Owner(gdextension.ExtensionInstanceID(p0)))
 }
 
 //export gd_on_extension_script_get_property_state
 func gd_on_extension_script_get_property_state(p0 C.uintptr_t, p1 C.uintptr_t, p2 C.uintptr_t) {
+	threadcheck.Mark()
 	gdextension.On.Extension.Script.PropertyState(gdextension.ExtensionInstanceID(p0), gdextension.FunctionID(p1), gdextension.Pointer(p2))
 }
 
 //export gd_on_extension_script_get_methods
 func gd_on_extension_script_get_methods(p0 C.uintptr_t) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Extension.Script.Methods(gdextension.ExtensionInstanceID(p0)))
 }
 
 //export gd_on_extension_script_has_method
 func gd_on_extension_script_has_method(p0 C.uintptr_t, p1 C.uintptr_t) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Extension.Script.HasMethod(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}))
 }
 
 //export gd_on_extension_script_get_method_argument_count
 func gd_on_extension_script_get_method_argument_count(p0 C.uintptr_t, p1 C.uintptr_t) C.int64_t {
+	threadcheck.Mark()
 	return C.int64_t(gdextension.On.Extension.Script.MethodArgumentCount(gdextension.ExtensionInstanceID(p0), gdextension.StringName{gdextension.Pointer(p1)}))
 }
 
 //export gd_on_extension_script_get
 func gd_on_extension_script_get(p0 C.uintptr_t) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Extension.Script.Get(gdextension.ExtensionInstanceID(p0)))
 }
 
 //export gd_on_extension_script_is_placeholder
 func gd_on_extension_script_is_placeholder(p0 C.uintptr_t) C.bool {
+	threadcheck.Mark()
 	return C.bool(gdextension.On.Extension.Script.IsPlaceholder(gdextension.ExtensionInstanceID(p0)))
 }
 
 //export gd_on_extension_script_get_language
 func gd_on_extension_script_get_language(p0 C.uintptr_t) C.uintptr_t {
+	threadcheck.Mark()
 	return C.uintptr_t(gdextension.On.Extension.Script.Language(gdextension.ExtensionInstanceID(p0)))
 }
 
 //export gd_on_first_frame
 func gd_on_first_frame() {
+	threadcheck.Mark()
 	gdextension.On.MainLoop.FirstFrame()
 }
 
 //export gd_on_every_frame
 func gd_on_every_frame() {
+	threadcheck.Mark()
 	gdextension.On.MainLoop.EveryFrame()
 }
 
 //export gd_on_final_frame
 func gd_on_final_frame() {
+	threadcheck.Mark()
 	gdextension.On.MainLoop.FinalFrame()
 }
 
 //export gd_on_worker_thread_pool_task
 func gd_on_worker_thread_pool_task(p0 C.uintptr_t) {
+	threadcheck.Mark()
 	gdextension.On.Threading.Run(gdextension.TaskID(p0))
 }
 
 //export gd_on_worker_thread_pool_group_task
 func gd_on_worker_thread_pool_group_task(p0 C.uintptr_t, p1 C.uint32_t) {
+	threadcheck.Mark()
 	gdextension.On.Threading.RunInGroup(gdextension.TaskID(p0), uint32(p1))
 }
 
 func init() {
 	gdextension.Host.Array.Get = func(p0 gdextension.Array, p1 int, p2 gdextension.CallReturns[gdextension.Variant]) {
+		threadcheck.EnterCall()
 		C.gd_array_get(C.uintptr_t(p0[0]), C.int64_t(p1), unsafe.Pointer(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Array.Set = func(p0 gdextension.Array, p1 int, p2 gdextension.Variant) {
+		threadcheck.EnterCall()
 		C.gd_array_set(C.uintptr_t(p0[0]), C.int64_t(p1), C.uint64_t(p2[0]), C.uint64_t(p2[1]), C.uint64_t(p2[2]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Functions.Name = func(p0 gdextension.StringName, p1 int64) (result gdextension.FunctionID) {
+		threadcheck.EnterCall()
 		result = gdextension.FunctionID(C.gd_builtin_name(C.uintptr_t(p0[0]), C.int64_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Functions.Call = func(p0 gdextension.FunctionID, p1 gdextension.CallReturns[interface{}], shape gdextension.Shape, p3 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_builtin_call(C.uintptr_t(p0), unsafe.Pointer(p1), C.uint64_t(shape), unsafe.Pointer(p3))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Name = func(p0 gdextension.VariantType) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_variant_type_name(C.uint32_t(p0)))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Make = func(p0 gdextension.VariantType, p1 gdextension.CallReturns[gdextension.Variant], p2 int, p3 gdextension.CallAccepts[gdextension.Variant], p4 gdextension.CallReturns[gdextension.CallError]) {
+		threadcheck.EnterCall()
 		C.gd_variant_type_make(C.uint32_t(p0), unsafe.Pointer(p1), C.int64_t(p2), unsafe.Pointer(p3), unsafe.Pointer(p4))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Call = func(p0 gdextension.VariantType, p1 gdextension.StringName, p2 gdextension.CallReturns[gdextension.Variant], p3 int, p4 gdextension.CallAccepts[gdextension.Variant], p5 gdextension.CallReturns[gdextension.CallError]) {
+		threadcheck.EnterCall()
 		C.gd_variant_type_call(C.uint32_t(p0), C.uintptr_t(p1[0]), unsafe.Pointer(p2), C.int64_t(p3), unsafe.Pointer(p4), unsafe.Pointer(p5))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Convertable = func(p0 gdextension.VariantType, p1 gdextension.VariantType, p2 bool) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_type_convertable(C.uint32_t(p0), C.uint32_t(p1), C.bool(p2)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.SetupArray = func(p0 gdextension.Array, p1 gdextension.VariantType, p2 gdextension.StringName, p3 gdextension.Variant) {
+		threadcheck.EnterCall()
 		C.gd_variant_type_setup_array(C.uintptr_t(p0[0]), C.uint32_t(p1), C.uintptr_t(p2[0]), C.uint64_t(p3[0]), C.uint64_t(p3[1]), C.uint64_t(p3[2]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.SetupDictionary = func(p0 gdextension.Dictionary, p1 gdextension.VariantType, p2 gdextension.StringName, p3 gdextension.Variant, p4 gdextension.VariantType, p5 gdextension.StringName, p6 gdextension.Variant) {
+		threadcheck.EnterCall()
 		C.gd_variant_type_setup_dictionary(C.uintptr_t(p0[0]), C.uint32_t(p1), C.uintptr_t(p2[0]), C.uint64_t(p3[0]), C.uint64_t(p3[1]), C.uint64_t(p3[2]), C.uint32_t(p4), C.uintptr_t(p5[0]), C.uint64_t(p6[0]), C.uint64_t(p6[1]), C.uint64_t(p6[2]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.FetchConstant = func(p0 gdextension.VariantType, p1 gdextension.StringName, p2 gdextension.CallReturns[gdextension.Variant]) {
+		threadcheck.EnterCall()
 		C.gd_variant_type_fetch_constant(C.uint32_t(p0), C.uintptr_t(p1[0]), unsafe.Pointer(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Constructor = func(p0 gdextension.VariantType, p1 int) (result gdextension.FunctionID) {
+		threadcheck.EnterCall()
 		result = gdextension.FunctionID(C.gd_variant_type_unsafe_constructor(C.uint32_t(p0), C.int64_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Evaluator = func(p0 gdextension.VariantOperator, p1 gdextension.VariantType, p2 gdextension.VariantType) (result gdextension.FunctionID) {
+		threadcheck.EnterCall()
 		result = gdextension.FunctionID(C.gd_variant_type_evaluator(C.uint32_t(p0), C.uint32_t(p1), C.uint32_t(p2)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Setter = func(p0 gdextension.VariantType, p1 gdextension.StringName) (result gdextension.FunctionID) {
+		threadcheck.EnterCall()
 		result = gdextension.FunctionID(C.gd_variant_type_setter(C.uint32_t(p0), C.uintptr_t(p1[0])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Getter = func(p0 gdextension.VariantType, p1 gdextension.StringName) (result gdextension.FunctionID) {
+		threadcheck.EnterCall()
 		result = gdextension.FunctionID(C.gd_variant_type_getter(C.uint32_t(p0), C.uintptr_t(p1[0])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.HasProperty = func(p0 gdextension.VariantType, p1 gdextension.StringName) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_type_has_property(C.uint32_t(p0), C.uintptr_t(p1[0])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Method = func(p0 gdextension.VariantType, p1 gdextension.StringName, p2 int64) (result gdextension.MethodForBuiltinType) {
+		threadcheck.EnterCall()
 		result = gdextension.MethodForBuiltinType(C.gd_variant_type_builtin_method(C.uint32_t(p0), C.uintptr_t(p1[0]), C.int64_t(p2)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Unsafe.Call = func(p0 gdextension.CallMutates[interface{}], p1 gdextension.MethodForBuiltinType, p2 gdextension.CallReturns[interface{}], shape gdextension.Shape, p4 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_type_unsafe_call(unsafe.Pointer(p0), C.uintptr_t(p1), unsafe.Pointer(p2), C.uint64_t(shape), unsafe.Pointer(p4))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Unsafe.Make = func(p0 gdextension.FunctionID, p1 gdextension.CallReturns[interface{}], shape gdextension.Shape, p3 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_type_unsafe_make(C.uintptr_t(p0), unsafe.Pointer(p1), C.uint64_t(shape), unsafe.Pointer(p3))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Builtin.Types.Unsafe.Free = func(p0 gdextension.VariantType, shape gdextension.Shape, p2 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_type_unsafe_free(C.uint32_t(p0), C.uint64_t(shape), unsafe.Pointer(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Callables.Create = func(p0 gdextension.FunctionID, p1 gdextension.ObjectID, p2 gdextension.CallReturns[gdextension.Callable]) {
+		threadcheck.EnterCall()
 		C.gd_callable_create(C.uintptr_t(p0), C.uint64_t(p1), unsafe.Pointer(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Callables.Lookup = func(p0 gdextension.Callable) (result gdextension.FunctionID) {
+		threadcheck.EnterCall()
 		result = gdextension.FunctionID(C.gd_callable_lookup(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.FileAccess.Write = func(p0 gdextension.Object, p1 []byte) {
+		threadcheck.EnterCall()
 		C.gd_classdb_FileAccess_write(C.uintptr_t(p0), (*C.char)(unsafe.Pointer(unsafe.SliceData(p1))), C.int64_t(len(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.FileAccess.Read = func(p0 gdextension.Object, p1 []byte) (result int) {
+		threadcheck.EnterCall()
 		result = int(C.gd_classdb_FileAccess_read(C.uintptr_t(p0), (*C.char)(unsafe.Pointer(unsafe.SliceData(p1))), C.int64_t(len(p1))))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Image.Unsafe = func(p0 gdextension.Object) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_classdb_Image_unsafe(C.uintptr_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Image.Access = func(p0 gdextension.Object, p1 int) (result uint8) {
+		threadcheck.EnterCall()
 		result = uint8(C.gd_classdb_Image_access(C.uintptr_t(p0), C.int64_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.MethodList.Make = func(p0 int) (result gdextension.MethodList) {
+		threadcheck.EnterCall()
 		result = gdextension.MethodList(C.gd_method_list_make(C.int64_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.MethodList.Push = func(p0 gdextension.MethodList, p1 gdextension.StringName, p2 gdextension.FunctionID, p3 gdextension.MethodFlags, p4 gdextension.PropertyList, p5 gdextension.PropertyList, p6 int, p7 gdextension.CallAccepts[gdextension.Variant]) {
+		threadcheck.EnterCall()
 		C.gd_method_list_push(C.uintptr_t(p0), C.uintptr_t(p1[0]), C.uintptr_t(p2), C.uint32_t(p3), C.uintptr_t(p4), C.uintptr_t(p5), C.int64_t(p6), unsafe.Pointer(p7))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.MethodList.Free = func(p0 gdextension.MethodList) {
+		threadcheck.EnterCall()
 		C.gd_method_list_free(C.uintptr_t(p0))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.PropertyList.Make = func(p0 int) (result gdextension.PropertyList) {
+		threadcheck.EnterCall()
 		result = gdextension.PropertyList(C.gd_property_list_make(C.int64_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.PropertyList.Push = func(p0 gdextension.PropertyList, p1 gdextension.VariantType, p2 gdextension.StringName, p3 gdextension.StringName, p4 uint32, p5 gdextension.String, p6 uint32, p7 gdextension.ArgumentMetadata) {
+		threadcheck.EnterCall()
 		C.gd_property_list_push(C.uintptr_t(p0), C.uint32_t(p1), C.uintptr_t(p2[0]), C.uintptr_t(p3[0]), C.uint32_t(p4), C.uintptr_t(p5[0]), C.uint32_t(p6), C.uint32_t(p7))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.PropertyList.Free = func(p0 gdextension.PropertyList) {
+		threadcheck.EnterCall()
 		C.gd_property_list_free(C.uintptr_t(p0))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.PropertyList.Info.Type = func(p0 gdextension.PropertyList) (result gdextension.VariantType) {
+		threadcheck.EnterCall()
 		result = gdextension.VariantType(C.gd_property_info_type(C.uintptr_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.PropertyList.Info.Name = func(p0 gdextension.PropertyList) (result gdextension.StringName) {
+		threadcheck.EnterCall()
 		result = gdextension.StringName{gdextension.Pointer(C.gd_property_info_name(C.uintptr_t(p0)))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.PropertyList.Info.ClassName = func(p0 gdextension.PropertyList) (result gdextension.StringName) {
+		threadcheck.EnterCall()
 		result = gdextension.StringName{gdextension.Pointer(C.gd_property_info_class_name(C.uintptr_t(p0)))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.PropertyList.Info.Hint = func(p0 gdextension.PropertyList) (result uint32) {
+		threadcheck.EnterCall()
 		result = uint32(C.gd_property_info_hint(C.uintptr_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.PropertyList.Info.HinString = func(p0 gdextension.PropertyList) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_property_info_hint_string(C.uintptr_t(p0)))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.PropertyList.Info.Usage = func(p0 gdextension.PropertyList) (result uint32) {
+		threadcheck.EnterCall()
 		result = uint32(C.gd_property_info_usage(C.uintptr_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Register.Class = func(p0 gdextension.StringName, p1 gdextension.StringName, p2 gdextension.ExtensionClassID, p3 bool, p4 bool, p5 bool, p6 bool, p7 gdextension.String) {
+		threadcheck.EnterCall()
 		C.gd_classdb_register(C.uintptr_t(p0[0]), C.uintptr_t(p1[0]), C.uintptr_t(p2), C.bool(p3), C.bool(p4), C.bool(p5), C.bool(p6), C.uintptr_t(p7[0]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Register.Methods = func(p0 gdextension.StringName, p1 gdextension.MethodList) {
+		threadcheck.EnterCall()
 		C.gd_classdb_register_methods(C.uintptr_t(p0[0]), C.uintptr_t(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Register.Constant = func(p0 gdextension.StringName, p1 gdextension.StringName, p2 gdextension.StringName, p3 int64, p4 bool) {
+		threadcheck.EnterCall()
 		C.gd_classdb_register_constant(C.uintptr_t(p0[0]), C.uintptr_t(p1[0]), C.uintptr_t(p2[0]), C.int64_t(p3), C.bool(p4))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Register.Property = func(p0 gdextension.StringName, p1 gdextension.PropertyList, p2 gdextension.StringName, p3 gdextension.StringName) {
+		threadcheck.EnterCall()
 		C.gd_classdb_register_property(C.uintptr_t(p0[0]), C.uintptr_t(p1), C.uintptr_t(p2[0]), C.uintptr_t(p3[0]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Register.PropertyIndexed = func(p0 gdextension.StringName, p1 gdextension.PropertyList, p2 gdextension.StringName, p3 gdextension.StringName, p4 int) {
+		threadcheck.EnterCall()
 		C.gd_classdb_register_property_indexed(C.uintptr_t(p0[0]), C.uintptr_t(p1), C.uintptr_t(p2[0]), C.uintptr_t(p3[0]), C.int64_t(p4))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Register.PropertyGroup = func(p0 gdextension.StringName, p1 gdextension.String, p2 gdextension.String) {
+		threadcheck.EnterCall()
 		C.gd_classdb_register_property_group(C.uintptr_t(p0[0]), C.uintptr_t(p1[0]), C.uintptr_t(p2[0]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Register.PropertySubgroup = func(p0 gdextension.StringName, p1 gdextension.String, p2 gdextension.String) {
+		threadcheck.EnterCall()
 		C.gd_classdb_register_property_sub_group(C.uintptr_t(p0[0]), C.uintptr_t(p1[0]), C.uintptr_t(p2[0]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Register.Signal = func(p0 gdextension.StringName, p1 gdextension.StringName, p2 gdextension.PropertyList) {
+		threadcheck.EnterCall()
 		C.gd_classdb_register_signal(C.uintptr_t(p0[0]), C.uintptr_t(p1[0]), C.uintptr_t(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.Register.Removal = func(p0 gdextension.StringName) {
+		threadcheck.EnterCall()
 		C.gd_classdb_register_removal(C.uintptr_t(p0[0]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.WorkerThreadPool.AddTask = func(p0 gdextension.Object, p1 gdextension.TaskID, p2 bool, p3 gdextension.String) {
+		threadcheck.EnterCall()
 		C.gd_classdb_WorkerThreadPool_add_task(C.uintptr_t(p0), C.uintptr_t(p1), C.bool(p2), C.uintptr_t(p3[0]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.WorkerThreadPool.AddGroupTask = func(p0 gdextension.Object, p1 gdextension.TaskID, p2 int32, p3 int32, p4 bool, p5 gdextension.String) {
+		threadcheck.EnterCall()
 		C.gd_classdb_WorkerThreadPool_add_group_task(C.uintptr_t(p0), C.uintptr_t(p1), C.int32_t(p2), C.int32_t(p3), C.bool(p4), C.uintptr_t(p5[0]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.ClassDB.XMLParser.Load = func(p0 gdextension.Object, p1 []byte) (result int) {
+		threadcheck.EnterCall()
 		result = int(C.gd_classdb_XMLParser_load(C.uintptr_t(p0), (*C.char)(unsafe.Pointer(unsafe.SliceData(p1))), C.int64_t(len(p1))))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Dictionaries.Get = func(p0 gdextension.Dictionary, p1 gdextension.Variant, p2 gdextension.CallReturns[gdextension.Variant]) {
+		threadcheck.EnterCall()
 		C.gd_packed_dictionary_access(C.uintptr_t(p0[0]), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2]), unsafe.Pointer(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Dictionaries.Set = func(p0 gdextension.Dictionary, p1 gdextension.Variant, p2 gdextension.Variant) {
+		threadcheck.EnterCall()
 		C.gd_packed_dictionary_modify(C.uintptr_t(p0[0]), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2]), C.uint64_t(p2[0]), C.uint64_t(p2[1]), C.uint64_t(p2[2]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Editor.AddDocumentation = func(p0 string) {
+		threadcheck.EnterCall()
 		C.gd_editor_add_documentation((*C.char)(unsafe.Pointer(unsafe.StringData(p0))), C.int64_t(len(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Editor.AddPlugin = func(p0 gdextension.StringName) {
+		threadcheck.EnterCall()
 		C.gd_editor_add_plugin(C.uintptr_t(p0[0]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Editor.EndPlugin = func(p0 gdextension.StringName) {
+		threadcheck.EnterCall()
 		C.gd_editor_end_plugin(C.uintptr_t(p0[0]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Iterators.Make = func(p0 gdextension.Variant, p1 gdextension.CallReturns[gdextension.Iterator], p2 gdextension.CallReturns[gdextension.CallError]) {
+		threadcheck.EnterCall()
 		C.gd_iterator_make(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), unsafe.Pointer(p1), unsafe.Pointer(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Iterators.Next = func(p0 gdextension.Variant, p1 gdextension.CallMutates[gdextension.Iterator], p2 gdextension.CallReturns[gdextension.CallError]) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_iterator_next(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), unsafe.Pointer(p1), unsafe.Pointer(p2)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Iterators.Load = func(p0 gdextension.Variant, p1 gdextension.Iterator, p2 gdextension.CallReturns[gdextension.Variant], p3 gdextension.CallReturns[gdextension.CallError]) {
+		threadcheck.EnterCall()
 		C.gd_iterator_load(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2]), unsafe.Pointer(p2), unsafe.Pointer(p3))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Library.Location = func() (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_library_location())}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Log.Error = func(p0 string, p1 string, p2 string, p3 string, p4 int32, p5 bool) {
+		threadcheck.EnterCall()
 		C.gd_log_error((*C.char)(unsafe.Pointer(unsafe.StringData(p0))), C.int64_t(len(p0)), (*C.char)(unsafe.Pointer(unsafe.StringData(p1))), C.int64_t(len(p1)), (*C.char)(unsafe.Pointer(unsafe.StringData(p2))), C.int64_t(len(p2)), (*C.char)(unsafe.Pointer(unsafe.StringData(p3))), C.int64_t(len(p3)), C.int32_t(p4), C.bool(p5))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Log.Warning = func(p0 string, p1 string, p2 string, p3 string, p4 int32, p5 bool) {
+		threadcheck.EnterCall()
 		C.gd_log_warning((*C.char)(unsafe.Pointer(unsafe.StringData(p0))), C.int64_t(len(p0)), (*C.char)(unsafe.Pointer(unsafe.StringData(p1))), C.int64_t(len(p1)), (*C.char)(unsafe.Pointer(unsafe.StringData(p2))), C.int64_t(len(p2)), (*C.char)(unsafe.Pointer(unsafe.StringData(p3))), C.int64_t(len(p3)), C.int32_t(p4), C.bool(p5))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Malloc = func(p0 int) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_memory_malloc(C.int64_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Sizeof = func(p0 gdextension.StringName) (result int) {
+		threadcheck.EnterCall()
 		result = int(C.gd_memory_sizeof(C.uintptr_t(p0[0])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Resize = func(p0 gdextension.Pointer, p1 int) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_memory_resize(C.uintptr_t(p0), C.int64_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Clear = func(p0 gdextension.Pointer, p1 int) {
+		threadcheck.EnterCall()
 		C.gd_memory_clear(C.uintptr_t(p0), C.int64_t(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Free = func(p0 gdextension.Pointer) {
+		threadcheck.EnterCall()
 		C.gd_memory_free(C.uintptr_t(p0))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Edit.Byte = func(p0 gdextension.Pointer, p1 uint8) {
+		threadcheck.EnterCall()
 		C.gd_memory_edit_byte(C.uintptr_t(p0), C.uint8_t(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Edit.Uint16 = func(p0 gdextension.Pointer, p1 uint16) {
+		threadcheck.EnterCall()
 		C.gd_memory_edit_u16(C.uintptr_t(p0), C.uint16_t(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Edit.Uint32 = func(p0 gdextension.Pointer, p1 uint32) {
+		threadcheck.EnterCall()
 		C.gd_memory_edit_u32(C.uintptr_t(p0), C.uint32_t(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Edit.Uint64 = func(p0 gdextension.Pointer, p1 uint64) {
+		threadcheck.EnterCall()
 		C.gd_memory_edit_u64(C.uintptr_t(p0), C.uint64_t(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Edit.Bits128 = func(p0 gdextension.Pointer, p1 [2]uint64) {
+		threadcheck.EnterCall()
 		C.gd_memory_edit_128(C.uintptr_t(p0), C.uint64_t(p1[0]), C.uint64_t(p1[1]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Edit.Bits256 = func(p0 gdextension.Pointer, p1 [4]uint64) {
+		threadcheck.EnterCall()
 		C.gd_memory_edit_256(C.uintptr_t(p0), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2]), C.uint64_t(p1[3]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Edit.Bits512 = func(p0 gdextension.Pointer, p1 [8]uint64) {
+		threadcheck.EnterCall()
 		C.gd_memory_edit_512(C.uintptr_t(p0), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2]), C.uint64_t(p1[3]), C.uint64_t(p1[4]), C.uint64_t(p1[5]), C.uint64_t(p1[6]), C.uint64_t(p1[7]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Load.Byte = func(p0 gdextension.Pointer) (result uint8) {
+		threadcheck.EnterCall()
 		result = uint8(C.gd_memory_load_byte(C.uintptr_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Load.Uint16 = func(p0 gdextension.Pointer) (result uint16) {
+		threadcheck.EnterCall()
 		result = uint16(C.gd_memory_load_u16(C.uintptr_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Memory.Load.Uint32 = func(p0 gdextension.Pointer) (result uint32) {
+		threadcheck.EnterCall()
 		result = uint32(C.gd_memory_load_u32(C.uintptr_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Make = func(p0 gdextension.StringName) (result gdextension.Object) {
+		threadcheck.EnterCall()
 		result = gdextension.Object(C.gd_object_make(C.uintptr_t(p0[0])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Call = func(p0 gdextension.Object, p1 gdextension.MethodForClass, p2 gdextension.CallReturns[gdextension.Variant], p3 int, p4 gdextension.CallAccepts[gdextension.Variant], p5 gdextension.CallReturns[gdextension.CallError]) {
+		threadcheck.EnterCall()
 		C.gd_object_call(C.uintptr_t(p0), C.uintptr_t(p1), unsafe.Pointer(p2), C.int64_t(p3), unsafe.Pointer(p4), unsafe.Pointer(p5))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Name = func(p0 gdextension.Object) (result gdextension.StringName) {
+		threadcheck.EnterCall()
 		result = gdextension.StringName{gdextension.Pointer(C.gd_object_name(C.uintptr_t(p0)))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Type = func(p0 gdextension.StringName) (result gdextension.ObjectType) {
+		threadcheck.EnterCall()
 		result = gdextension.ObjectType(C.gd_object_type(C.uintptr_t(p0[0])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Cast = func(p0 gdextension.Object, p1 gdextension.ObjectType) (result gdextension.Object) {
+		threadcheck.EnterCall()
 		result = gdextension.Object(C.gd_object_cast(C.uintptr_t(p0), C.uintptr_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Lookup = func(p0 gdextension.ObjectID) (result gdextension.Object) {
+		threadcheck.EnterCall()
 		result = gdextension.Object(C.gd_object_lookup(C.uint64_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Global = func(p0 gdextension.StringName) (result gdextension.Object) {
+		threadcheck.EnterCall()
 		result = gdextension.Object(C.gd_object_global(C.uintptr_t(p0[0])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Extension.Setup = func(p0 gdextension.Object, p1 gdextension.StringName, p2 gdextension.ExtensionInstanceID) {
+		threadcheck.EnterCall()
 		C.gd_object_extension_setup(C.uintptr_t(p0), C.uintptr_t(p1[0]), C.uintptr_t(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Extension.Fetch = func(p0 gdextension.Object) (result gdextension.ExtensionInstanceID) {
+		threadcheck.EnterCall()
 		result = gdextension.ExtensionInstanceID(C.gd_object_extension_fetch(C.uintptr_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Extension.Close = func(p0 gdextension.Object) {
+		threadcheck.EnterCall()
 		C.gd_object_extension_close(C.uintptr_t(p0))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.ID.Get = func(p0 gdextension.Object, p1 gdextension.CallReturns[gdextension.ObjectID]) {
+		threadcheck.EnterCall()
 		C.gd_object_id(C.uintptr_t(p0), unsafe.Pointer(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.ID.InsideVariant = func(p0 gdextension.Variant, p1 gdextension.CallReturns[gdextension.ObjectID]) {
+		threadcheck.EnterCall()
 		C.gd_object_id_inside_variant(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), unsafe.Pointer(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Method.Lookup = func(p0 gdextension.StringName, p1 gdextension.StringName, p2 int64) (result gdextension.MethodForClass) {
+		threadcheck.EnterCall()
 		result = gdextension.MethodForClass(C.gd_object_method_lookup(C.uintptr_t(p0[0]), C.uintptr_t(p1[0]), C.int64_t(p2)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Script.Make = func(p0 gdextension.ExtensionInstanceID) (result gdextension.ScriptInstance) {
+		threadcheck.EnterCall()
 		result = gdextension.ScriptInstance(C.gd_object_script_make(C.uintptr_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Script.Call = func(p0 gdextension.Object, p1 gdextension.StringName, p2 gdextension.CallReturns[gdextension.Variant], p3 int, p4 gdextension.CallAccepts[gdextension.Variant], p5 gdextension.CallReturns[gdextension.CallError]) {
+		threadcheck.EnterCall()
 		C.gd_object_script_call(C.uintptr_t(p0), C.uintptr_t(p1[0]), unsafe.Pointer(p2), C.int64_t(p3), unsafe.Pointer(p4), unsafe.Pointer(p5))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Script.Setup = func(p0 gdextension.Object, p1 gdextension.ScriptInstance) {
+		threadcheck.EnterCall()
 		C.gd_object_script_setup(C.uintptr_t(p0), C.uintptr_t(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Script.Fetch = func(p0 gdextension.Object, p1 gdextension.Object) (result gdextension.ScriptInstance) {
+		threadcheck.EnterCall()
 		result = gdextension.ScriptInstance(C.gd_object_script_fetch(C.uintptr_t(p0), C.uintptr_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Script.DefinesMethod = func(p0 gdextension.Object, p1 gdextension.StringName) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_object_script_defines_method(C.uintptr_t(p0), C.uintptr_t(p1[0])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Script.AddPropertyState = func(p0 gdextension.FunctionID, p1 gdextension.Pointer, p2 gdextension.StringName, p3 gdextension.Variant) {
+		threadcheck.EnterCall()
 		C.gd_object_script_property_state_add(C.uintptr_t(p0), C.uintptr_t(p1), C.uintptr_t(p2[0]), C.uint64_t(p3[0]), C.uint64_t(p3[1]), C.uint64_t(p3[2]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Script.Placeholder.Create = func(p0 gdextension.Object, p1 gdextension.Object, p2 gdextension.Object) (result gdextension.ScriptInstance) {
+		threadcheck.EnterCall()
 		result = gdextension.ScriptInstance(C.gd_object_script_placeholder_create(C.uintptr_t(p0), C.uintptr_t(p1), C.uintptr_t(p2)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Script.Placeholder.Update = func(p0 gdextension.ScriptInstance, p1 gdextension.Array, p2 gdextension.Dictionary) {
+		threadcheck.EnterCall()
 		C.gd_object_script_placeholder_update(C.uintptr_t(p0), C.uintptr_t(p1[0]), C.uintptr_t(p2[0]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Unsafe.Call = func(p0 gdextension.Object, p1 gdextension.MethodForClass, p2 gdextension.CallReturns[interface{}], shape gdextension.Shape, p4 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_object_unsafe_call(C.uintptr_t(p0), C.uintptr_t(p1), unsafe.Pointer(p2), C.uint64_t(shape), unsafe.Pointer(p4))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Objects.Unsafe.Free = func(p0 gdextension.Object) {
+		threadcheck.EnterCall()
 		C.gd_object_unsafe_free(C.uintptr_t(p0))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Bytes.Unsafe = func(p0 gdextension.PackedArray[uint8]) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_packed_byte_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Bytes.Access = func(p0 gdextension.PackedArray[uint8], p1 int) (result uint8) {
+		threadcheck.EnterCall()
 		result = uint8(C.gd_packed_byte_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Colors.Unsafe = func(p0 gdextension.PackedArray[struct {
@@ -657,10 +907,7 @@ func init() {
 		G float32
 		B float32
 		A float32
-	}]) (result gdextension.Pointer) {
-		result = gdextension.Pointer(C.gd_packed_color_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
-		return
-	}
+	}]) (result gdextension.Pointer) { threadcheck.EnterCall(); result = gdextension.Pointer(C.gd_packed_color_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1]))); threadcheck.LeaveCall(); return }
 	gdextension.Host.Packed.Colors.Access = func(p0 gdextension.PackedArray[struct {
 		R float32
 		G float32
@@ -671,75 +918,83 @@ func init() {
 		G float32
 		B float32
 		A float32
-	}]) {
-		C.gd_packed_color_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1), unsafe.Pointer(p2))
-		return
-	}
+	}]) { threadcheck.EnterCall(); C.gd_packed_color_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1), unsafe.Pointer(p2)); threadcheck.LeaveCall(); return }
 	gdextension.Host.Packed.Float32s.Unsafe = func(p0 gdextension.PackedArray[float32]) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_packed_float32_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Float32s.Access = func(p0 gdextension.PackedArray[float32], p1 int) (result float32) {
+		threadcheck.EnterCall()
 		result = float32(C.gd_packed_float32_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Float64s.Unsafe = func(p0 gdextension.PackedArray[float64]) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_packed_float64_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Float64s.Access = func(p0 gdextension.PackedArray[float64], p1 int) (result float64) {
+		threadcheck.EnterCall()
 		result = float64(C.gd_packed_float64_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Int32s.Unsafe = func(p0 gdextension.PackedArray[int32]) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_packed_int32_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Int32s.Access = func(p0 gdextension.PackedArray[int32], p1 int) (result int32) {
+		threadcheck.EnterCall()
 		result = int32(C.gd_packed_int32_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Int64s.Unsafe = func(p0 gdextension.PackedArray[int64]) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_packed_int64_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Int64s.Access = func(p0 gdextension.PackedArray[int64], p1 int, p2 gdextension.CallReturns[int64]) {
+		threadcheck.EnterCall()
 		C.gd_packed_int64_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1), unsafe.Pointer(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Strings.Unsafe = func(p0 gdextension.PackedArray[gdextension.String]) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_packed_string_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Strings.Access = func(p0 gdextension.PackedArray[gdextension.String], p1 int) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_packed_string_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1)))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Packed.Vector2s.Unsafe = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
-	}]) (result gdextension.Pointer) {
-		result = gdextension.Pointer(C.gd_packed_vector2_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
-		return
-	}
+	}]) (result gdextension.Pointer) { threadcheck.EnterCall(); result = gdextension.Pointer(C.gd_packed_vector2_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1]))); threadcheck.LeaveCall(); return }
 	gdextension.Host.Packed.Vector2s.Access = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
 	}], p1 int, p2 gdextension.CallReturns[struct {
 		X float32
 		Y float32
-	}]) {
-		C.gd_packed_vector2_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1), unsafe.Pointer(p2))
-		return
-	}
+	}]) { threadcheck.EnterCall(); C.gd_packed_vector2_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1), unsafe.Pointer(p2)); threadcheck.LeaveCall(); return }
 	gdextension.Host.Packed.Vector3s.Unsafe = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
 		Z float32
-	}]) (result gdextension.Pointer) {
-		result = gdextension.Pointer(C.gd_packed_vector3_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
-		return
-	}
+	}]) (result gdextension.Pointer) { threadcheck.EnterCall(); result = gdextension.Pointer(C.gd_packed_vector3_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1]))); threadcheck.LeaveCall(); return }
 	gdextension.Host.Packed.Vector3s.Access = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
@@ -748,19 +1003,13 @@ func init() {
 		X float32
 		Y float32
 		Z float32
-	}]) {
-		C.gd_packed_vector3_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1), unsafe.Pointer(p2))
-		return
-	}
+	}]) { threadcheck.EnterCall(); C.gd_packed_vector3_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1), unsafe.Pointer(p2)); threadcheck.LeaveCall(); return }
 	gdextension.Host.Packed.Vector4s.Unsafe = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
 		Z float32
 		W float32
-	}]) (result gdextension.Pointer) {
-		result = gdextension.Pointer(C.gd_packed_vector4_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1])))
-		return
-	}
+	}]) (result gdextension.Pointer) { threadcheck.EnterCall(); result = gdextension.Pointer(C.gd_packed_vector4_array_unsafe(C.uint64_t(p0[0]), C.uint64_t(p0[1]))); threadcheck.LeaveCall(); return }
 	gdextension.Host.Packed.Vector4s.Access = func(p0 gdextension.PackedArray[struct {
 		X float32
 		Y float32
@@ -771,244 +1020,359 @@ func init() {
 		Y float32
 		Z float32
 		W float32
-	}]) {
-		C.gd_packed_vector4_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1), unsafe.Pointer(p2))
-		return
-	}
+	}]) { threadcheck.EnterCall(); C.gd_packed_vector4_array_access(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.int64_t(p1), unsafe.Pointer(p2)); threadcheck.LeaveCall(); return }
 	gdextension.Host.RefCounted.Get = func(p0 gdextension.RefCounted) (result gdextension.Object) {
+		threadcheck.EnterCall()
 		result = gdextension.Object(C.gd_ref_get_object(C.uintptr_t(p0)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.RefCounted.Set = func(p0 gdextension.RefCounted, p1 gdextension.Object) {
+		threadcheck.EnterCall()
 		C.gd_ref_set_object(C.uintptr_t(p0), C.uintptr_t(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Access = func(p0 gdextension.String, p1 int) (result int32) {
+		threadcheck.EnterCall()
 		result = int32(C.gd_string_access(C.uintptr_t(p0[0]), C.int64_t(p1)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Resize = func(p0 gdextension.String, p1 int) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_string_resize(C.uintptr_t(p0[0]), C.int64_t(p1)))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Unsafe = func(p0 gdextension.String) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_string_unsafe(C.uintptr_t(p0[0])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Append.String = func(p0 gdextension.String, p1 gdextension.String) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_string_append(C.uintptr_t(p0[0]), C.uintptr_t(p1[0])))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Append.Rune = func(p0 gdextension.String, p1 int32) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_string_append_rune(C.uintptr_t(p0[0]), C.int32_t(p1)))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Decode.Latin1 = func(p0 string) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_string_decode_latin1((*C.char)(unsafe.Pointer(unsafe.StringData(p0))), C.int64_t(len(p0))))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Decode.UTF8 = func(p0 string) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_string_decode_utf8((*C.char)(unsafe.Pointer(unsafe.StringData(p0))), C.int64_t(len(p0))))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Decode.UTF16 = func(p0 string, p1 bool) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_string_decode_utf16((*C.char)(unsafe.Pointer(unsafe.StringData(p0))), C.int64_t(len(p0)), C.bool(p1)))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Decode.UTF32 = func(p0 string) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_string_decode_utf32((*C.char)(unsafe.Pointer(unsafe.StringData(p0))), C.int64_t(len(p0))))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Decode.Wide = func(p0 string) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_string_decode_wide((*C.char)(unsafe.Pointer(unsafe.StringData(p0))), C.int64_t(len(p0))))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Encode.Latin1 = func(p0 gdextension.String, p1 []byte) (result int) {
+		threadcheck.EnterCall()
 		result = int(C.gd_string_encode_latin1(C.uintptr_t(p0[0]), (*C.char)(unsafe.Pointer(unsafe.SliceData(p1))), C.int64_t(len(p1))))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Encode.UTF8 = func(p0 gdextension.String, p1 []byte) (result int) {
+		threadcheck.EnterCall()
 		result = int(C.gd_string_encode_utf8(C.uintptr_t(p0[0]), (*C.char)(unsafe.Pointer(unsafe.SliceData(p1))), C.int64_t(len(p1))))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Encode.UTF16 = func(p0 gdextension.String, p1 []byte) (result int) {
+		threadcheck.EnterCall()
 		result = int(C.gd_string_encode_utf16(C.uintptr_t(p0[0]), (*C.char)(unsafe.Pointer(unsafe.SliceData(p1))), C.int64_t(len(p1))))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Encode.UTF32 = func(p0 gdextension.String, p1 []byte) (result int) {
+		threadcheck.EnterCall()
 		result = int(C.gd_string_encode_utf32(C.uintptr_t(p0[0]), (*C.char)(unsafe.Pointer(unsafe.SliceData(p1))), C.int64_t(len(p1))))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Encode.Wide = func(p0 gdextension.String, p1 []byte) (result int) {
+		threadcheck.EnterCall()
 		result = int(C.gd_string_encode_wide(C.uintptr_t(p0[0]), (*C.char)(unsafe.Pointer(unsafe.SliceData(p1))), C.int64_t(len(p1))))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Intern.Latin1 = func(p0 string) (result gdextension.StringName) {
+		threadcheck.EnterCall()
 		result = gdextension.StringName{gdextension.Pointer(C.gd_string_intern_latin1((*C.char)(unsafe.Pointer(unsafe.StringData(p0))), C.int64_t(len(p0))))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Strings.Intern.UTF8 = func(p0 string) (result gdextension.StringName) {
+		threadcheck.EnterCall()
 		result = gdextension.StringName{gdextension.Pointer(C.gd_string_intern_utf8((*C.char)(unsafe.Pointer(unsafe.StringData(p0))), C.int64_t(len(p0))))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Threads.Main = func() (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_thread_is_main())
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Zero = func(p0 gdextension.CallReturns[gdextension.Variant]) {
+		threadcheck.EnterCall()
 		C.gd_variant_zero(unsafe.Pointer(p0))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Copy = func(p0 gdextension.Variant, p1 gdextension.CallReturns[gdextension.Variant]) {
+		threadcheck.EnterCall()
 		C.gd_variant_copy(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), unsafe.Pointer(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Call = func(p0 gdextension.Variant, p1 gdextension.StringName, p2 gdextension.CallReturns[gdextension.Variant], p3 int, p4 gdextension.CallAccepts[gdextension.Variant], p5 gdextension.CallReturns[gdextension.CallError]) {
+		threadcheck.EnterCall()
 		C.gd_variant_call(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.uintptr_t(p1[0]), unsafe.Pointer(p2), C.int64_t(p3), unsafe.Pointer(p4), unsafe.Pointer(p5))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Eval = func(p0 gdextension.VariantOperator, p1 gdextension.Variant, p2 gdextension.Variant, p3 gdextension.CallReturns[gdextension.Variant]) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_eval(C.uint32_t(p0), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2]), C.uint64_t(p2[0]), C.uint64_t(p2[1]), C.uint64_t(p2[2]), unsafe.Pointer(p3)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Hash = func(p0 gdextension.Variant, p1 gdextension.CallReturns[int64]) {
+		threadcheck.EnterCall()
 		C.gd_variant_hash(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), unsafe.Pointer(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Bool = func(p0 gdextension.Variant) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_bool(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Text = func(p0 gdextension.Variant) (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_variant_text(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2])))}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Type = func(p0 gdextension.Variant) (result gdextension.VariantType) {
+		threadcheck.EnterCall()
 		result = gdextension.VariantType(C.gd_variant_type(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Deep.Copy = func(p0 gdextension.Variant, p1 gdextension.CallReturns[gdextension.Variant]) {
+		threadcheck.EnterCall()
 		C.gd_variant_deep_copy(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), unsafe.Pointer(p1))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Deep.Hash = func(p0 gdextension.Variant, p1 int64, p2 gdextension.CallReturns[int64]) {
+		threadcheck.EnterCall()
 		C.gd_variant_deep_hash(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.int64_t(p1), unsafe.Pointer(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Get.Index = func(p0 gdextension.Variant, p1 gdextension.Variant, p2 gdextension.CallReturns[gdextension.Variant]) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_get_index(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2]), unsafe.Pointer(p2)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Get.Array = func(p0 gdextension.Variant, p1 int, p2 gdextension.CallReturns[gdextension.Variant], p3 gdextension.CallReturns[gdextension.CallError]) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_get_array(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.int64_t(p1), unsafe.Pointer(p2), unsafe.Pointer(p3)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Get.Field = func(p0 gdextension.Variant, p1 gdextension.StringName, p2 gdextension.CallReturns[gdextension.Variant]) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_get_field(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.uintptr_t(p1[0]), unsafe.Pointer(p2)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Has.Index = func(p0 gdextension.Variant, p1 gdextension.Variant) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_has_index(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Has.Method = func(p0 gdextension.Variant, p1 gdextension.StringName) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_has_method(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.uintptr_t(p1[0])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Set.Index = func(p0 gdextension.Variant, p1 gdextension.Variant, p2 gdextension.Variant) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_set_index(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2]), C.uint64_t(p2[0]), C.uint64_t(p2[1]), C.uint64_t(p2[2])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Set.Array = func(p0 gdextension.Variant, p1 int, p2 gdextension.Variant, p3 gdextension.CallReturns[gdextension.CallError]) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_set_array(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.int64_t(p1), C.uint64_t(p2[0]), C.uint64_t(p2[1]), C.uint64_t(p2[2]), unsafe.Pointer(p3)))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Set.Field = func(p0 gdextension.Variant, p1 gdextension.StringName, p2 gdextension.Variant) (result bool) {
+		threadcheck.EnterCall()
 		result = bool(C.gd_variant_set_field(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.uintptr_t(p1[0]), C.uint64_t(p2[0]), C.uint64_t(p2[1]), C.uint64_t(p2[2])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.Call = func(p0 gdextension.FunctionID, p1 gdextension.CallReturns[interface{}], shape gdextension.Shape, p3 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_call(C.uintptr_t(p0), unsafe.Pointer(p1), C.uint64_t(shape), unsafe.Pointer(p3))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.Eval = func(p0 gdextension.FunctionID, p1 gdextension.CallReturns[interface{}], shape gdextension.Shape, p3 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_eval(C.uintptr_t(p0), unsafe.Pointer(p1), C.uint64_t(shape), unsafe.Pointer(p3))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.Free = func(p0 gdextension.Variant) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_free(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.MakeNative = func(p0 gdextension.VariantType, p1 gdextension.Variant, shape gdextension.Shape, p3 gdextension.CallReturns[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_make_native(C.uint32_t(p0), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2]), C.uint64_t(shape), unsafe.Pointer(p3))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.FromNative = func(p0 gdextension.VariantType, p1 gdextension.CallReturns[gdextension.Variant], shape gdextension.Shape, p3 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_from_native(C.uint32_t(p0), unsafe.Pointer(p1), C.uint64_t(shape), unsafe.Pointer(p3))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.InternalPointer = func(p0 gdextension.VariantType, p1 gdextension.Variant) (result gdextension.Pointer) {
+		threadcheck.EnterCall()
 		result = gdextension.Pointer(C.gd_variant_unsafe_internal_pointer(C.uint32_t(p0), C.uint64_t(p1[0]), C.uint64_t(p1[1]), C.uint64_t(p1[2])))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.Get.Field = func(p0 gdextension.FunctionID, p1 gdextension.CallReturns[interface{}], shape gdextension.Shape, p3 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_get_field(C.uintptr_t(p0), unsafe.Pointer(p1), C.uint64_t(shape), unsafe.Pointer(p3))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.Get.Array = func(p0 gdextension.VariantType, p1 int, p2 gdextension.CallReturns[interface{}], shape gdextension.Shape, p4 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_get_array(C.uint32_t(p0), C.int64_t(p1), unsafe.Pointer(p2), C.uint64_t(shape), unsafe.Pointer(p4))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.Get.Index = func(p0 gdextension.VariantType, p1 gdextension.CallReturns[interface{}], shape gdextension.Shape, p3 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_get_index(C.uint32_t(p0), unsafe.Pointer(p1), C.uint64_t(shape), unsafe.Pointer(p3))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.Set.Field = func(p0 gdextension.FunctionID, shape gdextension.Shape, p2 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_set_field(C.uintptr_t(p0), C.uint64_t(shape), unsafe.Pointer(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.Set.Array = func(p0 gdextension.VariantType, p1 int, shape gdextension.Shape, p3 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_set_array(C.uint32_t(p0), C.int64_t(p1), C.uint64_t(shape), unsafe.Pointer(p3))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Variants.Unsafe.Set.Index = func(p0 gdextension.VariantType, shape gdextension.Shape, p2 gdextension.CallAccepts[interface{}]) {
+		threadcheck.EnterCall()
 		C.gd_variant_unsafe_set_index(C.uint32_t(p0), C.uint64_t(shape), unsafe.Pointer(p2))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Version.Major = func() (result uint32) {
+		threadcheck.EnterCall()
 		result = uint32(C.gd_version_major())
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Version.Minor = func() (result uint32) {
+		threadcheck.EnterCall()
 		result = uint32(C.gd_version_minor())
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Version.Patch = func() (result uint32) {
+		threadcheck.EnterCall()
 		result = uint32(C.gd_version_patch())
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Version.Hex = func() (result uint32) {
+		threadcheck.EnterCall()
 		result = uint32(C.gd_version_hex())
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Version.Status = func() (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_version_status())}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Version.Build = func() (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_version_build())}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Version.Hash = func() (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_version_hash())}
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Version.Timestamp = func(p0 gdextension.CallReturns[uint64]) {
+		threadcheck.EnterCall()
 		C.gd_version_timestamp(unsafe.Pointer(p0))
+		threadcheck.LeaveCall()
 		return
 	}
 	gdextension.Host.Version.String = func() (result gdextension.String) {
+		threadcheck.EnterCall()
 		result = gdextension.String{gdextension.Pointer(C.gd_version_string())}
+		threadcheck.LeaveCall()
 		return
 	}
 }

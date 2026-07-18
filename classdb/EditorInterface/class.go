@@ -1044,7 +1044,7 @@ func (self class) MakeMeshPreviews(meshes Array.Contains[[1]gdclass.Mesh], previ
 		meshes       gdextension.Array
 		preview_size int64
 	}{pointers.Get(gd.InternalArray(meshes)), preview_size})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Texture2D]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Texture2D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetPluginEnabled(plugin String.Readable, enabled bool) { //gd:EditorInterface.set_plugin_enabled
@@ -1125,7 +1125,7 @@ func (self class) GetEditorScale() float64 { //gd:EditorInterface.get_editor_sca
 func (self class) GetEditorLanguage() String.Readable { //gd:EditorInterface.get_editor_language
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_editor_language, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsNode3dSnapEnabled() bool { //gd:EditorInterface.is_node_3d_snap_enabled
@@ -1184,7 +1184,7 @@ func (self class) PopupDialogCenteredClamped(dialog [1]gdclass.Window, minsize V
 func (self class) GetCurrentFeatureProfile() String.Readable { //gd:EditorInterface.get_current_feature_profile
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_current_feature_profile, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetCurrentFeatureProfile(profile_name String.Readable) { //gd:EditorInterface.set_current_feature_profile
@@ -1246,19 +1246,19 @@ func (self class) SelectFile(file String.Readable) { //gd:EditorInterface.select
 func (self class) GetSelectedPaths() Packed.Strings { //gd:EditorInterface.get_selected_paths
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_selected_paths, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetCurrentPath() String.Readable { //gd:EditorInterface.get_current_path
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_current_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCurrentDirectory() String.Readable { //gd:EditorInterface.get_current_directory
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_current_directory, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetInspector() [1]gdclass.EditorInspector { //gd:EditorInterface.get_inspector
@@ -1319,19 +1319,19 @@ func (self class) IsObjectEdited(obj [1]gdreference.Object) bool { //gd:EditorIn
 func (self class) GetOpenScenes() Packed.Strings { //gd:EditorInterface.get_open_scenes
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_open_scenes, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetUnsavedScenes() Packed.Strings { //gd:EditorInterface.get_unsaved_scenes
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_unsaved_scenes, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetOpenSceneRoots() Array.Contains[[1]gdclass.Node] { //gd:EditorInterface.get_open_scene_roots
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.get_open_scene_roots, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Node]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetEditedSceneRoot() [1]gdclass.Node { //gd:EditorInterface.get_edited_scene_root
@@ -1396,7 +1396,7 @@ func (self class) IsPlayingScene() bool { //gd:EditorInterface.is_playing_scene
 func (self class) GetPlayingScene() String.Readable { //gd:EditorInterface.get_playing_scene
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_playing_scene, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetMovieMakerEnabled(enabled bool) { //gd:EditorInterface.set_movie_maker_enabled

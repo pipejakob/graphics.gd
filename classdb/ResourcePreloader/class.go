@@ -236,7 +236,7 @@ func (self class) GetResource(name String.Name) [1]gdclass.Resource { //gd:Resou
 }
 func (self class) GetResourceList() Packed.Strings { //gd:ResourcePreloader.get_resource_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_resource_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (o class) AsResourcePreloader() Advanced         { return Advanced(o) }

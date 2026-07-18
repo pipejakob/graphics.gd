@@ -471,7 +471,7 @@ func (self class) SetItemPreview(id int64, texture [1]gdclass.Texture2D) { //gd:
 }
 func (self class) GetItemName(id int64) String.Readable { //gd:MeshLibrary.get_item_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemMesh(id int64) [1]gdclass.Mesh { //gd:MeshLibrary.get_item_mesh
@@ -506,7 +506,7 @@ func (self class) GetItemNavigationLayers(id int64) int64 { //gd:MeshLibrary.get
 }
 func (self class) GetItemShapes(id int64) Array.Any { //gd:MeshLibrary.get_item_shapes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_item_shapes, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetItemPreview(id int64) [1]gdclass.Texture2D { //gd:MeshLibrary.get_item_preview
@@ -527,7 +527,7 @@ func (self class) Clear() { //gd:MeshLibrary.clear
 }
 func (self class) GetItemList() Packed.Array[int32] { //gd:MeshLibrary.get_item_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_item_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetItemCount() int64 { //gd:MeshLibrary.get_item_count

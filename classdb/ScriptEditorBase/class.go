@@ -206,7 +206,7 @@ func (self Instance) OnNameChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) NameChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`name_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`name_changed`))))
 }
 
 /*
@@ -222,7 +222,7 @@ func (self Instance) OnEditedScriptChanged(cb func(), flags ...Signal.Flags) Ins
 }
 
 func (self class) EditedScriptChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`edited_script_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`edited_script_changed`))))
 }
 
 /*
@@ -238,7 +238,7 @@ func (self Instance) OnSearchInFilesRequested(cb func(text string), flags ...Sig
 }
 
 func (self class) SearchInFilesRequested() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`search_in_files_requested`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`search_in_files_requested`))))
 }
 
 /*
@@ -254,7 +254,7 @@ func (self Instance) OnRequestSaveHistory(cb func(), flags ...Signal.Flags) Inst
 }
 
 func (self class) RequestSaveHistory() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`request_save_history`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`request_save_history`))))
 }
 
 /*
@@ -270,7 +270,7 @@ func (self Instance) OnRequestHelp(cb func(topic string), flags ...Signal.Flags)
 }
 
 func (self class) RequestHelp() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`request_help`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`request_help`))))
 }
 
 /*
@@ -288,7 +288,7 @@ func (self Instance) OnRequestOpenScriptAtLine(cb func(script Object.Instance, l
 }
 
 func (self class) RequestOpenScriptAtLine() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`request_open_script_at_line`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`request_open_script_at_line`))))
 }
 
 /*
@@ -304,7 +304,7 @@ func (self Instance) OnGoToHelp(cb func(what string), flags ...Signal.Flags) Ins
 }
 
 func (self class) GoToHelp() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`go_to_help`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`go_to_help`))))
 }
 
 /*
@@ -320,7 +320,7 @@ func (self Instance) OnRequestSavePreviousState(cb func(state map[any]any), flag
 }
 
 func (self class) RequestSavePreviousState() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`request_save_previous_state`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`request_save_previous_state`))))
 }
 
 /*
@@ -336,7 +336,7 @@ func (self Instance) OnReplaceInFilesRequested(cb func(text string), flags ...Si
 }
 
 func (self class) ReplaceInFilesRequested() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`replace_in_files_requested`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`replace_in_files_requested`))))
 }
 
 /*
@@ -354,7 +354,7 @@ func (self Instance) OnGoToMethod(cb func(script Object.Instance, method string)
 }
 
 func (self class) GoToMethod() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`go_to_method`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`go_to_method`))))
 }
 
 func (o class) AsScriptEditorBase() Advanced                    { return Advanced(o) }

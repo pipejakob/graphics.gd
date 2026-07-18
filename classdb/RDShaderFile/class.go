@@ -246,7 +246,7 @@ func (self class) GetSpirv(version String.Name) [1]gdclass.RDShaderSPIRV { //gd:
 }
 func (self class) GetVersionList() Array.Contains[String.Name] { //gd:RDShaderFile.get_version_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_version_list, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetBaseError(error String.Readable) { //gd:RDShaderFile.set_base_error
@@ -254,7 +254,7 @@ func (self class) SetBaseError(error String.Readable) { //gd:RDShaderFile.set_ba
 }
 func (self class) GetBaseError() String.Readable { //gd:RDShaderFile.get_base_error
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_base_error, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsRDShaderFile() Advanced              { return Advanced(o) }

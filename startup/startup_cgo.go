@@ -22,6 +22,7 @@ import (
 	internal "graphics.gd/internal"
 	"graphics.gd/internal/gdextension"
 	"graphics.gd/internal/pointers"
+	"graphics.gd/internal/ring"
 	"graphics.gd/internal/threadcheck"
 	"graphics.gd/variant/Callable"
 	"graphics.gd/variant/Float"
@@ -52,6 +53,7 @@ func init() {
 				initJumponly()
 			}
 			if level == 2 && !initDone {
+				ring.Threads.Open()
 				for _, fn := range internal.StartupFunctions {
 					fn()
 				}
@@ -71,6 +73,10 @@ func init() {
 		},
 		Exit: func(level gdextension.InitializationLevel) {
 			if !exitDone && level == 2 {
+				// Run any still-buffered cross-thread calls while the engine
+				// is alive, then poison the ring so goroutines parked on it
+				// wake up instead of sleeping forever.
+				ring.Threads.Close()
 				if theMainFunctionIsWaitingForTheEngineToShutDown {
 					resume_main()
 				}
@@ -91,6 +97,12 @@ func main()
 
 //export go_main
 func go_main() {
+	// libgodot calls go_main on the engine's main thread, which is not
+	// necessarily the thread that initialised the Go runtime. Adopt it now:
+	// engine calls made before the first frame (which re-runs Init) would
+	// otherwise be routed through the cross-thread dispatch ring and block
+	// waiting for this very thread to drain them.
+	threadcheck.Init()
 	if testing.Testing() {
 		Scene()
 	} else {
@@ -189,10 +201,15 @@ func (loop goMain) PhysicsProcess(delta Float.X) bool {
 	return false
 }
 
+// Process intentionally does NOT run pointers.Cycle: the only per-frame
+// pointer collection happens in EveryFrame (startup/garbage_collector.go),
+// immediately after the cross-thread ring drain. A second cycle here would
+// mean two cycles per frame with no drain in between, so a value used in a
+// call buffered by a goroutine could expire AND be freed before the drain
+// that executes the call.
 func (loop goMain) Process(delta Float.X) bool {
 	defer Callable.Cycle()
 	defer keep_reachable_instances_alive()
-	defer pointers.Cycle()
 	dt = delta
 	close, _ := resume_main()
 	return close

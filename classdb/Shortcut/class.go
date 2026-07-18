@@ -260,7 +260,7 @@ func (self class) SetEvents(events Array.Any) { //gd:Shortcut.set_events
 }
 func (self class) GetEvents() Array.Any { //gd:Shortcut.get_events
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_events, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) HasValidEvent() bool { //gd:Shortcut.has_valid_event
@@ -275,7 +275,7 @@ func (self class) MatchesEvent(event [1]gdclass.InputEvent) bool { //gd:Shortcut
 }
 func (self class) GetAsText() String.Readable { //gd:Shortcut.get_as_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_as_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsShortcut() Advanced                  { return Advanced(o) }

@@ -645,12 +645,12 @@ func (self class) SetEllipsisChar(char String.Readable) { //gd:TextLine.set_elli
 }
 func (self class) GetEllipsisChar() String.Readable { //gd:TextLine.get_ellipsis_char
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_ellipsis_char, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetObjects() Array.Any { //gd:TextLine.get_objects
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_objects, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetObjectRect(key variant.Any) Rect2.PositionSize { //gd:TextLine.get_object_rect

@@ -274,7 +274,7 @@ func (obj Instance) Signal(name string) Signal.Any {
 	if signal == (gd.Signal{}) {
 		return Signal.Nil
 	}
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(signal))
+	return Signal.Via(gd.WrapSignal(signal))
 }
 
 // HasMethod returns true if the object has a method with the given name.

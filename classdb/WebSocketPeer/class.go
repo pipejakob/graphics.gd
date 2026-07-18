@@ -575,7 +575,7 @@ func (self class) Close(code int64, reason String.Readable) { //gd:WebSocketPeer
 }
 func (self class) GetConnectedHost() String.Readable { //gd:WebSocketPeer.get_connected_host
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_connected_host, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetConnectedPort() int64 { //gd:WebSocketPeer.get_connected_port
@@ -585,12 +585,12 @@ func (self class) GetConnectedPort() int64 { //gd:WebSocketPeer.get_connected_po
 }
 func (self class) GetSelectedProtocol() String.Readable { //gd:WebSocketPeer.get_selected_protocol
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_selected_protocol, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetRequestedUrl() String.Readable { //gd:WebSocketPeer.get_requested_url
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_requested_url, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetNoDelay(enabled bool) { //gd:WebSocketPeer.set_no_delay
@@ -613,12 +613,12 @@ func (self class) GetCloseCode() int64 { //gd:WebSocketPeer.get_close_code
 }
 func (self class) GetCloseReason() String.Readable { //gd:WebSocketPeer.get_close_reason
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_close_reason, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSupportedProtocols() Packed.Strings { //gd:WebSocketPeer.get_supported_protocols
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_supported_protocols, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetSupportedProtocols(protocols Packed.Strings) { //gd:WebSocketPeer.set_supported_protocols
@@ -628,7 +628,7 @@ func (self class) SetSupportedProtocols(protocols Packed.Strings) { //gd:WebSock
 }
 func (self class) GetHandshakeHeaders() Packed.Strings { //gd:WebSocketPeer.get_handshake_headers
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_handshake_headers, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetHandshakeHeaders(protocols Packed.Strings) { //gd:WebSocketPeer.set_handshake_headers

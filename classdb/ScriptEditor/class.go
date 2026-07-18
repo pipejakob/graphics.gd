@@ -351,12 +351,12 @@ func (self class) GetCurrentEditor() [1]gdclass.ScriptEditorBase { //gd:ScriptEd
 }
 func (self class) GetOpenScriptEditors() Array.Contains[[1]gdclass.ScriptEditorBase] { //gd:ScriptEditor.get_open_script_editors
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_open_script_editors, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.ScriptEditorBase]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.ScriptEditorBase](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBreakpoints() Packed.Strings { //gd:ScriptEditor.get_breakpoints
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_breakpoints, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) RegisterSyntaxHighlighter(syntax_highlighter [1]gdclass.EditorSyntaxHighlighter) { //gd:ScriptEditor.register_syntax_highlighter
@@ -375,7 +375,7 @@ func (self class) GetCurrentScript() [1]gdclass.Script { //gd:ScriptEditor.get_c
 }
 func (self class) GetOpenScripts() Array.Contains[[1]gdclass.Script] { //gd:ScriptEditor.get_open_scripts
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_open_scripts, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Script]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Script](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) OpenScriptCreateDialog(base_name String.Readable, base_path String.Readable) { //gd:ScriptEditor.open_script_create_dialog
@@ -398,7 +398,7 @@ func (self class) ClearDocsFromScript(script [1]gdclass.Script) { //gd:ScriptEdi
 }
 func (self class) GetUnsavedFiles() Packed.Strings { //gd:ScriptEditor.get_unsaved_files
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_unsaved_files, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SaveAllScripts() { //gd:ScriptEditor.save_all_scripts
@@ -425,7 +425,7 @@ func (self Instance) OnEditorScriptChanged(cb func(script Script.Instance), flag
 }
 
 func (self class) EditorScriptChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`editor_script_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`editor_script_changed`))))
 }
 
 /*
@@ -443,7 +443,7 @@ func (self Instance) OnScriptClose(cb func(script Script.Instance), flags ...Sig
 }
 
 func (self class) ScriptClose() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`script_close`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`script_close`))))
 }
 
 func (o class) AsScriptEditor() Advanced         { return Advanced(o) }

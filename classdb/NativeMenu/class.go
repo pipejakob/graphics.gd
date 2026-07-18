@@ -1141,13 +1141,13 @@ func (self class) GetSystemMenu(menu_id SystemMenus) RID.Any { //gd:NativeMenu.g
 func (self class) GetSystemMenuName(menu_id SystemMenus) String.Readable { //gd:NativeMenu.get_system_menu_name
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_system_menu_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ menu_id SystemMenus }{menu_id})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSystemMenuText(menu_id SystemMenus) String.Readable { //gd:NativeMenu.get_system_menu_text
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_system_menu_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ menu_id SystemMenus }{menu_id})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetSystemMenuText(menu_id SystemMenus, name String.Readable) { //gd:NativeMenu.set_system_menu_text
@@ -1203,7 +1203,7 @@ func (self class) SetPopupOpenCallback(rid RID.Any, callback Callable.Function) 
 func (self class) GetPopupOpenCallback(rid RID.Any) Callable.Function { //gd:NativeMenu.get_popup_open_callback
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Callable](gdreference.GetObject(self.AsObject()[0]), methods.get_popup_open_callback, gdextension.SizeCallable|(gdextension.SizeRID<<4), &struct{ rid RID.Any }{rid})
-	var ret = Callable.Through(gd.CallableProxy{}, pointers.Pack(pointers.New[gd.Callable](r_ret)))
+	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
 func (self class) SetPopupCloseCallback(rid RID.Any, callback Callable.Function) { //gd:NativeMenu.set_popup_close_callback
@@ -1216,7 +1216,7 @@ func (self class) SetPopupCloseCallback(rid RID.Any, callback Callable.Function)
 func (self class) GetPopupCloseCallback(rid RID.Any) Callable.Function { //gd:NativeMenu.get_popup_close_callback
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Callable](gdreference.GetObject(self.AsObject()[0]), methods.get_popup_close_callback, gdextension.SizeCallable|(gdextension.SizeRID<<4), &struct{ rid RID.Any }{rid})
-	var ret = Callable.Through(gd.CallableProxy{}, pointers.Pack(pointers.New[gd.Callable](r_ret)))
+	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
 func (self class) SetMinimumWidth(rid RID.Any, width float64) { //gd:NativeMenu.set_minimum_width
@@ -1422,7 +1422,7 @@ func (self class) GetItemCallback(rid RID.Any, idx int64) Callable.Function { //
 		rid RID.Any
 		idx int64
 	}{rid, idx})
-	var ret = Callable.Through(gd.CallableProxy{}, pointers.Pack(pointers.New[gd.Callable](r_ret)))
+	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
 func (self class) GetItemKeyCallback(rid RID.Any, idx int64) Callable.Function { //gd:NativeMenu.get_item_key_callback
@@ -1431,7 +1431,7 @@ func (self class) GetItemKeyCallback(rid RID.Any, idx int64) Callable.Function {
 		rid RID.Any
 		idx int64
 	}{rid, idx})
-	var ret = Callable.Through(gd.CallableProxy{}, pointers.Pack(pointers.New[gd.Callable](r_ret)))
+	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
 func (self class) GetItemTag(rid RID.Any, idx int64) variant.Any { //gd:NativeMenu.get_item_tag
@@ -1440,7 +1440,7 @@ func (self class) GetItemTag(rid RID.Any, idx int64) variant.Any { //gd:NativeMe
 		rid RID.Any
 		idx int64
 	}{rid, idx})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetItemText(rid RID.Any, idx int64) String.Readable { //gd:NativeMenu.get_item_text
@@ -1449,7 +1449,7 @@ func (self class) GetItemText(rid RID.Any, idx int64) String.Readable { //gd:Nat
 		rid RID.Any
 		idx int64
 	}{rid, idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemSubmenu(rid RID.Any, idx int64) RID.Any { //gd:NativeMenu.get_item_submenu
@@ -1494,7 +1494,7 @@ func (self class) GetItemTooltip(rid RID.Any, idx int64) String.Readable { //gd:
 		rid RID.Any
 		idx int64
 	}{rid, idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemState(rid RID.Any, idx int64) int64 { //gd:NativeMenu.get_item_state

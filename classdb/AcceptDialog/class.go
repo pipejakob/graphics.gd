@@ -405,7 +405,7 @@ func (self class) SetText(text String.Readable) { //gd:AcceptDialog.set_text
 }
 func (self class) GetText() String.Readable { //gd:AcceptDialog.get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetAutowrap(autowrap bool) { //gd:AcceptDialog.set_autowrap
@@ -421,7 +421,7 @@ func (self class) SetOkButtonText(text String.Readable) { //gd:AcceptDialog.set_
 }
 func (self class) GetOkButtonText() String.Readable { //gd:AcceptDialog.get_ok_button_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_ok_button_text, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 
@@ -438,7 +438,7 @@ func (self Instance) OnConfirmed(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Confirmed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`confirmed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`confirmed`))))
 }
 
 /*
@@ -456,7 +456,7 @@ func (self Instance) OnCanceled(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Canceled() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`canceled`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`canceled`))))
 }
 
 /*
@@ -474,7 +474,7 @@ func (self Instance) OnCustomAction(cb func(action string), flags ...Signal.Flag
 }
 
 func (self class) CustomAction() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`custom_action`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`custom_action`))))
 }
 
 func (o class) AsAcceptDialog() Advanced              { return Advanced(o) }

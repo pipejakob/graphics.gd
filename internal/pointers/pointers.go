@@ -40,6 +40,7 @@ package pointers
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"runtime"
 	"sync"
@@ -86,9 +87,14 @@ const (
 
 var allocs atomic.Int64
 
-// matches ignores the most significant 2 bits.
+// matches ignores the most significant 2 bits (pinned and active), the
+// closed bit participates on both sides: a handle never carries it, so a
+// closed table entry mismatches every handle, while [Cycle] passes closed
+// revisions to free functions so that their [End] matches the condemned
+// entry.
 func (r revision) matches(other revision) bool {
-	return r&0b0011111111111111111111111111111111111111111111111111111111111111 == other&0b001111111111111111111111111111111111111111111111111111111111111
+	const mask = 1<<62 - 1
+	return r&mask == other&mask
 }
 
 // isPinned returns true if the pointer is pinned.
@@ -136,13 +142,27 @@ var writes [shapesMax]atomic.Uint64
 
 var last_allocs int64
 
+var debugCycle = os.Getenv("DEBUG_CYCLE") != ""
+
+var cycleCalls int
+
+// cycle_pending records whether the previous [Cycle] scan left work behind
+// (an entry it expired but has not freed yet, or an entry whose condemn lost
+// a race against a rescue). Without it, a cycle with no fresh allocations
+// would skip the scan and expired entries would never reach the free step.
+var cycle_pending bool
+
 // Cycle triggers an deadline garbage collection cycle, to clean up temporary
 // objects, only pointers allocated in the current or last cycle will
 // be preserved.
 func Cycle() {
 	mallocs := allocs.Load()
-	if mallocs <= last_allocs {
+	if mallocs <= last_allocs && !cycle_pending {
 		return
+	}
+	cycle_pending = false
+	if debugCycle {
+		fmt.Printf("pointers.Cycle: scanning (mallocs=%d last=%d)\n", mallocs, last_allocs)
 	}
 	for s := range shapesMax {
 		tab := &tables[s]
@@ -159,8 +179,26 @@ func Cycle() {
 				if rev.isActive() {
 					if !rev.isPinned() {
 						page[i+offsetRevision].CompareAndSwap(uint64(rev), uint64(rev.expire()))
+						cycle_pending = true // freed on the next cycle if not rescued.
 					}
 				} else {
+					// Condemn the entry before freeing it. The revision word is
+					// the linearization point against concurrent rescues: a
+					// [Get]/[Bad]/[Ask] on another thread re-activates an
+					// inactive entry with a CAS, so either that CAS wins (ours
+					// fails and the entry survives another cycle) or ours wins
+					// and any late reader observes the closed revision and
+					// panics instead of receiving a pointer we are about to
+					// free. Without this, a goroutine could be handed the raw
+					// pointer value in the same instant the free below runs.
+					if !page[i+offsetRevision].CompareAndSwap(uint64(rev), uint64(rev.close())) {
+						cycle_pending = true // rescued mid-condemn, revisit next cycle.
+						continue
+					}
+					rev = rev.close() // [end] and free functions must match the stored revision.
+					if debugCycle {
+						fmt.Printf("pointers.Cycle: condemned shape=%d slot=%d\n", s, j*pageSize+i)
+					}
 					jump := uintptr(page[i+offsetFreeFunc].Load())
 					if jump == 0 {
 						end(rev, s, uint64(j*pageSize+i))
@@ -195,7 +233,7 @@ func Cycle() {
 							}
 							free(Pair{
 								sentinal: j*pageSize + i,
-								revision: revision(page[i+offsetRevision].Load()),
+								revision: rev,
 								checksum: [2]uint64{
 									page[i+offsetPointers].Load(),
 									page[i+offsetPointers+1].Load(),
@@ -214,7 +252,7 @@ func Cycle() {
 							}
 							free(Trio{
 								sentinal: j*pageSize + i,
-								revision: revision(page[i+offsetRevision].Load()),
+								revision: rev,
 								checksum: [3]uint64{
 									page[i+offsetPointers].Load(),
 									page[i+offsetPointers+1].Load(),
@@ -368,7 +406,19 @@ func Get[T Generic[T, P], P Size](ptr T) P {
 			if live, ok := any(T(*p)).(Liveness[P]); ok && !live.IsAlive(*(*P)(unsafe.Pointer(&ptrs))) {
 				panic(panicMessage)
 			}
-			arr[addr+offsetRevision].CompareAndSwap(uint64(rev), uint64(rev.active()))
+			// The activation CAS must succeed before the pointer may be
+			// returned: [Cycle] condemns inactive entries with a CAS on the
+			// same word, so a failure here can mean the entry was just
+			// condemned — retry and either observe the closed revision
+			// (panic) or win the race on the next attempt.
+			// The activation CAS must succeed before the pointer may be
+			// returned: [Cycle] condemns inactive entries with a CAS on the
+			// same word, so a failure here can mean the entry was just
+			// condemned — retry and either observe the closed revision
+			// (panic) or win the race on the next attempt.
+			if !arr[addr+offsetRevision].CompareAndSwap(uint64(rev), uint64(rev.active())) {
+				continue
+			}
 		}
 		return *(*P)(unsafe.Pointer(&ptrs))
 	}
@@ -385,14 +435,23 @@ func Bad[T Generic[T, P], P Size](ptr T) bool {
 	}
 	page, addr := uint64(p.sentinal/pageSize), uint64(p.sentinal%pageSize)
 	arr := tables[len(p.checksum)].Index(page)
-	rev := revision(arr[addr+offsetRevision].Load())
-	if rev.matches(p.revision) {
-		if !rev.isActive() {
-			arr[addr+offsetRevision].CompareAndSwap(uint64(rev), uint64(rev.active()))
+	for {
+		rev := revision(arr[addr+offsetRevision].Load())
+		if rev == revisionLocked {
+			continue
 		}
-		return false
+		if !rev.matches(p.revision) {
+			return true
+		}
+		if rev.isActive() {
+			return false
+		}
+		// Same rescue rule as [Get]: reporting the pointer as good requires
+		// winning the activation CAS against a concurrent [Cycle] condemn.
+		if arr[addr+offsetRevision].CompareAndSwap(uint64(rev), uint64(rev.active())) {
+			return false
+		}
 	}
-	return true
 }
 
 // Add allocates a new pointer that can be mutated with [Set].
@@ -647,7 +706,11 @@ func Ask[T Generic[T, P], P Size](ptr T) (P, Kind) {
 			if live, ok := any(T(p)).(Liveness[P]); ok && !live.IsAlive(*(*P)(unsafe.Pointer(&ptrs))) {
 				panic(panicMessage)
 			}
-			arr[addr+offsetRevision].CompareAndSwap(uint64(rev), uint64(rev.active()))
+			// Same rescue rule as [Get]: retry on CAS failure in case the
+			// entry was concurrently condemned by [Cycle].
+			if !arr[addr+offsetRevision].CompareAndSwap(uint64(rev), uint64(rev.active())) {
+				continue
+			}
 		}
 		switch {
 		case rev.isPinned():

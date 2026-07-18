@@ -476,7 +476,7 @@ func (self Instance) OnVisibilityChanged(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) VisibilityChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`visibility_changed`))))
 }
 
 func (o class) AsCanvasLayer() Advanced         { return Advanced(o) }

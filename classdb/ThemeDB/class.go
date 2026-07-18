@@ -351,7 +351,7 @@ func OnFallbackChanged(cb func(), flags ...Signal.Flags) {
 
 func (self class) FallbackChanged() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`fallback_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`fallback_changed`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

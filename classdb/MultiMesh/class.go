@@ -595,7 +595,7 @@ func (self class) GetAabb() AABB.PositionSize { //gd:MultiMesh.get_aabb
 }
 func (self class) GetBuffer() Packed.Array[float32] { //gd:MultiMesh.get_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_buffer, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) SetBuffer(buffer Packed.Array[float32]) { //gd:MultiMesh.set_buffer

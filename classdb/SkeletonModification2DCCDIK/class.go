@@ -362,7 +362,7 @@ func (self class) SetTargetNode(target_nodepath Path.ToNode) { //gd:SkeletonModi
 }
 func (self class) GetTargetNode() Path.ToNode { //gd:SkeletonModification2DCCDIK.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetTipNode(tip_nodepath Path.ToNode) { //gd:SkeletonModification2DCCDIK.set_tip_node
@@ -370,7 +370,7 @@ func (self class) SetTipNode(tip_nodepath Path.ToNode) { //gd:SkeletonModificati
 }
 func (self class) GetTipNode() Path.ToNode { //gd:SkeletonModification2DCCDIK.get_tip_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_tip_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetCcdikDataChainLength(length int64) { //gd:SkeletonModification2DCCDIK.set_ccdik_data_chain_length
@@ -389,7 +389,7 @@ func (self class) SetCcdikJointBone2dNode(joint_idx int64, bone2d_nodepath Path.
 }
 func (self class) GetCcdikJointBone2dNode(joint_idx int64) Path.ToNode { //gd:SkeletonModification2DCCDIK.get_ccdik_joint_bone2d_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_ccdik_joint_bone2d_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetCcdikJointBoneIndex(joint_idx int64, bone_idx int64) { //gd:SkeletonModification2DCCDIK.set_ccdik_joint_bone_index

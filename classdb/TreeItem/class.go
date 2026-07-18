@@ -1613,7 +1613,7 @@ func (self class) SetText(column int64, text String.Readable) { //gd:TreeItem.se
 }
 func (self class) GetText(column int64) String.Readable { //gd:TreeItem.get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetDescription(column int64, description String.Readable) { //gd:TreeItem.set_description
@@ -1624,7 +1624,7 @@ func (self class) SetDescription(column int64, description String.Readable) { //
 }
 func (self class) GetDescription(column int64) String.Readable { //gd:TreeItem.get_description
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_description, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTextDirection(column int64, direction Control.TextDirection) { //gd:TreeItem.set_text_direction
@@ -1690,7 +1690,7 @@ func (self class) SetStructuredTextBidiOverrideOptions(column int64, args Array.
 }
 func (self class) GetStructuredTextBidiOverrideOptions(column int64) Array.Any { //gd:TreeItem.get_structured_text_bidi_override_options
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_structured_text_bidi_override_options, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetLanguage(column int64, language String.Readable) { //gd:TreeItem.set_language
@@ -1701,7 +1701,7 @@ func (self class) SetLanguage(column int64, language String.Readable) { //gd:Tre
 }
 func (self class) GetLanguage(column int64) String.Readable { //gd:TreeItem.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetSuffix(column int64, text String.Readable) { //gd:TreeItem.set_suffix
@@ -1712,7 +1712,7 @@ func (self class) SetSuffix(column int64, text String.Readable) { //gd:TreeItem.
 }
 func (self class) GetSuffix(column int64) String.Readable { //gd:TreeItem.get_suffix
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_suffix, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetIcon(column int64, texture [1]gdclass.Texture2D) { //gd:TreeItem.set_icon
@@ -1792,7 +1792,7 @@ func (self class) SetRangeConfig(column int64, min float64, max float64, step fl
 }
 func (self class) GetRangeConfig(column int64) Dictionary.Any { //gd:TreeItem.get_range_config
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_range_config, gdextension.SizeDictionary|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetMetadata(column int64, meta variant.Any) { //gd:TreeItem.set_metadata
@@ -1803,7 +1803,7 @@ func (self class) SetMetadata(column int64, meta variant.Any) { //gd:TreeItem.se
 }
 func (self class) GetMetadata(column int64) variant.Any { //gd:TreeItem.get_metadata
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_metadata, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetCustomDraw(column int64, obj [1]gdreference.Object, callback String.Name) { //gd:TreeItem.set_custom_draw
@@ -1821,7 +1821,7 @@ func (self class) SetCustomDrawCallback(column int64, callback Callable.Function
 }
 func (self class) GetCustomDrawCallback(column int64) Callable.Function { //gd:TreeItem.get_custom_draw_callback
 	var r_ret = noescape.Call[gdextension.Callable](gd.ObjectChecked(self.AsObject()), methods.get_custom_draw_callback, gdextension.SizeCallable|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = Callable.Through(gd.CallableProxy{}, pointers.Pack(pointers.New[gd.Callable](r_ret)))
+	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
 func (self class) SetCustomStylebox(column int64, stylebox [1]gdclass.StyleBox) { //gd:TreeItem.set_custom_stylebox
@@ -1996,7 +1996,7 @@ func (self class) GetButtonTooltipText(column int64, button_index int64) String.
 		column       int64
 		button_index int64
 	}{column, button_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetButtonId(column int64, button_index int64) int64 { //gd:TreeItem.get_button_id
@@ -2088,7 +2088,7 @@ func (self class) SetTooltipText(column int64, tooltip String.Readable) { //gd:T
 }
 func (self class) GetTooltipText(column int64) String.Readable { //gd:TreeItem.get_tooltip_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tooltip_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ column int64 }{column})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTextAlignment(column int64, text_alignment GUI.HorizontalAlignment) { //gd:TreeItem.set_text_alignment
@@ -2197,7 +2197,7 @@ func (self class) GetChildCount() int64 { //gd:TreeItem.get_child_count
 }
 func (self class) GetChildren() Array.Contains[[1]gdclass.TreeItem] { //gd:TreeItem.get_children
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_children, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.TreeItem]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.TreeItem](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetIndex() int64 { //gd:TreeItem.get_index

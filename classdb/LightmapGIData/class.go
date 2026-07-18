@@ -262,7 +262,7 @@ func (self class) SetLightmapTextures(light_textures Array.Contains[[1]gdclass.T
 }
 func (self class) GetLightmapTextures() Array.Contains[[1]gdclass.TextureLayered] { //gd:LightmapGIData.get_lightmap_textures
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_lightmap_textures, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.TextureLayered]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.TextureLayered](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetShadowmaskTextures(shadowmask_textures Array.Contains[[1]gdclass.TextureLayered]) { //gd:LightmapGIData.set_shadowmask_textures
@@ -270,7 +270,7 @@ func (self class) SetShadowmaskTextures(shadowmask_textures Array.Contains[[1]gd
 }
 func (self class) GetShadowmaskTextures() Array.Contains[[1]gdclass.TextureLayered] { //gd:LightmapGIData.get_shadowmask_textures
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_shadowmask_textures, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.TextureLayered]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.TextureLayered](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetUsesSphericalHarmonics(uses_spherical_harmonics bool) { //gd:LightmapGIData.set_uses_spherical_harmonics
@@ -296,7 +296,7 @@ func (self class) GetUserCount() int64 { //gd:LightmapGIData.get_user_count
 }
 func (self class) GetUserPath(user_idx int64) Path.ToNode { //gd:LightmapGIData.get_user_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_user_path, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ user_idx int64 }{user_idx})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) ClearUsers() { //gd:LightmapGIData.clear_users

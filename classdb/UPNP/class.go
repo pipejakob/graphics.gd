@@ -488,7 +488,7 @@ func (self class) Discover(timeout int64, ttl int64, device_filter String.Readab
 }
 func (self class) QueryExternalAddress() String.Readable { //gd:UPNP.query_external_address
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.query_external_address, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) AddPortMapping(port int64, port_internal int64, desc String.Readable, proto String.Readable, duration int64) int64 { //gd:UPNP.add_port_mapping
@@ -515,7 +515,7 @@ func (self class) SetDiscoverMulticastIf(m_if String.Readable) { //gd:UPNP.set_d
 }
 func (self class) GetDiscoverMulticastIf() String.Readable { //gd:UPNP.get_discover_multicast_if
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_discover_multicast_if, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetDiscoverLocalPort(port int64) { //gd:UPNP.set_discover_local_port

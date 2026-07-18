@@ -354,7 +354,7 @@ func (self class) SetApplyBoneName(index int64, bone_name String.Readable) { //g
 }
 func (self class) GetApplyBoneName(index int64) String.Readable { //gd:BoneConstraint3D.get_apply_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_apply_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetApplyBone(index int64, bone int64) { //gd:BoneConstraint3D.set_apply_bone
@@ -387,7 +387,7 @@ func (self class) SetReferenceBoneName(index int64, bone_name String.Readable) {
 }
 func (self class) GetReferenceBoneName(index int64) String.Readable { //gd:BoneConstraint3D.get_reference_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_reference_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetReferenceBone(index int64, bone int64) { //gd:BoneConstraint3D.set_reference_bone
@@ -409,7 +409,7 @@ func (self class) SetReferenceNode(index int64, node Path.ToNode) { //gd:BoneCon
 }
 func (self class) GetReferenceNode(index int64) Path.ToNode { //gd:BoneConstraint3D.get_reference_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_reference_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetSettingCount(count int64) { //gd:BoneConstraint3D.set_setting_count

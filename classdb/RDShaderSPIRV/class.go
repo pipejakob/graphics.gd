@@ -435,7 +435,7 @@ func (self class) SetStageBytecode(stage Rendering.ShaderStage, bytecode Packed.
 }
 func (self class) GetStageBytecode(stage Rendering.ShaderStage) Packed.Bytes { //gd:RDShaderSPIRV.get_stage_bytecode
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_stage_bytecode, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ stage Rendering.ShaderStage }{stage})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SetStageCompileError(stage Rendering.ShaderStage, compile_error String.Readable) { //gd:RDShaderSPIRV.set_stage_compile_error
@@ -446,7 +446,7 @@ func (self class) SetStageCompileError(stage Rendering.ShaderStage, compile_erro
 }
 func (self class) GetStageCompileError(stage Rendering.ShaderStage) String.Readable { //gd:RDShaderSPIRV.get_stage_compile_error
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_stage_compile_error, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ stage Rendering.ShaderStage }{stage})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsRDShaderSPIRV() Advanced             { return Advanced(o) }

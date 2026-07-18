@@ -719,12 +719,12 @@ func (self class) GetInstanceProcAddr(name String.Readable) int64 { //gd:OpenXRA
 }
 func (self class) GetErrorString(result int64) String.Readable { //gd:OpenXRAPIExtension.get_error_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_error_string, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ result int64 }{result})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSwapchainFormatName(swapchain_format int64) String.Readable { //gd:OpenXRAPIExtension.get_swapchain_format_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_swapchain_format_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ swapchain_format int64 }{swapchain_format})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetObjectName(object_type int64, object_handle int64, object_name String.Readable) { //gd:OpenXRAPIExtension.set_object_name
@@ -849,7 +849,7 @@ func (self class) SetVelocityTargetSize(target_size Vector2i.XY) { //gd:OpenXRAP
 }
 func (self class) GetSupportedSwapchainFormats() Packed.Array[int64] { //gd:OpenXRAPIExtension.get_supported_swapchain_formats
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_supported_swapchain_formats, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) OpenxrSwapchainCreate(create_flags int64, usage_flags int64, swapchain_format int64, width int64, height int64, sample_count int64, array_size int64) int64 { //gd:OpenXRAPIExtension.openxr_swapchain_create

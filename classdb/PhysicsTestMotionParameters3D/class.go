@@ -336,7 +336,7 @@ func (self class) SetCollideSeparationRayEnabled(enabled bool) { //gd:PhysicsTes
 }
 func (self class) GetExcludeBodies() Array.Contains[RID.Any] { //gd:PhysicsTestMotionParameters3D.get_exclude_bodies
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_exclude_bodies, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[RID.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetExcludeBodies(exclude_list Array.Contains[RID.Any]) { //gd:PhysicsTestMotionParameters3D.set_exclude_bodies
@@ -344,7 +344,7 @@ func (self class) SetExcludeBodies(exclude_list Array.Contains[RID.Any]) { //gd:
 }
 func (self class) GetExcludeObjects() Array.Contains[int64] { //gd:PhysicsTestMotionParameters3D.get_exclude_objects
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_exclude_objects, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[int64]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[int64](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetExcludeObjects(exclude_list Array.Contains[int64]) { //gd:PhysicsTestMotionParameters3D.set_exclude_objects

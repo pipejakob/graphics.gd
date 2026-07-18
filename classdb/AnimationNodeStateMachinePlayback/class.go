@@ -353,7 +353,7 @@ func (self class) IsPlaying() bool { //gd:AnimationNodeStateMachinePlayback.is_p
 }
 func (self class) GetCurrentNode() String.Name { //gd:AnimationNodeStateMachinePlayback.get_current_node
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_current_node, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetCurrentPlayPosition() float64 { //gd:AnimationNodeStateMachinePlayback.get_current_play_position
@@ -368,7 +368,7 @@ func (self class) GetCurrentLength() float64 { //gd:AnimationNodeStateMachinePla
 }
 func (self class) GetFadingFromNode() String.Name { //gd:AnimationNodeStateMachinePlayback.get_fading_from_node
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_fading_from_node, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetFadingFromPlayPosition() float64 { //gd:AnimationNodeStateMachinePlayback.get_fading_from_play_position
@@ -393,7 +393,7 @@ func (self class) GetFadingLength() float64 { //gd:AnimationNodeStateMachinePlay
 }
 func (self class) GetTravelPath() Array.Contains[String.Name] { //gd:AnimationNodeStateMachinePlayback.get_travel_path
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_travel_path, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 
@@ -410,7 +410,7 @@ func (self Instance) OnStateStarted(cb func(state string), flags ...Signal.Flags
 }
 
 func (self class) StateStarted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`state_started`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`state_started`))))
 }
 
 /*
@@ -430,7 +430,7 @@ func (self Instance) OnStateFinished(cb func(state string), flags ...Signal.Flag
 }
 
 func (self class) StateFinished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`state_finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`state_finished`))))
 }
 
 func (o class) AsAnimationNodeStateMachinePlayback() Advanced         { return Advanced(o) }

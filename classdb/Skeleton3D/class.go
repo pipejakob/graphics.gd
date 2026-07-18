@@ -771,7 +771,7 @@ func (self class) FindBone(name String.Readable) int64 { //gd:Skeleton3D.find_bo
 }
 func (self class) GetBoneName(bone_idx int64) String.Readable { //gd:Skeleton3D.get_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBoneName(bone_idx int64, name String.Readable) { //gd:Skeleton3D.set_bone_name
@@ -785,12 +785,12 @@ func (self class) GetBoneMeta(bone_idx int64, key String.Name) variant.Any { //g
 		bone_idx int64
 		key      gdextension.StringName
 	}{bone_idx, pointers.Get(gd.InternalStringName(key))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetBoneMetaList(bone_idx int64) Array.Contains[String.Name] { //gd:Skeleton3D.get_bone_meta_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_bone_meta_list, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) HasBoneMeta(bone_idx int64, key String.Name) bool { //gd:Skeleton3D.has_bone_meta
@@ -810,7 +810,7 @@ func (self class) SetBoneMeta(bone_idx int64, key String.Name, value variant.Any
 }
 func (self class) GetConcatenatedBoneNames() String.Name { //gd:Skeleton3D.get_concatenated_bone_names
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_concatenated_bone_names, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetBoneParent(bone_idx int64) int64 { //gd:Skeleton3D.get_bone_parent
@@ -839,12 +839,12 @@ func (self class) UnparentBoneAndRest(bone_idx int64) { //gd:Skeleton3D.unparent
 }
 func (self class) GetBoneChildren(bone_idx int64) Packed.Array[int32] { //gd:Skeleton3D.get_bone_children
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_bone_children, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetParentlessBones() Packed.Array[int32] { //gd:Skeleton3D.get_parentless_bones
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_parentless_bones, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetBoneRest(bone_idx int64) Transform3D.BasisOrigin { //gd:Skeleton3D.get_bone_rest
@@ -1039,7 +1039,7 @@ func (self Instance) OnRestUpdated(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) RestUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`rest_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`rest_updated`))))
 }
 
 /*
@@ -1059,7 +1059,7 @@ func (self Instance) OnPoseUpdated(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) PoseUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pose_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pose_updated`))))
 }
 
 /*
@@ -1080,7 +1080,7 @@ func (self Instance) OnSkeletonUpdated(cb func(), flags ...Signal.Flags) Instanc
 }
 
 func (self class) SkeletonUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`skeleton_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`skeleton_updated`))))
 }
 
 /*
@@ -1099,7 +1099,7 @@ func (self Instance) OnBoneEnabledChanged(cb func(bone_idx int), flags ...Signal
 }
 
 func (self class) BoneEnabledChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bone_enabled_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bone_enabled_changed`))))
 }
 
 /*
@@ -1120,7 +1120,7 @@ func (self Instance) OnBoneListChanged(cb func(), flags ...Signal.Flags) Instanc
 }
 
 func (self class) BoneListChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bone_list_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bone_list_changed`))))
 }
 
 /*
@@ -1138,7 +1138,7 @@ func (self Instance) OnShowRestOnlyChanged(cb func(), flags ...Signal.Flags) Ins
 }
 
 func (self class) ShowRestOnlyChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`show_rest_only_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`show_rest_only_changed`))))
 }
 
 func (o class) AsSkeleton3D() Advanced            { return Advanced(o) }

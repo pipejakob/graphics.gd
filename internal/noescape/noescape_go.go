@@ -2,9 +2,21 @@
 
 package noescape
 
-import "graphics.gd/internal/gdextension"
+import (
+	"sync/atomic"
+
+	"graphics.gd/internal/gdextension"
+)
 
 func Call[T any](object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, args any) T {
+	panic("not implemented")
+}
+
+func CallThreadSafe[T any](object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, args any) T {
+	panic("not implemented")
+}
+
+func CallThreadSafeIf[T any](safe *atomic.Bool, object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, args any) T {
 	panic("not implemented")
 }
 

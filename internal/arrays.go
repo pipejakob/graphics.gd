@@ -86,15 +86,17 @@ func EngineArrayFromSlice[T any](slice []T) ArrayVariant.Any {
 }
 
 func NewArrayProxy[T any]() (ArrayProxy[T], complex128) {
-	var array = NewArray()
-	var pack = pointers.Pack(array)
-	return ArrayProxy[T]{}, pack
+	return WrapArray[T](NewArray())
 }
 
-type ArrayProxy[T any] struct{}
+// ArrayProxy is engine-backed proxy state for an array, the anchor carries
+// the GC lifetime of goroutine-created arrays — see anchors.go.
+type ArrayProxy[T any] struct {
+	anchor *Array
+}
 
-func (ArrayProxy[T]) Any(state complex128) ArrayVariant.Any {
-	return ArrayVariant.Through(ArrayProxy[VariantPkg.Any]{}, state)
+func (proxy ArrayProxy[T]) Any(state complex128) ArrayVariant.Any {
+	return ArrayVariant.Through(ArrayProxy[VariantPkg.Any]{anchor: proxy.anchor}, state)
 }
 
 func (ArrayProxy[T]) Resize(state complex128, i int) {

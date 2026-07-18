@@ -490,7 +490,7 @@ func (self class) SetPolygon(polygon Packed.Array[Vector2.XY]) { //gd:Polygon2D.
 }
 func (self class) GetPolygon() Packed.Array[Vector2.XY] { //gd:Polygon2D.get_polygon
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_polygon, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetUv(uv Packed.Array[Vector2.XY]) { //gd:Polygon2D.set_uv
@@ -500,7 +500,7 @@ func (self class) SetUv(uv Packed.Array[Vector2.XY]) { //gd:Polygon2D.set_uv
 }
 func (self class) GetUv() Packed.Array[Vector2.XY] { //gd:Polygon2D.get_uv
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_uv, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetColor(color Color.RGBA) { //gd:Polygon2D.set_color
@@ -516,7 +516,7 @@ func (self class) SetPolygons(polygons Array.Any) { //gd:Polygon2D.set_polygons
 }
 func (self class) GetPolygons() Array.Any { //gd:Polygon2D.get_polygons
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_polygons, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetVertexColors(vertex_colors Packed.Array[Color.RGBA]) { //gd:Polygon2D.set_vertex_colors
@@ -526,7 +526,7 @@ func (self class) SetVertexColors(vertex_colors Packed.Array[Color.RGBA]) { //gd
 }
 func (self class) GetVertexColors() Packed.Array[Color.RGBA] { //gd:Polygon2D.get_vertex_colors
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertex_colors, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Color.RGBA](Array.Through(gd.PackedProxy[gd.PackedColorArray, Color.RGBA]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) SetTexture(texture [1]gdclass.Texture2D) { //gd:Polygon2D.set_texture
@@ -606,12 +606,12 @@ func (self class) GetBoneCount() int64 { //gd:Polygon2D.get_bone_count
 }
 func (self class) GetBonePath(index int64) Path.ToNode { //gd:Polygon2D.get_bone_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_bone_path, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) GetBoneWeights(index int64) Packed.Array[float32] { //gd:Polygon2D.get_bone_weights
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_bone_weights, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) EraseBone(index int64) { //gd:Polygon2D.erase_bone
@@ -637,7 +637,7 @@ func (self class) SetSkeleton(skeleton Path.ToNode) { //gd:Polygon2D.set_skeleto
 }
 func (self class) GetSkeleton() Path.ToNode { //gd:Polygon2D.get_skeleton
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_skeleton, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetInternalVertexCount(internal_vertex_count int64) { //gd:Polygon2D.set_internal_vertex_count

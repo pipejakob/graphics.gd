@@ -526,7 +526,7 @@ func (self class) SetBlendPointName(point int64, name String.Name) { //gd:Animat
 }
 func (self class) GetBlendPointName(point int64) String.Name { //gd:AnimationNodeBlendSpace2D.get_blend_point_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_blend_point_name, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ point int64 }{point})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) FindBlendPointByName(name String.Name) int64 { //gd:AnimationNodeBlendSpace2D.find_blend_point_by_name
@@ -601,7 +601,7 @@ func (self class) SetXLabel(text String.Readable) { //gd:AnimationNodeBlendSpace
 }
 func (self class) GetXLabel() String.Readable { //gd:AnimationNodeBlendSpace2D.get_x_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_x_label, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetYLabel(text String.Readable) { //gd:AnimationNodeBlendSpace2D.set_y_label
@@ -609,7 +609,7 @@ func (self class) SetYLabel(text String.Readable) { //gd:AnimationNodeBlendSpace
 }
 func (self class) GetYLabel() String.Readable { //gd:AnimationNodeBlendSpace2D.get_y_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_y_label, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetAutoTriangles(enable bool) { //gd:AnimationNodeBlendSpace2D.set_auto_triangles
@@ -666,7 +666,7 @@ func (self Instance) OnTrianglesUpdated(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) TrianglesUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`triangles_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`triangles_updated`))))
 }
 
 func (o class) AsAnimationNodeBlendSpace2D() Advanced         { return Advanced(o) }

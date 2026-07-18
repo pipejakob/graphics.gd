@@ -177,7 +177,7 @@ func (self Instance) OnPopupHide(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) PopupHide() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`popup_hide`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`popup_hide`))))
 }
 
 func (o class) AsPopup() Advanced                     { return Advanced(o) }

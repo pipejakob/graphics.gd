@@ -675,7 +675,7 @@ func (class classImplementation) reloadInstance(value reflect.Value, super *gdre
 		// Signal fields need to have their values injected into the field, so that they can be used (emitted).
 		if reflect.PointerTo(field.Type).Implements(reflect.TypeFor[Signal.Pointer]()) {
 			signal := pointers.Pin(gd.NewSignalOf([1]gdreference.Object{*super}, gd.NewStringName(name)))
-			rvalue.Interface().(Signal.Pointer).SetAny(Signal.Via(gd.SignalProxy{}, pointers.Pack(signal)))
+			rvalue.Interface().(Signal.Pointer).SetAny(Signal.Via(gd.WrapSignal(signal)))
 			signals = append(signals, signalChan{
 				signal: signal,
 			})

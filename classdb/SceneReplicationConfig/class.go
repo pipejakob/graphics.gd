@@ -280,7 +280,7 @@ func New() Instance {
 
 func (self class) GetProperties() Array.Contains[Path.ToNode] { //gd:SceneReplicationConfig.get_properties
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_properties, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Path.ToNode]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AddProperty(path Path.ToNode, index int64) { //gd:SceneReplicationConfig.add_property

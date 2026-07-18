@@ -170,7 +170,7 @@ func New() Instance {
 
 func (self class) GetRef() variant.Any { //gd:WeakRef.get_ref
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_ref, gdextension.SizeVariant, &struct{}{})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (o class) AsWeakRef() Advanced         { return Advanced(o) }

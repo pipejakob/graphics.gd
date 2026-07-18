@@ -214,7 +214,7 @@ func (self class) SetEnableNodePath(path Path.ToNode) { //gd:VisibleOnScreenEnab
 }
 func (self class) GetEnableNodePath() Path.ToNode { //gd:VisibleOnScreenEnabler3D.get_enable_node_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_enable_node_path, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (o class) AsVisibleOnScreenEnabler3D() Advanced         { return Advanced(o) }

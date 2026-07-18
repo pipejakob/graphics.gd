@@ -218,7 +218,7 @@ func (self Instance) OnScriptCreated(cb func(script Script.Instance), flags ...S
 }
 
 func (self class) ScriptCreated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`script_created`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`script_created`))))
 }
 
 func (o class) AsScriptCreateDialog() Advanced         { return Advanced(o) }

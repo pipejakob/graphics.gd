@@ -599,7 +599,7 @@ func (self class) SetDownloadFile(path String.Readable) { //gd:HTTPRequest.set_d
 }
 func (self class) GetDownloadFile() String.Readable { //gd:HTTPRequest.get_download_file
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_download_file, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDownloadedBytes() int64 { //gd:HTTPRequest.get_downloaded_bytes
@@ -654,7 +654,7 @@ func (self Instance) OnRequestCompleted(cb func(result Result, response_code int
 }
 
 func (self class) RequestCompleted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`request_completed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`request_completed`))))
 }
 
 func (o class) AsHTTPRequest() Advanced         { return Advanced(o) }

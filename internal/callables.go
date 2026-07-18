@@ -137,7 +137,11 @@ func InternalCallable(fn CallableType.Function) Callable {
 	return NewComparableCallable(fn.Call, fn)
 }
 
-type CallableProxy struct{}
+// CallableProxy is engine-backed proxy state for a callable, the anchor
+// carries the GC lifetime of goroutine-created callables — see anchors.go.
+type CallableProxy struct {
+	anchor *Callable
+}
 
 func (CallableProxy) Name(state complex128) string {
 	return pointers.Load[Callable](state).GetMethod().String()
@@ -145,7 +149,7 @@ func (CallableProxy) Name(state complex128) string {
 func (CallableProxy) Args(state complex128) (args int, bind ArrayType.Any) {
 	c := pointers.Load[Callable](state)
 	b := c.GetBoundArguments()
-	return int(c.GetArgumentCount()), ArrayType.Through(ArrayProxy[VariantPkg.Any]{}, pointers.Pack(b))
+	return int(c.GetArgumentCount()), ArrayType.Through(WrapArray[VariantPkg.Any](b))
 }
 func (CallableProxy) Call(state complex128, args ...VariantPkg.Any) VariantPkg.Any {
 	c := pointers.Load[Callable](state)
@@ -164,7 +168,7 @@ func (CallableProxy) Bind(state complex128, args ...VariantPkg.Any) (CallableTyp
 	for i, arg := range args {
 		vargs[i] = NewVariant(arg.Interface())
 	}
-	return CallableProxy{}, pointers.Pack(c.Bind(vargs...))
+	return WrapCallable(c.Bind(vargs...))
 }
 
 func CallableAs[T any](callable Callable) T {

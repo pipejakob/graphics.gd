@@ -255,7 +255,7 @@ func (self class) GetAnimation(name String.Name) [1]gdclass.Animation { //gd:Ani
 }
 func (self class) GetAnimationList() Array.Contains[String.Name] { //gd:AnimationLibrary.get_animation_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_animation_list, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetAnimationListSize() int64 { //gd:AnimationLibrary.get_animation_list_size
@@ -279,7 +279,7 @@ func (self Instance) OnAnimationAdded(cb func(anim_name string), flags ...Signal
 }
 
 func (self class) AnimationAdded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_added`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_added`))))
 }
 
 /*
@@ -297,7 +297,7 @@ func (self Instance) OnAnimationRemoved(cb func(anim_name string), flags ...Sign
 }
 
 func (self class) AnimationRemoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_removed`))))
 }
 
 /*
@@ -315,7 +315,7 @@ func (self Instance) OnAnimationRenamed(cb func(old_name string, new_name string
 }
 
 func (self class) AnimationRenamed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_renamed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_renamed`))))
 }
 
 /*
@@ -335,7 +335,7 @@ func (self Instance) OnAnimationChanged(cb func(anim_name string), flags ...Sign
 }
 
 func (self class) AnimationChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`animation_changed`))))
 }
 
 func (o class) AsAnimationLibrary() Advanced          { return Advanced(o) }

@@ -224,7 +224,7 @@ func (self class) SetProfile(profile [1]gdclass.SkeletonProfile) { //gd:BoneMap.
 }
 func (self class) GetSkeletonBoneName(profile_bone_name String.Name) String.Name { //gd:BoneMap.get_skeleton_bone_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_skeleton_bone_name, gdextension.SizeStringName|(gdextension.SizeStringName<<4), &struct{ profile_bone_name gdextension.StringName }{pointers.Get(gd.InternalStringName(profile_bone_name))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetSkeletonBoneName(profile_bone_name String.Name, skeleton_bone_name String.Name) { //gd:BoneMap.set_skeleton_bone_name
@@ -235,7 +235,7 @@ func (self class) SetSkeletonBoneName(profile_bone_name String.Name, skeleton_bo
 }
 func (self class) FindProfileBoneName(skeleton_bone_name String.Name) String.Name { //gd:BoneMap.find_profile_bone_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.find_profile_bone_name, gdextension.SizeStringName|(gdextension.SizeStringName<<4), &struct{ skeleton_bone_name gdextension.StringName }{pointers.Get(gd.InternalStringName(skeleton_bone_name))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 
@@ -254,7 +254,7 @@ func (self Instance) OnBoneMapUpdated(cb func(), flags ...Signal.Flags) Instance
 }
 
 func (self class) BoneMapUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bone_map_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`bone_map_updated`))))
 }
 
 /*
@@ -272,7 +272,7 @@ func (self Instance) OnProfileUpdated(cb func(), flags ...Signal.Flags) Instance
 }
 
 func (self class) ProfileUpdated() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`profile_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`profile_updated`))))
 }
 
 func (o class) AsBoneMap() Advanced                   { return Advanced(o) }

@@ -1331,7 +1331,7 @@ func (self class) GetTerrainName(terrain_set int64, terrain_index int64) String.
 		terrain_set   int64
 		terrain_index int64
 	}{terrain_set, terrain_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTerrainColor(terrain_set int64, terrain_index int64, color Color.RGBA) { //gd:TileSet.set_terrain_color
@@ -1427,7 +1427,7 @@ func (self class) HasCustomDataLayerByName(layer_name String.Readable) bool { //
 }
 func (self class) GetCustomDataLayerName(layer_index int64) String.Readable { //gd:TileSet.get_custom_data_layer_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_custom_data_layer_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetCustomDataLayerType(layer_index int64, layer_type variant.Type) { //gd:TileSet.set_custom_data_layer_type
@@ -1473,7 +1473,7 @@ func (self class) GetCoordsLevelTileProxy(source_from int64, coords_from Vector2
 		source_from int64
 		coords_from Vector2i.XY
 	}{source_from, coords_from})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) HasCoordsLevelTileProxy(source_from int64, coords_from Vector2i.XY) bool { //gd:TileSet.has_coords_level_tile_proxy
@@ -1506,7 +1506,7 @@ func (self class) GetAlternativeLevelTileProxy(source_from int64, coords_from Ve
 		coords_from      Vector2i.XY
 		alternative_from int64
 	}{source_from, coords_from, alternative_from})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) HasAlternativeLevelTileProxy(source_from int64, coords_from Vector2i.XY, alternative_from int64) bool { //gd:TileSet.has_alternative_level_tile_proxy
@@ -1531,7 +1531,7 @@ func (self class) MapTileProxy(source_from int64, coords_from Vector2i.XY, alter
 		coords_from      Vector2i.XY
 		alternative_from int64
 	}{source_from, coords_from, alternative_from})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) CleanupInvalidTileProxies() { //gd:TileSet.cleanup_invalid_tile_proxies

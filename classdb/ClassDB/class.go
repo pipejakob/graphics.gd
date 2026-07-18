@@ -393,19 +393,19 @@ func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObj
 func (self class) GetClassList() Packed.Strings { //gd:ClassDB.get_class_list
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_class_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetInheritersFromClass(class_ String.Name) Packed.Strings { //gd:ClassDB.get_inheriters_from_class
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_inheriters_from_class, gdextension.SizePackedArray|(gdextension.SizeStringName<<4), &struct{ class_ gdextension.StringName }{pointers.Get(gd.InternalStringName(class_))})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetParentClass(class_ String.Name) String.Name { //gd:ClassDB.get_parent_class
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.StringName](gdreference.GetObject(self.AsObject()[0]), methods.get_parent_class, gdextension.SizeStringName|(gdextension.SizeStringName<<4), &struct{ class_ gdextension.StringName }{pointers.Get(gd.InternalStringName(class_))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) ClassExists(class_ String.Name) bool { //gd:ClassDB.class_exists
@@ -432,7 +432,7 @@ func (self class) CanInstantiate(class_ String.Name) bool { //gd:ClassDB.can_ins
 func (self class) Instantiate(class_ String.Name) variant.Any { //gd:ClassDB.instantiate
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Variant](gdreference.GetObject(self.AsObject()[0]), methods.instantiate, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ class_ gdextension.StringName }{pointers.Get(gd.InternalStringName(class_))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) ClassGetApiType(class_ String.Name) APIType { //gd:ClassDB.class_get_api_type
@@ -456,7 +456,7 @@ func (self class) ClassGetSignal(class_ String.Name, signal String.Name) Diction
 		class_ gdextension.StringName
 		signal gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(class_)), pointers.Get(gd.InternalStringName(signal))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) ClassGetSignalList(class_ String.Name, no_inheritance bool) Array.Contains[Dictionary.Any] { //gd:ClassDB.class_get_signal_list
@@ -465,7 +465,7 @@ func (self class) ClassGetSignalList(class_ String.Name, no_inheritance bool) Ar
 		class_         gdextension.StringName
 		no_inheritance bool
 	}{pointers.Get(gd.InternalStringName(class_)), no_inheritance})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClassGetPropertyList(class_ String.Name, no_inheritance bool) Array.Contains[Dictionary.Any] { //gd:ClassDB.class_get_property_list
@@ -474,7 +474,7 @@ func (self class) ClassGetPropertyList(class_ String.Name, no_inheritance bool) 
 		class_         gdextension.StringName
 		no_inheritance bool
 	}{pointers.Get(gd.InternalStringName(class_)), no_inheritance})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClassGetPropertyGetter(class_ String.Name, property String.Name) String.Name { //gd:ClassDB.class_get_property_getter
@@ -483,7 +483,7 @@ func (self class) ClassGetPropertyGetter(class_ String.Name, property String.Nam
 		class_   gdextension.StringName
 		property gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(class_)), pointers.Get(gd.InternalStringName(property))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) ClassGetPropertySetter(class_ String.Name, property String.Name) String.Name { //gd:ClassDB.class_get_property_setter
@@ -492,7 +492,7 @@ func (self class) ClassGetPropertySetter(class_ String.Name, property String.Nam
 		class_   gdextension.StringName
 		property gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(class_)), pointers.Get(gd.InternalStringName(property))})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) ClassGetProperty(obj [1]gdreference.Object, property String.Name) variant.Any { //gd:ClassDB.class_get_property
@@ -501,7 +501,7 @@ func (self class) ClassGetProperty(obj [1]gdreference.Object, property String.Na
 		obj      gdextension.Object
 		property gdextension.StringName
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetObject(obj[0])[0])), pointers.Get(gd.InternalStringName(property))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) ClassSetProperty(obj [1]gdreference.Object, property String.Name, value variant.Any) Error.Code { //gd:ClassDB.class_set_property
@@ -520,7 +520,7 @@ func (self class) ClassGetPropertyDefaultValue(class_ String.Name, property Stri
 		class_   gdextension.StringName
 		property gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(class_)), pointers.Get(gd.InternalStringName(property))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) ClassHasMethod(class_ String.Name, method String.Name, no_inheritance bool) bool { //gd:ClassDB.class_has_method
@@ -549,7 +549,7 @@ func (self class) ClassGetMethodList(class_ String.Name, no_inheritance bool) Ar
 		class_         gdextension.StringName
 		no_inheritance bool
 	}{pointers.Get(gd.InternalStringName(class_)), no_inheritance})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClassCallStatic(class_ String.Name, method String.Name, args ...gd.Variant) variant.Any { //gd:ClassDB.class_call_static
@@ -572,7 +572,7 @@ func (self class) ClassGetIntegerConstantList(class_ String.Name, no_inheritance
 		class_         gdextension.StringName
 		no_inheritance bool
 	}{pointers.Get(gd.InternalStringName(class_)), no_inheritance})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) ClassHasIntegerConstant(class_ String.Name, name String.Name) bool { //gd:ClassDB.class_has_integer_constant
@@ -609,7 +609,7 @@ func (self class) ClassGetEnumList(class_ String.Name, no_inheritance bool) Pack
 		class_         gdextension.StringName
 		no_inheritance bool
 	}{pointers.Get(gd.InternalStringName(class_)), no_inheritance})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) ClassGetEnumConstants(class_ String.Name, enum String.Name, no_inheritance bool) Packed.Strings { //gd:ClassDB.class_get_enum_constants
@@ -619,7 +619,7 @@ func (self class) ClassGetEnumConstants(class_ String.Name, enum String.Name, no
 		enum           gdextension.StringName
 		no_inheritance bool
 	}{pointers.Get(gd.InternalStringName(class_)), pointers.Get(gd.InternalStringName(enum)), no_inheritance})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) ClassGetIntegerConstantEnum(class_ String.Name, name String.Name, no_inheritance bool) String.Name { //gd:ClassDB.class_get_integer_constant_enum
@@ -629,7 +629,7 @@ func (self class) ClassGetIntegerConstantEnum(class_ String.Name, name String.Na
 		name           gdextension.StringName
 		no_inheritance bool
 	}{pointers.Get(gd.InternalStringName(class_)), pointers.Get(gd.InternalStringName(name)), no_inheritance})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) IsClassEnumBitfield(class_ String.Name, enum String.Name, no_inheritance bool) bool { //gd:ClassDB.is_class_enum_bitfield

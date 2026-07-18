@@ -310,7 +310,7 @@ func (self class) Start(callable Callable.Function, priority Priority) Error.Cod
 }
 func (self class) GetId() String.Readable { //gd:Thread.get_id
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_id, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsStarted() bool { //gd:Thread.is_started
@@ -325,7 +325,7 @@ func (self class) IsAlive() bool { //gd:Thread.is_alive
 }
 func (self class) WaitToFinish() variant.Any { //gd:Thread.wait_to_finish
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.wait_to_finish, gdextension.SizeVariant, &struct{}{})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetThreadSafetyChecksEnabled(enabled bool) { //gd:Thread.set_thread_safety_checks_enabled

@@ -10,7 +10,6 @@ import (
 	MainLoopClass "graphics.gd/classdb/MainLoop"
 	"graphics.gd/classdb/SceneTree"
 	"graphics.gd/classdb/Startup"
-	"graphics.gd/internal/pointers"
 	"graphics.gd/variant/Callable"
 	"graphics.gd/variant/Dictionary"
 	"graphics.gd/variant/Float"
@@ -82,10 +81,12 @@ var frame_ready = make(chan bool)
 
 // Called each process (idle) frame with the time since the last process frame as argument (in seconds). Equivalent to [method Node._process].
 // If implemented, the method must return a boolean value. [code]true[/code] ends the main loop, while [code]false[/code] lets it proceed to the next frame.
+// Process intentionally does NOT run pointers.Cycle — see goMain.Process
+// in startup_cgo.go: per-frame pointer collection must only happen right
+// after the cross-thread ring drain in EveryFrame.
 func (loop goMainLoop) Process(delta Float.X) bool {
 	defer Callable.Cycle()
 	defer keep_reachable_instances_alive()
-	defer pointers.Cycle()
 	return mainloop.Process(delta)
 }
 

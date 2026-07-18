@@ -237,7 +237,7 @@ func (self class) GetFeedCount() int64 { //gd:CameraServer.get_feed_count
 func (self class) Feeds() Array.Contains[[1]gdclass.CameraFeed] { //gd:CameraServer.feeds
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.feeds, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.CameraFeed]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.CameraFeed](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AddFeed(feed [1]gdclass.CameraFeed) { //gd:CameraServer.add_feed
@@ -265,7 +265,7 @@ func OnCameraFeedAdded(cb func(id int), flags ...Signal.Flags) {
 
 func (self class) CameraFeedAdded() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`camera_feed_added`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`camera_feed_added`))))
 }
 
 /*
@@ -284,7 +284,7 @@ func OnCameraFeedRemoved(cb func(id int), flags ...Signal.Flags) {
 
 func (self class) CameraFeedRemoved() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`camera_feed_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`camera_feed_removed`))))
 }
 
 /*
@@ -301,7 +301,7 @@ func OnCameraFeedsUpdated(cb func(), flags ...Signal.Flags) {
 
 func (self class) CameraFeedsUpdated() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`camera_feeds_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`camera_feeds_updated`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

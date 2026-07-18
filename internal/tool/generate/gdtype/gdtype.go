@@ -247,39 +247,44 @@ func (name Name) loadFromRawPointerValue(val string, pin bool) string {
 	if name == "uintptr" {
 		return fmt.Sprintf("uintptr(%s)", val)
 	}
+	// The gd.Wrap* helpers pack tracked frame-temporary state on the main
+	// thread and anchored GC-managed state off it, so that goroutine-held
+	// convenience values are not freed underneath their holder by the main
+	// thread's per-frame pointers.Cycle. Pinned callback arguments pass
+	// through the helpers unchanged.
 	if strings.HasPrefix(string(name), "Array.Contains[") {
 		_, elem, _ := strings.Cut(string(name), "Array.Contains[")
 		elem = strings.TrimSuffix(elem, "]")
-		return fmt.Sprintf("Array.Through(gd.ArrayProxy[%s]{}, pointers.Pack(%s))", elem, newFunc("gd.Array", val))
+		return fmt.Sprintf("Array.Through(gd.WrapArray[%s](%s))", elem, newFunc("gd.Array", val))
 	}
 	switch name {
 	case "Signal.Any":
-		return fmt.Sprintf("Signal.Via(gd.SignalProxy{}, pointers.Pack(%s))", newFunc("gd.Signal", val))
+		return fmt.Sprintf("Signal.Via(gd.WrapSignal(%s))", newFunc("gd.Signal", val))
 	case "Array.Any":
-		return fmt.Sprintf("Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(%s))", newFunc("gd.Array", val))
+		return fmt.Sprintf("Array.Through(gd.WrapArray[variant.Any](%s))", newFunc("gd.Array", val))
 	case "String.Readable":
-		return fmt.Sprintf("String.Via(gd.StringProxy{}, pointers.Pack(%s))", newFunc("gd.String", val))
+		return fmt.Sprintf("String.Via(gd.WrapString(%s))", newFunc("gd.String", val))
 	case "Dictionary.Any":
-		return fmt.Sprintf("Dictionary.Through(gd.DictionaryProxy[variant.Any,variant.Any]{}, pointers.Pack(%s))", newFunc("gd.Dictionary", val))
+		return fmt.Sprintf("Dictionary.Through(gd.WrapDictionary[variant.Any,variant.Any](%s))", newFunc("gd.Dictionary", val))
 	case "[1]gdreference.Object":
 		return fmt.Sprintf("[1]gdreference.Object{gdreference.OwnObject(%s, gd.Free)}", val)
 	case "Callable.Function":
-		return fmt.Sprintf("Callable.Through(gd.CallableProxy{}, pointers.Pack(%s))", newFunc("gd.Callable", val))
+		return fmt.Sprintf("Callable.Through(gd.WrapCallable(%s))", newFunc("gd.Callable", val))
 	case "Path.ToNode":
-		return fmt.Sprintf("Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(%s)))", newFunc("gd.NodePath", val))
+		return fmt.Sprintf("Path.ToNode(String.Via(gd.WrapNodePath(%s)))", newFunc("gd.NodePath", val))
 	case "String.Name":
-		return fmt.Sprintf("String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(%s)))", newFunc("gd.StringName", val))
+		return fmt.Sprintf("String.Name(String.Via(gd.WrapStringName(%s)))", newFunc("gd.StringName", val))
 	case "Packed.Bytes":
-		return fmt.Sprintf("Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](%s))))}", val)
+		return fmt.Sprintf("Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](%s))))}", val)
 	case "Packed.Strings":
-		return fmt.Sprintf("Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](%s))))", val)
+		return fmt.Sprintf("Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](%s))))", val)
 	case "Packed.Array[int32]", "Packed.Array[int64]", "Packed.Array[float32]", "Packed.Array[float64]",
 		"Packed.Array[Vector2.XY]", "Packed.Array[Vector3.XYZ]", "Packed.Array[Vector4.XYZW]", "Packed.Array[Color.RGBA]":
 		elem, title := packedArrayElem(name)
-		return fmt.Sprintf("Packed.Array[%s](Array.Through(gd.PackedProxy[gd.Packed%sArray, %s]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](%s))))",
-			elem, title, elem, val)
+		return fmt.Sprintf("Packed.Array[%s](Array.Through(gd.WrapPacked[gd.Packed%sArray, %s](pointers.Let[gd.Packed%sArray](%s))))",
+			elem, title, elem, title, val)
 	case "variant.Any":
-		return fmt.Sprintf("variant.Implementation(gd.VariantProxy{}, pointers.Pack(%s))", newFunc("gd.Variant", val))
+		return fmt.Sprintf("variant.Implementation(gd.WrapVariant(%s))", newFunc("gd.Variant", val))
 	case "Error.Code":
 		return fmt.Sprintf("Error.Code(%s)", val)
 	case "Basis.XYZ":

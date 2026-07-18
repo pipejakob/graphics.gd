@@ -212,7 +212,7 @@ func (self Instance) SetLoop(value bool) Instance { //gd:GLTFAnimation.loop
 
 func (self class) GetOriginalName() String.Readable { //gd:GLTFAnimation.get_original_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_original_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOriginalName(original_name String.Readable) { //gd:GLTFAnimation.set_original_name
@@ -228,7 +228,7 @@ func (self class) SetLoop(loop bool) { //gd:GLTFAnimation.set_loop
 }
 func (self class) GetAdditionalData(extension_name String.Name) variant.Any { //gd:GLTFAnimation.get_additional_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_additional_data, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ extension_name gdextension.StringName }{pointers.Get(gd.InternalStringName(extension_name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetAdditionalData(extension_name String.Name, additional_data variant.Any) { //gd:GLTFAnimation.set_additional_data

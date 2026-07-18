@@ -242,7 +242,7 @@ func (self class) IsExtensionLoaded(path String.Readable) bool { //gd:GDExtensio
 func (self class) GetLoadedExtensions() Packed.Strings { //gd:GDExtensionManager.get_loaded_extensions
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_loaded_extensions, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetExtension(path String.Readable) [1]gdclass.GDExtension { //gd:GDExtensionManager.get_extension
@@ -266,7 +266,7 @@ func OnExtensionsReloaded(cb func(), flags ...Signal.Flags) {
 
 func (self class) ExtensionsReloaded() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`extensions_reloaded`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`extensions_reloaded`))))
 }
 
 /*
@@ -285,7 +285,7 @@ func OnExtensionLoaded(cb func(extension GDExtension.Instance), flags ...Signal.
 
 func (self class) ExtensionLoaded() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`extension_loaded`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`extension_loaded`))))
 }
 
 /*
@@ -304,7 +304,7 @@ func OnExtensionUnloading(cb func(extension GDExtension.Instance), flags ...Sign
 
 func (self class) ExtensionUnloading() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`extension_unloading`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`extension_unloading`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

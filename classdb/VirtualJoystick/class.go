@@ -395,7 +395,7 @@ func (self class) SetActionLeft(action String.Name) { //gd:VirtualJoystick.set_a
 }
 func (self class) GetActionLeft() String.Name { //gd:VirtualJoystick.get_action_left
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_action_left, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetActionRight(action String.Name) { //gd:VirtualJoystick.set_action_right
@@ -403,7 +403,7 @@ func (self class) SetActionRight(action String.Name) { //gd:VirtualJoystick.set_
 }
 func (self class) GetActionRight() String.Name { //gd:VirtualJoystick.get_action_right
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_action_right, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetActionUp(action String.Name) { //gd:VirtualJoystick.set_action_up
@@ -411,7 +411,7 @@ func (self class) SetActionUp(action String.Name) { //gd:VirtualJoystick.set_act
 }
 func (self class) GetActionUp() String.Name { //gd:VirtualJoystick.get_action_up
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_action_up, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetActionDown(action String.Name) { //gd:VirtualJoystick.set_action_down
@@ -419,7 +419,7 @@ func (self class) SetActionDown(action String.Name) { //gd:VirtualJoystick.set_a
 }
 func (self class) GetActionDown() String.Name { //gd:VirtualJoystick.get_action_down
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_action_down, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetVisibilityMode(mode VisibilityMode) { //gd:VirtualJoystick.set_visibility_mode
@@ -444,7 +444,7 @@ func (self Instance) OnPressed(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Pressed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pressed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`pressed`))))
 }
 
 /*
@@ -460,7 +460,7 @@ func (self Instance) OnTapped(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Tapped() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tapped`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tapped`))))
 }
 
 /*
@@ -476,7 +476,7 @@ func (self Instance) OnReleased(cb func(input_vector Vector2.XY), flags ...Signa
 }
 
 func (self class) Released() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`released`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`released`))))
 }
 
 /*
@@ -492,7 +492,7 @@ func (self Instance) OnFlicked(cb func(input_vector Vector2.XY), flags ...Signal
 }
 
 func (self class) Flicked() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`flicked`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`flicked`))))
 }
 
 /*
@@ -508,7 +508,7 @@ func (self Instance) OnFlickCanceled(cb func(), flags ...Signal.Flags) Instance 
 }
 
 func (self class) FlickCanceled() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`flick_canceled`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`flick_canceled`))))
 }
 
 func (o class) AsVirtualJoystick() Advanced               { return Advanced(o) }

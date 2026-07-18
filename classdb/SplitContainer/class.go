@@ -446,7 +446,7 @@ func (self class) SetSplitOffsets(offsets Packed.Array[int32]) { //gd:SplitConta
 }
 func (self class) GetSplitOffsets() Packed.Array[int32] { //gd:SplitContainer.get_split_offsets
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_split_offsets, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ClampSplitOffset(priority_index int64) { //gd:SplitContainer.clamp_split_offset
@@ -518,7 +518,7 @@ func (self class) IsDragAreaHighlightInEditorEnabled() bool { //gd:SplitContaine
 }
 func (self class) GetDragAreaControls() Array.Contains[[1]gdclass.Control] { //gd:SplitContainer.get_drag_area_controls
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_drag_area_controls, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Control]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Control](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetTouchDraggerEnabled(enabled bool) { //gd:SplitContainer.set_touch_dragger_enabled
@@ -564,7 +564,7 @@ func (self Instance) OnDragged(cb func(offset int), flags ...Signal.Flags) Insta
 }
 
 func (self class) Dragged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`dragged`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`dragged`))))
 }
 
 /*
@@ -580,7 +580,7 @@ func (self Instance) OnDragStarted(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) DragStarted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`drag_started`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`drag_started`))))
 }
 
 /*
@@ -596,7 +596,7 @@ func (self Instance) OnDragEnded(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) DragEnded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`drag_ended`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`drag_ended`))))
 }
 
 func (o class) AsSplitContainer() Advanced                { return Advanced(o) }

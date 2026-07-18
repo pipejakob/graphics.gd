@@ -272,7 +272,7 @@ Override this method to execute additional logic after [SetPathCache] is called 
 */
 func (Instance) _set_path_cache(impl func(ptr gdclass.Receiver, path string)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var path = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, path.String())
@@ -619,7 +619,7 @@ func (class) _reset_state(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClass
 }
 func (class) _set_path_cache(impl func(ptr gdclass.Receiver, path String.Readable)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var path = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, path)
@@ -634,7 +634,7 @@ func (self class) TakeOverPath(path String.Readable) { //gd:Resource.take_over_p
 }
 func (self class) GetPath() String.Readable { //gd:Resource.get_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetPathCache(path String.Readable) { //gd:Resource.set_path_cache
@@ -645,7 +645,7 @@ func (self class) SetName(name String.Readable) { //gd:Resource.set_name
 }
 func (self class) GetName() String.Readable { //gd:Resource.get_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetRid() RID.Any { //gd:Resource.get_rid
@@ -680,7 +680,7 @@ func (self class) SetIdForPath(path String.Readable, id String.Readable) { //gd:
 }
 func (self class) GetIdForPath(path String.Readable) String.Readable { //gd:Resource.get_id_for_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_id_for_path, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsBuiltIn() bool { //gd:Resource.is_built_in
@@ -690,7 +690,7 @@ func (self class) IsBuiltIn() bool { //gd:Resource.is_built_in
 }
 func (self class) GenerateSceneUniqueId() String.Readable { //gd:Resource.generate_scene_unique_id
 	var r_ret = noescape.CallStatic[gdextension.String](methods.generate_scene_unique_id, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetSceneUniqueId(id String.Readable) { //gd:Resource.set_scene_unique_id
@@ -698,7 +698,7 @@ func (self class) SetSceneUniqueId(id String.Readable) { //gd:Resource.set_scene
 }
 func (self class) GetSceneUniqueId() String.Readable { //gd:Resource.get_scene_unique_id
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_scene_unique_id, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) EmitChanged() { //gd:Resource.emit_changed
@@ -737,7 +737,7 @@ func (self Instance) OnChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Changed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`changed`))))
 }
 
 /*
@@ -755,7 +755,7 @@ func (self Instance) OnSetupLocalToSceneRequested(cb func(), flags ...Signal.Fla
 }
 
 func (self class) SetupLocalToSceneRequested() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`setup_local_to_scene_requested`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`setup_local_to_scene_requested`))))
 }
 
 func (o class) AsResource() Advanced         { return Advanced(o) }

@@ -232,7 +232,7 @@ func (self class) CreateFromFaces(faces Packed.Array[Vector3.XYZ]) bool { //gd:T
 }
 func (self class) GetFaces() Packed.Array[Vector3.XYZ] { //gd:TriangleMesh.get_faces
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_faces, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) IntersectSegment(begin Vector3.XYZ, end Vector3.XYZ) Dictionary.Any { //gd:TriangleMesh.intersect_segment
@@ -240,7 +240,7 @@ func (self class) IntersectSegment(begin Vector3.XYZ, end Vector3.XYZ) Dictionar
 		begin Vector3.XYZ
 		end   Vector3.XYZ
 	}{begin, end})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) IntersectRay(begin Vector3.XYZ, dir Vector3.XYZ) Dictionary.Any { //gd:TriangleMesh.intersect_ray
@@ -248,7 +248,7 @@ func (self class) IntersectRay(begin Vector3.XYZ, dir Vector3.XYZ) Dictionary.An
 		begin Vector3.XYZ
 		dir   Vector3.XYZ
 	}{begin, dir})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (o class) AsTriangleMesh() Advanced         { return Advanced(o) }

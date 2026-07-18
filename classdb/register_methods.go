@@ -275,43 +275,43 @@ func slowCall(hasContext bool, method reflect.Value, p_args, p_ret gdextension.P
 			case gdextension.TypePackedByteArray:
 				ptr := gd.UnsafeGet[gd.PackedPointers](p_args, i-offset)
 				val := pointers.Let[gd.PackedByteArray](ptr)
-				value = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(val)))}
+				value = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](val)))}
 			case gdextension.TypePackedInt32Array:
 				ptr := gd.UnsafeGet[gd.PackedPointers](p_args, i-offset)
 				val := pointers.Let[gd.PackedInt32Array](ptr)
-				value = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(val)))
+				value = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](val)))
 			case gdextension.TypePackedInt64Array:
 				ptr := gd.UnsafeGet[gd.PackedPointers](p_args, i-offset)
 				val := pointers.Let[gd.PackedInt64Array](ptr)
-				value = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(val)))
+				value = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](val)))
 			case gdextension.TypePackedFloat32Array:
 				ptr := gd.UnsafeGet[gd.PackedPointers](p_args, i-offset)
 				val := pointers.Let[gd.PackedFloat32Array](ptr)
-				value = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(val)))
+				value = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](val)))
 			case gdextension.TypePackedFloat64Array:
 				ptr := gd.UnsafeGet[gd.PackedPointers](p_args, i-offset)
 				val := pointers.Let[gd.PackedFloat64Array](ptr)
-				value = Packed.Array[float64](Array.Through(gd.PackedProxy[gd.PackedFloat64Array, float64]{}, pointers.Pack(val)))
+				value = Packed.Array[float64](Array.Through(gd.WrapPacked[gd.PackedFloat64Array, float64](val)))
 			case gdextension.TypePackedStringArray:
 				ptr := gd.UnsafeGet[gd.PackedPointers](p_args, i-offset)
 				val := pointers.Let[gd.PackedStringArray](ptr)
-				value = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(val)))
+				value = Packed.Strings(Array.Through(gd.WrapPackedStrings(val)))
 			case gdextension.TypePackedVector2Array:
 				ptr := gd.UnsafeGet[gd.PackedPointers](p_args, i-offset)
 				val := pointers.Let[gd.PackedVector2Array](ptr)
-				value = Packed.Array[gd.Vector2](Array.Through(gd.PackedProxy[gd.PackedVector2Array, gd.Vector2]{}, pointers.Pack(val)))
+				value = Packed.Array[gd.Vector2](Array.Through(gd.WrapPacked[gd.PackedVector2Array, gd.Vector2](val)))
 			case gdextension.TypePackedVector3Array:
 				ptr := gd.UnsafeGet[gd.PackedPointers](p_args, i-offset)
 				val := pointers.Let[gd.PackedVector3Array](ptr)
-				value = Packed.Array[gd.Vector3](Array.Through(gd.PackedProxy[gd.PackedVector3Array, gd.Vector3]{}, pointers.Pack(val)))
+				value = Packed.Array[gd.Vector3](Array.Through(gd.WrapPacked[gd.PackedVector3Array, gd.Vector3](val)))
 			case gdextension.TypePackedColorArray:
 				ptr := gd.UnsafeGet[gd.PackedPointers](p_args, i-offset)
 				val := pointers.Let[gd.PackedColorArray](ptr)
-				value = Packed.Array[gd.Color](Array.Through(gd.PackedProxy[gd.PackedColorArray, gd.Color]{}, pointers.Pack(val)))
+				value = Packed.Array[gd.Color](Array.Through(gd.WrapPacked[gd.PackedColorArray, gd.Color](val)))
 			case gdextension.TypePackedVector4Array:
 				ptr := gd.UnsafeGet[gd.PackedPointers](p_args, i-offset)
 				val := pointers.Let[gd.PackedVector4Array](ptr)
-				value = Packed.Array[gd.Vector4](Array.Through(gd.PackedProxy[gd.PackedVector4Array, gd.Vector4]{}, pointers.Pack(val)))
+				value = Packed.Array[gd.Vector4](Array.Through(gd.WrapPacked[gd.PackedVector4Array, gd.Vector4](val)))
 			case gdextension.TypeNil:
 				value = nil
 			default:

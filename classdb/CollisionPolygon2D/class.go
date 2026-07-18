@@ -279,7 +279,7 @@ func (self class) SetPolygon(polygon Packed.Array[Vector2.XY]) { //gd:CollisionP
 }
 func (self class) GetPolygon() Packed.Array[Vector2.XY] { //gd:CollisionPolygon2D.get_polygon
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_polygon, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetBuildMode(build_mode BuildMode) { //gd:CollisionPolygon2D.set_build_mode

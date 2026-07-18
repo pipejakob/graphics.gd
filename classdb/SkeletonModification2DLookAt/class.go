@@ -315,7 +315,7 @@ func (self class) SetBone2dNode(bone2d_nodepath Path.ToNode) { //gd:SkeletonModi
 }
 func (self class) GetBone2dNode() Path.ToNode { //gd:SkeletonModification2DLookAt.get_bone2d_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_bone2d_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetBoneIndex(bone_idx int64) { //gd:SkeletonModification2DLookAt.set_bone_index
@@ -331,7 +331,7 @@ func (self class) SetTargetNode(target_nodepath Path.ToNode) { //gd:SkeletonModi
 }
 func (self class) GetTargetNode() Path.ToNode { //gd:SkeletonModification2DLookAt.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetAdditionalRotation(rotation float64) { //gd:SkeletonModification2DLookAt.set_additional_rotation

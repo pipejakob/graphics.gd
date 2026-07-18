@@ -208,7 +208,7 @@ func (self class) SetBlendShape(blend_shape BlendShapeEntry, weight float64) { /
 }
 func (self class) GetBlendShapes() Packed.Array[float32] { //gd:XRFaceTracker.get_blend_shapes
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_blend_shapes, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) SetBlendShapes(weights Packed.Array[float32]) { //gd:XRFaceTracker.set_blend_shapes

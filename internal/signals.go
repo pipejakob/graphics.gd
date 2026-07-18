@@ -40,7 +40,11 @@ func InternalSignal(signal SignalType.Any) Signal {
 	return pointers.Load[Signal](state)
 }
 
-type SignalProxy struct{}
+// SignalProxy is engine-backed proxy state for a signal, the anchor carries
+// the GC lifetime of goroutine-created signals — see anchors.go.
+type SignalProxy struct {
+	anchor *Signal
+}
 
 func NewSignalProxy() (SignalProxy, complex128) {
 	panic("NewSignalProxy: not implemented")

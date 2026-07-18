@@ -408,10 +408,10 @@ In this example a connection to same node is suppressed:
 */
 func (Instance) _is_node_hover_valid(impl func(ptr gdclass.Receiver, from_node string, from_port int, to_node string, to_port int) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var from_node = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var from_node = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(from_node))
 		var from_port = gd.UnsafeGet[int64](p_args, 1)
-		var to_node = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 2))))))
+		var to_node = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 2))))))
 		defer pointers.End(gd.InternalStringName(to_node))
 		var to_port = gd.UnsafeGet[int64](p_args, 3)
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
@@ -1181,10 +1181,10 @@ func (class) _get_connection_line(impl func(ptr gdclass.Receiver, from_position 
 }
 func (class) _is_node_hover_valid(impl func(ptr gdclass.Receiver, from_node String.Name, from_port int64, to_node String.Name, to_port int64) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var from_node = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
+		var from_node = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(from_node))
 		var from_port = gd.UnsafeGet[int64](p_args, 1)
-		var to_node = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 2))))))
+		var to_node = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 2))))))
 		defer pointers.End(gd.InternalStringName(to_node))
 		var to_port = gd.UnsafeGet[int64](p_args, 3)
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
@@ -1236,7 +1236,7 @@ func (self class) SetConnections(connections Array.Contains[Dictionary.Any]) { /
 }
 func (self class) GetConnectionList() Array.Contains[Dictionary.Any] { //gd:GraphEdit.get_connection_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_connection_list, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetConnectionCount(from_node String.Name, from_port int64) int64 { //gd:GraphEdit.get_connection_count
@@ -1252,17 +1252,17 @@ func (self class) GetClosestConnectionAtPoint(point Vector2.XY, max_distance flo
 		point        Vector2.XY
 		max_distance float64
 	}{point, max_distance})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetConnectionListFromNode(node String.Name) Array.Contains[Dictionary.Any] { //gd:GraphEdit.get_connection_list_from_node
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_connection_list_from_node, gdextension.SizeArray|(gdextension.SizeStringName<<4), &struct{ node gdextension.StringName }{pointers.Get(gd.InternalStringName(node))})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetConnectionsIntersectingWithRect(rect Rect2.PositionSize) Array.Contains[Dictionary.Any] { //gd:GraphEdit.get_connections_intersecting_with_rect
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_connections_intersecting_with_rect, gdextension.SizeArray|(gdextension.SizeRect2<<4), &struct{ rect Rect2.PositionSize }{rect})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClearConnections() { //gd:GraphEdit.clear_connections
@@ -1316,7 +1316,7 @@ func (self class) GetConnectionLine(from_node Vector2.XY, to_node Vector2.XY) Pa
 		from_node Vector2.XY
 		to_node   Vector2.XY
 	}{from_node, to_node})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) AttachGraphElementToFrame(element String.Name, frame_ String.Name) { //gd:GraphEdit.attach_graph_element_to_frame
@@ -1335,7 +1335,7 @@ func (self class) GetElementFrame(element String.Name) [1]gdclass.GraphFrame { /
 }
 func (self class) GetAttachedNodesOfFrame(frame_ String.Name) Array.Contains[String.Name] { //gd:GraphEdit.get_attached_nodes_of_frame
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_attached_nodes_of_frame, gdextension.SizeArray|(gdextension.SizeStringName<<4), &struct{ frame_ gdextension.StringName }{pointers.Get(gd.InternalStringName(frame_))})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetPanningScheme(scheme PanningScheme) { //gd:GraphEdit.set_panning_scheme
@@ -1519,7 +1519,7 @@ func (self class) SetTypeNames(type_names Dictionary.Any) { //gd:GraphEdit.set_t
 }
 func (self class) GetTypeNames() Dictionary.Any { //gd:GraphEdit.get_type_names
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_type_names, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetMenuHbox() [1]gdclass.HBoxContainer { //gd:GraphEdit.get_menu_hbox
@@ -1549,7 +1549,7 @@ func (self Instance) OnConnectionRequest(cb func(from_node string, from_port int
 }
 
 func (self class) ConnectionRequest() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_request`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_request`))))
 }
 
 /*
@@ -1567,7 +1567,7 @@ func (self Instance) OnDisconnectionRequest(cb func(from_node string, from_port 
 }
 
 func (self class) DisconnectionRequest() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`disconnection_request`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`disconnection_request`))))
 }
 
 /*
@@ -1583,7 +1583,7 @@ func (self Instance) OnConnectionToEmpty(cb func(from_node string, from_port int
 }
 
 func (self class) ConnectionToEmpty() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_to_empty`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_to_empty`))))
 }
 
 /*
@@ -1599,7 +1599,7 @@ func (self Instance) OnConnectionFromEmpty(cb func(to_node string, to_port int, 
 }
 
 func (self class) ConnectionFromEmpty() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_from_empty`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_from_empty`))))
 }
 
 /*
@@ -1615,7 +1615,7 @@ func (self Instance) OnConnectionDragStarted(cb func(from_node string, from_port
 }
 
 func (self class) ConnectionDragStarted() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_drag_started`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_drag_started`))))
 }
 
 /*
@@ -1631,7 +1631,7 @@ func (self Instance) OnConnectionDragEnded(cb func(), flags ...Signal.Flags) Ins
 }
 
 func (self class) ConnectionDragEnded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_drag_ended`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`connection_drag_ended`))))
 }
 
 /*
@@ -1650,7 +1650,7 @@ func (self Instance) OnCopyNodesRequest(cb func(), flags ...Signal.Flags) Instan
 }
 
 func (self class) CopyNodesRequest() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`copy_nodes_request`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`copy_nodes_request`))))
 }
 
 /*
@@ -1669,7 +1669,7 @@ func (self Instance) OnCutNodesRequest(cb func(), flags ...Signal.Flags) Instanc
 }
 
 func (self class) CutNodesRequest() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`cut_nodes_request`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`cut_nodes_request`))))
 }
 
 /*
@@ -1688,7 +1688,7 @@ func (self Instance) OnPasteNodesRequest(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) PasteNodesRequest() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`paste_nodes_request`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`paste_nodes_request`))))
 }
 
 /*
@@ -1707,7 +1707,7 @@ func (self Instance) OnDuplicateNodesRequest(cb func(), flags ...Signal.Flags) I
 }
 
 func (self class) DuplicateNodesRequest() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`duplicate_nodes_request`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`duplicate_nodes_request`))))
 }
 
 /*
@@ -1727,7 +1727,7 @@ func (self Instance) OnDeleteNodesRequest(cb func(nodes []string), flags ...Sign
 }
 
 func (self class) DeleteNodesRequest() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`delete_nodes_request`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`delete_nodes_request`))))
 }
 
 /*
@@ -1745,7 +1745,7 @@ func (self Instance) OnNodeSelected(cb func(node Node.Instance), flags ...Signal
 }
 
 func (self class) NodeSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`node_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`node_selected`))))
 }
 
 /*
@@ -1763,7 +1763,7 @@ func (self Instance) OnNodeDeselected(cb func(node Node.Instance), flags ...Sign
 }
 
 func (self class) NodeDeselected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`node_deselected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`node_deselected`))))
 }
 
 /*
@@ -1781,7 +1781,7 @@ func (self Instance) OnFrameRectChanged(cb func(frame_ GraphFrame.Instance, new_
 }
 
 func (self class) FrameRectChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`frame_rect_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`frame_rect_changed`))))
 }
 
 /*
@@ -1797,7 +1797,7 @@ func (self Instance) OnPopupRequest(cb func(at_position Vector2.XY), flags ...Si
 }
 
 func (self class) PopupRequest() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`popup_request`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`popup_request`))))
 }
 
 /*
@@ -1815,7 +1815,7 @@ func (self Instance) OnBeginNodeMove(cb func(), flags ...Signal.Flags) Instance 
 }
 
 func (self class) BeginNodeMove() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`begin_node_move`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`begin_node_move`))))
 }
 
 /*
@@ -1833,7 +1833,7 @@ func (self Instance) OnEndNodeMove(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) EndNodeMove() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`end_node_move`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`end_node_move`))))
 }
 
 /*
@@ -1854,7 +1854,7 @@ func (self Instance) OnGraphElementsLinkedToFrameRequest(cb func(elements []any,
 }
 
 func (self class) GraphElementsLinkedToFrameRequest() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`graph_elements_linked_to_frame_request`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`graph_elements_linked_to_frame_request`))))
 }
 
 /*
@@ -1870,7 +1870,7 @@ func (self Instance) OnScrollOffsetChanged(cb func(offset Vector2.XY), flags ...
 }
 
 func (self class) ScrollOffsetChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scroll_offset_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scroll_offset_changed`))))
 }
 
 func (o class) AsGraphEdit() Advanced                     { return Advanced(o) }

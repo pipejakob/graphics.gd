@@ -272,7 +272,7 @@ func (self class) SetTracker(tracker_name String.Name) { //gd:XRNode3D.set_track
 }
 func (self class) GetTracker() String.Name { //gd:XRNode3D.get_tracker
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_tracker, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetPoseName(pose String.Name) { //gd:XRNode3D.set_pose_name
@@ -280,7 +280,7 @@ func (self class) SetPoseName(pose String.Name) { //gd:XRNode3D.set_pose_name
 }
 func (self class) GetPoseName() String.Name { //gd:XRNode3D.get_pose_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_pose_name, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetShowWhenTracked(show bool) { //gd:XRNode3D.set_show_when_tracked
@@ -332,7 +332,7 @@ func (self Instance) OnTrackingChanged(cb func(tracking bool), flags ...Signal.F
 }
 
 func (self class) TrackingChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tracking_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tracking_changed`))))
 }
 
 func (o class) AsXRNode3D() Advanced              { return Advanced(o) }

@@ -1220,7 +1220,7 @@ Note: Your plugin must implement [GetPluginName], otherwise it will not be recog
 */
 func (Instance) _set_state(impl func(ptr gdclass.Receiver, state map[any]any)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var state = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 0)))))
+		var state = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 0)))))
 		defer pointers.End(gd.InternalDictionary(state))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, gd.DictionaryAs[map[any]any](state))
@@ -1279,7 +1279,7 @@ If the plugin has no scene-specific changes, you can ignore the calls when closi
 */
 func (Instance) _get_unsaved_status(impl func(ptr gdclass.Receiver, for_scene string) string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var for_scene = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var for_scene = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(for_scene))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, for_scene.String())
@@ -1404,9 +1404,9 @@ Note: Text that is printed in this method will not be visible in the editor's Ou
 */
 func (Instance) _run_scene(impl func(ptr gdclass.Receiver, scene string, args []string) []string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var scene = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var scene = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(scene))
-		var args = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))
+		var args = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))
 		defer pointers.End(gd.InternalPackedStrings(args))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, scene.String(), args.Strings())
@@ -2219,7 +2219,7 @@ func (class) _get_state(impl func(ptr gdclass.Receiver) Dictionary.Any) (cb gd.E
 }
 func (class) _set_state(impl func(ptr gdclass.Receiver, state Dictionary.Any)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var state = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 0)))))
+		var state = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 0)))))
 		defer pointers.End(gd.InternalDictionary(state))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, state)
@@ -2233,7 +2233,7 @@ func (class) _clear(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVi
 }
 func (class) _get_unsaved_status(impl func(ptr gdclass.Receiver, for_scene String.Readable) String.Readable) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var for_scene = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var for_scene = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(for_scene))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, for_scene)
@@ -2296,9 +2296,9 @@ func (class) _build(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassC
 }
 func (class) _run_scene(impl func(ptr gdclass.Receiver, scene String.Readable, args Packed.Strings) Packed.Strings) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var scene = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var scene = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(scene))
-		var args = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))
+		var args = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))
 		defer pointers.End(gd.InternalPackedStrings(args))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, scene, args)
@@ -2530,7 +2530,7 @@ func (self class) RemoveDebuggerPlugin(script [1]gdclass.EditorDebuggerPlugin) {
 }
 func (self class) GetPluginVersion() String.Readable { //gd:EditorPlugin.get_plugin_version
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_plugin_version, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 
@@ -2547,7 +2547,7 @@ func (self Instance) OnSceneChanged(cb func(scene_root Node.Instance), flags ...
 }
 
 func (self class) SceneChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scene_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scene_changed`))))
 }
 
 /*
@@ -2563,7 +2563,7 @@ func (self Instance) OnSceneClosed(cb func(filepath string), flags ...Signal.Fla
 }
 
 func (self class) SceneClosed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scene_closed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scene_closed`))))
 }
 
 /*
@@ -2579,7 +2579,7 @@ func (self Instance) OnMainScreenChanged(cb func(screen_name string), flags ...S
 }
 
 func (self class) MainScreenChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`main_screen_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`main_screen_changed`))))
 }
 
 /*
@@ -2597,7 +2597,7 @@ func (self Instance) OnResourceSaved(cb func(resource Resource.Instance), flags 
 }
 
 func (self class) ResourceSaved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_saved`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_saved`))))
 }
 
 /*
@@ -2615,7 +2615,7 @@ func (self Instance) OnSceneSaved(cb func(filepath string), flags ...Signal.Flag
 }
 
 func (self class) SceneSaved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scene_saved`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`scene_saved`))))
 }
 
 /*
@@ -2631,7 +2631,7 @@ func (self Instance) OnProjectSettingsChanged(cb func(), flags ...Signal.Flags) 
 }
 
 func (self class) ProjectSettingsChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`project_settings_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`project_settings_changed`))))
 }
 
 func (o class) AsEditorPlugin() Advanced         { return Advanced(o) }

@@ -259,77 +259,77 @@ func (self class) Didsave(params variant.Any) { //gd:GDScriptTextDocument.didSav
 }
 func (self class) Nativesymbol(params Dictionary.Any) variant.Any { //gd:GDScriptTextDocument.nativeSymbol
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.nativeSymbol, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Documentsymbol(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.documentSymbol
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.documentSymbol, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Completion(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.completion
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.completion, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Resolve(params Dictionary.Any) Dictionary.Any { //gd:GDScriptTextDocument.resolve
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.resolve, gdextension.SizeDictionary|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) Rename(params Dictionary.Any) Dictionary.Any { //gd:GDScriptTextDocument.rename
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.rename, gdextension.SizeDictionary|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) Preparerename(params Dictionary.Any) variant.Any { //gd:GDScriptTextDocument.prepareRename
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.prepareRename, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) References(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.references
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.references, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Foldingrange(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.foldingRange
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.foldingRange, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Codelens(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.codeLens
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.codeLens, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Documentlink(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.documentLink
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.documentLink, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Colorpresentation(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.colorPresentation
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.colorPresentation, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Hover(params Dictionary.Any) variant.Any { //gd:GDScriptTextDocument.hover
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.hover, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Definition(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.definition
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.definition, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Declaration(params Dictionary.Any) variant.Any { //gd:GDScriptTextDocument.declaration
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.declaration, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Signaturehelp(params Dictionary.Any) variant.Any { //gd:GDScriptTextDocument.signatureHelp
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.signatureHelp, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (o class) AsGDScriptTextDocument() Advanced         { return Advanced(o) }

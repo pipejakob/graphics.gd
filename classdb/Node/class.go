@@ -2786,7 +2786,7 @@ func (self class) PrintOrphanNodes() { //gd:Node.print_orphan_nodes
 }
 func (self class) GetOrphanNodeIds() Array.Contains[int64] { //gd:Node.get_orphan_node_ids
 	var r_ret = noescape.CallStatic[gdextension.Array](methods.get_orphan_node_ids, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[int64]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[int64](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AddSibling(sibling [1]gdclass.Node, force_readable_name bool) { //gd:Node.add_sibling
@@ -2800,7 +2800,7 @@ func (self class) SetName(name String.Name) { //gd:Node.set_name
 }
 func (self class) GetName() String.Name { //gd:Node.get_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_name, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) AddChild(node [1]gdclass.Node, force_readable_name bool, internal_ InternalMode) { //gd:Node.add_child
@@ -2827,7 +2827,7 @@ func (self class) GetChildCount(include_internal bool) int64 { //gd:Node.get_chi
 }
 func (self class) GetChildren(include_internal bool) Array.Contains[[1]gdclass.Node] { //gd:Node.get_children
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_children, gdextension.SizeArray|(gdextension.SizeBool<<4), &struct{ include_internal bool }{include_internal})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Node]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetChild(idx int64, include_internal bool) [1]gdclass.Node { //gd:Node.get_child
@@ -2874,7 +2874,7 @@ func (self class) FindChildren(pattern String.Readable, atype String.Readable, r
 		recursive bool
 		owned     bool
 	}{pointers.Get(gd.InternalString(pattern)), pointers.Get(gd.InternalString(atype)), recursive, owned})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Node]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) FindParent(pattern String.Readable) [1]gdclass.Node { //gd:Node.find_parent
@@ -2889,7 +2889,7 @@ func (self class) HasNodeAndResource(path Path.ToNode) bool { //gd:Node.has_node
 }
 func (self class) GetNodeAndResource(path Path.ToNode) Array.Any { //gd:Node.get_node_and_resource
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_node_and_resource, gdextension.SizeArray|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) IsInsideTree() bool { //gd:Node.is_inside_tree
@@ -2914,7 +2914,7 @@ func (self class) IsGreaterThan(node [1]gdclass.Node) bool { //gd:Node.is_greate
 }
 func (self class) GetPath() Path.ToNode { //gd:Node.get_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_path, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) GetPathTo(node [1]gdclass.Node, use_unique_path bool) Path.ToNode { //gd:Node.get_path_to
@@ -2922,7 +2922,7 @@ func (self class) GetPathTo(node [1]gdclass.Node, use_unique_path bool) Path.ToN
 		node            gdextension.Object
 		use_unique_path bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNode(node[0])[0])), use_unique_path})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) AddToGroup(group String.Name, persistent bool) { //gd:Node.add_to_group
@@ -2947,7 +2947,7 @@ func (self class) MoveChild(child_node [1]gdclass.Node, to_index int64) { //gd:N
 }
 func (self class) GetGroups() Array.Contains[String.Name] { //gd:Node.get_groups
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_groups, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Name]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetOwner(owner [1]gdclass.Node) { //gd:Node.set_owner
@@ -2971,12 +2971,12 @@ func (self class) PrintTreePretty() { //gd:Node.print_tree_pretty
 }
 func (self class) GetTreeString() String.Readable { //gd:Node.get_tree_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tree_string, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTreeStringPretty() String.Readable { //gd:Node.get_tree_string_pretty
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tree_string_pretty, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetSceneFilePath(scene_file_path String.Readable) { //gd:Node.set_scene_file_path
@@ -2984,7 +2984,7 @@ func (self class) SetSceneFilePath(scene_file_path String.Readable) { //gd:Node.
 }
 func (self class) GetSceneFilePath() String.Readable { //gd:Node.get_scene_file_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_scene_file_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) PropagateNotification(what int64) { //gd:Node.propagate_notification
@@ -3273,7 +3273,7 @@ func (self class) RpcConfig(method String.Name, config variant.Any) { //gd:Node.
 }
 func (self class) GetNodeRpcConfig() variant.Any { //gd:Node.get_node_rpc_config
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_node_rpc_config, gdextension.SizeVariant, &struct{}{})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetEditorDescription(editor_description String.Readable) { //gd:Node.set_editor_description
@@ -3281,7 +3281,7 @@ func (self class) SetEditorDescription(editor_description String.Readable) { //g
 }
 func (self class) GetEditorDescription() String.Readable { //gd:Node.get_editor_description
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_editor_description, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetUniqueNameInOwner(enable bool) { //gd:Node.set_unique_name_in_owner
@@ -3297,7 +3297,7 @@ func (self class) Atr(message String.Readable, context String.Name) String.Reada
 		message gdextension.String
 		context gdextension.StringName
 	}{pointers.Get(gd.InternalString(message)), pointers.Get(gd.InternalStringName(context))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) AtrN(message String.Readable, plural_message String.Name, n int64, context String.Name) String.Readable { //gd:Node.atr_n
@@ -3307,7 +3307,7 @@ func (self class) AtrN(message String.Readable, plural_message String.Name, n in
 		n              int64
 		context        gdextension.StringName
 	}{pointers.Get(gd.InternalString(message)), pointers.Get(gd.InternalStringName(plural_message)), n, pointers.Get(gd.InternalStringName(context))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) Rpc(method String.Name, args ...gd.Variant) Error.Code { //gd:Node.rpc
@@ -3399,7 +3399,7 @@ func (self Instance) OnReady(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Ready() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`ready`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`ready`))))
 }
 
 /*
@@ -3417,7 +3417,7 @@ func (self Instance) OnRenamed(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Renamed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`renamed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`renamed`))))
 }
 
 /*
@@ -3435,7 +3435,7 @@ func (self Instance) OnTreeEntered(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) TreeEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tree_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tree_entered`))))
 }
 
 /*
@@ -3455,7 +3455,7 @@ func (self Instance) OnTreeExiting(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) TreeExiting() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tree_exiting`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tree_exiting`))))
 }
 
 /*
@@ -3473,7 +3473,7 @@ func (self Instance) OnTreeExited(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) TreeExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tree_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tree_exited`))))
 }
 
 /*
@@ -3495,7 +3495,7 @@ func (self Instance) OnChildEnteredTree(cb func(node Instance), flags ...Signal.
 }
 
 func (self class) ChildEnteredTree() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`child_entered_tree`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`child_entered_tree`))))
 }
 
 /*
@@ -3516,7 +3516,7 @@ func (self Instance) OnChildExitingTree(cb func(node Instance), flags ...Signal.
 }
 
 func (self class) ChildExitingTree() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`child_exiting_tree`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`child_exiting_tree`))))
 }
 
 /*
@@ -3532,7 +3532,7 @@ func (self Instance) OnChildOrderChanged(cb func(), flags ...Signal.Flags) Insta
 }
 
 func (self class) ChildOrderChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`child_order_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`child_order_changed`))))
 }
 
 /*
@@ -3552,7 +3552,7 @@ func (self Instance) OnReplacingBy(cb func(node Instance), flags ...Signal.Flags
 }
 
 func (self class) ReplacingBy() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`replacing_by`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`replacing_by`))))
 }
 
 /*
@@ -3568,7 +3568,7 @@ func (self Instance) OnEditorDescriptionChanged(cb func(node Instance), flags ..
 }
 
 func (self class) EditorDescriptionChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`editor_description_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`editor_description_changed`))))
 }
 
 /*
@@ -3584,7 +3584,7 @@ func (self Instance) OnEditorStateChanged(cb func(), flags ...Signal.Flags) Inst
 }
 
 func (self class) EditorStateChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`editor_state_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`editor_state_changed`))))
 }
 
 func (o class) AsNode() Advanced         { return Advanced(o) }

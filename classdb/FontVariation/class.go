@@ -383,7 +383,7 @@ func (self class) SetVariationOpentype(coords Dictionary.Any) { //gd:FontVariati
 }
 func (self class) GetVariationOpentype() Dictionary.Any { //gd:FontVariation.get_variation_opentype
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_variation_opentype, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetVariationEmbolden(strength float64) { //gd:FontVariation.set_variation_embolden
@@ -437,7 +437,7 @@ func (self class) SetPaletteIndex(palette_index int64) { //gd:FontVariation.set_
 }
 func (self class) GetPaletteCustomColors() Packed.Array[Color.RGBA] { //gd:FontVariation.get_palette_custom_colors
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_palette_custom_colors, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Color.RGBA](Array.Through(gd.PackedProxy[gd.PackedColorArray, Color.RGBA]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) SetPaletteCustomColors(colors Packed.Array[Color.RGBA]) { //gd:FontVariation.set_palette_custom_colors

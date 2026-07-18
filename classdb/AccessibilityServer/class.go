@@ -844,7 +844,7 @@ func (self class) ElementSetMeta(id RID.Any, meta variant.Any) { //gd:Accessibil
 func (self class) ElementGetMeta(id RID.Any) variant.Any { //gd:AccessibilityServer.element_get_meta
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Variant](gdreference.GetObject(self.AsObject()[0]), methods.element_get_meta, gdextension.SizeVariant|(gdextension.SizeRID<<4), &struct{ id RID.Any }{id})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetWindowRect(window_id int64, rect_out Rect2.PositionSize, rect_in Rect2.PositionSize) { //gd:AccessibilityServer.set_window_rect

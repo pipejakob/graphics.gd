@@ -417,7 +417,7 @@ func (self class) GetInterface(idx int64) [1]gdclass.XRInterface { //gd:XRServer
 func (self class) GetInterfaces() Array.Contains[Dictionary.Any] { //gd:XRServer.get_interfaces
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.get_interfaces, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) FindInterface(name String.Readable) [1]gdclass.XRInterface { //gd:XRServer.find_interface
@@ -437,7 +437,7 @@ func (self class) RemoveTracker(tracker [1]gdclass.XRTracker) { //gd:XRServer.re
 func (self class) GetTrackers(tracker_types int64) Dictionary.Any { //gd:XRServer.get_trackers
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.get_trackers, gdextension.SizeDictionary|(gdextension.SizeInt<<4), &struct{ tracker_types int64 }{tracker_types})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetTracker(tracker_name String.Name) [1]gdclass.XRTracker { //gd:XRServer.get_tracker
@@ -471,7 +471,7 @@ func OnReferenceFrameChanged(cb func(), flags ...Signal.Flags) {
 
 func (self class) ReferenceFrameChanged() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`reference_frame_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`reference_frame_changed`))))
 }
 
 /*
@@ -488,7 +488,7 @@ func OnInterfaceAdded(cb func(interface_name string), flags ...Signal.Flags) {
 
 func (self class) InterfaceAdded() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`interface_added`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`interface_added`))))
 }
 
 /*
@@ -505,7 +505,7 @@ func OnInterfaceRemoved(cb func(interface_name string), flags ...Signal.Flags) {
 
 func (self class) InterfaceRemoved() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`interface_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`interface_removed`))))
 }
 
 /*
@@ -525,7 +525,7 @@ func OnTrackerAdded(cb func(tracker_name string, atype int), flags ...Signal.Fla
 
 func (self class) TrackerAdded() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tracker_added`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tracker_added`))))
 }
 
 /*
@@ -542,7 +542,7 @@ func OnTrackerUpdated(cb func(tracker_name string, atype int), flags ...Signal.F
 
 func (self class) TrackerUpdated() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tracker_updated`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tracker_updated`))))
 }
 
 /*
@@ -562,7 +562,7 @@ func OnTrackerRemoved(cb func(tracker_name string, atype int), flags ...Signal.F
 
 func (self class) TrackerRemoved() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tracker_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`tracker_removed`))))
 }
 
 /*
@@ -579,7 +579,7 @@ func OnWorldOriginChanged(cb func(), flags ...Signal.Flags) {
 
 func (self class) WorldOriginChanged() Signal.Any {
 	once.Do(singleton)
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`world_origin_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`world_origin_changed`))))
 }
 
 func (self class) Virtual(name string) reflect.Value {

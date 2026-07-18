@@ -200,7 +200,7 @@ func (Instance) _get_internal_option_visibility(impl func(ptr gdclass.Receiver, 
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var category = gd.UnsafeGet[int64](p_args, 0)
 		var for_animation = gd.UnsafeGet[bool](p_args, 1)
-		var option = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
+		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
 		defer pointers.End(gd.InternalString(option))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, int(category), for_animation, option.String())
@@ -219,7 +219,7 @@ Should return true if the 3D view of the import dialog needs to update when chan
 func (Instance) _get_internal_option_update_view_required(impl func(ptr gdclass.Receiver, category int, option string) any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var category = gd.UnsafeGet[int64](p_args, 0)
-		var option = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
+		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(option))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, int(category), option.String())
@@ -260,7 +260,7 @@ Override to add general import options. These will appear in the main import doc
 */
 func (Instance) _get_import_options(impl func(ptr gdclass.Receiver, path string)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var path = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, path.String())
@@ -272,10 +272,10 @@ Should return true to show the given option, false to hide the given option, or 
 */
 func (Instance) _get_option_visibility(impl func(ptr gdclass.Receiver, path string, for_animation bool, option string) any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var path = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		var for_animation = gd.UnsafeGet[bool](p_args, 1)
-		var option = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
+		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
 		defer pointers.End(gd.InternalString(option))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, path.String(), for_animation, option.String())
@@ -405,7 +405,7 @@ func (class) _get_internal_option_visibility(impl func(ptr gdclass.Receiver, cat
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var category = gd.UnsafeGet[int64](p_args, 0)
 		var for_animation = gd.UnsafeGet[bool](p_args, 1)
-		var option = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
+		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
 		defer pointers.End(gd.InternalString(option))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, category, for_animation, option)
@@ -420,7 +420,7 @@ func (class) _get_internal_option_visibility(impl func(ptr gdclass.Receiver, cat
 func (class) _get_internal_option_update_view_required(impl func(ptr gdclass.Receiver, category int64, option String.Readable) variant.Any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var category = gd.UnsafeGet[int64](p_args, 0)
-		var option = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
+		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(option))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, category, option)
@@ -450,7 +450,7 @@ func (class) _internal_process(impl func(ptr gdclass.Receiver, category int64, b
 }
 func (class) _get_import_options(impl func(ptr gdclass.Receiver, path String.Readable)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var path = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		impl(self, path)
@@ -458,10 +458,10 @@ func (class) _get_import_options(impl func(ptr gdclass.Receiver, path String.Rea
 }
 func (class) _get_option_visibility(impl func(ptr gdclass.Receiver, path String.Readable, for_animation bool, option String.Readable) variant.Any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var path = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
+		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		var for_animation = gd.UnsafeGet[bool](p_args, 1)
-		var option = String.Via(gd.StringProxy{}, pointers.Pack(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
+		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
 		defer pointers.End(gd.InternalString(option))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, path, for_animation, option)
@@ -494,7 +494,7 @@ func (class) _post_process(impl func(ptr gdclass.Receiver, scene [1]gdclass.Node
 
 func (self class) GetOptionValue(name String.Name) variant.Any { //gd:EditorScenePostImportPlugin.get_option_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_option_value, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) AddImportOption(name String.Readable, value variant.Any) { //gd:EditorScenePostImportPlugin.add_import_option

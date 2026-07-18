@@ -1073,7 +1073,7 @@ func (self class) GetFreezeMode() FreezeMode { //gd:RigidBody3D.get_freeze_mode
 }
 func (self class) GetCollidingBodies() Array.Contains[[1]gdclass.Node3D] { //gd:RigidBody3D.get_colliding_bodies
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_colliding_bodies, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Node3D]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node3D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 
@@ -1110,7 +1110,7 @@ func (self Instance) OnBodyShapeEntered(cb func(body_rid RID.Any, body Node.Inst
 }
 
 func (self class) BodyShapeEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_entered`))))
 }
 
 /*
@@ -1146,7 +1146,7 @@ func (self Instance) OnBodyShapeExited(cb func(body_rid RID.Any, body Node.Insta
 }
 
 func (self class) BodyShapeExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_shape_exited`))))
 }
 
 /*
@@ -1172,7 +1172,7 @@ func (self Instance) OnBodyEntered(cb func(body Node.Instance), flags ...Signal.
 }
 
 func (self class) BodyEntered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_entered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_entered`))))
 }
 
 /*
@@ -1198,7 +1198,7 @@ func (self Instance) OnBodyExited(cb func(body Node.Instance), flags ...Signal.F
 }
 
 func (self class) BodyExited() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_exited`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`body_exited`))))
 }
 
 /*
@@ -1218,7 +1218,7 @@ func (self Instance) OnSleepingStateChanged(cb func(), flags ...Signal.Flags) In
 }
 
 func (self class) SleepingStateChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`sleeping_state_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`sleeping_state_changed`))))
 }
 
 func (o class) AsRigidBody3D() Advanced                         { return Advanced(o) }

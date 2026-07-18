@@ -1169,7 +1169,7 @@ func (self class) SetData(data Packed.Bytes) { //gd:FontFile.set_data
 }
 func (self class) GetData() Packed.Bytes { //gd:FontFile.get_data
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_data, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.PackedProxy[gd.PackedByteArray, byte]{}, pointers.Pack(pointers.Let[gd.PackedByteArray](r_ret))))}
+	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SetFontName(name String.Readable) { //gd:FontFile.set_font_name
@@ -1322,7 +1322,7 @@ func (self class) RemoveCache(cache_index int64) { //gd:FontFile.remove_cache
 }
 func (self class) GetSizeCacheList(cache_index int64) Array.Contains[Vector2i.XY] { //gd:FontFile.get_size_cache_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_size_cache_list, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ cache_index int64 }{cache_index})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClearSizeCache(cache_index int64) { //gd:FontFile.clear_size_cache
@@ -1342,7 +1342,7 @@ func (self class) SetVariationCoordinates(cache_index int64, variation_coordinat
 }
 func (self class) GetVariationCoordinates(cache_index int64) Dictionary.Any { //gd:FontFile.get_variation_coordinates
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_variation_coordinates, gdextension.SizeDictionary|(gdextension.SizeInt<<4), &struct{ cache_index int64 }{cache_index})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetEmbolden(cache_index int64, strength float64) { //gd:FontFile.set_embolden
@@ -1531,7 +1531,7 @@ func (self class) GetTextureOffsets(cache_index int64, size Vector2i.XY, texture
 		size          Vector2i.XY
 		texture_index int64
 	}{cache_index, size, texture_index})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetGlyphList(cache_index int64, size Vector2i.XY) Packed.Array[int32] { //gd:FontFile.get_glyph_list
@@ -1539,7 +1539,7 @@ func (self class) GetGlyphList(cache_index int64, size Vector2i.XY) Packed.Array
 		cache_index int64
 		size        Vector2i.XY
 	}{cache_index, size})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ClearGlyphs(cache_index int64, size Vector2i.XY) { //gd:FontFile.clear_glyphs
@@ -1645,7 +1645,7 @@ func (self class) GetKerningList(cache_index int64, size int64) Array.Contains[V
 		cache_index int64
 		size        int64
 	}{cache_index, size})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClearKerningMap(cache_index int64, size int64) { //gd:FontFile.clear_kerning_map
@@ -1709,7 +1709,7 @@ func (self class) RemoveLanguageSupportOverride(language String.Readable) { //gd
 }
 func (self class) GetLanguageSupportOverrides() Packed.Strings { //gd:FontFile.get_language_support_overrides
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_language_support_overrides, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetScriptSupportOverride(script String.Readable, supported bool) { //gd:FontFile.set_script_support_override
@@ -1728,7 +1728,7 @@ func (self class) RemoveScriptSupportOverride(script String.Readable) { //gd:Fon
 }
 func (self class) GetScriptSupportOverrides() Packed.Strings { //gd:FontFile.get_script_support_overrides
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_script_support_overrides, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetOpentypeFeatureOverrides(overrides Dictionary.Any) { //gd:FontFile.set_opentype_feature_overrides
@@ -1736,7 +1736,7 @@ func (self class) SetOpentypeFeatureOverrides(overrides Dictionary.Any) { //gd:F
 }
 func (self class) GetOpentypeFeatureOverrides() Dictionary.Any { //gd:FontFile.get_opentype_feature_overrides
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_opentype_feature_overrides, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetGlyphIndex(size int64, char int64, variation_selector int64) int64 { //gd:FontFile.get_glyph_index

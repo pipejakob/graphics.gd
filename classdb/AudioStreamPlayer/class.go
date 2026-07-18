@@ -505,7 +505,7 @@ func (self class) SetBus(bus String.Name) { //gd:AudioStreamPlayer.set_bus
 }
 func (self class) GetBus() String.Name { //gd:AudioStreamPlayer.get_bus
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bus, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetAutoplay(enable bool) { //gd:AudioStreamPlayer.set_autoplay
@@ -577,7 +577,7 @@ func (self Instance) OnFinished(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) Finished() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`finished`))))
 }
 
 func (o class) AsAudioStreamPlayer() Advanced         { return Advanced(o) }

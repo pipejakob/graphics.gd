@@ -387,7 +387,7 @@ func (self class) SetSource(source String.Readable) { //gd:DPITexture.set_source
 }
 func (self class) GetSource() String.Readable { //gd:DPITexture.get_source
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_source, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetFixAlphaBorder(fix_alpha_border bool) { //gd:DPITexture.set_fix_alpha_border
@@ -427,7 +427,7 @@ func (self class) SetColorMap(color_map Dictionary.Any) { //gd:DPITexture.set_co
 }
 func (self class) GetColorMap() Dictionary.Any { //gd:DPITexture.get_color_map
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_color_map, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetSizeOverride(size Vector2i.XY) { //gd:DPITexture.set_size_override

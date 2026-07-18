@@ -219,7 +219,7 @@ func (self Instance) SetGodotBoneNode(value map[int]int) Instance { //gd:GLTFSke
 
 func (self class) GetJoints() Packed.Array[int32] { //gd:GLTFSkeleton.get_joints
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_joints, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetJoints(joints Packed.Array[int32]) { //gd:GLTFSkeleton.set_joints
@@ -229,7 +229,7 @@ func (self class) SetJoints(joints Packed.Array[int32]) { //gd:GLTFSkeleton.set_
 }
 func (self class) GetRoots() Packed.Array[int32] { //gd:GLTFSkeleton.get_roots
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_roots, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetRoots(roots Packed.Array[int32]) { //gd:GLTFSkeleton.set_roots
@@ -244,7 +244,7 @@ func (self class) GetGodotSkeleton() [1]gdclass.Skeleton3D { //gd:GLTFSkeleton.g
 }
 func (self class) GetUniqueNames() Array.Contains[String.Readable] { //gd:GLTFSkeleton.get_unique_names
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_unique_names, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Readable]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Readable](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetUniqueNames(unique_names Array.Contains[String.Readable]) { //gd:GLTFSkeleton.set_unique_names
@@ -252,7 +252,7 @@ func (self class) SetUniqueNames(unique_names Array.Contains[String.Readable]) {
 }
 func (self class) GetGodotBoneNode() Dictionary.Any { //gd:GLTFSkeleton.get_godot_bone_node
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_godot_bone_node, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetGodotBoneNode(godot_bone_node Dictionary.Any) { //gd:GLTFSkeleton.set_godot_bone_node

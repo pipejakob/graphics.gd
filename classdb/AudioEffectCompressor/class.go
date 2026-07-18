@@ -328,7 +328,7 @@ func (self class) SetSidechain(sidechain String.Name) { //gd:AudioEffectCompress
 }
 func (self class) GetSidechain() String.Name { //gd:AudioEffectCompressor.get_sidechain
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_sidechain, gdextension.SizeStringName, &struct{}{})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (o class) AsAudioEffectCompressor() Advanced           { return Advanced(o) }

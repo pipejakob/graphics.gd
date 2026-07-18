@@ -440,7 +440,7 @@ func (self class) SegmentIntersectsSegment(from_a Vector2.XY, to_a Vector2.XY, f
 		from_b Vector2.XY
 		to_b   Vector2.XY
 	}{from_a, to_a, from_b, to_b})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) LineIntersectsLine(from_a Vector2.XY, dir_a Vector2.XY, from_b Vector2.XY, dir_b Vector2.XY) variant.Any { //gd:Geometry2D.line_intersects_line
@@ -451,7 +451,7 @@ func (self class) LineIntersectsLine(from_a Vector2.XY, dir_a Vector2.XY, from_b
 		from_b Vector2.XY
 		dir_b  Vector2.XY
 	}{from_a, dir_a, from_b, dir_b})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetClosestPointsBetweenSegments(p1 Vector2.XY, q1 Vector2.XY, p2 Vector2.XY, q2 Vector2.XY) Packed.Array[Vector2.XY] { //gd:Geometry2D.get_closest_points_between_segments
@@ -462,7 +462,7 @@ func (self class) GetClosestPointsBetweenSegments(p1 Vector2.XY, q1 Vector2.XY, 
 		p2 Vector2.XY
 		q2 Vector2.XY
 	}{p1, q1, p2, q2})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) GetClosestPointToSegment(point Vector2.XY, s1 Vector2.XY, s2 Vector2.XY) Vector2.XY { //gd:Geometry2D.get_closest_point_to_segment
@@ -518,7 +518,7 @@ func (self class) TriangulatePolygon(polygon Packed.Array[Vector2.XY]) Packed.Ar
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.triangulate_polygon, gdextension.SizePackedArray|(gdextension.SizePackedArray<<4), &struct {
 		polygon gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) TriangulateDelaunay(points Packed.Array[Vector2.XY]) Packed.Array[int32] { //gd:Geometry2D.triangulate_delaunay
@@ -526,7 +526,7 @@ func (self class) TriangulateDelaunay(points Packed.Array[Vector2.XY]) Packed.Ar
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.triangulate_delaunay, gdextension.SizePackedArray|(gdextension.SizePackedArray<<4), &struct {
 		points gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](points))})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ConvexHull(points Packed.Array[Vector2.XY]) Packed.Array[Vector2.XY] { //gd:Geometry2D.convex_hull
@@ -534,7 +534,7 @@ func (self class) ConvexHull(points Packed.Array[Vector2.XY]) Packed.Array[Vecto
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.convex_hull, gdextension.SizePackedArray|(gdextension.SizePackedArray<<4), &struct {
 		points gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](points))})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) DecomposePolygonInConvex(polygon Packed.Array[Vector2.XY]) Array.Contains[Packed.Array[Vector2.XY]] { //gd:Geometry2D.decompose_polygon_in_convex
@@ -542,7 +542,7 @@ func (self class) DecomposePolygonInConvex(polygon Packed.Array[Vector2.XY]) Arr
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.decompose_polygon_in_convex, gdextension.SizeArray|(gdextension.SizePackedArray<<4), &struct {
 		polygon gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) MergePolygons(polygon_a Packed.Array[Vector2.XY], polygon_b Packed.Array[Vector2.XY]) Array.Contains[Packed.Array[Vector2.XY]] { //gd:Geometry2D.merge_polygons
@@ -551,7 +551,7 @@ func (self class) MergePolygons(polygon_a Packed.Array[Vector2.XY], polygon_b Pa
 		polygon_a gdextension.PackedArray[Vector2.XY]
 		polygon_b gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_a)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_b))})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClipPolygons(polygon_a Packed.Array[Vector2.XY], polygon_b Packed.Array[Vector2.XY]) Array.Contains[Packed.Array[Vector2.XY]] { //gd:Geometry2D.clip_polygons
@@ -560,7 +560,7 @@ func (self class) ClipPolygons(polygon_a Packed.Array[Vector2.XY], polygon_b Pac
 		polygon_a gdextension.PackedArray[Vector2.XY]
 		polygon_b gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_a)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_b))})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) IntersectPolygons(polygon_a Packed.Array[Vector2.XY], polygon_b Packed.Array[Vector2.XY]) Array.Contains[Packed.Array[Vector2.XY]] { //gd:Geometry2D.intersect_polygons
@@ -569,7 +569,7 @@ func (self class) IntersectPolygons(polygon_a Packed.Array[Vector2.XY], polygon_
 		polygon_a gdextension.PackedArray[Vector2.XY]
 		polygon_b gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_a)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_b))})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ExcludePolygons(polygon_a Packed.Array[Vector2.XY], polygon_b Packed.Array[Vector2.XY]) Array.Contains[Packed.Array[Vector2.XY]] { //gd:Geometry2D.exclude_polygons
@@ -578,7 +578,7 @@ func (self class) ExcludePolygons(polygon_a Packed.Array[Vector2.XY], polygon_b 
 		polygon_a gdextension.PackedArray[Vector2.XY]
 		polygon_b gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_a)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_b))})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClipPolylineWithPolygon(polyline Packed.Array[Vector2.XY], polygon Packed.Array[Vector2.XY]) Array.Contains[Packed.Array[Vector2.XY]] { //gd:Geometry2D.clip_polyline_with_polygon
@@ -587,7 +587,7 @@ func (self class) ClipPolylineWithPolygon(polyline Packed.Array[Vector2.XY], pol
 		polyline gdextension.PackedArray[Vector2.XY]
 		polygon  gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polyline)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) IntersectPolylineWithPolygon(polyline Packed.Array[Vector2.XY], polygon Packed.Array[Vector2.XY]) Array.Contains[Packed.Array[Vector2.XY]] { //gd:Geometry2D.intersect_polyline_with_polygon
@@ -596,7 +596,7 @@ func (self class) IntersectPolylineWithPolygon(polyline Packed.Array[Vector2.XY]
 		polyline gdextension.PackedArray[Vector2.XY]
 		polygon  gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polyline)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) OffsetPolygon(polygon Packed.Array[Vector2.XY], delta float64, join_type PolyJoinType) Array.Contains[Packed.Array[Vector2.XY]] { //gd:Geometry2D.offset_polygon
@@ -606,7 +606,7 @@ func (self class) OffsetPolygon(polygon Packed.Array[Vector2.XY], delta float64,
 		delta     float64
 		join_type PolyJoinType
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon)), delta, join_type})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) OffsetPolyline(polyline Packed.Array[Vector2.XY], delta float64, join_type PolyJoinType, end_type PolyEndType) Array.Contains[Packed.Array[Vector2.XY]] { //gd:Geometry2D.offset_polyline
@@ -617,7 +617,7 @@ func (self class) OffsetPolyline(polyline Packed.Array[Vector2.XY], delta float6
 		join_type PolyJoinType
 		end_type  PolyEndType
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polyline)), delta, join_type, end_type})
-	var ret = Array.Through(gd.ArrayProxy[Packed.Array[Vector2.XY]]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) MakeAtlas(sizes Packed.Array[Vector2.XY]) Dictionary.Any { //gd:Geometry2D.make_atlas
@@ -625,7 +625,7 @@ func (self class) MakeAtlas(sizes Packed.Array[Vector2.XY]) Dictionary.Any { //g
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.make_atlas, gdextension.SizeDictionary|(gdextension.SizePackedArray<<4), &struct {
 		sizes gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](sizes))})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) BresenhamLine(from Vector2i.XY, to Vector2i.XY) Array.Contains[Vector2i.XY] { //gd:Geometry2D.bresenham_line
@@ -634,7 +634,7 @@ func (self class) BresenhamLine(from Vector2i.XY, to Vector2i.XY) Array.Contains
 		from Vector2i.XY
 		to   Vector2i.XY
 	}{from, to})
-	var ret = Array.Through(gd.ArrayProxy[Vector2i.XY]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 

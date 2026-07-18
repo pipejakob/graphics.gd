@@ -59,7 +59,8 @@ func generate_startup_cgo() error {
 	fmt.Fprint(f, "//go:build cgo\n\n")
 	fmt.Fprint(f, "package startup\n\n")
 	fmt.Fprint(f, "import \"unsafe\"\n")
-	fmt.Fprint(f, "import \"graphics.gd/internal/gdextension\"\n\n")
+	fmt.Fprint(f, "import \"graphics.gd/internal/gdextension\"\n")
+	fmt.Fprint(f, "import \"graphics.gd/internal/threadcheck\"\n\n")
 	fmt.Fprint(f, "// #include \"../gdextension_interface.h\"\n")
 	fmt.Fprint(f, "// #include \"../gd.h\"\n")
 	fmt.Fprint(f, "// #include <stdlib.h>\n")
@@ -77,7 +78,10 @@ func generate_startup_cgo() error {
 			}
 		}
 		fmt.Fprintf(f, "%s", out)
-		fmt.Fprintf(f, " {\n\t")
+		// mark the current OS thread as engine-owned, so that calls back into
+		// the engine from this thread are dispatched directly instead of being
+		// routed through the cross-thread dispatch ring.
+		fmt.Fprintf(f, " {\n\tthreadcheck.Mark()\n\t")
 		if result := getReturn(fn.Type); fn.NumOut() == 1 && result != nil {
 			fmt.Fprintf(f, "return %s(", cgoTypeOf(result))
 		} else if fn.NumOut() > 0 && result != nil {
@@ -157,6 +161,10 @@ func generate_startup_cgo() error {
 			fmt.Fprintf(f, " )")
 		}
 		fmt.Fprintf(f, " {\n")
+		// bracket the engine crossing so that any engine→Go callbacks that
+		// fire inside it are recognised as re-entrant on a Go-owned thread
+		// and do not mark it as engine-owned (see threadcheck.Mark).
+		fmt.Fprintf(f, "\t\tthreadcheck.EnterCall()\n")
 		if result := getReturn(fn.Type); result != nil {
 			if result.Kind() == reflect.Array && result.Len() == 1 {
 				fmt.Fprintf(f, "\t\tresult = %s{%s(", goTypeOf(result), goTypeOf(result.Elem()))
@@ -195,6 +203,7 @@ func generate_startup_cgo() error {
 			}
 		}
 		fmt.Fprintln(f)
+		fmt.Fprintf(f, "\t\tthreadcheck.LeaveCall()\n")
 		fmt.Fprintf(f, "\t\treturn\n")
 		fmt.Fprintf(f, "\t}\n")
 	}

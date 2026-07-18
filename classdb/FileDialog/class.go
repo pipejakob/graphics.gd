@@ -848,7 +848,7 @@ func (self class) SetFilters(filters Packed.Strings) { //gd:FileDialog.set_filte
 }
 func (self class) GetFilters() Packed.Strings { //gd:FileDialog.get_filters
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_filters, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) ClearFilenameFilter() { //gd:FileDialog.clear_filename_filter
@@ -859,17 +859,17 @@ func (self class) SetFilenameFilter(filter String.Readable) { //gd:FileDialog.se
 }
 func (self class) GetFilenameFilter() String.Readable { //gd:FileDialog.get_filename_filter
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_filename_filter, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetOptionName(option int64) String.Readable { //gd:FileDialog.get_option_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_option_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ option int64 }{option})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetOptionValues(option int64) Packed.Strings { //gd:FileDialog.get_option_values
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_option_values, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ option int64 }{option})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetOptionDefault(option int64) int64 { //gd:FileDialog.get_option_default
@@ -912,22 +912,22 @@ func (self class) AddOption(name String.Readable, values Packed.Strings, default
 }
 func (self class) GetSelectedOptions() Dictionary.Any { //gd:FileDialog.get_selected_options
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_selected_options, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetCurrentDir() String.Readable { //gd:FileDialog.get_current_dir
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_current_dir, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCurrentFile() String.Readable { //gd:FileDialog.get_current_file
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_current_file, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCurrentPath() String.Readable { //gd:FileDialog.get_current_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_current_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetCurrentDir(dir String.Readable) { //gd:FileDialog.set_current_dir
@@ -986,7 +986,7 @@ func (self class) SetRootSubfolder(dir String.Readable) { //gd:FileDialog.set_ro
 }
 func (self class) GetRootSubfolder() String.Readable { //gd:FileDialog.get_root_subfolder
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_root_subfolder, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetShowHiddenFiles(show bool) { //gd:FileDialog.set_show_hidden_files
@@ -1026,7 +1026,7 @@ func (self class) SetFavoriteList(favorites Packed.Strings) { //gd:FileDialog.se
 }
 func (self class) GetFavoriteList() Packed.Strings { //gd:FileDialog.get_favorite_list
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.get_favorite_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetRecentList(recents Packed.Strings) { //gd:FileDialog.set_recent_list
@@ -1036,7 +1036,7 @@ func (self class) SetRecentList(recents Packed.Strings) { //gd:FileDialog.set_re
 }
 func (self class) GetRecentList() Packed.Strings { //gd:FileDialog.get_recent_list
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.get_recent_list, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetGetIconCallback(callback Callable.Function) { //gd:FileDialog.set_get_icon_callback
@@ -1065,7 +1065,7 @@ func (self Instance) OnFileSelected(cb func(path string), flags ...Signal.Flags)
 }
 
 func (self class) FileSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`file_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`file_selected`))))
 }
 
 /*
@@ -1081,7 +1081,7 @@ func (self Instance) OnFilesSelected(cb func(paths []string), flags ...Signal.Fl
 }
 
 func (self class) FilesSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`files_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`files_selected`))))
 }
 
 /*
@@ -1097,7 +1097,7 @@ func (self Instance) OnDirSelected(cb func(dir string), flags ...Signal.Flags) I
 }
 
 func (self class) DirSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`dir_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`dir_selected`))))
 }
 
 /*
@@ -1113,7 +1113,7 @@ func (self Instance) OnFilenameFilterChanged(cb func(filter string), flags ...Si
 }
 
 func (self class) FilenameFilterChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`filename_filter_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`filename_filter_changed`))))
 }
 
 func (o class) AsFileDialog() Advanced         { return Advanced(o) }

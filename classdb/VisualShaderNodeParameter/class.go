@@ -212,7 +212,7 @@ func (self class) SetParameterName(name String.Readable) { //gd:VisualShaderNode
 }
 func (self class) GetParameterName() String.Readable { //gd:VisualShaderNodeParameter.get_parameter_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_parameter_name, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetQualifier(qualifier Qualifier) { //gd:VisualShaderNodeParameter.set_qualifier

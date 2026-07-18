@@ -208,7 +208,7 @@ func (self class) GetExpandedContainer() [1]gdclass.FoldableContainer { //gd:Fol
 }
 func (self class) GetContainers() Array.Contains[[1]gdclass.FoldableContainer] { //gd:FoldableGroup.get_containers
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_containers, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.FoldableContainer]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.FoldableContainer](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetAllowFoldingAll(enabled bool) { //gd:FoldableGroup.set_allow_folding_all
@@ -233,7 +233,7 @@ func (self Instance) OnExpanded(cb func(container FoldableContainer.Instance), f
 }
 
 func (self class) Expanded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`expanded`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`expanded`))))
 }
 
 func (o class) AsFoldableGroup() Advanced             { return Advanced(o) }

@@ -219,7 +219,7 @@ func (self class) SetResultValue(result_value variant.Any) { //gd:OpenXRFutureRe
 }
 func (self class) GetResultValue() variant.Any { //gd:OpenXRFutureResult.get_result_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_result_value, gdextension.SizeVariant, &struct{}{})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 
@@ -236,7 +236,7 @@ func (self Instance) OnCompleted(cb func(result Instance), flags ...Signal.Flags
 }
 
 func (self class) Completed() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`completed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`completed`))))
 }
 
 func (o class) AsOpenXRFutureResult() Advanced         { return Advanced(o) }

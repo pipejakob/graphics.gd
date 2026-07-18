@@ -249,7 +249,7 @@ func (self class) SetAnimationPath(path Path.ToNode) { //gd:RootMotionView.set_a
 }
 func (self class) GetAnimationPath() Path.ToNode { //gd:RootMotionView.get_animation_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_animation_path, gdextension.SizeNodePath, &struct{}{})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetColor(color Color.RGBA) { //gd:RootMotionView.set_color

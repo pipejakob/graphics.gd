@@ -48,9 +48,7 @@ func DictionaryFromMap[V any](val V) DictionaryType.Any {
 }
 
 func NewDictionaryProxy[K comparable, V any]() (DictionaryProxy[K, V], complex128) {
-	var dict = NewDictionary()
-	var pack = pointers.Pack(dict)
-	return DictionaryProxy[K, V]{}, pack
+	return WrapDictionary[K, V](NewDictionary())
 }
 
 func DictionaryAs[T any](dictionary DictionaryType.Any) T {
@@ -69,7 +67,11 @@ func DictionaryAs[T any](dictionary DictionaryType.Any) T {
 	return result.Interface().(T)
 }
 
-type DictionaryProxy[K comparable, V any] struct{}
+// DictionaryProxy is engine-backed proxy state for a dictionary, the anchor
+// carries the GC lifetime of goroutine-created dictionaries — see anchors.go.
+type DictionaryProxy[K comparable, V any] struct {
+	anchor *Dictionary
+}
 
 func (DictionaryProxy[K, V]) Index(state complex128, key K) V {
 	dict := pointers.Load[Dictionary](state)
@@ -140,6 +142,6 @@ func (DictionaryProxy[K, V]) IsReadOnly(state complex128) bool {
 func (DictionaryProxy[K, V]) MakeReadOnly(state complex128) {
 	pointers.Load[Dictionary](state).MakeReadOnly()
 }
-func (DictionaryProxy[K, V]) Any(state complex128) DictionaryType.Any {
-	return DictionaryType.Through(DictionaryProxy[VariantPkg.Any, VariantPkg.Any]{}, state)
+func (proxy DictionaryProxy[K, V]) Any(state complex128) DictionaryType.Any {
+	return DictionaryType.Through(DictionaryProxy[VariantPkg.Any, VariantPkg.Any]{anchor: proxy.anchor}, state)
 }

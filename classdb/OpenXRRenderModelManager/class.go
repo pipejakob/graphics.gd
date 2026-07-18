@@ -204,7 +204,7 @@ func (self class) SetTracker(tracker RenderModelTracker) { //gd:OpenXRRenderMode
 }
 func (self class) GetMakeLocalToPose() String.Readable { //gd:OpenXRRenderModelManager.get_make_local_to_pose
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_make_local_to_pose, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetMakeLocalToPose(make_local_to_pose String.Readable) { //gd:OpenXRRenderModelManager.set_make_local_to_pose
@@ -224,7 +224,7 @@ func (self Instance) OnRenderModelAdded(cb func(render_model OpenXRRenderModel.I
 }
 
 func (self class) RenderModelAdded() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_added`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_added`))))
 }
 
 /*
@@ -240,7 +240,7 @@ func (self Instance) OnRenderModelRemoved(cb func(render_model OpenXRRenderModel
 }
 
 func (self class) RenderModelRemoved() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_removed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`render_model_removed`))))
 }
 
 func (o class) AsOpenXRRenderModelManager() Advanced         { return Advanced(o) }

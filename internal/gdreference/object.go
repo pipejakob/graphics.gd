@@ -5,8 +5,8 @@ import (
 	"unsafe"
 
 	"graphics.gd/internal/gdextension"
+	"graphics.gd/internal/ring"
 	"graphics.gd/internal/threadcheck"
-	"graphics.gd/variant/Callable"
 )
 
 var now uint64 = 2
@@ -110,9 +110,14 @@ func OwnObject(obj gdextension.Object, free func(gdextension.Object)) Object {
 	} else {
 		sentinel = new(object)
 		cleanup := runtime.AddCleanup(sentinel, func(obj gdextension.Object) {
-			Callable.Defer(Callable.New(func() {
+			// Queue the free behind any still-buffered cross-thread calls
+			// that reference the object: the wrapper was necessarily alive
+			// when those were recorded, so FIFO order runs the free after
+			// every queued use. A deferred callable would instead run at
+			// the next Callable.Cycle, which can precede the frame drain.
+			ring.Threads.Defer(func() {
 				free(obj)
-			}))
+			})
 		}, obj)
 		*sentinel = *(*object)(unsafe.Pointer(&cleanup))
 	}
@@ -178,6 +183,12 @@ func AskObject(obj Object) (gdextension.Object, Type) {
 		if *obj.sentinel == obj.assigned {
 			return 0, TypeThread
 		}
+		if obj.sentinel.inEngine == 0 && obj.sentinel.objectID != 0 {
+			// Ownership was transferred to the engine (see EndObject):
+			// borrow the object back through the object database, which
+			// returns 0 if the engine has since freed it.
+			return gdextension.Host.Objects.Lookup(obj.sentinel.objectID), TypeBorrow
+		}
 		return obj.assigned.inEngine, TypeThread
 	}
 	if obj.sentinel.objectID == obj.assigned.objectID {
@@ -199,8 +210,15 @@ func EndObject(obj Object) (gdextension.Object, bool) {
 	case TypeThread:
 		cleanup := (*runtime.Cleanup)(unsafe.Pointer(obj.sentinel))
 		cleanup.Stop()
-		//fmt.Println("Stopped cleanup for thread", raw, cleanup)
-		*obj.sentinel = obj.assigned
+		// The engine owns the object now: leave the wrapper usable as a
+		// looked-up borrow (parity with the pooled main-thread case) so a
+		// goroutine can keep calling methods on a node it has handed over,
+		// e.g. after adding it to the scene tree. The zero inEngine field
+		// distinguishes this state from live cleanup bits, whose first word
+		// is a non-zero cleanup id.
+		var id gdextension.ObjectID
+		gdextension.Host.Objects.ID.Get(raw, gdextension.CallReturns[gdextension.ObjectID](&id))
+		*obj.sentinel = object{inEngine: 0, objectID: id}
 	case TypeUnsafe, TypePinned:
 	case TypeStatic:
 		obj.sentinel.inEngine = 0

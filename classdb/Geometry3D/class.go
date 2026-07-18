@@ -302,13 +302,13 @@ func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObj
 func (self class) ComputeConvexMeshPoints(planes Array.Contains[Plane.NormalD]) Packed.Array[Vector3.XYZ] { //gd:Geometry3D.compute_convex_mesh_points
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.compute_convex_mesh_points, gdextension.SizePackedArray|(gdextension.SizeArray<<4), &struct{ planes gdextension.Array }{pointers.Get(gd.InternalArray(planes))})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) BuildBoxPlanes(extents Vector3.XYZ) Array.Contains[Plane.NormalD] { //gd:Geometry3D.build_box_planes
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.build_box_planes, gdextension.SizeArray|(gdextension.SizeVector3<<4), &struct{ extents Vector3.XYZ }{extents})
-	var ret = Array.Through(gd.ArrayProxy[Plane.NormalD]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Plane.NormalD](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) BuildCylinderPlanes(radius float64, height float64, sides int64, axis Vector3.Axis) Array.Contains[Plane.NormalD] { //gd:Geometry3D.build_cylinder_planes
@@ -319,7 +319,7 @@ func (self class) BuildCylinderPlanes(radius float64, height float64, sides int6
 		sides  int64
 		axis   Vector3.Axis
 	}{radius, height, sides, axis})
-	var ret = Array.Through(gd.ArrayProxy[Plane.NormalD]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Plane.NormalD](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) BuildCapsulePlanes(radius float64, height float64, sides int64, lats int64, axis Vector3.Axis) Array.Contains[Plane.NormalD] { //gd:Geometry3D.build_capsule_planes
@@ -331,7 +331,7 @@ func (self class) BuildCapsulePlanes(radius float64, height float64, sides int64
 		lats   int64
 		axis   Vector3.Axis
 	}{radius, height, sides, lats, axis})
-	var ret = Array.Through(gd.ArrayProxy[Plane.NormalD]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Plane.NormalD](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetClosestPointsBetweenSegments(p1 Vector3.XYZ, p2 Vector3.XYZ, q1 Vector3.XYZ, q2 Vector3.XYZ) Packed.Array[Vector3.XYZ] { //gd:Geometry3D.get_closest_points_between_segments
@@ -342,7 +342,7 @@ func (self class) GetClosestPointsBetweenSegments(p1 Vector3.XYZ, p2 Vector3.XYZ
 		q1 Vector3.XYZ
 		q2 Vector3.XYZ
 	}{p1, p2, q1, q2})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) GetClosestPointToSegment(point Vector3.XYZ, s1 Vector3.XYZ, s2 Vector3.XYZ) Vector3.XYZ { //gd:Geometry3D.get_closest_point_to_segment
@@ -385,7 +385,7 @@ func (self class) RayIntersectsTriangle(from Vector3.XYZ, dir Vector3.XYZ, a Vec
 		b    Vector3.XYZ
 		c    Vector3.XYZ
 	}{from, dir, a, b, c})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SegmentIntersectsTriangle(from Vector3.XYZ, to Vector3.XYZ, a Vector3.XYZ, b Vector3.XYZ, c Vector3.XYZ) variant.Any { //gd:Geometry3D.segment_intersects_triangle
@@ -397,7 +397,7 @@ func (self class) SegmentIntersectsTriangle(from Vector3.XYZ, to Vector3.XYZ, a 
 		b    Vector3.XYZ
 		c    Vector3.XYZ
 	}{from, to, a, b, c})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SegmentIntersectsSphere(from Vector3.XYZ, to Vector3.XYZ, sphere_position Vector3.XYZ, sphere_radius float64) Packed.Array[Vector3.XYZ] { //gd:Geometry3D.segment_intersects_sphere
@@ -408,7 +408,7 @@ func (self class) SegmentIntersectsSphere(from Vector3.XYZ, to Vector3.XYZ, sphe
 		sphere_position Vector3.XYZ
 		sphere_radius   float64
 	}{from, to, sphere_position, sphere_radius})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) SegmentIntersectsCylinder(from Vector3.XYZ, to Vector3.XYZ, height float64, radius float64) Packed.Array[Vector3.XYZ] { //gd:Geometry3D.segment_intersects_cylinder
@@ -419,7 +419,7 @@ func (self class) SegmentIntersectsCylinder(from Vector3.XYZ, to Vector3.XYZ, he
 		height float64
 		radius float64
 	}{from, to, height, radius})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) SegmentIntersectsConvex(from Vector3.XYZ, to Vector3.XYZ, planes Array.Contains[Plane.NormalD]) Packed.Array[Vector3.XYZ] { //gd:Geometry3D.segment_intersects_convex
@@ -429,7 +429,7 @@ func (self class) SegmentIntersectsConvex(from Vector3.XYZ, to Vector3.XYZ, plan
 		to     Vector3.XYZ
 		planes gdextension.Array
 	}{from, to, pointers.Get(gd.InternalArray(planes))})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) ClipPolygon(points Packed.Array[Vector3.XYZ], plane Plane.NormalD) Packed.Array[Vector3.XYZ] { //gd:Geometry3D.clip_polygon
@@ -438,7 +438,7 @@ func (self class) ClipPolygon(points Packed.Array[Vector3.XYZ], plane Plane.Norm
 		points gdextension.PackedArray[Vector3.XYZ]
 		plane  Plane.NormalD
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](points)), plane})
-	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.PackedProxy[gd.PackedVector3Array, Vector3.XYZ]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) TetrahedralizeDelaunay(points Packed.Array[Vector3.XYZ]) Packed.Array[int32] { //gd:Geometry3D.tetrahedralize_delaunay
@@ -446,7 +446,7 @@ func (self class) TetrahedralizeDelaunay(points Packed.Array[Vector3.XYZ]) Packe
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.tetrahedralize_delaunay, gdextension.SizePackedArray|(gdextension.SizePackedArray<<4), &struct {
 		points gdextension.PackedArray[Vector3.XYZ]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](points))})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 

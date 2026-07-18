@@ -379,7 +379,7 @@ func (self class) GetNodePosition(atype Type, id int64) Vector2.XY { //gd:Visual
 }
 func (self class) GetNodeList(atype Type) Packed.Array[int32] { //gd:VisualShader.get_node_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_node_list, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ atype Type }{atype})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetValidNodeId(atype Type) int64 { //gd:VisualShader.get_valid_node_id
@@ -453,7 +453,7 @@ func (self class) ConnectNodesForced(atype Type, from_node int64, from_port int6
 }
 func (self class) GetNodeConnections(atype Type) Array.Contains[Dictionary.Any] { //gd:VisualShader.get_node_connections
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_node_connections, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ atype Type }{atype})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AttachNodeToFrame(atype Type, id int64, frame_ int64) { //gd:VisualShader.attach_node_to_frame

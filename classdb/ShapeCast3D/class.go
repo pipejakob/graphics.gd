@@ -678,7 +678,7 @@ func (self class) IsCollideWithBodiesEnabled() bool { //gd:ShapeCast3D.is_collid
 }
 func (self class) GetCollisionResult() Array.Any { //gd:ShapeCast3D.get_collision_result
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_collision_result, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetDebugShapeCustomColor(debug_shape_custom_color Color.RGBA) { //gd:ShapeCast3D.set_debug_shape_custom_color

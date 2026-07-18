@@ -553,7 +553,7 @@ func (self class) SetRootBoneName(index int64, bone_name String.Readable) { //gd
 }
 func (self class) GetRootBoneName(index int64) String.Readable { //gd:BoneTwistDisperser3D.get_root_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_root_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetRootBone(index int64, bone int64) { //gd:BoneTwistDisperser3D.set_root_bone
@@ -575,7 +575,7 @@ func (self class) SetEndBoneName(index int64, bone_name String.Readable) { //gd:
 }
 func (self class) GetEndBoneName(index int64) String.Readable { //gd:BoneTwistDisperser3D.get_end_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_end_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetEndBone(index int64, bone int64) { //gd:BoneTwistDisperser3D.set_end_bone
@@ -591,7 +591,7 @@ func (self class) GetEndBone(index int64) int64 { //gd:BoneTwistDisperser3D.get_
 }
 func (self class) GetReferenceBoneName(index int64) String.Readable { //gd:BoneTwistDisperser3D.get_reference_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_reference_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetReferenceBone(index int64) int64 { //gd:BoneTwistDisperser3D.get_reference_bone
@@ -681,7 +681,7 @@ func (self class) GetJointBoneName(index int64, joint int64) String.Readable { /
 		index int64
 		joint int64
 	}{index, joint})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetJointBone(index int64, joint int64) int64 { //gd:BoneTwistDisperser3D.get_joint_bone

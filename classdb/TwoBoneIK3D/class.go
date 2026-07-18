@@ -465,7 +465,7 @@ func (self class) SetTargetNode(index int64, target_node Path.ToNode) { //gd:Two
 }
 func (self class) GetTargetNode(index int64) Path.ToNode { //gd:TwoBoneIK3D.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetPoleNode(index int64, pole_node Path.ToNode) { //gd:TwoBoneIK3D.set_pole_node
@@ -476,7 +476,7 @@ func (self class) SetPoleNode(index int64, pole_node Path.ToNode) { //gd:TwoBone
 }
 func (self class) GetPoleNode(index int64) Path.ToNode { //gd:TwoBoneIK3D.get_pole_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_pole_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = Path.ToNode(String.Via(gd.NodePathProxy{}, pointers.Pack(pointers.New[gd.NodePath](r_ret))))
+	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetRootBoneName(index int64, bone_name String.Readable) { //gd:TwoBoneIK3D.set_root_bone_name
@@ -487,7 +487,7 @@ func (self class) SetRootBoneName(index int64, bone_name String.Readable) { //gd
 }
 func (self class) GetRootBoneName(index int64) String.Readable { //gd:TwoBoneIK3D.get_root_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_root_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetRootBone(index int64, bone int64) { //gd:TwoBoneIK3D.set_root_bone
@@ -509,7 +509,7 @@ func (self class) SetMiddleBoneName(index int64, bone_name String.Readable) { //
 }
 func (self class) GetMiddleBoneName(index int64) String.Readable { //gd:TwoBoneIK3D.get_middle_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_middle_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetMiddleBone(index int64, bone int64) { //gd:TwoBoneIK3D.set_middle_bone
@@ -553,7 +553,7 @@ func (self class) SetEndBoneName(index int64, bone_name String.Readable) { //gd:
 }
 func (self class) GetEndBoneName(index int64) String.Readable { //gd:TwoBoneIK3D.get_end_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_end_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetEndBone(index int64, bone int64) { //gd:TwoBoneIK3D.set_end_bone

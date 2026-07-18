@@ -330,7 +330,7 @@ func (self class) FromDictionary(dictionary Dictionary.Any) [1]gdclass.GLTFLight
 }
 func (self class) ToDictionary() Dictionary.Any { //gd:GLTFLight.to_dictionary
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.to_dictionary, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetColor() Color.RGBA { //gd:GLTFLight.get_color
@@ -351,7 +351,7 @@ func (self class) SetIntensity(intensity float64) { //gd:GLTFLight.set_intensity
 }
 func (self class) GetLightType() String.Readable { //gd:GLTFLight.get_light_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_light_type, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetLightType(light_type String.Readable) { //gd:GLTFLight.set_light_type
@@ -383,7 +383,7 @@ func (self class) SetOuterConeAngle(outer_cone_angle float64) { //gd:GLTFLight.s
 }
 func (self class) GetAdditionalData(extension_name String.Name) variant.Any { //gd:GLTFLight.get_additional_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_additional_data, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ extension_name gdextension.StringName }{pointers.Get(gd.InternalStringName(extension_name))})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetAdditionalData(extension_name String.Name, additional_data variant.Any) { //gd:GLTFLight.set_additional_data

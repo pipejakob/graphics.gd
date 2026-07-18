@@ -243,7 +243,7 @@ func (self class) SetBindName(bind_index int64, name String.Name) { //gd:Skin.se
 }
 func (self class) GetBindName(bind_index int64) String.Name { //gd:Skin.get_bind_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bind_name, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ bind_index int64 }{bind_index})
-	var ret = String.Name(String.Via(gd.StringNameProxy{}, pointers.Pack(pointers.New[gd.StringName](r_ret))))
+	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetBindBone(bind_index int64, bone int64) { //gd:Skin.set_bind_bone

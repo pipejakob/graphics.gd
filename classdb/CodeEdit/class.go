@@ -306,7 +306,7 @@ Both 'candidates' and the return is an slice of data structure, see [GetCodeComp
 */
 func (Instance) _filter_code_completion_candidates(impl func(ptr gdclass.Receiver, candidates [][]CompletionInfo) [][]CompletionInfo) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var candidates = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
+		var candidates = Array.Through(gd.WrapArray[Dictionary.Any](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(candidates))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, gd.ArrayAs[[][]CompletionInfo](gd.InternalArray(candidates)))
@@ -1401,7 +1401,7 @@ func (class) _request_code_completion(impl func(ptr gdclass.Receiver, force bool
 }
 func (class) _filter_code_completion_candidates(impl func(ptr gdclass.Receiver, candidates Array.Contains[Dictionary.Any]) Array.Contains[Dictionary.Any]) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var candidates = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
+		var candidates = Array.Through(gd.WrapArray[Dictionary.Any](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(candidates))
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
 		ret := impl(self, candidates)
@@ -1443,7 +1443,7 @@ func (self class) SetAutoIndentPrefixes(prefixes Array.Contains[String.Readable]
 }
 func (self class) GetAutoIndentPrefixes() Array.Contains[String.Readable] { //gd:CodeEdit.get_auto_indent_prefixes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_auto_indent_prefixes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Readable]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Readable](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) DoIndent() { //gd:CodeEdit.do_indent
@@ -1488,7 +1488,7 @@ func (self class) SetAutoBraceCompletionPairs(pairs Dictionary.Any) { //gd:CodeE
 }
 func (self class) GetAutoBraceCompletionPairs() Dictionary.Any { //gd:CodeEdit.get_auto_brace_completion_pairs
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_auto_brace_completion_pairs, gdextension.SizeDictionary, &struct{}{})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) HasAutoBraceCompletionOpenKey(open_key String.Readable) bool { //gd:CodeEdit.has_auto_brace_completion_open_key
@@ -1503,7 +1503,7 @@ func (self class) HasAutoBraceCompletionCloseKey(close_key String.Readable) bool
 }
 func (self class) GetAutoBraceCompletionCloseKey(open_key String.Readable) String.Readable { //gd:CodeEdit.get_auto_brace_completion_close_key
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_auto_brace_completion_close_key, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ open_key gdextension.String }{pointers.Get(gd.InternalString(open_key))})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetDrawBreakpointsGutter(enable bool) { //gd:CodeEdit.set_draw_breakpoints_gutter
@@ -1546,7 +1546,7 @@ func (self class) ClearBreakpointedLines() { //gd:CodeEdit.clear_breakpointed_li
 }
 func (self class) GetBreakpointedLines() Packed.Array[int32] { //gd:CodeEdit.get_breakpointed_lines
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_breakpointed_lines, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetLineAsBookmarked(line int64, bookmarked bool) { //gd:CodeEdit.set_line_as_bookmarked
@@ -1565,7 +1565,7 @@ func (self class) ClearBookmarkedLines() { //gd:CodeEdit.clear_bookmarked_lines
 }
 func (self class) GetBookmarkedLines() Packed.Array[int32] { //gd:CodeEdit.get_bookmarked_lines
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_bookmarked_lines, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetLineAsExecuting(line int64, executing bool) { //gd:CodeEdit.set_line_as_executing
@@ -1584,7 +1584,7 @@ func (self class) ClearExecutingLines() { //gd:CodeEdit.clear_executing_lines
 }
 func (self class) GetExecutingLines() Packed.Array[int32] { //gd:CodeEdit.get_executing_lines
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_executing_lines, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetDrawLineNumbers(enable bool) { //gd:CodeEdit.set_draw_line_numbers
@@ -1657,7 +1657,7 @@ func (self class) IsLineFolded(line int64) bool { //gd:CodeEdit.is_line_folded
 }
 func (self class) GetFoldedLines() Array.Contains[int64] { //gd:CodeEdit.get_folded_lines
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_folded_lines, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[int64]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[int64](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) CreateCodeRegion() { //gd:CodeEdit.create_code_region
@@ -1665,12 +1665,12 @@ func (self class) CreateCodeRegion() { //gd:CodeEdit.create_code_region
 }
 func (self class) GetCodeRegionStartTag() String.Readable { //gd:CodeEdit.get_code_region_start_tag
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_code_region_start_tag, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCodeRegionEndTag() String.Readable { //gd:CodeEdit.get_code_region_end_tag
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_code_region_end_tag, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetCodeRegionTags(start String.Readable, end String.Readable) { //gd:CodeEdit.set_code_region_tags
@@ -1712,7 +1712,7 @@ func (self class) ClearStringDelimiters() { //gd:CodeEdit.clear_string_delimiter
 }
 func (self class) GetStringDelimiters() Array.Contains[String.Readable] { //gd:CodeEdit.get_string_delimiters
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_string_delimiters, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Readable]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Readable](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) IsInString(line int64, column int64) int64 { //gd:CodeEdit.is_in_string
@@ -1746,7 +1746,7 @@ func (self class) ClearCommentDelimiters() { //gd:CodeEdit.clear_comment_delimit
 }
 func (self class) GetCommentDelimiters() Array.Contains[String.Readable] { //gd:CodeEdit.get_comment_delimiters
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_comment_delimiters, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Readable]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Readable](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) IsInComment(line int64, column int64) int64 { //gd:CodeEdit.is_in_comment
@@ -1759,12 +1759,12 @@ func (self class) IsInComment(line int64, column int64) int64 { //gd:CodeEdit.is
 }
 func (self class) GetDelimiterStartKey(delimiter_index int64) String.Readable { //gd:CodeEdit.get_delimiter_start_key
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_delimiter_start_key, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ delimiter_index int64 }{delimiter_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDelimiterEndKey(delimiter_index int64) String.Readable { //gd:CodeEdit.get_delimiter_end_key
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_delimiter_end_key, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ delimiter_index int64 }{delimiter_index})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDelimiterStartPosition(line int64, column int64) Vector2.XY { //gd:CodeEdit.get_delimiter_start_position
@@ -1791,7 +1791,7 @@ func (self class) SetCodeHintDrawBelow(draw_below bool) { //gd:CodeEdit.set_code
 }
 func (self class) GetTextForCodeCompletion() String.Readable { //gd:CodeEdit.get_text_for_code_completion
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text_for_code_completion, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) RequestCodeCompletion(force bool) { //gd:CodeEdit.request_code_completion
@@ -1813,12 +1813,12 @@ func (self class) UpdateCodeCompletionOptions(force bool) { //gd:CodeEdit.update
 }
 func (self class) GetCodeCompletionOptions() Array.Contains[Dictionary.Any] { //gd:CodeEdit.get_code_completion_options
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_code_completion_options, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[Dictionary.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetCodeCompletionOption(index int64) Dictionary.Any { //gd:CodeEdit.get_code_completion_option
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_code_completion_option, gdextension.SizeDictionary|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
-	var ret = Dictionary.Through(gd.DictionaryProxy[variant.Any, variant.Any]{}, pointers.Pack(pointers.New[gd.Dictionary](r_ret)))
+	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetCodeCompletionSelectedIndex() int64 { //gd:CodeEdit.get_code_completion_selected_index
@@ -1848,7 +1848,7 @@ func (self class) SetCodeCompletionPrefixes(prefixes Array.Contains[String.Reada
 }
 func (self class) GetCodeCompletionPrefixes() Array.Contains[String.Readable] { //gd:CodeEdit.get_code_completion_prefixes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_code_completion_prefixes, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[String.Readable]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[String.Readable](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetLineLengthGuidelines(guideline_columns Array.Contains[int64]) { //gd:CodeEdit.set_line_length_guidelines
@@ -1856,7 +1856,7 @@ func (self class) SetLineLengthGuidelines(guideline_columns Array.Contains[int64
 }
 func (self class) GetLineLengthGuidelines() Array.Contains[int64] { //gd:CodeEdit.get_line_length_guidelines
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_line_length_guidelines, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[int64]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[int64](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetSymbolLookupOnClickEnabled(enable bool) { //gd:CodeEdit.set_symbol_lookup_on_click_enabled
@@ -1869,7 +1869,7 @@ func (self class) IsSymbolLookupOnClickEnabled() bool { //gd:CodeEdit.is_symbol_
 }
 func (self class) GetTextForSymbolLookup() String.Readable { //gd:CodeEdit.get_text_for_symbol_lookup
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text_for_symbol_lookup, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTextWithCursorChar(line int64, column int64) String.Readable { //gd:CodeEdit.get_text_with_cursor_char
@@ -1877,7 +1877,7 @@ func (self class) GetTextWithCursorChar(line int64, column int64) String.Readabl
 		line   int64
 		column int64
 	}{line, column})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetSymbolLookupWordAsValid(valid bool) { //gd:CodeEdit.set_symbol_lookup_word_as_valid
@@ -1923,7 +1923,7 @@ func (self Instance) OnBreakpointToggled(cb func(line int), flags ...Signal.Flag
 }
 
 func (self class) BreakpointToggled() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`breakpoint_toggled`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`breakpoint_toggled`))))
 }
 
 /*
@@ -1942,7 +1942,7 @@ func (self Instance) OnCodeCompletionRequested(cb func(), flags ...Signal.Flags)
 }
 
 func (self class) CodeCompletionRequested() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`code_completion_requested`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`code_completion_requested`))))
 }
 
 /*
@@ -1958,7 +1958,7 @@ func (self Instance) OnSymbolLookup(cb func(symbol string, line int, column int)
 }
 
 func (self class) SymbolLookup() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`symbol_lookup`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`symbol_lookup`))))
 }
 
 /*
@@ -1979,7 +1979,7 @@ func (self Instance) OnSymbolValidate(cb func(symbol string), flags ...Signal.Fl
 }
 
 func (self class) SymbolValidate() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`symbol_validate`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`symbol_validate`))))
 }
 
 /*
@@ -2001,7 +2001,7 @@ func (self Instance) OnSymbolHovered(cb func(symbol string, line int, column int
 }
 
 func (self class) SymbolHovered() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`symbol_hovered`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`symbol_hovered`))))
 }
 
 func (o class) AsCodeEdit() Advanced                      { return Advanced(o) }

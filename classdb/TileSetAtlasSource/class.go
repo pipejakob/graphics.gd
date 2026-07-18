@@ -688,7 +688,7 @@ func (self class) GetTilesToBeRemovedOnChange(texture [1]gdclass.Texture2D, marg
 		separation          Vector2i.XY
 		texture_region_size Vector2i.XY
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), margins, separation, texture_region_size})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) GetTileAtCoords(atlas_coords Vector2i.XY) Vector2i.XY { //gd:TileSetAtlasSource.get_tile_at_coords

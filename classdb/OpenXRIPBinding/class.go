@@ -291,7 +291,7 @@ func (self class) SetBindingPath(binding_path String.Readable) { //gd:OpenXRIPBi
 }
 func (self class) GetBindingPath() String.Readable { //gd:OpenXRIPBinding.get_binding_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_binding_path, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetBindingModifierCount() int64 { //gd:OpenXRIPBinding.get_binding_modifier_count
@@ -309,7 +309,7 @@ func (self class) SetBindingModifiers(binding_modifiers Array.Any) { //gd:OpenXR
 }
 func (self class) GetBindingModifiers() Array.Any { //gd:OpenXRIPBinding.get_binding_modifiers
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_binding_modifiers, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetPaths(paths Packed.Strings) { //gd:OpenXRIPBinding.set_paths
@@ -319,7 +319,7 @@ func (self class) SetPaths(paths Packed.Strings) { //gd:OpenXRIPBinding.set_path
 }
 func (self class) GetPaths() Packed.Strings { //gd:OpenXRIPBinding.get_paths
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_paths, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetPathCount() int64 { //gd:OpenXRIPBinding.get_path_count

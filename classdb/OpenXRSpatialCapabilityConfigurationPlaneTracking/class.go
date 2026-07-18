@@ -216,7 +216,7 @@ func (self class) SupportsLabels() bool { //gd:OpenXRSpatialCapabilityConfigurat
 }
 func (self class) GetEnabledComponents() Packed.Array[int64] { //gd:OpenXRSpatialCapabilityConfigurationPlaneTracking.get_enabled_components
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_enabled_components, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int64](Array.Through(gd.PackedProxy[gd.PackedInt64Array, int64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (o class) AsOpenXRSpatialCapabilityConfigurationPlaneTracking() Advanced    { return Advanced(o) }

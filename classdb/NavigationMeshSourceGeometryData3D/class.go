@@ -293,7 +293,7 @@ func (self class) SetVertices(vertices Packed.Array[float32]) { //gd:NavigationM
 }
 func (self class) GetVertices() Packed.Array[float32] { //gd:NavigationMeshSourceGeometryData3D.get_vertices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertices, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[float32](Array.Through(gd.PackedProxy[gd.PackedFloat32Array, float32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) SetIndices(indices Packed.Array[int32]) { //gd:NavigationMeshSourceGeometryData3D.set_indices
@@ -303,7 +303,7 @@ func (self class) SetIndices(indices Packed.Array[int32]) { //gd:NavigationMeshS
 }
 func (self class) GetIndices() Packed.Array[int32] { //gd:NavigationMeshSourceGeometryData3D.get_indices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_indices, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[int32](Array.Through(gd.PackedProxy[gd.PackedInt32Array, int32]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) AppendArrays(vertices Packed.Array[float32], indices Packed.Array[int32]) { //gd:NavigationMeshSourceGeometryData3D.append_arrays
@@ -357,7 +357,7 @@ func (self class) SetProjectedObstructions(projected_obstructions Array.Any) { /
 }
 func (self class) GetProjectedObstructions() Array.Any { //gd:NavigationMeshSourceGeometryData3D.get_projected_obstructions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_projected_obstructions, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[variant.Any]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBounds() AABB.PositionSize { //gd:NavigationMeshSourceGeometryData3D.get_bounds

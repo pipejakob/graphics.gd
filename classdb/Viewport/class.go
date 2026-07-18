@@ -1855,12 +1855,12 @@ func (self class) GuiCancelDrag() { //gd:Viewport.gui_cancel_drag
 }
 func (self class) GuiGetDragData() variant.Any { //gd:Viewport.gui_get_drag_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.gui_get_drag_data, gdextension.SizeVariant, &struct{}{})
-	var ret = variant.Implementation(gd.VariantProxy{}, pointers.Pack(pointers.New[gd.Variant](r_ret)))
+	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GuiGetDragDescription() String.Readable { //gd:Viewport.gui_get_drag_description
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.gui_get_drag_description, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GuiSetDragDescription(description String.Readable) { //gd:Viewport.gui_set_drag_description
@@ -1984,7 +1984,7 @@ func (self class) IsEmbeddingSubwindows() bool { //gd:Viewport.is_embedding_subw
 }
 func (self class) GetEmbeddedSubwindows() Array.Contains[[1]gdclass.Window] { //gd:Viewport.get_embedded_subwindows
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_embedded_subwindows, gdextension.SizeArray, &struct{}{})
-	var ret = Array.Through(gd.ArrayProxy[[1]gdclass.Window]{}, pointers.Pack(pointers.New[gd.Array](r_ret)))
+	var ret = Array.Through(gd.WrapArray[[1]gdclass.Window](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetDragThreshold(threshold int64) { //gd:Viewport.set_drag_threshold
@@ -2199,7 +2199,7 @@ func (self Instance) OnSizeChanged(cb func(), flags ...Signal.Flags) Instance {
 }
 
 func (self class) SizeChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`size_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`size_changed`))))
 }
 
 /*
@@ -2217,7 +2217,7 @@ func (self Instance) OnGuiFocusChanged(cb func(node Control.Instance), flags ...
 }
 
 func (self class) GuiFocusChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`gui_focus_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`gui_focus_changed`))))
 }
 
 func (o class) AsViewport() Advanced          { return Advanced(o) }

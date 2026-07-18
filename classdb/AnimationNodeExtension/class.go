@@ -153,7 +153,7 @@ The function must return a []float32 of the node's time info, containing the fol
 */
 func (Instance) _process_animation_node(impl func(ptr gdclass.Receiver, playback_info []float64, test_only bool) []float32) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var playback_info = Packed.Array[float64](Array.Through(gd.PackedProxy[gd.PackedFloat64Array, float64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 0)))))
+		var playback_info = Packed.Array[float64](Array.Through(gd.WrapPacked[gd.PackedFloat64Array, float64](pointers.Let[gd.PackedFloat64Array](gd.UnsafeGet[gd.PackedPointers](p_args, 0)))))
 		defer pointers.End(gd.InternalPacked[gd.PackedFloat64Array, float64](playback_info))
 		var test_only = gd.UnsafeGet[bool](p_args, 1)
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
@@ -226,7 +226,7 @@ func New() Instance {
 }
 func (class) _process_animation_node(impl func(ptr gdclass.Receiver, playback_info Packed.Array[float64], test_only bool) Packed.Array[float32]) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		var playback_info = Packed.Array[float64](Array.Through(gd.PackedProxy[gd.PackedFloat64Array, float64]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 0)))))
+		var playback_info = Packed.Array[float64](Array.Through(gd.WrapPacked[gd.PackedFloat64Array, float64](pointers.Let[gd.PackedFloat64Array](gd.UnsafeGet[gd.PackedPointers](p_args, 0)))))
 		defer pointers.End(gd.InternalPacked[gd.PackedFloat64Array, float64](playback_info))
 		var test_only = gd.UnsafeGet[bool](p_args, 1)
 		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())

@@ -566,7 +566,7 @@ func (self class) SampleBakedWithRotation(offset float64, cubic bool) Transform2
 }
 func (self class) GetBakedPoints() Packed.Array[Vector2.XY] { //gd:Curve2D.get_baked_points
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_baked_points, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) GetClosestPoint(to_point Vector2.XY) Vector2.XY { //gd:Curve2D.get_closest_point
@@ -584,7 +584,7 @@ func (self class) Tessellate(max_stages int64, tolerance_degrees float64) Packed
 		max_stages        int64
 		tolerance_degrees float64
 	}{max_stages, tolerance_degrees})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) TessellateEvenLength(max_stages int64, tolerance_length float64) Packed.Array[Vector2.XY] { //gd:Curve2D.tessellate_even_length
@@ -592,7 +592,7 @@ func (self class) TessellateEvenLength(max_stages int64, tolerance_length float6
 		max_stages       int64
 		tolerance_length float64
 	}{max_stages, tolerance_length})
-	var ret = Packed.Array[Vector2.XY](Array.Through(gd.PackedProxy[gd.PackedVector2Array, Vector2.XY]{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (o class) AsCurve2D() Advanced                   { return Advanced(o) }

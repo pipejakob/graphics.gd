@@ -341,12 +341,12 @@ func (self class) SetBaseType(base_type String.Readable) { //gd:EditorResourcePi
 }
 func (self class) GetBaseType() String.Readable { //gd:EditorResourcePicker.get_base_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_base_type, gdextension.SizeString, &struct{}{})
-	var ret = String.Via(gd.StringProxy{}, pointers.Pack(pointers.New[gd.String](r_ret)))
+	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetAllowedTypes() Packed.Strings { //gd:EditorResourcePicker.get_allowed_types
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_allowed_types, gdextension.SizePackedArray, &struct{}{})
-	var ret = Packed.Strings(Array.Through(gd.PackedStringArrayProxy{}, pointers.Pack(pointers.Let[gd.PackedStringArray](r_ret))))
+	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetEditedResource(resource [1]gdclass.Resource) { //gd:EditorResourcePicker.set_edited_resource
@@ -390,7 +390,7 @@ func (self Instance) OnResourceSelected(cb func(resource Resource.Instance, insp
 }
 
 func (self class) ResourceSelected() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_selected`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_selected`))))
 }
 
 /*
@@ -406,7 +406,7 @@ func (self Instance) OnResourceChanged(cb func(resource Resource.Instance), flag
 }
 
 func (self class) ResourceChanged() Signal.Any {
-	return Signal.Via(gd.SignalProxy{}, pointers.Pack(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_changed`))))
+	return Signal.Via(gd.WrapSignal(gd.NewSignalOf(self.AsObject(), gd.NewStringName(`resource_changed`))))
 }
 
 func (o class) AsEditorResourcePicker() Advanced                { return Advanced(o) }

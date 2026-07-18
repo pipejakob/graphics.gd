@@ -45,11 +45,14 @@ func InternalPackedStrings(array PackedType.Strings) PackedStringArray {
 }
 
 func NewPackedProxy[P Packed[P, V], V gdextension.Packable]() (PackedProxy[P, V], complex128) {
-	array := [1]P{}[0].New()
-	return PackedProxy[P, V]{}, pointers.Pack[P, PackedPointers](array)
+	return WrapPacked[P, V]([1]P{}[0].New())
 }
 
-type PackedProxy[P Packed[P, V], V gdextension.Packable] struct{}
+// PackedProxy is engine-backed proxy state for a packed array, the anchor
+// carries the GC lifetime of goroutine-created arrays — see anchors.go.
+type PackedProxy[P Packed[P, V], V gdextension.Packable] struct {
+	anchor *P
+}
 
 func (PackedProxy[P, V]) Any(raw complex128) ArrayType.Any {
 	panic("cannot convert packed array to any array! NOT IMPLEMENTED")
@@ -88,10 +91,15 @@ func (PackedProxy[P, V]) IsReadOnly(complex128) bool {
 }
 func (PackedProxy[P, V]) MakeReadOnly(complex128) {}
 
-type PackedStringArrayProxy struct{}
+// PackedStringArrayProxy is engine-backed proxy state for a packed string
+// array, the anchor carries the GC lifetime of goroutine-created arrays —
+// see anchors.go.
+type PackedStringArrayProxy struct {
+	anchor *PackedStringArray
+}
 
 func NewPackedStringProxy() (PackedStringArrayProxy, complex128) {
-	return PackedStringArrayProxy{}, pointers.Pack(NewPackedStringArray())
+	return WrapPackedStrings(NewPackedStringArray())
 }
 
 func (PackedStringArrayProxy) Any(raw complex128) ArrayType.Any {
@@ -102,7 +110,7 @@ func (PackedStringArrayProxy) Resize(raw complex128, n int) {
 }
 func (PackedStringArrayProxy) Index(raw complex128, i int) StringType.Unicode {
 	s := pointers.Load[PackedStringArray](raw).Index(Int(i))
-	return StringType.Via(StringProxy{}, pointers.Pack(s))
+	return StringType.Via(WrapString(s))
 }
 func (PackedStringArrayProxy) SetIndex(raw complex128, i int, v StringType.Unicode) {
 	_, s := StringType.Proxy(v, StringCacheCheck, NewStringProxy)
