@@ -172,7 +172,7 @@ Called when the [Range]'s value is changed (following the same conditions as [On
 func (Instance) _value_changed(impl func(ptr gdclass.Receiver, new_value Float.X)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var new_value = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, Float.X(new_value))
 	}
 }
@@ -411,7 +411,7 @@ func (self Instance) SetAllowLesser(value bool) Instance { //gd:Range.allow_less
 func (class) _value_changed(impl func(ptr gdclass.Receiver, new_value float64)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var new_value = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, new_value)
 	}
 }

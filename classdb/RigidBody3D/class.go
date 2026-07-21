@@ -234,7 +234,7 @@ func (Instance) _integrate_forces(impl func(ptr gdclass.Receiver, state PhysicsD
 		var state = [1]gdclass.PhysicsDirectBodyState3D{gdclass.NewPhysicsDirectBodyState3D(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetPhysicsDirectBodyState3D(state[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, state)
 	}
 }
@@ -833,7 +833,7 @@ func (class) _integrate_forces(impl func(ptr gdclass.Receiver, state [1]gdclass.
 		var state = [1]gdclass.PhysicsDirectBodyState3D{gdclass.NewPhysicsDirectBodyState3D(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetPhysicsDirectBodyState3D(state[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, state)
 	}
 }

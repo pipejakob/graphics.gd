@@ -216,6 +216,13 @@ func (self class) IsStarted() bool { //gd:Startup.is_started
 	return ret
 }
 func (self class) Iteration() bool { //gd:Startup.iteration
+	// P-hold (gd.IterationHoldingP via asmcgocall) is WIP: it requires every
+	// engine->Go callback that fires during the frame to take the generic fast
+	// path (internal/sticky.stickyGeneric) instead of cgocallback, plus
+	// relocating the frame-boundary GC/flush work out of on_every_frame — else
+	// those callbacks fault with "exitsyscall: syscall frame is no longer
+	// valid". Until the callback conversion is complete, use the normal cgo
+	// iteration; the sticky fast path still handles alloc-free virtuals.
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.iteration, gdextension.SizeBool, &struct{}{})
 	var ret = r_ret
 	return ret

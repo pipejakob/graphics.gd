@@ -143,7 +143,7 @@ Return whether this importer is active.
 */
 func (Instance) _is_active(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -154,7 +154,7 @@ Return the file extensions supported.
 */
 func (Instance) _get_file_extensions(impl func(ptr gdclass.Receiver) []string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -170,7 +170,7 @@ Query support. Return false if import must not continue.
 */
 func (Instance) _query(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -219,14 +219,14 @@ func New() Instance {
 }
 func (class) _is_active(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _get_file_extensions(impl func(ptr gdclass.Receiver) Packed.Strings) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -238,7 +238,7 @@ func (class) _get_file_extensions(impl func(ptr gdclass.Receiver) Packed.Strings
 }
 func (class) _query(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}

@@ -123,14 +123,19 @@ func bench(c):
 		array = append(array, gd.NewVariant(gd.NewCallable(func() int {
 			return 1
 		})))
-		var result gd.Variant
+		// The result variant is a frame temporary: it must be unwrapped here,
+		// while still frame-aligned on the main thread — a B.Cleanup closure
+		// runs frames later on the benchmark goroutine, after the variant has
+		// been collected (this crashed under fastcb residency timing).
+		var got int64
 		B.Cleanup(func() {
-			if result.Interface().(int64) != int64(B.N) {
+			if got != int64(B.N) {
 				B.Fail()
 			}
 		})
 		B.ResetTimer()
-		result, _ = gd.ObjectCall(obj[0], bench, array...)
+		result, _ := gd.ObjectCall(obj[0], bench, array...)
+		got = result.Interface().(int64)
 		gd.ObjectFree(obj[0])
 	})
 }

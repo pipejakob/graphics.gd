@@ -176,7 +176,7 @@ func (Instance) _save(impl func(ptr gdclass.Receiver, resource Resource.Instance
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(path))
 		var flags = gd.UnsafeGet[int64](p_args, 2)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource, path.String(), int(flags))
 		ptr, ok := func(e Error.Code) (int64, bool) { return int64(e), true }(Error.New(ret))
 
@@ -195,7 +195,7 @@ func (Instance) _set_uid(impl func(ptr gdclass.Receiver, path string, uid int) e
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		var uid = gd.UnsafeGet[int64](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String(), int(uid))
 		ptr, ok := func(e Error.Code) (int64, bool) { return int64(e), true }(Error.New(ret))
 
@@ -214,7 +214,7 @@ func (Instance) _recognize(impl func(ptr gdclass.Receiver, resource Resource.Ins
 		var resource = [1]gdclass.Resource{gdclass.NewResource(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -230,7 +230,7 @@ func (Instance) _get_recognized_extensions(impl func(ptr gdclass.Receiver, resou
 		var resource = [1]gdclass.Resource{gdclass.NewResource(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -255,7 +255,7 @@ func (Instance) _recognize_path(impl func(ptr gdclass.Receiver, resource Resourc
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource, path.String())
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -310,7 +310,7 @@ func (class) _save(impl func(ptr gdclass.Receiver, resource [1]gdclass.Resource,
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(path))
 		var flags = gd.UnsafeGet[int64](p_args, 2)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource, path, flags)
 		ptr, ok := func(e Error.Code) (int64, bool) { return int64(e), true }(ret)
 
@@ -325,7 +325,7 @@ func (class) _set_uid(impl func(ptr gdclass.Receiver, path String.Readable, uid 
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		var uid = gd.UnsafeGet[int64](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path, uid)
 		ptr, ok := func(e Error.Code) (int64, bool) { return int64(e), true }(ret)
 
@@ -340,7 +340,7 @@ func (class) _recognize(impl func(ptr gdclass.Receiver, resource [1]gdclass.Reso
 		var resource = [1]gdclass.Resource{gdclass.NewResource(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -350,7 +350,7 @@ func (class) _get_recognized_extensions(impl func(ptr gdclass.Receiver, resource
 		var resource = [1]gdclass.Resource{gdclass.NewResource(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -367,7 +367,7 @@ func (class) _recognize_path(impl func(ptr gdclass.Receiver, resource [1]gdclass
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource, path)
 		gd.UnsafeSet(p_back, ret)
 	}

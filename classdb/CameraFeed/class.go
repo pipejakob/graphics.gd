@@ -176,7 +176,7 @@ Called when the camera feed is activated.
 */
 func (Instance) _activate_feed(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -187,7 +187,7 @@ Called when the camera feed is deactivated.
 */
 func (Instance) _deactivate_feed(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -200,7 +200,7 @@ func (Instance) _set_format(impl func(ptr gdclass.Receiver, index int, parameter
 		var index = gd.UnsafeGet[int64](p_args, 0)
 		var parameters = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 1)))))
 		defer pointers.End(gd.InternalDictionary(parameters))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, int(index), gd.DictionaryAs[FormatParameters](parameters))
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -211,7 +211,7 @@ Override this method to define supported formats of the camera feed.
 */
 func (Instance) _get_formats(impl func(ptr gdclass.Receiver) []Format) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalArray(gd.EngineArrayFromSlice(ret)))
 
@@ -408,14 +408,14 @@ func (self Instance) Formats() []Format { //gd:CameraFeed.formats
 }
 func (class) _activate_feed(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _deactivate_feed(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -424,14 +424,14 @@ func (class) _set_format(impl func(ptr gdclass.Receiver, index int64, parameters
 		var index = gd.UnsafeGet[int64](p_args, 0)
 		var parameters = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 1)))))
 		defer pointers.End(gd.InternalDictionary(parameters))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, index, parameters)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _get_formats(impl func(ptr gdclass.Receiver) Array.Any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalArray(ret))
 

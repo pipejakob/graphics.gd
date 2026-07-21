@@ -231,7 +231,7 @@ Stops playback. May be called multiple times before [Play], or in response to [V
 */
 func (Instance) _stop(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -246,7 +246,7 @@ Called in response to [VideoStreamPlayer.Autoplay] or [VideoStreamPlayer.Play]. 
 */
 func (Instance) _play(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -259,7 +259,7 @@ Returns the playback state, as determined by calls to [Play] and [Stop].
 */
 func (Instance) _is_playing(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -274,7 +274,7 @@ Set the paused status of video playback. [IsPaused] must return 'paused'. Called
 func (Instance) _set_paused(impl func(ptr gdclass.Receiver, paused bool)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var paused = gd.UnsafeGet[bool](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, paused)
 	}
 }
@@ -286,7 +286,7 @@ Returns the paused status, as set by [SetPaused].
 */
 func (Instance) _is_paused(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -297,7 +297,7 @@ Returns the video duration in seconds, if known, or 0 if unknown.
 */
 func (Instance) _get_length(impl func(ptr gdclass.Receiver) Float.X) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, float64(ret))
 	}
@@ -310,7 +310,7 @@ Return the current playback timestamp. Called in response to the [VideoStreamPla
 */
 func (Instance) _get_playback_position(impl func(ptr gdclass.Receiver) Float.X) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, float64(ret))
 	}
@@ -324,7 +324,7 @@ Seeks to 'time' seconds. Called in response to the [VideoStreamPlayer.StreamPosi
 func (Instance) _seek(impl func(ptr gdclass.Receiver, time Float.X)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var time = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, Float.X(time))
 	}
 }
@@ -337,7 +337,7 @@ Select the audio track 'idx'. Called when playback starts, and in response to th
 func (Instance) _set_audio_track(impl func(ptr gdclass.Receiver, idx int)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var idx = gd.UnsafeGet[int64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, int(idx))
 	}
 }
@@ -349,7 +349,7 @@ Allocates a [Texture2D] in which decoded video frames will be drawn.
 */
 func (Instance) _get_texture(impl func(ptr gdclass.Receiver) Texture2D.Instance) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := gdreference.EndObject(gdclass.GetTexture2D(ret[0])[0])
 
@@ -369,7 +369,7 @@ Ticks video playback for 'delta' seconds. Called every frame as long as both [Is
 func (Instance) _update(impl func(ptr gdclass.Receiver, delta Float.X)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, Float.X(delta))
 	}
 }
@@ -379,7 +379,7 @@ Returns the number of audio channels.
 */
 func (Instance) _get_channels(impl func(ptr gdclass.Receiver) int) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -390,7 +390,7 @@ Returns the audio sample rate used for mixing.
 */
 func (Instance) _get_mix_rate(impl func(ptr gdclass.Receiver) int) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -457,19 +457,19 @@ func New() Instance {
 }
 func (class) _stop(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _play(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _is_playing(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -477,27 +477,27 @@ func (class) _is_playing(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionC
 func (class) _set_paused(impl func(ptr gdclass.Receiver, paused bool)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var paused = gd.UnsafeGet[bool](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, paused)
 	}
 }
 func (class) _is_paused(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _get_length(impl func(ptr gdclass.Receiver) float64) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _get_playback_position(impl func(ptr gdclass.Receiver) float64) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -505,20 +505,20 @@ func (class) _get_playback_position(impl func(ptr gdclass.Receiver) float64) (cb
 func (class) _seek(impl func(ptr gdclass.Receiver, time float64)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var time = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, time)
 	}
 }
 func (class) _set_audio_track(impl func(ptr gdclass.Receiver, idx int64)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var idx = gd.UnsafeGet[int64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, idx)
 	}
 }
 func (class) _get_texture(impl func(ptr gdclass.Receiver) [1]gdclass.Texture2D) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := gdreference.EndObject(gdclass.GetTexture2D(ret[0])[0])
 
@@ -531,20 +531,20 @@ func (class) _get_texture(impl func(ptr gdclass.Receiver) [1]gdclass.Texture2D) 
 func (class) _update(impl func(ptr gdclass.Receiver, delta float64)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, delta)
 	}
 }
 func (class) _get_channels(impl func(ptr gdclass.Receiver) int64) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _get_mix_rate(impl func(ptr gdclass.Receiver) int64) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}

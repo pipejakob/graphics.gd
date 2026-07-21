@@ -165,7 +165,7 @@ This method is executed by the Editor when File > Run is used.
 */
 func (Instance) _run(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -239,7 +239,7 @@ func New() Instance {
 }
 func (class) _run(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }

@@ -450,7 +450,7 @@ func (classDB ClassDB) simpleVirtualCall(w io.Writer, class gdjson.Class, method
 			fmt.Fprintf(w, "\t\tvar %s = gdmemory.ArrayContains[%s](%s_ptr, int(%s))\n", s.varName, s.elem, s.varName, s.count)
 		}
 	}
-	fmt.Fprintf(w, "\t\tself := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())\n")
+	fmt.Fprintf(w, "\t\tself := gdclass.ReceiverOf(class)\n")
 	if resultSimple != "" {
 		fmt.Fprintf(w, "\t\tret := ")
 	}

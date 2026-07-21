@@ -46,13 +46,25 @@ void* _swift_FORCE_LOAD_$_swift_Builtin_float = 0;
 // compiler-rt builtin: used by @available() checks in ObjC/Swift code.
 // Normally statically linked by the compiler driver from libclang_rt.
 #include <stdint.h>
+extern int sysctlbyname(const char *, void *, unsigned long *, void *, unsigned long);
 extern int32_t __isPlatformVersionAtLeast(uint32_t platform, uint32_t major, uint32_t minor, uint32_t subminor) {
-    // On iOS (platform 2), our deployment target is 14.0 and we only run on
-    // devices with iOS 14+, so all @available checks for iOS <= deployment
-    // target are satisfied. For runtime checks above deployment target, we
-    // query the actual OS version via the dyld kernel info.
-    (void)platform; (void)major; (void)minor; (void)subminor;
-    return 1;
+    // Compare the requested version against the device's ACTUAL OS version.
+    // Returning 1 unconditionally makes every @available() check pass, so on
+    // an older device (e.g. iOS 16) code guarded by @available(iOS 17, *) —
+    // as Godot's SwiftUI iOS app shell has — runs and calls symbols absent on
+    // that OS, crashing (EXC_BAD_ACCESS at 0x0 in SwiftUI/AttributeGraph).
+    (void)platform; (void)subminor;
+    char ver[64];
+    unsigned long len = sizeof ver;
+    if (sysctlbyname("kern.osproductversion", ver, &len, 0, 0) != 0) {
+        return 1; // fail open: query failed, assume new enough
+    }
+    uint32_t dmaj = 0, dmin = 0;
+    const char *p = ver;
+    while (*p >= '0' && *p <= '9') dmaj = dmaj * 10 + (uint32_t)(*p++ - '0');
+    if (*p == '.') { p++; while (*p >= '0' && *p <= '9') dmin = dmin * 10 + (uint32_t)(*p++ - '0'); }
+    if (dmaj != major) return dmaj > major;
+    return dmin >= minor;
 }
 
 // SDL device-type helpers: Godot vendors SDL's joypad driver but not the
@@ -103,6 +115,10 @@ func (IOS) Build(args ...string) error {
 	ZIG_INCLUDES := filepath.Join(GDPATH, "bin", "lib", "libc", "include", "any-macos-any")
 	switch GOARCH {
 	case "arm64":
+		// CC is consumed only by go build's cgo — the iOS export no longer
+		// runs xcodebuild (application/export_project_only=true), so nothing
+		// else execs it. cgo splits this string itself, so the inline form
+		// works on every host, Windows included, like every other builder.
 		if err := os.Setenv("CC", zig+" cc -target aarch64-ios -F "+DARWIN_SDK+"/Frameworks -L"+DARWIN_SDK+"/lib -I"+DARWIN_SDK+"/include -I"+ZIG_INCLUDES+" -Wno-nullability-completeness"); err != nil {
 			return xray.New(err)
 		}
@@ -110,9 +126,9 @@ func (IOS) Build(args ...string) error {
 			return xray.New(err)
 		}
 	default:
-		return fmt.Errorf("gd build: cannot cross-compile linux %v on %v", GOARCH, runtime.GOOS)
+		return fmt.Errorf("gd build: cannot cross-compile ios %v on %v", GOARCH, runtime.GOOS)
 	}
-	if err := tooling.Go.Action("build", args, "-tags=ios", "-buildmode=c-archive", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("darwin_%v.a", GOARCH))); err != nil {
+	if err := tooling.Go.Action("build", args, append(fastcbFlags("ios", "ios"), "-buildmode=c-archive", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("darwin_%v.a", GOARCH)))...); err != nil {
 		return xray.New(err)
 	}
 	if err := os.MkdirAll(filepath.Join(project.GraphicsDirectory, "go.xcframework", "ios-arm64"), 0755); err != nil {
@@ -150,11 +166,26 @@ func (ios IOS) BuildMain(args ...string) error {
 		return xray.New(err)
 	}
 
+	// gd owns the iOS link (the zig/ld64.lld path below force-loads libgo.a so
+	// the Go extension registers; a Godot-driven xcodebuild does not). Force
+	// application/export_project_only=true so Godot only scaffolds the Xcode
+	// project + .pck and never runs xcodebuild during --export-release. The
+	// template default is already true, but SetupFile does not overwrite an
+	// existing export_presets.cfg, so enforce it here for older projects too.
+	presets := filepath.Join(project.GraphicsDirectory, "export_presets.cfg")
+	if data, err := os.ReadFile(presets); err == nil {
+		if patched := strings.Replace(string(data), "application/export_project_only=false", "application/export_project_only=true", 1); patched != string(data) {
+			if err := os.WriteFile(presets, []byte(patched), 0o644); err != nil {
+				return xray.New(err)
+			}
+		}
+	}
+
 	if existing_project {
 		// Subsequent build: only export .pck, preserve Xcode project
 		tooling.Godot.Exec("--headless", "--export-pack", "iOS", filepath.Join(project.ReleasesDirectory, "ios", "arm64", project.Name+".pck"))
 	} else {
-		// First build: full export
+		// First build: full export (scaffolds the Xcode project + .pck only)
 		tooling.Godot.Exec("--headless", "--export-release", "iOS")
 	}
 

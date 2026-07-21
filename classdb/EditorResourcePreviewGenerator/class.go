@@ -188,7 +188,7 @@ func (Instance) _handles(impl func(ptr gdclass.Receiver, atype string) bool) (cb
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var atype = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(atype))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, atype.String())
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -213,7 +213,7 @@ func (Instance) _generate(impl func(ptr gdclass.Receiver, resource Resource.Inst
 		var size = gd.UnsafeGet[Vector2i.XY](p_args, 1)
 		var metadata = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 2)))))
 		defer pointers.End(gd.InternalDictionary(metadata))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource, size, gd.DictionaryAs[map[string]any](metadata))
 		ptr, ok := gdreference.EndObject(gdclass.GetTexture2D(ret[0])[0])
 
@@ -243,7 +243,7 @@ func (Instance) _generate_from_path(impl func(ptr gdclass.Receiver, path string,
 		var size = gd.UnsafeGet[Vector2i.XY](p_args, 1)
 		var metadata = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 2)))))
 		defer pointers.End(gd.InternalDictionary(metadata))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String(), size, gd.DictionaryAs[map[string]any](metadata))
 		ptr, ok := gdreference.EndObject(gdclass.GetTexture2D(ret[0])[0])
 
@@ -264,7 +264,7 @@ By default, it returns false.
 */
 func (Instance) _generate_small_preview_automatically(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -280,7 +280,7 @@ By default, it returns false.
 */
 func (Instance) _can_generate_small_preview(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -340,7 +340,7 @@ func (class) _handles(impl func(ptr gdclass.Receiver, atype String.Readable) boo
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var atype = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(atype))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, atype)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -353,7 +353,7 @@ func (class) _generate(impl func(ptr gdclass.Receiver, resource [1]gdclass.Resou
 		var size = gd.UnsafeGet[Vector2i.XY](p_args, 1)
 		var metadata = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 2)))))
 		defer pointers.End(gd.InternalDictionary(metadata))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource, size, metadata)
 		ptr, ok := gdreference.EndObject(gdclass.GetTexture2D(ret[0])[0])
 
@@ -370,7 +370,7 @@ func (class) _generate_from_path(impl func(ptr gdclass.Receiver, path String.Rea
 		var size = gd.UnsafeGet[Vector2i.XY](p_args, 1)
 		var metadata = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 2)))))
 		defer pointers.End(gd.InternalDictionary(metadata))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path, size, metadata)
 		ptr, ok := gdreference.EndObject(gdclass.GetTexture2D(ret[0])[0])
 
@@ -382,14 +382,14 @@ func (class) _generate_from_path(impl func(ptr gdclass.Receiver, path String.Rea
 }
 func (class) _generate_small_preview_automatically(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _can_generate_small_preview(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}

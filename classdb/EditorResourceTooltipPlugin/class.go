@@ -184,7 +184,7 @@ func (Instance) _handles(impl func(ptr gdclass.Receiver, atype string) bool) (cb
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var atype = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(atype))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, atype.String())
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -224,7 +224,7 @@ func (Instance) _make_tooltip_for_path(impl func(ptr gdclass.Receiver, path stri
 		var base = [1]gdclass.Control{gdclass.NewControl(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 2), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetControl(base[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String(), gd.DictionaryAs[map[string]any](metadata), base)
 		ptr, ok := gdreference.EndObject(gdclass.GetControl(ret[0])[0])
 
@@ -290,7 +290,7 @@ func (class) _handles(impl func(ptr gdclass.Receiver, atype String.Readable) boo
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var atype = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(atype))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, atype)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -304,7 +304,7 @@ func (class) _make_tooltip_for_path(impl func(ptr gdclass.Receiver, path String.
 		var base = [1]gdclass.Control{gdclass.NewControl(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 2), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetControl(base[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path, metadata, base)
 		ptr, ok := gdreference.EndObject(gdclass.GetControl(ret[0])[0])
 

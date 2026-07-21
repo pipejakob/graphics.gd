@@ -188,7 +188,7 @@ When this virtual function is called, you must update your editor.
 */
 func (Instance) _update_property(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -199,7 +199,7 @@ Called when the read-only status of the property is changed. It may be used to c
 func (Instance) _set_read_only(impl func(ptr gdclass.Receiver, read_only bool)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var read_only = gd.UnsafeGet[bool](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, read_only)
 	}
 }
@@ -510,14 +510,14 @@ func (self Instance) SetNameSplitRatio(value Float.X) Instance { //gd:EditorProp
 }
 func (class) _update_property(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _set_read_only(impl func(ptr gdclass.Receiver, read_only bool)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var read_only = gd.UnsafeGet[bool](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, read_only)
 	}
 }

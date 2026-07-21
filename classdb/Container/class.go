@@ -154,7 +154,7 @@ Note: Having no size flags is equal to having [Control.SizeShrinkBegin]. As such
 */
 func (Instance) _get_allowed_size_flags_horizontal(impl func(ptr gdclass.Receiver) []int32) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPacked[gd.PackedInt32Array, int32](Packed.New(ret...)))
 
@@ -172,7 +172,7 @@ Note: Having no size flags is equal to having [Control.SizeShrinkBegin]. As such
 */
 func (Instance) _get_allowed_size_flags_vertical(impl func(ptr gdclass.Receiver) []int32) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPacked[gd.PackedInt32Array, int32](Packed.New(ret...)))
 
@@ -255,7 +255,7 @@ func (self Instance) SetAccessibilityRegion(value bool) Instance { //gd:Containe
 }
 func (class) _get_allowed_size_flags_horizontal(impl func(ptr gdclass.Receiver) Packed.Array[int32]) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPacked[gd.PackedInt32Array, int32](ret))
 
@@ -267,7 +267,7 @@ func (class) _get_allowed_size_flags_horizontal(impl func(ptr gdclass.Receiver) 
 }
 func (class) _get_allowed_size_flags_vertical(impl func(ptr gdclass.Receiver) Packed.Array[int32]) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPacked[gd.PackedInt32Array, int32](ret))
 

@@ -251,7 +251,7 @@ func (Instance) _use_tile_data_runtime_update(impl func(ptr gdclass.Receiver, la
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var layer = gd.UnsafeGet[int64](p_args, 0)
 		var coords = gd.UnsafeGet[Vector2i.XY](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, int(layer), coords)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -276,7 +276,7 @@ func (Instance) _tile_data_runtime_update(impl func(ptr gdclass.Receiver, layer 
 		var tile_data = [1]gdclass.TileData{gdclass.NewTileData(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 2), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetTileData(tile_data[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, int(layer), coords, tile_data)
 	}
 }
@@ -1170,7 +1170,7 @@ func (class) _use_tile_data_runtime_update(impl func(ptr gdclass.Receiver, layer
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var layer = gd.UnsafeGet[int64](p_args, 0)
 		var coords = gd.UnsafeGet[Vector2i.XY](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, layer, coords)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1182,7 +1182,7 @@ func (class) _tile_data_runtime_update(impl func(ptr gdclass.Receiver, layer int
 		var tile_data = [1]gdclass.TileData{gdclass.NewTileData(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 2), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetTileData(tile_data[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, layer, coords, tile_data)
 	}
 }

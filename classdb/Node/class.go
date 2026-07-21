@@ -549,7 +549,7 @@ Note: Frame delta may be post-processed by [OS.DeltaSmoothing] if this is enable
 func (Instance) _process(impl func(ptr gdclass.Receiver, delta Float.X)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, Float.X(delta))
 	}
 }
@@ -576,7 +576,7 @@ Note: Accumulated 'delta' may diverge from real world seconds.
 func (Instance) _physics_process(impl func(ptr gdclass.Receiver, delta Float.X)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, Float.X(delta))
 	}
 }
@@ -593,7 +593,7 @@ Corresponds to the [NotificationEnterTree] notification in [Object.Notification]
 */
 func (Instance) _enter_tree(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -612,7 +612,7 @@ Corresponds to the [NotificationExitTree] notification in [Object.Notification] 
 */
 func (Instance) _exit_tree(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -634,7 +634,7 @@ Note: This method may be called only once for each node. After removing a node f
 */
 func (Instance) _ready(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -675,7 +675,7 @@ Call [UpdateConfigurationWarnings] when the warnings need to be updated for this
 */
 func (Instance) _get_configuration_warnings(impl func(ptr gdclass.Receiver) []string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -693,7 +693,7 @@ Returning an empty array produces no warnings.
 */
 func (Instance) _get_accessibility_configuration_warnings(impl func(ptr gdclass.Receiver) []string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -725,7 +725,7 @@ func (Instance) _input(impl func(ptr gdclass.Receiver, event InputEvent.Instance
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, event)
 	}
 }
@@ -756,7 +756,7 @@ func (Instance) _shortcut_input(impl func(ptr gdclass.Receiver, event InputEvent
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, event)
 	}
 }
@@ -785,7 +785,7 @@ func (Instance) _unhandled_input(impl func(ptr gdclass.Receiver, event InputEven
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, event)
 	}
 }
@@ -817,7 +817,7 @@ func (Instance) _unhandled_key_input(impl func(ptr gdclass.Receiver, event Input
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, event)
 	}
 }
@@ -829,7 +829,7 @@ Called during accessibility information updates to determine the currently focus
 */
 func (Instance) _get_focused_accessibility_element(impl func(ptr gdclass.Receiver) RID.AccessibilityElement) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, RID.Any(ret))
 	}
@@ -2684,38 +2684,38 @@ func (self Instance) SetEditorDescription(value string) Instance { //gd:Node.edi
 func (class) _process(impl func(ptr gdclass.Receiver, delta float64)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, delta)
 	}
 }
 func (class) _physics_process(impl func(ptr gdclass.Receiver, delta float64)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, delta)
 	}
 }
 func (class) _enter_tree(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _exit_tree(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _ready(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _get_configuration_warnings(impl func(ptr gdclass.Receiver) Packed.Strings) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -2727,7 +2727,7 @@ func (class) _get_configuration_warnings(impl func(ptr gdclass.Receiver) Packed.
 }
 func (class) _get_accessibility_configuration_warnings(impl func(ptr gdclass.Receiver) Packed.Strings) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -2742,7 +2742,7 @@ func (class) _input(impl func(ptr gdclass.Receiver, event [1]gdclass.InputEvent)
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, event)
 	}
 }
@@ -2751,7 +2751,7 @@ func (class) _shortcut_input(impl func(ptr gdclass.Receiver, event [1]gdclass.In
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, event)
 	}
 }
@@ -2760,7 +2760,7 @@ func (class) _unhandled_input(impl func(ptr gdclass.Receiver, event [1]gdclass.I
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, event)
 	}
 }
@@ -2769,13 +2769,13 @@ func (class) _unhandled_key_input(impl func(ptr gdclass.Receiver, event [1]gdcla
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, event)
 	}
 }
 func (class) _get_focused_accessibility_element(impl func(ptr gdclass.Receiver) RID.Any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}

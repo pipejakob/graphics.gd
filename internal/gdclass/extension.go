@@ -11,6 +11,14 @@ import (
 
 type Receiver unsafe.Pointer
 
+// ReceiverOf extracts the instance pointer from a virtual-call receiver
+// interface without going through reflect. Virtual receivers are always
+// pointer-shaped (the registered *T), so the interface data word is the
+// receiver itself.
+func ReceiverOf(class any) Receiver {
+	return Receiver((*[2]unsafe.Pointer)(unsafe.Pointer(&class))[1])
+}
+
 type Interface interface {
 	superType() reflect.Type
 	goType() reflect.Type
@@ -64,8 +72,24 @@ func (class Extension[T, S]) super() S {
 
 // Deprecated: use the class-specific 'AsClass' method instead.
 func (class *Extension[T, S]) Super() S {
-	class.AsObject()
-	return *class.Class.Super()
+	s := class.Class.Super()
+	if *(*[1]gdreference.Object)(unsafe.Pointer(s)) == ([1]gdreference.Object{}) {
+		class.createObject()
+	}
+	gdreference.UseObject((*gdreference.Object)(unsafe.Pointer(s)))
+	return *s
+}
+
+// createObject lazily instantiates the engine-side object; kept out of
+// [Extension.Super] so the hot already-created path stays small.
+//
+//go:noinline
+func (class *Extension[T, S]) createObject() {
+	impl, ok := Registered.Load(reflect.TypeFor[T]())
+	if ok {
+		instancer := impl.(Constructor)
+		class.setObject(instancer.CreateInstanceFrom(reflect.NewAt(reflect.TypeFor[T](), unsafe.Pointer(class)), true, false))
+	}
 }
 
 func (class Extension[T, S]) getObject() [1]gdreference.Object {
@@ -87,12 +111,8 @@ func (class Extension[T, S]) goType() reflect.Type {
 func (class *Extension[T, S]) AsObject() [1]gdreference.Object {
 	obj := class.getObject()
 	if obj == ([1]gdreference.Object{}) {
-		impl, ok := Registered.Load(reflect.TypeFor[T]())
-		if ok {
-			instancer := impl.(Constructor)
-			obj = instancer.CreateInstanceFrom(reflect.NewAt(reflect.TypeFor[T](), unsafe.Pointer(class)), true, false)
-			class.setObject(obj)
-		}
+		class.createObject()
+		obj = class.getObject()
 	}
 	gdreference.UseObject((*gdreference.Object)(unsafe.Pointer(class.Class.Super())))
 	return obj

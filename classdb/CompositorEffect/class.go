@@ -161,7 +161,7 @@ func (Instance) _render_callback(impl func(ptr gdclass.Receiver, effect_callback
 		var render_data = [1]gdclass.RenderData{gdclass.NewRenderData(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 1), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetRenderData(render_data[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, int(effect_callback_type), render_data)
 	}
 }
@@ -323,7 +323,7 @@ func (class) _render_callback(impl func(ptr gdclass.Receiver, effect_callback_ty
 		var render_data = [1]gdclass.RenderData{gdclass.NewRenderData(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 1), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetRenderData(render_data[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, effect_callback_type, render_data)
 	}
 }

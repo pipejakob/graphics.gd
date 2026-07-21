@@ -33,6 +33,17 @@ var Main Ring
 
 var CrashIndex uint32 = 0xFFFFFFFF
 
+func init() {
+	// C drains Main directly (gd_ring_drain reads head/tail and advances tail
+	// past executed entries): the prefix layout is load-bearing on both sides.
+	if unsafe.Offsetof(Main.Entries) != 8 {
+		panic("ring: Ring prefix must be (head, tail uint32) — gd.c's gd_ring_buffer depends on it")
+	}
+	if unsafe.Offsetof(threadsShared.seq) != 16 || unsafe.Offsetof(threadsShared.kind) != 1040 {
+		panic("ring: mpscShared layout drifted — gd.c's gd_mpsc_shared depends on it")
+	}
+}
+
 func (r *Ring) Pending() bool {
 	return r.head != r.tail
 }

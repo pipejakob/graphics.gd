@@ -14,7 +14,7 @@ import (
 
 func newTestRing() *MPSC {
 	r := &MPSC{}
-	r.Init(new([Size]Entry))
+	r.Init(new(mpscShared), new([Size]Entry))
 	return r
 }
 

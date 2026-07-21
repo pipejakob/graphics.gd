@@ -148,7 +148,7 @@ func (self implementation) GetAabb() (_ AABB.PositionSize) {
 }
 func (Instance) _get_aabb(impl func(ptr gdclass.Receiver) AABB.PositionSize) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, AABB.PositionSize(ret))
 	}
@@ -331,7 +331,7 @@ func (self Instance) SetSortingUseAabbCenter(value bool) Instance { //gd:VisualI
 }
 func (class) _get_aabb(impl func(ptr gdclass.Receiver) AABB.PositionSize) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}

@@ -206,7 +206,7 @@ func (Instance) _draw_port(impl func(ptr gdclass.Receiver, slot_index int, posit
 		var position = gd.UnsafeGet[Vector2i.XY](p_args, 1)
 		var left = gd.UnsafeGet[bool](p_args, 2)
 		var color = gd.UnsafeGet[Color.RGBA](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, int(slot_index), position, left, color)
 	}
 }
@@ -666,7 +666,7 @@ func (class) _draw_port(impl func(ptr gdclass.Receiver, slot_index int64, positi
 		var position = gd.UnsafeGet[Vector2i.XY](p_args, 1)
 		var left = gd.UnsafeGet[bool](p_args, 2)
 		var color = gd.UnsafeGet[Color.RGBA](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, slot_index, position, left, color)
 	}
 }

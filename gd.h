@@ -112,6 +112,19 @@ extern void gd_on_extension_instance_dynamic_call(ExtensionInstanceID inst, Func
 extern void gd_on_extension_instance_free(ExtensionInstanceID inst);
 extern void gd_on_extension_instance_called(ExtensionInstanceID inst, FunctionID fn, void* result, void* args);
 
+// Set by Go (internal/sticky.EntryAddr) to the sticky-P fast-path C-ABI thunk,
+// or left 0 to use the stock cgocallback dispatch. See gd.c.
+extern void *gd_sticky_call_virtual;
+// Flipped on by Go (classdb, via the root package init) when a registered class
+// implements a Notification handler; until then per-frame process-tick
+// notifications are dropped engine-side. See gd.c.
+extern bool gd_go_handles_notifications;
+// gd_frame_active gates the fast path to the P-held engine-frame window. See gd.c.
+extern int gd_frame_active;
+// gd_iterate_g0_addr returns a C entry (single struct-ptr arg) that runs the
+// engine's 8-byte-return unsafe call; invoke via runtime.asmcgocall to hold the P.
+extern void *gd_iterate_g0_addr(void);
+
 extern bool gd_on_extension_script_categorization(ExtensionInstanceID inst, PropertyList p1);
 extern uint32_t gd_on_extension_script_get_property_type(ExtensionInstanceID inst, CallError* err);
 extern Object gd_on_extension_script_get_owner(ExtensionInstanceID inst);

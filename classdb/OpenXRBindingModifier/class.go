@@ -141,7 +141,7 @@ Return the description of this class that is used for the title bar of the bindi
 */
 func (Instance) _get_description(impl func(ptr gdclass.Receiver) string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -159,7 +159,7 @@ Note: This must be data compatible with an XrBindingModificationBaseHeaderKHR st
 */
 func (Instance) _get_ip_modification(impl func(ptr gdclass.Receiver) []byte) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](Packed.BytesFrom(ret...).Array)))
 
@@ -213,7 +213,7 @@ func New() Instance {
 }
 func (class) _get_description(impl func(ptr gdclass.Receiver) String.Readable) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -225,7 +225,7 @@ func (class) _get_description(impl func(ptr gdclass.Receiver) String.Readable) (
 }
 func (class) _get_ip_modification(impl func(ptr gdclass.Receiver) Packed.Bytes) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](ret.Array)))
 

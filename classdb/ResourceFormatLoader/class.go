@@ -239,7 +239,7 @@ Gets the list of extensions for files this loader is able to read.
 */
 func (Instance) _get_recognized_extensions(impl func(ptr gdclass.Receiver) []string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -264,7 +264,7 @@ func (Instance) _recognize_path(impl func(ptr gdclass.Receiver, path string, aty
 		defer pointers.End(gd.InternalString(path))
 		var atype = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
 		defer pointers.End(gd.InternalStringName(atype))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String(), atype.String())
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -281,7 +281,7 @@ func (Instance) _handles_type(impl func(ptr gdclass.Receiver, atype string) bool
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var atype = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(atype))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, atype.String())
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -298,7 +298,7 @@ func (Instance) _get_resource_type(impl func(ptr gdclass.Receiver, path string) 
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String())
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -318,7 +318,7 @@ func (Instance) _get_resource_script_class(impl func(ptr gdclass.Receiver, path 
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String())
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -336,7 +336,7 @@ func (Instance) _get_resource_uid(impl func(ptr gdclass.Receiver, path string) i
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String())
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -369,7 +369,7 @@ func (Instance) _get_dependencies(impl func(ptr gdclass.Receiver, path string, a
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		var add_types = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String(), add_types)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -391,7 +391,7 @@ func (Instance) _rename_dependencies(impl func(ptr gdclass.Receiver, path string
 		defer pointers.End(gd.InternalString(path))
 		var renames = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 1)))))
 		defer pointers.End(gd.InternalDictionary(renames))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String(), gd.DictionaryAs[map[string]string](renames))
 		ptr, ok := func(e Error.Code) (int64, bool) { return int64(e), true }(Error.New(ret))
 
@@ -405,7 +405,7 @@ func (Instance) _exists(impl func(ptr gdclass.Receiver, path string) bool) (cb g
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String())
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -414,7 +414,7 @@ func (Instance) _get_classes_used(impl func(ptr gdclass.Receiver, path string) [
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String())
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -440,7 +440,7 @@ func (Instance) _load(impl func(ptr gdclass.Receiver, path string, original_path
 		defer pointers.End(gd.InternalString(original_path))
 		var use_sub_threads = gd.UnsafeGet[bool](p_args, 2)
 		var cache_mode = gd.UnsafeGet[int64](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String(), original_path.String(), use_sub_threads, int(cache_mode))
 		ptr, ok := pointers.End(gd.InternalVariant(variant.New(ret)))
 
@@ -494,7 +494,7 @@ func New() Instance {
 }
 func (class) _get_recognized_extensions(impl func(ptr gdclass.Receiver) Packed.Strings) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -510,7 +510,7 @@ func (class) _recognize_path(impl func(ptr gdclass.Receiver, path String.Readabl
 		defer pointers.End(gd.InternalString(path))
 		var atype = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 1))))))
 		defer pointers.End(gd.InternalStringName(atype))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path, atype)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -519,7 +519,7 @@ func (class) _handles_type(impl func(ptr gdclass.Receiver, atype String.Name) bo
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var atype = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(atype))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, atype)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -528,7 +528,7 @@ func (class) _get_resource_type(impl func(ptr gdclass.Receiver, path String.Read
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -542,7 +542,7 @@ func (class) _get_resource_script_class(impl func(ptr gdclass.Receiver, path Str
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -556,7 +556,7 @@ func (class) _get_resource_uid(impl func(ptr gdclass.Receiver, path String.Reada
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -566,7 +566,7 @@ func (class) _get_dependencies(impl func(ptr gdclass.Receiver, path String.Reada
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		var add_types = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path, add_types)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -582,7 +582,7 @@ func (class) _rename_dependencies(impl func(ptr gdclass.Receiver, path String.Re
 		defer pointers.End(gd.InternalString(path))
 		var renames = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 1)))))
 		defer pointers.End(gd.InternalDictionary(renames))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path, renames)
 		ptr, ok := func(e Error.Code) (int64, bool) { return int64(e), true }(ret)
 
@@ -596,7 +596,7 @@ func (class) _exists(impl func(ptr gdclass.Receiver, path String.Readable) bool)
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -605,7 +605,7 @@ func (class) _get_classes_used(impl func(ptr gdclass.Receiver, path String.Reada
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -623,7 +623,7 @@ func (class) _load(impl func(ptr gdclass.Receiver, path String.Readable, origina
 		defer pointers.End(gd.InternalString(original_path))
 		var use_sub_threads = gd.UnsafeGet[bool](p_args, 2)
 		var cache_mode = gd.UnsafeGet[int64](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path, original_path, use_sub_threads, cache_mode)
 		ptr, ok := pointers.End(gd.InternalVariant(ret))
 

@@ -559,6 +559,13 @@ func ObjectCall(o gdreference.Object, method StringName, args ...Variant) (Varia
 		for _, arg := range args {
 			converted = append(converted, gdextension.Variant(pointers.Get(arg)))
 		}
+		if result, err, ok := noescape.ScriptCallResident(self, name, converted); ok {
+			// Resident-callback mode: script calls are the crossing Go
+			// callables re-enter under, so their nested callbacks take the
+			// resident fast path (and the result/error write-backs are staged
+			// through non-moving memory, immune to callback stack moves).
+			return pointers.New[Variant]([3]uint64(result)), err.Err()
+		}
 		var err gdextension.CallError
 		var result gdextension.Variant
 		gdextension.Host.Objects.Script.Call(self, name,

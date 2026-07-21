@@ -190,7 +190,7 @@ Returns the class name of the target type of [Resource] that this plugin convert
 */
 func (Instance) _converts_to(impl func(ptr gdclass.Receiver) string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -211,7 +211,7 @@ func (Instance) _handles(impl func(ptr gdclass.Receiver, resource Resource.Insta
 		var resource = [1]gdclass.Resource{gdclass.NewResource(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -228,7 +228,7 @@ func (Instance) _convert(impl func(ptr gdclass.Receiver, resource Resource.Insta
 		var resource = [1]gdclass.Resource{gdclass.NewResource(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource)
 		ptr, ok := gdreference.EndObject(gdclass.GetResource(ret[0])[0])
 
@@ -282,7 +282,7 @@ func New() Instance {
 }
 func (class) _converts_to(impl func(ptr gdclass.Receiver) String.Readable) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -297,7 +297,7 @@ func (class) _handles(impl func(ptr gdclass.Receiver, resource [1]gdclass.Resour
 		var resource = [1]gdclass.Resource{gdclass.NewResource(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -307,7 +307,7 @@ func (class) _convert(impl func(ptr gdclass.Receiver, resource [1]gdclass.Resour
 		var resource = [1]gdclass.Resource{gdclass.NewResource(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource)
 		ptr, ok := gdreference.EndObject(gdclass.GetResource(ret[0])[0])
 

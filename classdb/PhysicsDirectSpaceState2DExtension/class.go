@@ -166,7 +166,7 @@ func (Instance) _intersect_ray(impl func(ptr gdclass.Receiver, from Vector2.XY, 
 		var hit_from_inside = gd.UnsafeGet[bool](p_args, 5)
 		var r_result = gdmemory.WrapPointer[RayResult](gd.UnsafeGet[gdextension.Pointer](p_args, 6))
 		defer gdmemory.Barrier()
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, from, to, int(collision_mask), collide_with_bodies, collide_with_areas, hit_from_inside, r_result)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -181,7 +181,7 @@ func (Instance) _intersect_point(impl func(ptr gdclass.Receiver, position Vector
 		var r_results_ptr = gd.UnsafeGet[gdextension.Pointer](p_args, 5)
 		var max_results = gd.UnsafeGet[int64](p_args, 6)
 		var r_results = gdmemory.ArrayContains[ShapeResult](r_results_ptr, int(max_results))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, position, int(canvas_instance_id), int(collision_mask), collide_with_bodies, collide_with_areas, r_results)
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -198,7 +198,7 @@ func (Instance) _intersect_shape(impl func(ptr gdclass.Receiver, shape_rid RID.S
 		var r_result_ptr = gd.UnsafeGet[gdextension.Pointer](p_args, 7)
 		var max_results = gd.UnsafeGet[int64](p_args, 8)
 		var r_result = gdmemory.ArrayContains[ShapeResult](r_result_ptr, int(max_results))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, RID.Shape2D(shape_rid), transform, motion, Float.X(margin), int(collision_mask), collide_with_bodies, collide_with_areas, r_result)
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -216,7 +216,7 @@ func (Instance) _cast_motion(impl func(ptr gdclass.Receiver, shape_rid RID.Shape
 		defer gdmemory.Barrier()
 		var r_closest_unsafe = gdmemory.WrapPointer[float32](gd.UnsafeGet[gdextension.Pointer](p_args, 8))
 		defer gdmemory.Barrier()
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, RID.Shape2D(shape_rid), transform, motion, Float.X(margin), int(collision_mask), collide_with_bodies, collide_with_areas, r_closest_safe, r_closest_unsafe)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -235,7 +235,7 @@ func (Instance) _collide_shape(impl func(ptr gdclass.Receiver, shape_rid RID.Sha
 		var r_result_count = gdmemory.WrapPointer[int32](gd.UnsafeGet[gdextension.Pointer](p_args, 9))
 		defer gdmemory.Barrier()
 		var r_results = Packed.Array[Vector2.XY](gdmemory.ArrayContains[Vector2.XY](r_results_ptr, int(max_results)))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, RID.Shape2D(shape_rid), transform, motion, Float.X(margin), int(collision_mask), collide_with_bodies, collide_with_areas, r_results, r_result_count)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -251,7 +251,7 @@ func (Instance) _rest_info(impl func(ptr gdclass.Receiver, shape_rid RID.Shape2D
 		var collide_with_areas = gd.UnsafeGet[bool](p_args, 6)
 		var r_rest_info = gdmemory.WrapPointer[ShapeRestInfo](gd.UnsafeGet[gdextension.Pointer](p_args, 7))
 		defer gdmemory.Barrier()
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, RID.Shape2D(shape_rid), transform, motion, Float.X(margin), int(collision_mask), collide_with_bodies, collide_with_areas, r_rest_info)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -311,7 +311,7 @@ func (class) _intersect_ray(impl func(ptr gdclass.Receiver, from Vector2.XY, to 
 		var hit_from_inside = gd.UnsafeGet[bool](p_args, 5)
 		var r_result = gdmemory.WrapPointer[RayResult](gd.UnsafeGet[gdextension.Pointer](p_args, 6))
 		defer gdmemory.Barrier()
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, from, to, collision_mask, collide_with_bodies, collide_with_areas, hit_from_inside, r_result)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -326,7 +326,7 @@ func (class) _intersect_point(impl func(ptr gdclass.Receiver, position Vector2.X
 		var r_results = gdmemory.WrapPointer[ShapeResult](gd.UnsafeGet[gdextension.Pointer](p_args, 5))
 		defer gdmemory.Barrier()
 		var max_results = gd.UnsafeGet[int64](p_args, 6)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, position, canvas_instance_id, collision_mask, collide_with_bodies, collide_with_areas, r_results, max_results)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -343,7 +343,7 @@ func (class) _intersect_shape(impl func(ptr gdclass.Receiver, shape_rid RID.Any,
 		var r_result = gdmemory.WrapPointer[ShapeResult](gd.UnsafeGet[gdextension.Pointer](p_args, 7))
 		defer gdmemory.Barrier()
 		var max_results = gd.UnsafeGet[int64](p_args, 8)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, shape_rid, transform, motion, margin, collision_mask, collide_with_bodies, collide_with_areas, r_result, max_results)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -360,7 +360,7 @@ func (class) _cast_motion(impl func(ptr gdclass.Receiver, shape_rid RID.Any, tra
 		var r_closest_safe = gdmemory.WrapPointer[float32](gd.UnsafeGet[gdextension.Pointer](p_args, 7))
 		defer gdmemory.Barrier()
 		var r_closest_unsafe = gdmemory.WrapPointer[float32](gd.UnsafeGet[gdextension.Pointer](p_args, 8))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, shape_rid, transform, motion, margin, collision_mask, collide_with_bodies, collide_with_areas, r_closest_safe, r_closest_unsafe)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -378,7 +378,7 @@ func (class) _collide_shape(impl func(ptr gdclass.Receiver, shape_rid RID.Any, t
 		defer gdmemory.Barrier()
 		var max_results = gd.UnsafeGet[int64](p_args, 8)
 		var r_result_count = gdmemory.WrapPointer[int32](gd.UnsafeGet[gdextension.Pointer](p_args, 9))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, shape_rid, transform, motion, margin, collision_mask, collide_with_bodies, collide_with_areas, r_results, max_results, r_result_count)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -394,7 +394,7 @@ func (class) _rest_info(impl func(ptr gdclass.Receiver, shape_rid RID.Any, trans
 		var collide_with_areas = gd.UnsafeGet[bool](p_args, 6)
 		var r_rest_info = gdmemory.WrapPointer[ShapeRestInfo](gd.UnsafeGet[gdextension.Pointer](p_args, 7))
 		defer gdmemory.Barrier()
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, shape_rid, transform, motion, margin, collision_mask, collide_with_bodies, collide_with_areas, r_rest_info)
 		gd.UnsafeSet(p_back, ret)
 	}

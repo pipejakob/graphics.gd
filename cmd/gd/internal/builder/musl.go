@@ -82,13 +82,8 @@ func (musl Musl) Build(args ...string) (err error) {
 	if err != nil {
 		return xray.New(err)
 	}
-	var overlay = filepath.Join(gdpaths.Lib, "musl.json")
-	if err := os.WriteFile(overlay, []byte(`{
-		"Replace": {
-			"`+filepath.Join(GOROOT, "src", "runtime", "runtime1.go")+`": "`+filepath.Join(gdpaths.Lib, "musl", "runtime1.go.overlay")+`",
-			"`+filepath.Join(GOROOT, "src", "runtime", "os_linux.go")+`": "`+filepath.Join(gdpaths.Lib, "musl", "os_linux.go.overlay")+`"
-		}
-	}`), 0755); err != nil {
+	overlay, err := muslOverlay(GOROOT)
+	if err != nil {
 		return xray.New(err)
 	}
 	var target string
@@ -107,7 +102,7 @@ func (musl Musl) Build(args ...string) (err error) {
 		return fmt.Errorf("gd build: cannot cross-compile linux %v on %v", GOARCH, runtime.GOOS)
 	}
 	libgo := filepath.Join(project.GraphicsDirectory, fmt.Sprintf("musl_%v.a", GOARCH))
-	if err := tooling.Go.Action("build", args, "-tags", "musl", "-buildmode=c-archive", "-overlay="+overlay, "-o", libgo); err != nil {
+	if err := tooling.Go.Action("build", args, "-tags", muslTags(), "-buildmode=c-archive", "-overlay="+overlay, "-o", libgo); err != nil {
 		return xray.New(err)
 	}
 	// Forward each linked package's #cgo LDFLAGS to the final link. `go build`
@@ -117,7 +112,7 @@ func (musl Musl) Build(args ...string) (err error) {
 	// absolute paths. -lc++ goes last so libc++ resolves any C++ symbols those
 	// archives pull in.
 	zigArgs := []string{"cc", "-target", target, musl.lib, libgo}
-	cgoLDFLAGS, err := tooling.Go.Output("list", "-tags", "musl", "-deps", "-f", "{{range .CgoLDFLAGS}}{{println .}}{{end}}", ".")
+	cgoLDFLAGS, err := tooling.Go.Output("list", "-tags", muslTags(), "-deps", "-f", "{{range .CgoLDFLAGS}}{{println .}}{{end}}", ".")
 	if err != nil {
 		return xray.New(err)
 	}
@@ -300,13 +295,8 @@ func (musl Musl) Test(args ...string) error {
 	if err != nil {
 		return xray.New(err)
 	}
-	var overlay = filepath.Join(gdpaths.Lib, "musl.json")
-	if err := os.WriteFile(overlay, []byte(`{
-		"Replace": {
-			"`+filepath.Join(GOROOT, "src", "runtime", "runtime1.go")+`": "`+filepath.Join(gdpaths.Lib, "musl", "runtime1.go.overlay")+`",
-			"`+filepath.Join(GOROOT, "src", "runtime", "os_linux.go")+`": "`+filepath.Join(gdpaths.Lib, "musl", "os_linux.go.overlay")+`"
-		}
-	}`), 0755); err != nil {
+	overlay, err := muslOverlay(GOROOT)
+	if err != nil {
 		return xray.New(err)
 	}
 	var target string
@@ -325,7 +315,7 @@ func (musl Musl) Test(args ...string) error {
 		return fmt.Errorf("gd build: cannot cross-compile linux %v on %v", GOARCH, runtime.GOOS)
 	}
 	libgo := filepath.Join(project.GraphicsDirectory, fmt.Sprintf("musl_%v.a", GOARCH))
-	if err := tooling.Go.Action("test", args, "-c", "-tags", "musl", "-buildmode=c-archive", "-overlay="+overlay, "-o", libgo); err != nil {
+	if err := tooling.Go.Action("test", args, "-c", "-tags", muslTags(), "-buildmode=c-archive", "-overlay="+overlay, "-o", libgo); err != nil {
 		return xray.New(err)
 	}
 	libgodot, err := tooling.LibGodotEditor.LookupPlatform("musl", GOARCH)
@@ -343,3 +333,22 @@ func (musl Musl) Test(args ...string) error {
 	args = append(args, "--headless")
 	return tooling.Godot.Exec(args...)
 }
+
+// muslOverlay writes the GOROOT runtime-overlay file for musl builds and
+// returns its path. The fastcb resident-callback cgocall.go replacement
+// (bundled, see fastcb.go) is merged in by default, composing with the standard
+// musl runtime1.go/os_linux.go overlays.
+func muslOverlay(GOROOT string) (string, error) {
+	replace := map[string]string{
+		filepath.Join(GOROOT, "src", "runtime", "runtime1.go"): filepath.Join(gdpaths.Lib, "musl", "runtime1.go.overlay"),
+		filepath.Join(GOROOT, "src", "runtime", "os_linux.go"): filepath.Join(gdpaths.Lib, "musl", "os_linux.go.overlay"),
+	}
+	if p := fastcbCgocall("musl"); p != "" {
+		replace[filepath.Join(GOROOT, "src", "runtime", "cgocall.go")] = p
+	}
+	return writeOverlay("musl.json", replace)
+}
+
+// muslTags returns the build-tag list for musl builds; GD_EXTRA_TAGS appends
+// additional tags (comma-separated), e.g. fastcboverlay.
+func muslTags() string { return mergeTags("musl", "musl") }

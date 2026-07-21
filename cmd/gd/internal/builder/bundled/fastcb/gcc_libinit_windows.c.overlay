@@ -1,0 +1,255 @@
+// Copyright 2015 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+#ifdef __CYGWIN__
+#error "don't use the cygwin compiler to build native Windows programs; use MinGW instead"
+#endif
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "libcgo.h"
+#include "libcgo_windows.h"
+
+static volatile LONG runtime_init_once_gate = 0;
+static volatile LONG runtime_init_once_done = 0;
+
+static CRITICAL_SECTION runtime_init_cs;
+
+static HANDLE runtime_init_wait;
+static int runtime_init_done;
+
+// graphics.gd fastcb patch: extra-M retention on Windows.
+//
+// Upstream leaves x_cgo_pthread_key_created zero on Windows ("no pthreads"),
+// so runtime.cgocallback drops the extra M after EVERY C->Go callback. That
+// per-callback needm/dropm churn is what pthread platforms avoid via the
+// pthread-key retention mechanism, and on Windows it both defeats fastcb
+// resident-callback mode and races the garbage collector: dropm's
+// casgstatus(_Gsyscall -> _Gdeadextra) can spin forever against a GC scan of
+// the extra M's g, deadlocking the engine's main thread (observed as the
+// whole engine hanging or exiting mid-frame under load).
+//
+// Fiber-local storage is the exact Windows analogue of a pthread key with a
+// destructor: FlsAlloc callbacks run at thread exit (and are also invoked on
+// FlsFree at process teardown). We create one, publish
+// x_cgo_pthread_key_created = 1, implement x_cgo_bindm with FlsSetValue, and
+// perform the deferred thread-exit dropm from the FLS callback exactly the
+// way gcc_libinit.c's pthread_key_destructor does.
+static DWORD fls_g = FLS_OUT_OF_INDEXES;
+static void CALLBACK fls_g_destructor(void* g);
+uintptr_t x_cgo_pthread_key_created;
+void (*x_crosscall2_ptr)(void (*fn)(void *), void *, int, size_t);
+
+static void CALLBACK
+fls_g_destructor(void* g) {
+	if (g != NULL && x_crosscall2_ptr != NULL) {
+		// fn == NULL means dropm.
+		// We restore g by using the stored g, before dropm in
+		// runtime.cgocallback, since the g stored in the TLS by Go might be
+		// cleared before this destructor is invoked.
+		x_crosscall2_ptr(NULL, g, 0, 0);
+	}
+}
+
+// Pre-initialize the runtime synchronization objects
+void
+_cgo_preinit_init() {
+	 runtime_init_wait = CreateEvent(NULL, TRUE, FALSE, NULL);
+	 if (runtime_init_wait == NULL) {
+		fprintf(stderr, "runtime: failed to create runtime initialization wait event.\n");
+		abort();
+	 }
+
+	 InitializeCriticalSection(&runtime_init_cs);
+
+	 // fastcb: create the fiber-local g slot that backs extra-M retention
+	 // (see the comment on fls_g above). Runs exactly once, before any C->Go
+	 // callback can exist. On failure the flag stays zero and callbacks fall
+	 // back to the stock per-callback needm/dropm behavior.
+	 fls_g = FlsAlloc(fls_g_destructor);
+	 if (fls_g != FLS_OUT_OF_INDEXES) {
+		x_cgo_pthread_key_created = 1;
+	 }
+}
+
+// Make sure that the preinit sequence has run.
+void
+_cgo_maybe_run_preinit() {
+	 if (!InterlockedExchangeAdd(&runtime_init_once_done, 0)) {
+			if (InterlockedIncrement(&runtime_init_once_gate) == 1) {
+				 _cgo_preinit_init();
+				 InterlockedIncrement(&runtime_init_once_done);
+			} else {
+				 // Decrement to avoid overflow.
+				 InterlockedDecrement(&runtime_init_once_gate);
+				 while(!InterlockedExchangeAdd(&runtime_init_once_done, 0)) {
+						Sleep(0);
+				 }
+			}
+	 }
+}
+
+void
+x_cgo_sys_thread_create(unsigned long (__stdcall *func)(void*), void* arg) {
+	_cgo_beginthread(func, arg);
+}
+
+int
+_cgo_is_runtime_initialized() {
+	 int status;
+
+	 EnterCriticalSection(&runtime_init_cs);
+	 status = runtime_init_done;
+	 LeaveCriticalSection(&runtime_init_cs);
+	 return status;
+}
+
+uintptr_t
+_cgo_wait_runtime_init_done(void) {
+	void (*pfn)(struct cgoContextArg*);
+
+	 _cgo_maybe_run_preinit();
+	while (!_cgo_is_runtime_initialized()) {
+			WaitForSingleObject(runtime_init_wait, INFINITE);
+	}
+	pfn = _cgo_get_context_function();
+	if (pfn != nil) {
+		struct cgoContextArg arg;
+
+		arg.Context = 0;
+		(*pfn)(&arg);
+		return arg.Context;
+	}
+	return 0;
+}
+
+// Binds the current thread's g into fiber-local storage so the FLS callback
+// can dropm at thread exit; the runtime only calls this once per thread (in
+// runtime.needAndBindM) and subsequent callbacks reuse the bound m.
+void x_cgo_bindm(void* g) {
+	// We assume this will always succeed, otherwise, there might be extra M
+	// leaking, when a C thread exits after a cgo call.
+	FlsSetValue(fls_g, g);
+}
+
+void
+x_cgo_notify_runtime_init_done(void* dummy) {
+	 _cgo_maybe_run_preinit();
+
+	 EnterCriticalSection(&runtime_init_cs);
+	runtime_init_done = 1;
+	 LeaveCriticalSection(&runtime_init_cs);
+
+	 if (!SetEvent(runtime_init_wait)) {
+		fprintf(stderr, "runtime: failed to signal runtime initialization complete.\n");
+		abort();
+	}
+}
+
+// The traceback function, used when tracing C calls.
+static void (*cgo_traceback_function)(struct cgoTracebackArg*);
+
+// The context function, used when tracing back C calls into Go.
+static void (*cgo_context_function)(struct cgoContextArg*);
+
+// The symbolizer function, used when symbolizing C frames.
+static void (*cgo_symbolizer_function)(struct cgoSymbolizerArg*);
+
+// Sets the traceback, context, and symbolizer functions. Called from
+// runtime.SetCgoTraceback.
+void x_cgo_set_traceback_functions(struct cgoSetTracebackFunctionsArg* arg) {
+	EnterCriticalSection(&runtime_init_cs);
+	cgo_traceback_function = arg->Traceback;
+	cgo_context_function = arg->Context;
+	cgo_symbolizer_function = arg->Symbolizer;
+	LeaveCriticalSection(&runtime_init_cs);
+}
+
+// Gets the traceback function to call to trace C calls.
+void (*(_cgo_get_traceback_function(void)))(struct cgoTracebackArg*) {
+	void (*ret)(struct cgoTracebackArg*);
+
+	EnterCriticalSection(&runtime_init_cs);
+	ret = cgo_traceback_function;
+	LeaveCriticalSection(&runtime_init_cs);
+	return ret;
+}
+
+// Call the traceback function registered with x_cgo_set_traceback_functions.
+//
+// On other platforms, this coordinates with C/C++ TSAN. On Windows, there is
+// no C/C++ TSAN.
+void x_cgo_call_traceback_function(struct cgoTracebackArg* arg) {
+	void (*pfn)(struct cgoTracebackArg*);
+
+	pfn = _cgo_get_traceback_function();
+	if (pfn == nil) {
+		return;
+	}
+
+	(*pfn)(arg);
+}
+
+// Gets the context function to call to record the traceback context
+// when calling a Go function from C code.
+void (*(_cgo_get_context_function(void)))(struct cgoContextArg*) {
+	void (*ret)(struct cgoContextArg*);
+
+	EnterCriticalSection(&runtime_init_cs);
+	ret = cgo_context_function;
+	LeaveCriticalSection(&runtime_init_cs);
+	return ret;
+}
+
+// Gets the symbolizer function to call to symbolize C frames.
+void (*(_cgo_get_symbolizer_function(void)))(struct cgoSymbolizerArg*) {
+	void (*ret)(struct cgoSymbolizerArg*);
+
+	EnterCriticalSection(&runtime_init_cs);
+	ret = cgo_symbolizer_function;
+	LeaveCriticalSection(&runtime_init_cs);
+	return ret;
+}
+
+// Call the symbolizer function registered with x_cgo_set_symbolizer_functions.
+//
+// On other platforms, this coordinates with C/C++ TSAN. On Windows, there is
+// no C/C++ TSAN.
+void x_cgo_call_symbolizer_function(struct cgoSymbolizerArg* arg) {
+	void (*pfn)(struct cgoSymbolizerArg*);
+
+	pfn = _cgo_get_symbolizer_function();
+	if (pfn == nil) {
+		return;
+	}
+
+	(*pfn)(arg);
+}
+
+void _cgo_beginthread(unsigned long (__stdcall *func)(void*), void* arg) {
+	int tries;
+	HANDLE thandle;
+
+	for (tries = 0; tries < 20; tries++) {
+		thandle = CreateThread(NULL, 0, func, arg, 0, NULL);
+		if (thandle == 0 && GetLastError() == ERROR_ACCESS_DENIED) {
+			// "Insufficient resources", try again in a bit.
+			//
+			// Note that the first Sleep(0) is a yield.
+			Sleep(tries); // milliseconds
+			continue;
+		} else if (thandle == 0) {
+			break;
+		}
+		CloseHandle(thandle);
+		return; // Success!
+	}
+
+	fprintf(stderr, "runtime: failed to create new OS thread (%lu)\n", GetLastError());
+	abort();
+}

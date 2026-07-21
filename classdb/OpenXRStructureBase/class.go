@@ -134,7 +134,7 @@ func (self implementation) GetHeader(next int) (_ int) {
 func (Instance) _get_header(impl func(ptr gdclass.Receiver, next int) int) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var next = gd.UnsafeGet[int64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, int(next))
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -204,7 +204,7 @@ func (self Instance) SetNext(value Instance) Instance { //gd:OpenXRStructureBase
 func (class) _get_header(impl func(ptr gdclass.Receiver, next int64) int64) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var next = gd.UnsafeGet[int64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, next)
 		gd.UnsafeSet(p_back, ret)
 	}

@@ -873,7 +873,7 @@ func (Instance) _forward_canvas_gui_input(impl func(ptr gdclass.Receiver, event 
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, event)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -904,7 +904,7 @@ func (Instance) _forward_canvas_draw_over_viewport(impl func(ptr gdclass.Receive
 		var viewport_control = [1]gdclass.Control{gdclass.NewControl(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetControl(viewport_control[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, viewport_control)
 	}
 }
@@ -922,7 +922,7 @@ func (Instance) _forward_canvas_force_draw_over_viewport(impl func(ptr gdclass.R
 		var viewport_control = [1]gdclass.Control{gdclass.NewControl(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetControl(viewport_control[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, viewport_control)
 	}
 }
@@ -970,7 +970,7 @@ func (Instance) _forward_3d_gui_input(impl func(ptr gdclass.Receiver, viewport_c
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 1), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, viewport_camera, event)
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -999,7 +999,7 @@ func (Instance) _forward_3d_draw_over_viewport(impl func(ptr gdclass.Receiver, v
 		var viewport_control = [1]gdclass.Control{gdclass.NewControl(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetControl(viewport_control[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, viewport_control)
 	}
 }
@@ -1017,7 +1017,7 @@ func (Instance) _forward_3d_force_draw_over_viewport(impl func(ptr gdclass.Recei
 		var viewport_control = [1]gdclass.Control{gdclass.NewControl(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetControl(viewport_control[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, viewport_control)
 	}
 }
@@ -1029,7 +1029,7 @@ For main screen plugins, this appears at the top of the screen, to the right of 
 */
 func (Instance) _get_plugin_name(impl func(ptr gdclass.Receiver) string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -1060,7 +1060,7 @@ Ideally, the plugin icon should be white with a transparent background and 16×1
 */
 func (Instance) _get_plugin_icon(impl func(ptr gdclass.Receiver) Texture2D.Instance) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := gdreference.EndObject(gdclass.GetTexture2D(ret[0])[0])
 
@@ -1120,7 +1120,7 @@ Use [GetPluginName] and [GetPluginIcon] to customize the plugin button's appeara
 */
 func (Instance) _has_main_screen(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1134,7 +1134,7 @@ Remember that you have to manage the visibility of all your editor controls manu
 func (Instance) _make_visible(impl func(ptr gdclass.Receiver, visible bool)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var visible = gd.UnsafeGet[bool](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, visible)
 	}
 }
@@ -1148,7 +1148,7 @@ func (Instance) _edit(impl func(ptr gdclass.Receiver, obj Object.Instance)) (cb 
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var obj = [1]gdreference.Object{gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free)}
 		defer gdreference.EndObject(obj[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, obj)
 	}
 }
@@ -1167,7 +1167,7 @@ func (Instance) _handles(impl func(ptr gdclass.Receiver, obj Object.Instance) bo
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var obj = [1]gdreference.Object{gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free)}
 		defer gdreference.EndObject(obj[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, obj)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1192,7 +1192,7 @@ Note: You must implement [GetPluginName] for the state to be stored and restored
 */
 func (Instance) _get_state(impl func(ptr gdclass.Receiver) map[any]any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalDictionary(gd.DictionaryFromMap(ret)))
 
@@ -1222,7 +1222,7 @@ func (Instance) _set_state(impl func(ptr gdclass.Receiver, state map[any]any)) (
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var state = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 0)))))
 		defer pointers.End(gd.InternalDictionary(state))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, gd.DictionaryAs[map[any]any](state))
 	}
 }
@@ -1232,7 +1232,7 @@ Clear all the state and reset the object being edited to zero. This ensures your
 */
 func (Instance) _clear(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -1281,7 +1281,7 @@ func (Instance) _get_unsaved_status(impl func(ptr gdclass.Receiver, for_scene st
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var for_scene = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(for_scene))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, for_scene.String())
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -1297,7 +1297,7 @@ This method is called after the editor saves the project or when it's closed. It
 */
 func (Instance) _save_external_data(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -1309,7 +1309,7 @@ This is used, for example, in shader editors to let the plugin know that it must
 */
 func (Instance) _apply_changes(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -1319,7 +1319,7 @@ This is for editors that edit script-based objects. You can return a list of bre
 */
 func (Instance) _get_breakpoints(impl func(ptr gdclass.Receiver) []string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -1345,7 +1345,7 @@ func (Instance) _set_window_layout(impl func(ptr gdclass.Receiver, configuration
 		var configuration = [1]gdclass.ConfigFile{gdclass.NewConfigFile(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetConfigFile(configuration[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, configuration)
 	}
 }
@@ -1368,7 +1368,7 @@ func (Instance) _get_window_layout(impl func(ptr gdclass.Receiver, configuration
 		var configuration = [1]gdclass.ConfigFile{gdclass.NewConfigFile(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetConfigFile(configuration[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, configuration)
 	}
 }
@@ -1382,7 +1382,7 @@ This method must return a boolean. If this method returns false, the project wil
 */
 func (Instance) _build(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1408,7 +1408,7 @@ func (Instance) _run_scene(impl func(ptr gdclass.Receiver, scene string, args []
 		defer pointers.End(gd.InternalString(scene))
 		var args = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))
 		defer pointers.End(gd.InternalPackedStrings(args))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, scene.String(), args.Strings())
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -1426,7 +1426,7 @@ Called by the engine when the user enables the [EditorPlugin] in the Plugin tab 
 */
 func (Instance) _enable_plugin(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -1438,7 +1438,7 @@ Called by the engine when the user disables the [EditorPlugin] in the Plugin tab
 */
 func (Instance) _disable_plugin(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -2096,7 +2096,7 @@ func (class) _forward_canvas_gui_input(impl func(ptr gdclass.Receiver, event [1]
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, event)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -2106,7 +2106,7 @@ func (class) _forward_canvas_draw_over_viewport(impl func(ptr gdclass.Receiver, 
 		var viewport_control = [1]gdclass.Control{gdclass.NewControl(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetControl(viewport_control[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, viewport_control)
 	}
 }
@@ -2115,7 +2115,7 @@ func (class) _forward_canvas_force_draw_over_viewport(impl func(ptr gdclass.Rece
 		var viewport_control = [1]gdclass.Control{gdclass.NewControl(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetControl(viewport_control[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, viewport_control)
 	}
 }
@@ -2127,7 +2127,7 @@ func (class) _forward_3d_gui_input(impl func(ptr gdclass.Receiver, viewport_came
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 1), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, viewport_camera, event)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -2137,7 +2137,7 @@ func (class) _forward_3d_draw_over_viewport(impl func(ptr gdclass.Receiver, view
 		var viewport_control = [1]gdclass.Control{gdclass.NewControl(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetControl(viewport_control[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, viewport_control)
 	}
 }
@@ -2146,13 +2146,13 @@ func (class) _forward_3d_force_draw_over_viewport(impl func(ptr gdclass.Receiver
 		var viewport_control = [1]gdclass.Control{gdclass.NewControl(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetControl(viewport_control[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, viewport_control)
 	}
 }
 func (class) _get_plugin_name(impl func(ptr gdclass.Receiver) String.Readable) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -2164,7 +2164,7 @@ func (class) _get_plugin_name(impl func(ptr gdclass.Receiver) String.Readable) (
 }
 func (class) _get_plugin_icon(impl func(ptr gdclass.Receiver) [1]gdclass.Texture2D) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := gdreference.EndObject(gdclass.GetTexture2D(ret[0])[0])
 
@@ -2176,7 +2176,7 @@ func (class) _get_plugin_icon(impl func(ptr gdclass.Receiver) [1]gdclass.Texture
 }
 func (class) _has_main_screen(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -2184,7 +2184,7 @@ func (class) _has_main_screen(impl func(ptr gdclass.Receiver) bool) (cb gd.Exten
 func (class) _make_visible(impl func(ptr gdclass.Receiver, visible bool)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var visible = gd.UnsafeGet[bool](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, visible)
 	}
 }
@@ -2192,7 +2192,7 @@ func (class) _edit(impl func(ptr gdclass.Receiver, obj [1]gdreference.Object)) (
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var obj = [1]gdreference.Object{gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free)}
 		defer gdreference.EndObject(obj[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, obj)
 	}
 }
@@ -2200,14 +2200,14 @@ func (class) _handles(impl func(ptr gdclass.Receiver, obj [1]gdreference.Object)
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var obj = [1]gdreference.Object{gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free)}
 		defer gdreference.EndObject(obj[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, obj)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _get_state(impl func(ptr gdclass.Receiver) Dictionary.Any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalDictionary(ret))
 
@@ -2221,13 +2221,13 @@ func (class) _set_state(impl func(ptr gdclass.Receiver, state Dictionary.Any)) (
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var state = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.Pin(pointers.New[gd.Dictionary](gd.UnsafeGet[gdextension.Dictionary](p_args, 0)))))
 		defer pointers.End(gd.InternalDictionary(state))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, state)
 	}
 }
 func (class) _clear(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -2235,7 +2235,7 @@ func (class) _get_unsaved_status(impl func(ptr gdclass.Receiver, for_scene Strin
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var for_scene = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(for_scene))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, for_scene)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -2247,19 +2247,19 @@ func (class) _get_unsaved_status(impl func(ptr gdclass.Receiver, for_scene Strin
 }
 func (class) _save_external_data(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _apply_changes(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _get_breakpoints(impl func(ptr gdclass.Receiver) Packed.Strings) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -2274,7 +2274,7 @@ func (class) _set_window_layout(impl func(ptr gdclass.Receiver, configuration [1
 		var configuration = [1]gdclass.ConfigFile{gdclass.NewConfigFile(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetConfigFile(configuration[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, configuration)
 	}
 }
@@ -2283,13 +2283,13 @@ func (class) _get_window_layout(impl func(ptr gdclass.Receiver, configuration [1
 		var configuration = [1]gdclass.ConfigFile{gdclass.NewConfigFile(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetConfigFile(configuration[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, configuration)
 	}
 }
 func (class) _build(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -2300,7 +2300,7 @@ func (class) _run_scene(impl func(ptr gdclass.Receiver, scene String.Readable, a
 		defer pointers.End(gd.InternalString(scene))
 		var args = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))
 		defer pointers.End(gd.InternalPackedStrings(args))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, scene, args)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -2312,13 +2312,13 @@ func (class) _run_scene(impl func(ptr gdclass.Receiver, scene String.Readable, a
 }
 func (class) _enable_plugin(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _disable_plugin(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }

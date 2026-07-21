@@ -211,7 +211,7 @@ Called once during initialization.
 */
 func (Instance) _initialize(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -234,7 +234,7 @@ Note: Accumulated 'delta' may diverge from real world seconds.
 func (Instance) _physics_process(impl func(ptr gdclass.Receiver, delta Float.X) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, Float.X(delta))
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -261,7 +261,7 @@ Note: Frame delta may be post-processed by [OS.DeltaSmoothing] if this is enable
 func (Instance) _process(impl func(ptr gdclass.Receiver, delta Float.X) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, Float.X(delta))
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -272,7 +272,7 @@ Called before the program exits.
 */
 func (Instance) _finalize(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -320,14 +320,14 @@ func New() Instance {
 }
 func (class) _initialize(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _physics_process(impl func(ptr gdclass.Receiver, delta float64) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, delta)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -335,14 +335,14 @@ func (class) _physics_process(impl func(ptr gdclass.Receiver, delta float64) boo
 func (class) _process(impl func(ptr gdclass.Receiver, delta float64) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, delta)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _finalize(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }

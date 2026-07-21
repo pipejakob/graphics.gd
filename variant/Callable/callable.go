@@ -27,22 +27,32 @@ type functionCall struct {
 	arguments []variant.Any
 }
 
-// queue of functions to call later.
-var queue = Array.New[functionCall]()
+// queue of functions to call later. A plain Go slice, NOT an engine Array:
+// Defer runs on arbitrary goroutines while holding the mutex, and an engine
+// Array append from a user goroutine is a cross-thread engine call serviced
+// by the main thread's ring flush — which runs AFTER Callable.Cycle in the
+// frame, and Cycle starts by taking this same mutex. Holding the mutex across
+// that append therefore deadlocks the main thread against the deferring
+// goroutine whenever the Defer misses the flush window (reliably on slower
+// machines, e.g. the whole test suite hung at its second test on windows).
+var queue []functionCall
 var mutex sync.Mutex
 
 // Cycle calls all functions in the defer queue.
+//
+// The pending batch is taken ownership of under the mutex and the mutex is
+// released before any function runs: a Defer landing mid-cycle appends to the
+// fresh queue and runs next frame (the previous iterate-then-Clear shape
+// silently discarded such entries without calling them), and the functions
+// themselves are free to Defer without re-entrancy trouble.
 func Cycle() {
 	mutex.Lock()
-	defer mutex.Unlock()
-	for _, queued := range queue.Iter() {
-		func() {
-			mutex.Unlock()
-			defer mutex.Lock()
-			queued.function.Call(queued.arguments...)
-		}()
+	batch := queue
+	queue = nil
+	mutex.Unlock()
+	for _, queued := range batch {
+		queued.function.Call(queued.arguments...)
 	}
-	Array.Clear(queue)
 }
 
 // New returns a new [Func] from the given value, if the value is not a Go func
@@ -172,7 +182,7 @@ func Defer(fn Function, args ...variant.Any) { //gd:Callable.call_deferred
 	}
 	mutex.Lock()
 	defer mutex.Unlock()
-	queue.Append(functionCall{
+	queue = append(queue, functionCall{
 		function:  fn,
 		arguments: args,
 	})

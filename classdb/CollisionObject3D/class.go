@@ -217,7 +217,7 @@ func (Instance) _input_event(impl func(ptr gdclass.Receiver, camera Camera3D.Ins
 		var event_position = gd.UnsafeGet[Vector3.XYZ](p_args, 2)
 		var normal = gd.UnsafeGet[Vector3.XYZ](p_args, 3)
 		var shape_idx = gd.UnsafeGet[int64](p_args, 4)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, camera, event, event_position, normal, int(shape_idx))
 	}
 }
@@ -231,7 +231,7 @@ Called when the mouse pointer enters any of this object's shapes. Requires [Inpu
 */
 func (Instance) _mouse_enter(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -245,7 +245,7 @@ Called when the mouse pointer exits all this object's shapes. Requires [InputRay
 */
 func (Instance) _mouse_exit(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -562,19 +562,19 @@ func (class) _input_event(impl func(ptr gdclass.Receiver, camera [1]gdclass.Came
 		var event_position = gd.UnsafeGet[Vector3.XYZ](p_args, 2)
 		var normal = gd.UnsafeGet[Vector3.XYZ](p_args, 3)
 		var shape_idx = gd.UnsafeGet[int64](p_args, 4)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, camera, event, event_position, normal, shape_idx)
 	}
 }
 func (class) _mouse_enter(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _mouse_exit(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }

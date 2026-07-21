@@ -160,7 +160,7 @@ func (Instance) _mix_resampled(impl func(ptr gdclass.Receiver, dst_buffer Array.
 		var dst_buffer_ptr = gd.UnsafeGet[gdextension.Pointer](p_args, 0)
 		var frame_count = gd.UnsafeGet[int64](p_args, 1)
 		var dst_buffer = gdmemory.ArrayContains[AudioFrame](dst_buffer_ptr, int(frame_count))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, dst_buffer)
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -173,7 +173,7 @@ Returns an [AudioStream]'s sample rate, in Hz. Used to perform resampling.
 */
 func (Instance) _get_stream_sampling_rate(impl func(ptr gdclass.Receiver) Float.X) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, float64(ret))
 	}
@@ -235,14 +235,14 @@ func (class) _mix_resampled(impl func(ptr gdclass.Receiver, dst_buffer Engine.Po
 		var dst_buffer = gdmemory.WrapPointer[AudioFrame](gd.UnsafeGet[gdextension.Pointer](p_args, 0))
 		defer gdmemory.Barrier()
 		var frame_count = gd.UnsafeGet[int64](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, dst_buffer, frame_count)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _get_stream_sampling_rate(impl func(ptr gdclass.Receiver) float64) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}

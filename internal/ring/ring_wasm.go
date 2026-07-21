@@ -15,6 +15,9 @@ func wasm_gd_memory_malloc(size uint32) uint32
 //go:wasmimport gd bulk_copy
 func wasm_gd_bulk_copy(godot_dst uint32, go_src uint32, length uint32)
 
+// Adopt is a no-op on wasm: the ring is flushed through the wasm imports.
+func Adopt() {}
+
 func flush(entries unsafe.Pointer, tail, head uint32) {
 	if shadowRing == 0 {
 		shadowRing = wasm_gd_memory_malloc(Size * uint32(unsafe.Sizeof(Entry{})))

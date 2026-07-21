@@ -252,7 +252,7 @@ When inheriting from [AnimationRootNode], implement this virtual method to retur
 */
 func (Instance) _get_child_nodes(impl func(ptr gdclass.Receiver) map[string]struct{}) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalDictionary(gd.DictionaryFromMap(ret)))
 
@@ -271,7 +271,7 @@ When inheriting from [AnimationRootNode], implement this virtual method to retur
 */
 func (Instance) _get_parameter_list(impl func(ptr gdclass.Receiver) []struct{}) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalArray(gd.EngineArrayFromSlice(ret)))
 
@@ -291,7 +291,7 @@ func (Instance) _get_child_by_name(impl func(ptr gdclass.Receiver, name string) 
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var name = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(name))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, name.String())
 		ptr, ok := gdreference.EndObject(gdclass.GetAnimationNode(ret[0])[0])
 
@@ -311,7 +311,7 @@ func (Instance) _get_parameter_default_value(impl func(ptr gdclass.Receiver, par
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var parameter = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(parameter))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, parameter.String())
 		ptr, ok := pointers.End(gd.InternalVariant(variant.New(ret)))
 
@@ -331,7 +331,7 @@ func (Instance) _is_parameter_read_only(impl func(ptr gdclass.Receiver, paramete
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var parameter = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(parameter))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, parameter.String())
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -357,7 +357,7 @@ func (Instance) _process(impl func(ptr gdclass.Receiver, time Float.X, seek bool
 		var seek = gd.UnsafeGet[bool](p_args, 1)
 		var is_external_seeking = gd.UnsafeGet[bool](p_args, 2)
 		var test_only = gd.UnsafeGet[bool](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, Float.X(time), seek, is_external_seeking, test_only)
 		gd.UnsafeSet(p_back, float64(ret))
 	}
@@ -370,7 +370,7 @@ When inheriting from [AnimationRootNode], implement this virtual method to overr
 */
 func (Instance) _get_caption(impl func(ptr gdclass.Receiver) string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -388,7 +388,7 @@ When inheriting from [AnimationRootNode], implement this virtual method to retur
 */
 func (Instance) _has_filter(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -607,7 +607,7 @@ func (self Instance) SetFilterEnabled(value bool) Instance { //gd:AnimationNode.
 }
 func (class) _get_child_nodes(impl func(ptr gdclass.Receiver) Dictionary.Any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalDictionary(ret))
 
@@ -619,7 +619,7 @@ func (class) _get_child_nodes(impl func(ptr gdclass.Receiver) Dictionary.Any) (c
 }
 func (class) _get_parameter_list(impl func(ptr gdclass.Receiver) Array.Any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalArray(ret))
 
@@ -633,7 +633,7 @@ func (class) _get_child_by_name(impl func(ptr gdclass.Receiver, name String.Name
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var name = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(name))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, name)
 		ptr, ok := gdreference.EndObject(gdclass.GetAnimationNode(ret[0])[0])
 
@@ -647,7 +647,7 @@ func (class) _get_parameter_default_value(impl func(ptr gdclass.Receiver, parame
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var parameter = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(parameter))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, parameter)
 		ptr, ok := pointers.End(gd.InternalVariant(ret))
 
@@ -661,7 +661,7 @@ func (class) _is_parameter_read_only(impl func(ptr gdclass.Receiver, parameter S
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var parameter = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 0))))))
 		defer pointers.End(gd.InternalStringName(parameter))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, parameter)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -672,14 +672,14 @@ func (class) _process(impl func(ptr gdclass.Receiver, time float64, seek bool, i
 		var seek = gd.UnsafeGet[bool](p_args, 1)
 		var is_external_seeking = gd.UnsafeGet[bool](p_args, 2)
 		var test_only = gd.UnsafeGet[bool](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, time, seek, is_external_seeking, test_only)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _get_caption(impl func(ptr gdclass.Receiver) String.Readable) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -691,7 +691,7 @@ func (class) _get_caption(impl func(ptr gdclass.Receiver) String.Readable) (cb g
 }
 func (class) _has_filter(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}

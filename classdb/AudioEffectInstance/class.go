@@ -162,7 +162,7 @@ func (Instance) _process(impl func(ptr gdclass.Receiver, src_buffer Array.Contai
 		var frame_count = gd.UnsafeGet[int64](p_args, 2)
 		var src_buffer = gdmemory.ArrayContains[AudioFrame](src_buffer_ptr, int(frame_count))
 		var r_dst_buffer = gdmemory.ArrayContains[AudioFrame](r_dst_buffer_ptr, int(frame_count))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, src_buffer, r_dst_buffer)
 	}
 }
@@ -177,7 +177,7 @@ Should return true to force the [AudioServer] to always call [Process], even if 
 */
 func (Instance) _process_silence(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -230,13 +230,13 @@ func (class) _process(impl func(ptr gdclass.Receiver, src_buffer Engine.Pointer[
 		defer gdmemory.Barrier()
 		var r_dst_buffer = gdmemory.WrapPointer[AudioFrame](gd.UnsafeGet[gdextension.Pointer](p_args, 1))
 		var frame_count = gd.UnsafeGet[int64](p_args, 2)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, src_buffer, r_dst_buffer, frame_count)
 	}
 }
 func (class) _process_silence(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}

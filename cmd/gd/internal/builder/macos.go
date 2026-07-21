@@ -54,7 +54,7 @@ func (MacOS) Build(args ...string) error {
 	if err := os.Setenv("GOARCH", "arm64"); err != nil {
 		return xray.New(err)
 	}
-	if err := tooling.Go.Action("build", args, "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, "darwin_arm64.dylib")); err != nil {
+	if err := tooling.Go.Action("build", args, append(fastcbFlags("macos", ""), "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, "darwin_arm64.dylib"))...); err != nil {
 		return xray.New(err)
 	}
 	if runtime.GOOS != "darwin" {
@@ -73,7 +73,7 @@ func (MacOS) Build(args ...string) error {
 	if err := os.Setenv("GOARCH", "amd64"); err != nil {
 		return xray.New(err)
 	}
-	if err := tooling.Go.Action("build", args, "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, "darwin_amd64.dylib")); err != nil {
+	if err := tooling.Go.Action("build", args, append(fastcbFlags("macos", ""), "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, "darwin_amd64.dylib"))...); err != nil {
 		return xray.New(err)
 	}
 	err := lipo.Execute(os.Stdout, os.Stderr,
@@ -108,7 +108,7 @@ func (macos MacOS) Run(args ...string) error {
 	if runtime.GOOS != "darwin" {
 		return fmt.Errorf("gd run: cannot run darwin/universal executable on %v/%v", runtime.GOOS, runtime.GOARCH)
 	}
-	if err := tooling.Go.Action("build", args, "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("darwin_%v.dylib", runtime.GOARCH))); err != nil {
+	if err := tooling.Go.Action("build", args, append(fastcbFlags("macos", ""), "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("darwin_%v.dylib", runtime.GOARCH)))...); err != nil {
 		return xray.New(err)
 	}
 	err := lipo.Execute(os.Stdout, os.Stderr,
@@ -132,7 +132,7 @@ func (MacOS) Test(args ...string) error {
 	if runtime.GOOS != "darwin" {
 		return fmt.Errorf("gd test: cannot run darwin/universal tests on %v/%v", runtime.GOOS, runtime.GOARCH)
 	}
-	if err := tooling.Go.Action("test", args, "-c", "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("darwin_%v.dylib", runtime.GOARCH))); err != nil {
+	if err := tooling.Go.Action("test", args, append(fastcbFlags("macos", ""), "-c", "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("darwin_%v.dylib", runtime.GOARCH)))...); err != nil {
 		return xray.New(err)
 	}
 	err := lipo.Execute(os.Stdout, os.Stderr,

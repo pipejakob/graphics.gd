@@ -53,6 +53,9 @@ func (engine *engineAsStaticLibrary) Start() {
 }
 
 func (engine *engineAsStaticLibrary) Scene() {
+	if fastcbScene(engine) {
+		return
+	}
 	for !engine.Library.Iteration() {
 	}
 }

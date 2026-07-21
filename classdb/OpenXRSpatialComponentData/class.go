@@ -145,7 +145,7 @@ Sets the expected capacity as provided by the spatial entities query system. Buf
 func (Instance) _set_capacity(impl func(ptr gdclass.Receiver, capacity int)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var capacity = gd.UnsafeGet[int64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, int(capacity))
 	}
 }
@@ -155,7 +155,7 @@ Return the component type for the component we store data for.
 */
 func (Instance) _get_component_type(impl func(ptr gdclass.Receiver) int) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -167,7 +167,7 @@ Return a pointer to the structure data that will be submitted along with the sna
 func (Instance) _get_structure_data(impl func(ptr gdclass.Receiver, next int) int) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var next = gd.UnsafeGet[int64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, int(next))
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -236,13 +236,13 @@ func New() Instance {
 func (class) _set_capacity(impl func(ptr gdclass.Receiver, capacity int64)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var capacity = gd.UnsafeGet[int64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, capacity)
 	}
 }
 func (class) _get_component_type(impl func(ptr gdclass.Receiver) int64) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -250,7 +250,7 @@ func (class) _get_component_type(impl func(ptr gdclass.Receiver) int64) (cb gd.E
 func (class) _get_structure_data(impl func(ptr gdclass.Receiver, next int64) int64) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var next = gd.UnsafeGet[int64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, next)
 		gd.UnsafeSet(p_back, ret)
 	}

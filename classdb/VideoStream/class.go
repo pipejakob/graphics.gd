@@ -146,7 +146,7 @@ Called when the video starts playing, to initialize and return a subclass of [Vi
 */
 func (Instance) _instantiate_playback(impl func(ptr gdclass.Receiver) VideoStreamPlayback.Instance) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := gdreference.EndObject(gdclass.GetVideoStreamPlayback(ret[0])[0])
 
@@ -218,7 +218,7 @@ func (self Instance) SetFile(value string) Instance { //gd:VideoStream.file
 }
 func (class) _instantiate_playback(impl func(ptr gdclass.Receiver) [1]gdclass.VideoStreamPlayback) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := gdreference.EndObject(gdclass.GetVideoStreamPlayback(ret[0])[0])
 

@@ -66,6 +66,13 @@ func Call[T any](object gdextension.Object, method gdextension.MethodForClass, s
 
 // direct performs the engine crossing on the calling thread.
 func direct[T any](object gdextension.Object, method gdextension.MethodForClass, shape gdextension.Shape, argptr unsafe.Pointer) T {
+	if threadcheck.Main() {
+		if n, ok := residentAvailable(shape); ok {
+			// Resident-callback mode: cross via asmcgocall so nested engine->Go
+			// callbacks take the resident fast path (see resident_cgo.go).
+			return residentCall[T](object, method, shape, n, argptr)
+		}
+	}
 	var result T
 	if unsafe.Sizeof(result) == 0 {
 		call_noescape(object, method, unsafe.Pointer(&result), shape, argptr)
@@ -166,9 +173,16 @@ func call_64(object gdextension.Object, method gdextension.MethodForClass, shape
 }
 
 func (method MethodForClass) Call(self gdextension.Object, args ...gdextension.Variant) (gdextension.Variant, error) {
+	main := threadcheck.Main()
+	if main && residentVariantAvailable(args) {
+		// Resident-callback mode: script/vararg calls are the calls most
+		// likely to re-enter Go (GDScript invoking a Go callable), so the
+		// fast path for their nested callbacks matters most here.
+		return residentVariantCall(self, method, args)
+	}
 	var result gdextension.Variant
 	var err gdextension.CallError
-	if threadcheck.Main() || threadcheck.Engine() {
+	if main || threadcheck.Engine() {
 		object_method_call_noescape(self, gdextension.MethodForClass(method), &result, args, &err)
 	} else {
 		// user goroutine: variadic variant calls cannot be encoded as a ring

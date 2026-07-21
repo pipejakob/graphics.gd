@@ -53,6 +53,12 @@ func (method MethodForClass) Call(self gdextension.Object, args ...gdextension.V
 	return result, err.Err()
 }
 
+// ScriptCallResident always reports false on wasm: resident-callback mode
+// requires the fastcb runtime patch, which is native-only.
+func ScriptCallResident(object gdextension.Object, name gdextension.StringName, args []gdextension.Variant) (gdextension.Variant, gdextension.CallError, bool) {
+	return gdextension.Variant{}, gdextension.CallError{}, false
+}
+
 //go:noescape
 func object_method_call_noescape(object gdextension.Object, method gdextension.MethodForClass, result *gdextension.Variant, args []gdextension.Variant, err *gdextension.CallError)
 

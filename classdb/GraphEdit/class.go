@@ -343,7 +343,7 @@ func (Instance) _is_in_input_hotzone(impl func(ptr gdclass.Receiver, in_node Obj
 		defer gdreference.EndObject(in_node[0])
 		var in_port = gd.UnsafeGet[int64](p_args, 1)
 		var mouse_position = gd.UnsafeGet[Vector2.XY](p_args, 2)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, in_node, int(in_port), mouse_position)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -371,7 +371,7 @@ func (Instance) _is_in_output_hotzone(impl func(ptr gdclass.Receiver, in_node Ob
 		defer gdreference.EndObject(in_node[0])
 		var in_port = gd.UnsafeGet[int64](p_args, 1)
 		var mouse_position = gd.UnsafeGet[Vector2.XY](p_args, 2)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, in_node, int(in_port), mouse_position)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -384,7 +384,7 @@ func (Instance) _get_connection_line(impl func(ptr gdclass.Receiver, from_positi
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var from_position = gd.UnsafeGet[Vector2.XY](p_args, 0)
 		var to_position = gd.UnsafeGet[Vector2.XY](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, from_position, to_position)
 		ptr, ok := pointers.End(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](Packed.New(ret...)))
 
@@ -414,7 +414,7 @@ func (Instance) _is_node_hover_valid(impl func(ptr gdclass.Receiver, from_node s
 		var to_node = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 2))))))
 		defer pointers.End(gd.InternalStringName(to_node))
 		var to_port = gd.UnsafeGet[int64](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, from_node.String(), int(from_port), to_node.String(), int(to_port))
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1149,7 +1149,7 @@ func (class) _is_in_input_hotzone(impl func(ptr gdclass.Receiver, in_node [1]gdr
 		defer gdreference.EndObject(in_node[0])
 		var in_port = gd.UnsafeGet[int64](p_args, 1)
 		var mouse_position = gd.UnsafeGet[Vector2.XY](p_args, 2)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, in_node, in_port, mouse_position)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1160,7 +1160,7 @@ func (class) _is_in_output_hotzone(impl func(ptr gdclass.Receiver, in_node [1]gd
 		defer gdreference.EndObject(in_node[0])
 		var in_port = gd.UnsafeGet[int64](p_args, 1)
 		var mouse_position = gd.UnsafeGet[Vector2.XY](p_args, 2)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, in_node, in_port, mouse_position)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1169,7 +1169,7 @@ func (class) _get_connection_line(impl func(ptr gdclass.Receiver, from_position 
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var from_position = gd.UnsafeGet[Vector2.XY](p_args, 0)
 		var to_position = gd.UnsafeGet[Vector2.XY](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, from_position, to_position)
 		ptr, ok := pointers.End(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](ret))
 
@@ -1187,7 +1187,7 @@ func (class) _is_node_hover_valid(impl func(ptr gdclass.Receiver, from_node Stri
 		var to_node = String.Name(String.Via(gd.WrapStringName(pointers.Pin(pointers.New[gd.StringName](gd.UnsafeGet[gdextension.StringName](p_args, 2))))))
 		defer pointers.End(gd.InternalStringName(to_node))
 		var to_port = gd.UnsafeGet[int64](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, from_node, from_port, to_node, to_port)
 		gd.UnsafeSet(p_back, ret)
 	}

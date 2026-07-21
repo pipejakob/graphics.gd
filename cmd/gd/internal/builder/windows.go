@@ -40,7 +40,7 @@ func (Windows) Build(args ...string) error {
 			return fmt.Errorf("gd build: cannot cross-compile windows %v on %v", GOARCH, runtime.GOOS)
 		}
 	}
-	return tooling.Go.Action("build", args, "-ldflags=-w -s", "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("windows_%v.dll", GOARCH)))
+	return tooling.Go.Action("build", args, append(fastcbFlags("windows", ""), "-ldflags=-w -s", "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("windows_%v.dll", GOARCH)))...)
 }
 
 func (windows Windows) BuildMain(args ...string) error {
@@ -94,7 +94,7 @@ func (Windows) Test(args ...string) error {
 	if runtime.GOOS != "windows" || runtime.GOARCH != GOARCH {
 		return fmt.Errorf("gd test: cannot run windows/%v tests on %v/%v", GOARCH, runtime.GOOS, runtime.GOARCH)
 	}
-	if err := tooling.Go.Action("test", args, "-c", "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("windows_%v.dll", GOARCH))); err != nil {
+	if err := tooling.Go.Action("test", args, append(fastcbFlags("windows", ""), "-c", "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("windows_%v.dll", GOARCH)))...); err != nil {
 		return xray.New(err)
 	}
 	if err := os.Chdir(project.GraphicsDirectory); err != nil {

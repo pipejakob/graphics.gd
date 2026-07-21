@@ -297,7 +297,7 @@ Virtual method to be implemented by the user. Overrides the value returned by [G
 */
 func (Instance) _get_contents_minimum_size(impl func(ptr gdclass.Receiver) Vector2.XY) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, Vector2.XY(ret))
 	}
@@ -2172,7 +2172,7 @@ func (self Instance) SetThemeTypeVariation(value string) Instance { //gd:Window.
 }
 func (class) _get_contents_minimum_size(impl func(ptr gdclass.Receiver) Vector2.XY) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}

@@ -270,7 +270,7 @@ Note: If the result of this function should change, use [NotifyRuntimeTileDataUp
 func (Instance) _use_tile_data_runtime_update(impl func(ptr gdclass.Receiver, coords Vector2i.XY) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var coords = gd.UnsafeGet[Vector2i.XY](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, coords)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -296,7 +296,7 @@ func (Instance) _tile_data_runtime_update(impl func(ptr gdclass.Receiver, coords
 		var tile_data = [1]gdclass.TileData{gdclass.NewTileData(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 1), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetTileData(tile_data[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, coords, tile_data)
 	}
 }
@@ -327,7 +327,7 @@ func (Instance) _update_cells(impl func(ptr gdclass.Receiver, coords []Vector2i.
 		var coords = Array.Through(gd.WrapArray[Vector2i.XY](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(coords))
 		var forced_cleanup = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, gd.ArrayAs[[]Vector2i.XY](gd.InternalArray(coords)), forced_cleanup)
 	}
 }
@@ -964,7 +964,7 @@ func (self Instance) SetNavigationVisibilityMode(value DebugVisibilityMode) Inst
 func (class) _use_tile_data_runtime_update(impl func(ptr gdclass.Receiver, coords Vector2i.XY) bool) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var coords = gd.UnsafeGet[Vector2i.XY](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, coords)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -975,7 +975,7 @@ func (class) _tile_data_runtime_update(impl func(ptr gdclass.Receiver, coords Ve
 		var tile_data = [1]gdclass.TileData{gdclass.NewTileData(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 1), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetTileData(tile_data[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, coords, tile_data)
 	}
 }
@@ -984,7 +984,7 @@ func (class) _update_cells(impl func(ptr gdclass.Receiver, coords Array.Contains
 		var coords = Array.Through(gd.WrapArray[Vector2i.XY](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(coords))
 		var forced_cleanup = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, coords, forced_cleanup)
 	}
 }

@@ -140,6 +140,14 @@ func GetObject(obj Object) gdextension.Object {
 	if obj.sentinel == nil || (threadcheck.Main() && obj.revision == now) {
 		return obj.assigned.inEngine
 	}
+	// Fast path for pinned/pooled objects (e.g. an extension's own self, set
+	// on every property access): this replicates the TypePinned/TypePooled
+	// branch of [AskObject] inline so the hot path avoids the call. The guards
+	// match AskObject exactly — a non-zero assigned id whose sentinel refers to
+	// the same object — so borrow/thread/static references still fall through.
+	if obj.sentinel != &borrowSentinel && obj.assigned.objectID != 0 && obj.sentinel.objectID == obj.assigned.objectID {
+		return obj.assigned.inEngine
+	}
 	raw, _ := AskObject(obj)
 	return raw
 }

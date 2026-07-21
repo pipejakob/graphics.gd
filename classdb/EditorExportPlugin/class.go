@@ -466,7 +466,7 @@ func (Instance) _export_file(impl func(ptr gdclass.Receiver, path string, atype 
 		defer pointers.End(gd.InternalString(atype))
 		var features = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 2)))))
 		defer pointers.End(gd.InternalPackedStrings(features))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, path.String(), atype.String(), features.Strings())
 	}
 }
@@ -482,7 +482,7 @@ func (Instance) _export_begin(impl func(ptr gdclass.Receiver, features []string,
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
 		defer pointers.End(gd.InternalString(path))
 		var flags = gd.UnsafeGet[int64](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, features.Strings(), is_debug, path.String(), int(flags))
 	}
 }
@@ -492,7 +492,7 @@ Virtual method to be overridden by the user. Called when the export is finished.
 */
 func (Instance) _export_end(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -507,7 +507,7 @@ func (Instance) _end_generate_apple_embedded_project(impl func(ptr gdclass.Recei
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		var will_build_archive = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, path.String(), will_build_archive)
 	}
 }
@@ -527,7 +527,7 @@ func (Instance) _begin_customize_resources(impl func(ptr gdclass.Receiver, platf
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var features = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))
 		defer pointers.End(gd.InternalPackedStrings(features))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, features.Strings())
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -571,7 +571,7 @@ func (Instance) _customize_resource(impl func(ptr gdclass.Receiver, resource Res
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource, path.String())
 		ptr, ok := gdreference.EndObject(gdclass.GetResource(ret[0])[0])
 
@@ -599,7 +599,7 @@ func (Instance) _begin_customize_scenes(impl func(ptr gdclass.Receiver, platform
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var features = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))
 		defer pointers.End(gd.InternalPackedStrings(features))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, features.Strings())
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -621,7 +621,7 @@ func (Instance) _customize_scene(impl func(ptr gdclass.Receiver, scene Node.Inst
 		defer gdreference.EndObject(gdclass.GetNode(scene[0])[0])
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, scene, path.String())
 		ptr, ok := gdreference.EndObject(gdclass.GetNode(ret[0])[0])
 
@@ -646,7 +646,7 @@ Note: [CustomizeResource] and [CustomizeScene] will not be called when the [Edit
 */
 func (Instance) _get_customization_configuration_hash(impl func(ptr gdclass.Receiver) int) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, int64(ret))
 	}
@@ -657,7 +657,7 @@ This is called when the customization process for scenes ends.
 */
 func (Instance) _end_customize_scenes(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -667,7 +667,7 @@ This is called when the customization process for resources ends.
 */
 func (Instance) _end_customize_resources(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -695,7 +695,7 @@ func (Instance) _get_export_options(impl func(ptr gdclass.Receiver, platform Edi
 		var platform = [1]gdclass.EditorExportPlatform{gdclass.NewEditorExportPlatform(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform)
 		ptr, ok := pointers.End(gd.InternalArray(gd.ArrayFromSlice[Array.Contains[Dictionary.Any]](ret)))
 
@@ -739,7 +739,7 @@ func (Instance) _get_export_options_overrides(impl func(ptr gdclass.Receiver, pl
 		var platform = [1]gdclass.EditorExportPlatform{gdclass.NewEditorExportPlatform(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform)
 		ptr, ok := pointers.End(gd.InternalDictionary(gd.DictionaryFromMap(ret)))
 
@@ -760,7 +760,7 @@ func (Instance) _should_update_export_options(impl func(ptr gdclass.Receiver, pl
 		var platform = [1]gdclass.EditorExportPlatform{gdclass.NewEditorExportPlatform(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -776,7 +776,7 @@ func (Instance) _get_export_option_visibility(impl func(ptr gdclass.Receiver, pl
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(option))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, option.String())
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -796,7 +796,7 @@ func (Instance) _get_export_option_warning(impl func(ptr gdclass.Receiver, platf
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(option))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, option.String())
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -816,7 +816,7 @@ func (Instance) _get_export_features(impl func(ptr gdclass.Receiver, platform Ed
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -834,7 +834,7 @@ Implementing this method is required.
 */
 func (Instance) _get_name(impl func(ptr gdclass.Receiver) string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -853,7 +853,7 @@ func (Instance) _supports_platform(impl func(ptr gdclass.Receiver, platform Edit
 		var platform = [1]gdclass.EditorExportPlatform{gdclass.NewEditorExportPlatform(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -875,7 +875,7 @@ func (Instance) _get_android_dependencies(impl func(ptr gdclass.Receiver, platfo
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -904,7 +904,7 @@ func (Instance) _get_android_dependencies_maven_repos(impl func(ptr gdclass.Rece
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -930,7 +930,7 @@ func (Instance) _get_android_libraries(impl func(ptr gdclass.Receiver, platform 
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -954,7 +954,7 @@ func (Instance) _get_android_manifest_activity_element_contents(impl func(ptr gd
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -978,7 +978,7 @@ func (Instance) _get_android_manifest_application_element_contents(impl func(ptr
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -1002,7 +1002,7 @@ func (Instance) _get_android_manifest_element_contents(impl func(ptr gdclass.Rec
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalString(String.From(ret)))
 
@@ -1027,7 +1027,7 @@ func (Instance) _update_android_prebuilt_manifest(impl func(ptr gdclass.Receiver
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var manifest_data = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))}
 		defer pointers.End(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](manifest_data.Array)))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, manifest_data.Bytes())
 		ptr, ok := pointers.End(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](Packed.BytesFrom(ret...).Array)))
 
@@ -1263,7 +1263,7 @@ func (class) _export_file(impl func(ptr gdclass.Receiver, path String.Readable, 
 		defer pointers.End(gd.InternalString(atype))
 		var features = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 2)))))
 		defer pointers.End(gd.InternalPackedStrings(features))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, path, atype, features)
 	}
 }
@@ -1275,13 +1275,13 @@ func (class) _export_begin(impl func(ptr gdclass.Receiver, features Packed.Strin
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
 		defer pointers.End(gd.InternalString(path))
 		var flags = gd.UnsafeGet[int64](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, features, is_debug, path, flags)
 	}
 }
 func (class) _export_end(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -1290,7 +1290,7 @@ func (class) _end_generate_apple_embedded_project(impl func(ptr gdclass.Receiver
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
 		var will_build_archive = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, path, will_build_archive)
 	}
 }
@@ -1301,7 +1301,7 @@ func (class) _begin_customize_resources(impl func(ptr gdclass.Receiver, platform
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var features = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))
 		defer pointers.End(gd.InternalPackedStrings(features))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, features)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1313,7 +1313,7 @@ func (class) _customize_resource(impl func(ptr gdclass.Receiver, resource [1]gdc
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, resource, path)
 		ptr, ok := gdreference.EndObject(gdclass.GetResource(ret[0])[0])
 
@@ -1330,7 +1330,7 @@ func (class) _begin_customize_scenes(impl func(ptr gdclass.Receiver, platform [1
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var features = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))
 		defer pointers.End(gd.InternalPackedStrings(features))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, features)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1342,7 +1342,7 @@ func (class) _customize_scene(impl func(ptr gdclass.Receiver, scene [1]gdclass.N
 		defer gdreference.EndObject(gdclass.GetNode(scene[0])[0])
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, scene, path)
 		ptr, ok := gdreference.EndObject(gdclass.GetNode(ret[0])[0])
 
@@ -1354,20 +1354,20 @@ func (class) _customize_scene(impl func(ptr gdclass.Receiver, scene [1]gdclass.N
 }
 func (class) _get_customization_configuration_hash(impl func(ptr gdclass.Receiver) int64) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		gd.UnsafeSet(p_back, ret)
 	}
 }
 func (class) _end_customize_scenes(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
 func (class) _end_customize_resources(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -1376,7 +1376,7 @@ func (class) _get_export_options(impl func(ptr gdclass.Receiver, platform [1]gdc
 		var platform = [1]gdclass.EditorExportPlatform{gdclass.NewEditorExportPlatform(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform)
 		ptr, ok := pointers.End(gd.InternalArray(ret))
 
@@ -1391,7 +1391,7 @@ func (class) _get_export_options_overrides(impl func(ptr gdclass.Receiver, platf
 		var platform = [1]gdclass.EditorExportPlatform{gdclass.NewEditorExportPlatform(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform)
 		ptr, ok := pointers.End(gd.InternalDictionary(ret))
 
@@ -1406,7 +1406,7 @@ func (class) _should_update_export_options(impl func(ptr gdclass.Receiver, platf
 		var platform = [1]gdclass.EditorExportPlatform{gdclass.NewEditorExportPlatform(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1418,7 +1418,7 @@ func (class) _get_export_option_visibility(impl func(ptr gdclass.Receiver, platf
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(option))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, option)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1430,7 +1430,7 @@ func (class) _get_export_option_warning(impl func(ptr gdclass.Receiver, platform
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(option))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, option)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -1446,7 +1446,7 @@ func (class) _get_export_features(impl func(ptr gdclass.Receiver, platform [1]gd
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -1458,7 +1458,7 @@ func (class) _get_export_features(impl func(ptr gdclass.Receiver, platform [1]gd
 }
 func (class) _get_name(impl func(ptr gdclass.Receiver) String.Readable) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -1473,7 +1473,7 @@ func (class) _supports_platform(impl func(ptr gdclass.Receiver, platform [1]gdcl
 		var platform = [1]gdclass.EditorExportPlatform{gdclass.NewEditorExportPlatform(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -1484,7 +1484,7 @@ func (class) _get_android_dependencies(impl func(ptr gdclass.Receiver, platform 
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -1500,7 +1500,7 @@ func (class) _get_android_dependencies_maven_repos(impl func(ptr gdclass.Receive
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -1516,7 +1516,7 @@ func (class) _get_android_libraries(impl func(ptr gdclass.Receiver, platform [1]
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -1532,7 +1532,7 @@ func (class) _get_android_manifest_activity_element_contents(impl func(ptr gdcla
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -1548,7 +1548,7 @@ func (class) _get_android_manifest_application_element_contents(impl func(ptr gd
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -1564,7 +1564,7 @@ func (class) _get_android_manifest_element_contents(impl func(ptr gdclass.Receiv
 
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var debug = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, debug)
 		ptr, ok := pointers.End(gd.InternalString(ret))
 
@@ -1581,7 +1581,7 @@ func (class) _update_android_prebuilt_manifest(impl func(ptr gdclass.Receiver, p
 		defer gdreference.EndObject(gdclass.GetEditorExportPlatform(platform[0])[0])
 		var manifest_data = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](gd.UnsafeGet[gd.PackedPointers](p_args, 1)))))}
 		defer pointers.End(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](manifest_data.Array)))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, platform, manifest_data)
 		ptr, ok := pointers.End(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](ret.Array)))
 

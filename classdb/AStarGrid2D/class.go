@@ -228,7 +228,7 @@ func (Instance) _estimate_cost(impl func(ptr gdclass.Receiver, from_id Point, en
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var from_id = gd.UnsafeGet[Vector2i.XY](p_args, 0)
 		var end_id = gd.UnsafeGet[Vector2i.XY](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, from_id, end_id)
 		gd.UnsafeSet(p_back, float64(ret))
 	}
@@ -245,7 +245,7 @@ func (Instance) _compute_cost(impl func(ptr gdclass.Receiver, from_id Point, to_
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var from_id = gd.UnsafeGet[Vector2i.XY](p_args, 0)
 		var to_id = gd.UnsafeGet[Vector2i.XY](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, from_id, to_id)
 		gd.UnsafeSet(p_back, float64(ret))
 	}
@@ -654,7 +654,7 @@ func (class) _estimate_cost(impl func(ptr gdclass.Receiver, from_id Vector2i.XY,
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var from_id = gd.UnsafeGet[Vector2i.XY](p_args, 0)
 		var end_id = gd.UnsafeGet[Vector2i.XY](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, from_id, end_id)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -663,7 +663,7 @@ func (class) _compute_cost(impl func(ptr gdclass.Receiver, from_id Vector2i.XY, 
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var from_id = gd.UnsafeGet[Vector2i.XY](p_args, 0)
 		var to_id = gd.UnsafeGet[Vector2i.XY](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, from_id, to_id)
 		gd.UnsafeSet(p_back, ret)
 	}

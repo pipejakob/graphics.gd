@@ -8,6 +8,9 @@ import (
 	"graphics.gd/internal/gdextension"
 )
 
+// Adopt is a no-op without cgo: there is no C side to drain the ring.
+func Adopt() {}
+
 func flush(entries unsafe.Pointer, tail, head uint32) {
 	ring := (*[Size]Entry)(entries)
 	for i := tail; i != head; i++ {

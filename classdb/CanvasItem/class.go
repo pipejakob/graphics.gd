@@ -282,7 +282,7 @@ Corresponds to the [NotificationDraw] notification in [Object.Notification].
 */
 func (Instance) _draw(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 		gd.Flush()
 	}
@@ -1706,7 +1706,7 @@ func (self Instance) SetUseParentMaterial(value bool) Instance { //gd:CanvasItem
 }
 func (class) _draw(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }

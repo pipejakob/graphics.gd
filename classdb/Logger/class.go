@@ -193,7 +193,7 @@ func (Instance) _log_error(impl func(ptr gdclass.Receiver, function string, file
 		var error_type = gd.UnsafeGet[int64](p_args, 6)
 		var script_backtraces = Array.Through(gd.WrapArray[[1]gdclass.ScriptBacktrace](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 7)))))
 		defer pointers.End(gd.InternalArray(script_backtraces))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, function.String(), file.String(), int(line), code.String(), rationale.String(), editor_notify, int(error_type), gd.ArrayAs[[]ScriptBacktrace.Instance](gd.InternalArray(script_backtraces)))
 	}
 }
@@ -213,7 +213,7 @@ func (Instance) _log_message(impl func(ptr gdclass.Receiver, message string, err
 		var message = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(message))
 		var error = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, message.String(), error)
 	}
 }
@@ -274,7 +274,7 @@ func (class) _log_error(impl func(ptr gdclass.Receiver, function String.Readable
 		var error_type = gd.UnsafeGet[int64](p_args, 6)
 		var script_backtraces = Array.Through(gd.WrapArray[[1]gdclass.ScriptBacktrace](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 7)))))
 		defer pointers.End(gd.InternalArray(script_backtraces))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, function, file, line, code, rationale, editor_notify, error_type, script_backtraces)
 	}
 }
@@ -283,7 +283,7 @@ func (class) _log_message(impl func(ptr gdclass.Receiver, message String.Readabl
 		var message = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(message))
 		var error = gd.UnsafeGet[bool](p_args, 1)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, message, error)
 	}
 }

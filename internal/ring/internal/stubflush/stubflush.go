@@ -8,5 +8,8 @@
 package stubflush
 
 // #include <stdint.h>
+// #include <stddef.h>
 // void gd_ring_flush(void *entries, uint32_t tail, uint32_t head, uint32_t *crash_index) {}
+// void *gd_ring_flush_g0_addr(void) { return NULL; }
+// void gd_ring_adopt(void *ring, uint32_t *crash_index, void *threads_shared, void *threads_entries) {}
 import "C"

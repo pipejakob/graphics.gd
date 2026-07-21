@@ -195,7 +195,7 @@ Note: This method may be called outside [Node.Process] and [Node.PhysicsProcess]
 func (Instance) _process_modification_with_delta(impl func(ptr gdclass.Receiver, delta Float.X)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, Float.X(delta))
 	}
 }
@@ -211,7 +211,7 @@ Override this virtual method to implement a custom skeleton modifier. You should
 */
 func (Instance) _process_modification(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -227,7 +227,7 @@ func (Instance) _skeleton_changed(impl func(ptr gdclass.Receiver, old_skeleton S
 		var new_skeleton = [1]gdclass.Skeleton3D{gdclass.NewSkeleton3D(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 1), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetSkeleton3D(new_skeleton[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, old_skeleton, new_skeleton)
 	}
 }
@@ -237,7 +237,7 @@ Called when bone names and indices need to be validated, such as when entering t
 */
 func (Instance) _validate_bone_names(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -328,13 +328,13 @@ func (self Instance) SetInfluence(value Float.X) Instance { //gd:SkeletonModifie
 func (class) _process_modification_with_delta(impl func(ptr gdclass.Receiver, delta float64)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var delta = gd.UnsafeGet[float64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, delta)
 	}
 }
 func (class) _process_modification(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }
@@ -346,13 +346,13 @@ func (class) _skeleton_changed(impl func(ptr gdclass.Receiver, old_skeleton [1]g
 		var new_skeleton = [1]gdclass.Skeleton3D{gdclass.NewSkeleton3D(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 1), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetSkeleton3D(new_skeleton[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, old_skeleton, new_skeleton)
 	}
 }
 func (class) _validate_bone_names(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self)
 	}
 }

@@ -24,8 +24,49 @@ var Threads MPSC
 // (the cgo pointer check rejects the argument otherwise).
 var threadsEntries [Size]Entry
 
+// mpscShared is the C-visible, pointer-free part of the MPSC state. It lives
+// outside the MPSC struct for the same cgo-pointer-check reason as
+// threadsEntries: it is handed to C once (see Adopt), so the C-side drain can
+// consume published fire-and-forget entries at engine->Go callback boundaries
+// without a crossing. gd.c's gd_mpsc_shared mirrors this layout exactly.
+type mpscShared struct {
+	_    structs.HostLayout
+	head atomic.Uint32 // next index to claim (producers, any thread)
+
+	// cursor is the drain position. Main-thread only — advanced by both the
+	// Go drain and the C drain, which run on the same thread.
+	cursor uint32
+
+	// draining is nonzero while a Go-side drain is in flight: the C drain
+	// must not consume entries the Go drain has read but not yet retired.
+	// Main-thread only.
+	draining uint32
+
+	// cdrained is set by the C drain when it released slots: producers that
+	// wrapped a full lap park on the Go-side cond, which C cannot signal, so
+	// the next Go drain broadcasts on their behalf. Main-thread only.
+	cdrained uint32
+
+	// seq holds each slot's lifecycle position, see MPSC.
+	seq [Size]atomic.Uint32
+
+	// kind classifies each published entry for the C drain: kindCall entries
+	// are plain engine calls C may execute and release; kindGo entries
+	// (thunks and parked calls) require the Go drain — C stops at the first
+	// one to preserve FIFO order. Written by the producer before publishing,
+	// ordered by seq.
+	kind [Size]uint8
+}
+
+const (
+	kindCall = 0 // fire-and-forget engine call: the C drain may execute it
+	kindGo   = 1 // thunk or parked call: Go drain only
+)
+
+var threadsShared mpscShared
+
 func init() {
-	Threads.Init(&threadsEntries)
+	Threads.Init(&threadsShared, &threadsEntries)
 }
 
 // The follow-up window is how long the end-of-frame drain keeps polling for
@@ -75,17 +116,17 @@ const ResultSize = 64
 // wraps around onto it a full lap later, until its reader wakes and
 // releases it.
 type MPSC struct {
-	_    structs.HostLayout
-	head atomic.Uint32 // next index to claim
+	_ structs.HostLayout
 
-	// seq holds each slot's lifecycle position, see above.
-	seq [Size]atomic.Uint32
+	// shared is the C-visible state: head, seq, cursor and the entry-kind
+	// table (see mpscShared). Everything below is Go-side only.
+	shared *mpscShared
 
 	// parked marks entries whose producing goroutine blocks on completion
 	// (Call/Run): the drain leaves their slot in the executed state for the
 	// goroutine to read back and release. Written by the producer before
 	// publishing, read by the drain after the publish, so it is ordered by
-	// seq. Go-side only: the C flush never sees it.
+	// seq. Go-side only: parked entries are kindGo, so the C drain skips them.
 	parked [Size]bool
 
 	// thunks holds the Go function of Run/Defer entries, which execute on
@@ -104,10 +145,8 @@ type MPSC struct {
 	// parking forever now that nothing drains.
 	closed atomic.Bool
 
-	mu       sync.Mutex
-	cond     *sync.Cond
-	draining bool   // main-thread only: guards reentrant flushes from engine callbacks
-	cursor   uint32 // drain position; main-thread only
+	mu   sync.Mutex
+	cond *sync.Cond
 
 	// frame-period tracking for the dynamic follow-up window; main-thread only.
 	lastFrame   time.Time
@@ -119,11 +158,12 @@ type MPSC struct {
 }
 
 // Init prepares the ring: slot s starts out free for index s.
-func (r *MPSC) Init(entries *[Size]Entry) {
+func (r *MPSC) Init(shared *mpscShared, entries *[Size]Entry) {
+	r.shared = shared
 	r.entries = entries
 	r.cond = sync.NewCond(&r.mu)
-	for s := range r.seq {
-		r.seq[s].Store(uint32(s))
+	for s := range r.shared.seq {
+		r.shared.seq[s].Store(uint32(s))
 	}
 }
 
@@ -133,7 +173,7 @@ func (r *MPSC) Init(entries *[Size]Entry) {
 var dispatch = flush
 
 func (r *MPSC) Pending() bool {
-	return r.head.Load() != r.cursor
+	return r.shared.head.Load() != r.shared.cursor
 }
 
 // claim reserves the next index. Claims are tickets: the producer parks only
@@ -143,10 +183,10 @@ func (r *MPSC) claim() (uint32, bool) {
 	if r.closed.Load() {
 		return 0, false
 	}
-	i := r.head.Add(1) - 1
-	if r.seq[i&Mask].Load() != i {
+	i := r.shared.head.Add(1) - 1
+	if r.shared.seq[i&Mask].Load() != i {
 		r.mu.Lock()
-		for r.seq[i&Mask].Load() != i {
+		for r.shared.seq[i&Mask].Load() != i {
 			if r.closed.Load() {
 				r.mu.Unlock()
 				return 0, false
@@ -170,10 +210,10 @@ func (r *MPSC) fill(i uint32, object, method uintptr, shape uint64, args unsafe.
 	e.PC = pc
 }
 
-// publish makes slot i visible to the drain. The entry, parked flag and
+// publish makes slot i visible to the drain. The entry, parked flag, kind and
 // thunk must be fully written beforehand.
 func (r *MPSC) publish(i uint32) {
-	r.seq[i&Mask].Store(i + 1)
+	r.shared.seq[i&Mask].Store(i + 1)
 }
 
 // await parks the calling goroutine until the drain has executed index i,
@@ -181,7 +221,7 @@ func (r *MPSC) publish(i uint32) {
 // never execute; the slot must not be released or read).
 func (r *MPSC) await(i uint32) bool {
 	r.mu.Lock()
-	for r.seq[i&Mask].Load() != i+2 {
+	for r.shared.seq[i&Mask].Load() != i+2 {
 		if r.closed.Load() {
 			r.mu.Unlock()
 			return false
@@ -196,8 +236,8 @@ func (r *MPSC) await(i uint32) bool {
 // wrapped around onto it. The wake-up is only needed when a producer has
 // already claimed a full lap ahead.
 func (r *MPSC) release(i uint32) {
-	r.seq[i&Mask].Store(i + Size)
-	if r.head.Load()-i >= Size {
+	r.shared.seq[i&Mask].Store(i + Size)
+	if r.shared.head.Load()-i >= Size {
 		r.mu.Lock()
 		r.cond.Broadcast()
 		r.mu.Unlock()
@@ -217,6 +257,7 @@ func (r *MPSC) Buffer(object, method uintptr, shape uint64, args unsafe.Pointer,
 	r.fill(i, object, method, shape, args, pc)
 	r.parked[i&Mask] = false
 	r.thunks[i&Mask] = nil
+	r.shared.kind[i&Mask] = kindCall
 	r.publish(i)
 }
 
@@ -232,6 +273,7 @@ func (r *MPSC) Call(object, method uintptr, shape uint64, args unsafe.Pointer, p
 	r.fill(i, object, method, shape, args, pc)
 	r.parked[i&Mask] = true
 	r.thunks[i&Mask] = nil
+	r.shared.kind[i&Mask] = kindGo
 	r.publish(i)
 	if !r.await(i) {
 		return
@@ -252,6 +294,7 @@ func (r *MPSC) Run(fn func()) {
 	}
 	r.parked[i&Mask] = true
 	r.thunks[i&Mask] = fn
+	r.shared.kind[i&Mask] = kindGo
 	r.publish(i)
 	if !r.await(i) {
 		return
@@ -278,6 +321,7 @@ func (r *MPSC) Defer(fn func()) {
 	}
 	r.parked[i&Mask] = false
 	r.thunks[i&Mask] = fn
+	r.shared.kind[i&Mask] = kindGo
 	r.publish(i)
 }
 
@@ -321,11 +365,19 @@ func (r *MPSC) FlushFrame() {
 // window closes. See the FollowUp variables for why: without the window, a
 // goroutine making sequential result calls completes only one per drain.
 func (r *MPSC) FlushFor(window time.Duration) {
-	if r.draining {
+	if r.shared.draining != 0 {
 		return
 	}
-	r.draining = true
-	defer func() { r.draining = false }()
+	r.shared.draining = 1
+	defer func() { r.shared.draining = 0 }()
+	// The C drain releases slots without signalling (it cannot touch the Go
+	// cond): wake producers that wrapped a lap and parked on those slots.
+	if r.shared.cdrained != 0 {
+		r.shared.cdrained = 0
+		r.mu.Lock()
+		r.cond.Broadcast()
+		r.mu.Unlock()
+	}
 	if !r.drain() || window <= 0 {
 		return
 	}
@@ -353,10 +405,10 @@ func (r *MPSC) FlushFor(window time.Duration) {
 // preserved either way).
 func (r *MPSC) drain() (released bool) {
 	for {
-		cursor := r.cursor
-		head := r.head.Load()
+		cursor := r.shared.cursor
+		head := r.shared.head.Load()
 		end := cursor
-		for end != head && r.seq[end&Mask].Load() == end+1 {
+		for end != head && r.shared.seq[end&Mask].Load() == end+1 {
 			end++
 		}
 		if end == cursor {
@@ -375,9 +427,9 @@ func (r *MPSC) drain() (released bool) {
 						// executed: the parked goroutine reads the result
 						// out of the entry and releases the slot itself.
 						released = true
-						r.seq[s].Store(k + 2)
+						r.shared.seq[s].Store(k + 2)
 					} else {
-						r.seq[s].Store(k + Size)
+						r.shared.seq[s].Store(k + Size)
 					}
 				}
 			} else {
@@ -391,14 +443,14 @@ func (r *MPSC) drain() (released bool) {
 					// consumes panics[s] before releasing the slot.
 					r.panics[s] = failure
 					released = true
-					r.seq[s].Store(i + 2)
+					r.shared.seq[s].Store(i + 2)
 				} else {
-					r.seq[s].Store(i + Size)
+					r.shared.seq[s].Store(i + Size)
 					if failure != nil {
 						// nobody is waiting on a deferred thunk: keep the
 						// ring consistent, then let the panic propagate on
 						// the main thread.
-						r.cursor = j
+						r.shared.cursor = j
 						r.mu.Lock()
 						r.cond.Broadcast()
 						r.mu.Unlock()
@@ -406,7 +458,7 @@ func (r *MPSC) drain() (released bool) {
 					}
 				}
 			}
-			r.cursor = j
+			r.shared.cursor = j
 			r.mu.Lock()
 			r.cond.Broadcast()
 			r.mu.Unlock()

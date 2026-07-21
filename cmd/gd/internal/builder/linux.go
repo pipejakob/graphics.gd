@@ -68,7 +68,7 @@ func (Linux) Build(args ...string) error {
 			return xray.New(err)
 		}
 	}
-	return tooling.Go.Action("build", args, "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("linux_%v.so", GOARCH)))
+	return tooling.Go.Action("build", args, append(fastcbFlags("linux", ""), "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("linux_%v.so", GOARCH)))...)
 }
 
 func (linux Linux) BuildMain(args ...string) error {
@@ -122,7 +122,7 @@ func (Linux) Test(args ...string) error {
 	if runtime.GOOS != "linux" || runtime.GOARCH != GOARCH {
 		return fmt.Errorf("gd test: cannot run linux/%v tests on %v/%v", GOARCH, runtime.GOOS, runtime.GOARCH)
 	}
-	if err := tooling.Go.Action("test", args, "-c", "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("linux_%v.so", GOARCH))); err != nil {
+	if err := tooling.Go.Action("test", args, append(fastcbFlags("linux", ""), "-c", "-buildmode=c-shared", "-o", filepath.Join(project.GraphicsDirectory, fmt.Sprintf("linux_%v.so", GOARCH)))...); err != nil {
 		return xray.New(err)
 	}
 	if err := os.Chdir(project.GraphicsDirectory); err != nil {

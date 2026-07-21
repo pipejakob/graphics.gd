@@ -169,7 +169,7 @@ func (Instance) _post_import(impl func(ptr gdclass.Receiver, scene Node.Instance
 		var scene = [1]gdclass.Node{gdclass.NewNode(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetNode(scene[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, scene)
 		ptr, ok := gdreference.EndObject(ret[0])
 
@@ -233,7 +233,7 @@ func (class) _post_import(impl func(ptr gdclass.Receiver, scene [1]gdclass.Node)
 		var scene = [1]gdclass.Node{gdclass.NewNode(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetNode(scene[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, scene)
 		ptr, ok := gdreference.EndObject(ret[0])
 

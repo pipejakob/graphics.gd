@@ -42,6 +42,7 @@ import (
 	"graphics.gd/internal/gdclass"
 	"graphics.gd/internal/gdextension"
 	"graphics.gd/internal/gdreference"
+	"graphics.gd/internal/notifyfilter"
 	"graphics.gd/internal/pointers"
 	"graphics.gd/internal/ring"
 	"graphics.gd/internal/threadsafe"
@@ -141,6 +142,9 @@ func Register[T Class](exports ...any) {
 	var superType = gdclass.SuperType(([1]T{})[0])
 	var super = reflect.New(superType).Elem().Interface()
 	var classType = reflect.TypeFor[T]()
+	if handlesNotifications(classType) {
+		notifyfilter.Want()
+	}
 
 	var underlyingType = gdclass.GoType(([1]T{})[0])
 	var trivialExtension = classType.Size() == underlyingType.Size() && classType.NumField() == 1 && classType.Field(0).Type == underlyingType
@@ -758,6 +762,14 @@ type instanceImplementation struct {
 	cleanup runtime.Cleanup
 	signals []signalChan
 
+	// itab caches the interface type-word for (*Type, gdclass.Pointer). It is
+	// static per class, so once resolved every subsequent [Interface] call can
+	// rebuild the interface from (itab, live weak pointer) without reflection.
+	// Storing only the static itab — never the data pointer — keeps the weak
+	// reference weak (it does not pin the Go object against GC). Only used on
+	// builds where the interface layout is known, see iface_gc.go.
+	itab unsafe.Pointer
+
 	// FIXME use a bitfield for these booleans.
 	isEditor, isMainLoop, freed bool
 }
@@ -772,7 +784,17 @@ func (instance *instanceImplementation) Interface() (gdclass.Pointer, bool) {
 	if ptr == nil {
 		return nil, false
 	}
-	return reflect.TypeAssert[gdclass.Pointer](reflect.NewAt(instance.Type, unsafe.Pointer(ptr)))
+	// Fast path: rebuild the interface from the cached static itab and the
+	// live pointer, avoiding reflect on every virtual-method dispatch.
+	if iface, ok := instance.cachedInterface(unsafe.Pointer(ptr)); ok {
+		return iface, true
+	}
+	iface, ok := reflect.TypeAssert[gdclass.Pointer](reflect.NewAt(instance.Type, unsafe.Pointer(ptr)))
+	if !ok {
+		return nil, false
+	}
+	instance.cacheInterface(iface)
+	return iface, true
 }
 
 func (instance *instanceImplementation) OnCreate(value reflect.Value) {
@@ -795,6 +817,21 @@ func (instance *instanceImplementation) OnCreate(value reflect.Value) {
 	}); ok {
 		impl.Init()
 	}
+}
+
+// handlesNotifications reports whether *T implements any of the Notification
+// interfaces dispatched by [instanceImplementation.Notification]'s type switch.
+// Classes that don't are served by the engine-side filter in gd.c, which drops
+// per-frame process-tick notifications before they cross into Go; registering
+// a class that does implement one disables that filter (see notifyfilter).
+func handlesNotifications(rtype reflect.Type) bool {
+	ptr := reflect.PointerTo(rtype)
+	return ptr.Implements(reflect.TypeFor[interface{ Notification(gd.NotificationType) }]()) ||
+		ptr.Implements(reflect.TypeFor[interface{ Notification(Object.Notification) }]()) ||
+		ptr.Implements(reflect.TypeFor[interface {
+			Notification(Object.Notification, bool)
+		}]()) ||
+		ptr.Implements(reflect.TypeFor[interface{ Notification(int, bool) }]())
 }
 
 func (instance *instanceImplementation) Notification(what Object.Notification, reversed bool) {

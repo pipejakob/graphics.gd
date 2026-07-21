@@ -159,7 +159,7 @@ Override this method to customize how this primitive mesh should be generated. S
 */
 func (Instance) _create_mesh_array(impl func(ptr gdclass.Receiver) [][]any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalArray(gd.EngineArrayFromSlice(ret)))
 
@@ -314,7 +314,7 @@ func (self Instance) SetUv2Padding(value Float.X) Instance { //gd:PrimitiveMesh.
 }
 func (class) _create_mesh_array(impl func(ptr gdclass.Receiver) Array.Any) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalArray(ret))
 

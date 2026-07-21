@@ -147,7 +147,7 @@ Returns the list of file extensions for this image format. Files with the given 
 */
 func (Instance) _get_recognized_extensions(impl func(ptr gdclass.Receiver) []string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -171,7 +171,7 @@ func (Instance) _load_image(impl func(ptr gdclass.Receiver, image Image.Instance
 		defer gdreference.EndObject(gdclass.GetFileAccess(fileaccess[0])[0])
 		var flags = gd.UnsafeGet[ImageFormatLoader.LoaderFlags](p_args, 2)
 		var scale = gd.UnsafeGet[float64](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, image, fileaccess, flags, Float.X(scale))
 		ptr, ok := func(e Error.Code) (int64, bool) { return int64(e), true }(Error.New(ret))
 
@@ -241,7 +241,7 @@ func New() Instance {
 }
 func (class) _get_recognized_extensions(impl func(ptr gdclass.Receiver) Packed.Strings) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -261,7 +261,7 @@ func (class) _load_image(impl func(ptr gdclass.Receiver, image [1]gdclass.Image,
 		defer gdreference.EndObject(gdclass.GetFileAccess(fileaccess[0])[0])
 		var flags = gd.UnsafeGet[ImageFormatLoader.LoaderFlags](p_args, 2)
 		var scale = gd.UnsafeGet[float64](p_args, 3)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, image, fileaccess, flags, scale)
 		ptr, ok := func(e Error.Code) (int64, bool) { return int64(e), true }(ret)
 

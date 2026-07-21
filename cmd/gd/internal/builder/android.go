@@ -265,9 +265,9 @@ func (android Android) build(testing bool, args ...string) error {
 	}
 	out := filepath.Join(project.GraphicsDirectory, fmt.Sprintf("libandroid_%v.so", GOARCH))
 	if testing {
-		return tooling.Go.Action("test", args, "-c", "-ldflags=-checklinkname=0", "-buildmode=c-shared", "-o", out)
+		return tooling.Go.Action("test", args, append(fastcbFlags("android", ""), "-c", "-ldflags=-checklinkname=0", "-buildmode=c-shared", "-o", out)...)
 	}
-	return tooling.Go.Action("build", args, "-ldflags=-checklinkname=0", "-buildmode=c-shared", "-o", out)
+	return tooling.Go.Action("build", args, append(fastcbFlags("android", ""), "-ldflags=-checklinkname=0", "-buildmode=c-shared", "-o", out)...)
 }
 
 func (android Android) Run(args ...string) error {

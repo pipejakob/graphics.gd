@@ -188,7 +188,7 @@ Override to add internal import options. These will appear in the 3D scene impor
 func (Instance) _get_internal_import_options(impl func(ptr gdclass.Receiver, category int)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var category = gd.UnsafeGet[int64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, int(category))
 	}
 }
@@ -202,7 +202,7 @@ func (Instance) _get_internal_option_visibility(impl func(ptr gdclass.Receiver, 
 		var for_animation = gd.UnsafeGet[bool](p_args, 1)
 		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
 		defer pointers.End(gd.InternalString(option))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, int(category), for_animation, option.String())
 		ptr, ok := pointers.End(gd.InternalVariant(variant.New(ret)))
 
@@ -221,7 +221,7 @@ func (Instance) _get_internal_option_update_view_required(impl func(ptr gdclass.
 		var category = gd.UnsafeGet[int64](p_args, 0)
 		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(option))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, int(category), option.String())
 		ptr, ok := pointers.End(gd.InternalVariant(variant.New(ret)))
 
@@ -247,7 +247,7 @@ func (Instance) _internal_process(impl func(ptr gdclass.Receiver, category int, 
 		var resource = [1]gdclass.Resource{gdclass.NewResource(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 3), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, int(category), base_node, node, resource)
 	}
 }
@@ -262,7 +262,7 @@ func (Instance) _get_import_options(impl func(ptr gdclass.Receiver, path string)
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, path.String())
 	}
 }
@@ -277,7 +277,7 @@ func (Instance) _get_option_visibility(impl func(ptr gdclass.Receiver, path stri
 		var for_animation = gd.UnsafeGet[bool](p_args, 1)
 		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
 		defer pointers.End(gd.InternalString(option))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String(), for_animation, option.String())
 		ptr, ok := pointers.End(gd.InternalVariant(variant.New(ret)))
 
@@ -298,7 +298,7 @@ func (Instance) _pre_process(impl func(ptr gdclass.Receiver, scene Node.Instance
 		var scene = [1]gdclass.Node{gdclass.NewNode(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetNode(scene[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, scene)
 	}
 }
@@ -311,7 +311,7 @@ func (Instance) _post_process(impl func(ptr gdclass.Receiver, scene Node.Instanc
 		var scene = [1]gdclass.Node{gdclass.NewNode(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetNode(scene[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, scene)
 	}
 }
@@ -397,7 +397,7 @@ func New() Instance {
 func (class) _get_internal_import_options(impl func(ptr gdclass.Receiver, category int64)) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var category = gd.UnsafeGet[int64](p_args, 0)
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, category)
 	}
 }
@@ -407,7 +407,7 @@ func (class) _get_internal_option_visibility(impl func(ptr gdclass.Receiver, cat
 		var for_animation = gd.UnsafeGet[bool](p_args, 1)
 		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
 		defer pointers.End(gd.InternalString(option))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, category, for_animation, option)
 		ptr, ok := pointers.End(gd.InternalVariant(ret))
 
@@ -422,7 +422,7 @@ func (class) _get_internal_option_update_view_required(impl func(ptr gdclass.Rec
 		var category = gd.UnsafeGet[int64](p_args, 0)
 		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 1)))))
 		defer pointers.End(gd.InternalString(option))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, category, option)
 		ptr, ok := pointers.End(gd.InternalVariant(ret))
 
@@ -444,7 +444,7 @@ func (class) _internal_process(impl func(ptr gdclass.Receiver, category int64, b
 		var resource = [1]gdclass.Resource{gdclass.NewResource(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 3), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetResource(resource[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, category, base_node, node, resource)
 	}
 }
@@ -452,7 +452,7 @@ func (class) _get_import_options(impl func(ptr gdclass.Receiver, path String.Rea
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, path)
 	}
 }
@@ -463,7 +463,7 @@ func (class) _get_option_visibility(impl func(ptr gdclass.Receiver, path String.
 		var for_animation = gd.UnsafeGet[bool](p_args, 1)
 		var option = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 2)))))
 		defer pointers.End(gd.InternalString(option))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path, for_animation, option)
 		ptr, ok := pointers.End(gd.InternalVariant(ret))
 
@@ -478,7 +478,7 @@ func (class) _pre_process(impl func(ptr gdclass.Receiver, scene [1]gdclass.Node)
 		var scene = [1]gdclass.Node{gdclass.NewNode(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetNode(scene[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, scene)
 	}
 }
@@ -487,7 +487,7 @@ func (class) _post_process(impl func(ptr gdclass.Receiver, scene [1]gdclass.Node
 		var scene = [1]gdclass.Node{gdclass.NewNode(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetNode(scene[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, scene)
 	}
 }

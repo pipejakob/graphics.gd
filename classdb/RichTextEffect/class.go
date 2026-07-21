@@ -154,7 +154,7 @@ func (Instance) _process_custom_fx(impl func(ptr gdclass.Receiver, char_fx CharF
 		var char_fx = [1]gdclass.CharFXTransform{gdclass.NewCharFXTransform(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetCharFXTransform(char_fx[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, char_fx)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -206,7 +206,7 @@ func (class) _process_custom_fx(impl func(ptr gdclass.Receiver, char_fx [1]gdcla
 		var char_fx = [1]gdclass.CharFXTransform{gdclass.NewCharFXTransform(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetCharFXTransform(char_fx[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, char_fx)
 		gd.UnsafeSet(p_back, ret)
 	}

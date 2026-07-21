@@ -195,7 +195,7 @@ Note: It is recommended to keep a reference to the original [AudioEffect] in the
 */
 func (Instance) _instantiate(impl func(ptr gdclass.Receiver) AudioEffectInstance.Instance) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := gdreference.EndObject(gdclass.GetAudioEffectInstance(ret[0])[0])
 
@@ -249,7 +249,7 @@ func New() Instance {
 }
 func (class) _instantiate(impl func(ptr gdclass.Receiver) [1]gdclass.AudioEffectInstance) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := gdreference.EndObject(gdclass.GetAudioEffectInstance(ret[0])[0])
 

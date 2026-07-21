@@ -258,7 +258,7 @@ func (Instance) _parse_file(impl func(ptr gdclass.Receiver, path string) [][]str
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path.String())
 		ptr, ok := pointers.End(gd.InternalArray(gd.ArrayFromSlice[Array.Contains[Packed.Strings]](ret)))
 
@@ -274,7 +274,7 @@ Gets the list of file extensions to associate with this parser, e.g. ["csv"].
 */
 func (Instance) _get_recognized_extensions(impl func(ptr gdclass.Receiver) []string) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(Packed.MakeStrings(ret...)))
 
@@ -320,7 +320,7 @@ func (Instance) _customize_strings(impl func(ptr gdclass.Receiver, strings [][]s
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var strings = Array.Through(gd.WrapArray[Packed.Strings](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(strings))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, gd.ArrayAs[[][]string](gd.InternalArray(strings)))
 		ptr, ok := pointers.End(gd.InternalArray(gd.ArrayFromSlice[Array.Contains[Packed.Strings]](ret)))
 
@@ -376,7 +376,7 @@ func (class) _parse_file(impl func(ptr gdclass.Receiver, path String.Readable) A
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var path = String.Via(gd.WrapString(pointers.Pin(pointers.New[gd.String](gd.UnsafeGet[gdextension.String](p_args, 0)))))
 		defer pointers.End(gd.InternalString(path))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, path)
 		ptr, ok := pointers.End(gd.InternalArray(ret))
 
@@ -388,7 +388,7 @@ func (class) _parse_file(impl func(ptr gdclass.Receiver, path String.Readable) A
 }
 func (class) _get_recognized_extensions(impl func(ptr gdclass.Receiver) Packed.Strings) (cb gd.ExtensionClassCallVirtualFunc) {
 	return func(class any, p_args, p_back gdextension.Pointer) {
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self)
 		ptr, ok := pointers.End(gd.InternalPackedStrings(ret))
 
@@ -402,7 +402,7 @@ func (class) _customize_strings(impl func(ptr gdclass.Receiver, strings Array.Co
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var strings = Array.Through(gd.WrapArray[Packed.Strings](pointers.Pin(pointers.New[gd.Array](gd.UnsafeGet[gdextension.Array](p_args, 0)))))
 		defer pointers.End(gd.InternalArray(strings))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, strings)
 		ptr, ok := pointers.End(gd.InternalArray(ret))
 

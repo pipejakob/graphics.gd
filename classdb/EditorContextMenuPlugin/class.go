@@ -158,7 +158,7 @@ func (Instance) _popup_menu(impl func(ptr gdclass.Receiver, paths []string)) (cb
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var paths = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 0)))))
 		defer pointers.End(gd.InternalPackedStrings(paths))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, paths.Strings())
 	}
 }
@@ -299,7 +299,7 @@ func (class) _popup_menu(impl func(ptr gdclass.Receiver, paths Packed.Strings)) 
 	return func(class any, p_args, p_back gdextension.Pointer) {
 		var paths = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](gd.UnsafeGet[gd.PackedPointers](p_args, 0)))))
 		defer pointers.End(gd.InternalPackedStrings(paths))
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		impl(self, paths)
 	}
 }

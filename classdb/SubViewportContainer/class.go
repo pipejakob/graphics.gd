@@ -162,7 +162,7 @@ func (Instance) _propagate_input_event(impl func(ptr gdclass.Receiver, event Inp
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, event)
 		gd.UnsafeSet(p_back, ret)
 	}
@@ -272,7 +272,7 @@ func (class) _propagate_input_event(impl func(ptr gdclass.Receiver, event [1]gdc
 		var event = [1]gdclass.InputEvent{gdclass.NewInputEvent(gdreference.OwnObject(gd.UnsafeGet[gdextension.Object](p_args, 0), gd.Free))}
 
 		defer gdreference.EndObject(gdclass.GetInputEvent(event[0])[0])
-		self := gdclass.Receiver(reflect.ValueOf(class).UnsafePointer())
+		self := gdclass.ReceiverOf(class)
 		ret := impl(self, event)
 		gd.UnsafeSet(p_back, ret)
 	}
