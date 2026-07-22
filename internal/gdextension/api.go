@@ -109,7 +109,7 @@ type API struct {
 		Type func(v Variant) VariantType                                                                                                           `gd:"variant_type"`
 		Deep struct {
 			Copy func(v Variant, result CallReturns[Variant])                    `gd:"variant_deep_copy"`
-			Hash func(v Variant, recursion_count int64, hash CallReturns[int64]) `gd:"variant_deep_hash"`
+			Hash func(v Variant, recursion_count int, hash CallReturns[int64]) `gd:"variant_deep_hash"`
 		}
 		Set struct {
 			Index func(v Variant, key, val Variant) bool                                 `gd:"variant_set_index"`

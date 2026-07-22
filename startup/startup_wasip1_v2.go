@@ -453,7 +453,7 @@ func gd_variant_type(p0 uint64, p1 uint64, p2 uint64) uint32
 func gd_variant_deep_copy(p0 uint64, p1 uint64, p2 uint64, p3 uintptr)
 
 //go:wasmimport gd variant_deep_hash
-func gd_variant_deep_hash(p0 uint64, p1 uint64, p2 uint64, p3 int64, p4 uintptr)
+func gd_variant_deep_hash(p0 uint64, p1 uint64, p2 uint64, p3 int32, p4 uintptr)
 
 //go:wasmimport gd variant_get_index
 func gd_variant_get_index(p0 uint64, p1 uint64, p2 uint64, p3 uint64, p4 uint64, p5 uint64, p6 uintptr) bool
@@ -1537,9 +1537,9 @@ func init() {
 		gdmemory.LoadResult(gdextension.SizeVariant, p1, mem1)
 		return
 	}
-	gdextension.Host.Variants.Deep.Hash = func(p0 gdextension.Variant, p1 int64, p2 gdextension.CallReturns[int64]) {
+	gdextension.Host.Variants.Deep.Hash = func(p0 gdextension.Variant, p1 int, p2 gdextension.CallReturns[int64]) {
 		mem2 := gdmemory.MakeResult(gdextension.SizeInt)
-		gd_variant_deep_hash(uint64(p0[0]), uint64(p0[1]), uint64(p0[2]), int64(p1), uintptr(mem2))
+		gd_variant_deep_hash(uint64(p0[0]), uint64(p0[1]), uint64(p0[2]), int32(p1), uintptr(mem2))
 		gdmemory.LoadResult(gdextension.SizeInt, p2, mem2)
 		return
 	}

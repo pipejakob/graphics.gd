@@ -204,7 +204,7 @@ func init() {
 		NewFunctionBuilder().WithGoModuleFunction(FUN(fn.variant_text), ARG{I64, I64, I64}, RET{I32}).Export("variant_text").
 		NewFunctionBuilder().WithGoModuleFunction(FUN(fn.variant_type), ARG{I64, I64, I64}, RET{I32}).Export("variant_type").
 		NewFunctionBuilder().WithGoModuleFunction(FUN(fn.variant_deep_copy), ARG{I64, I64, I64, I32}, RET{}).Export("variant_deep_copy").
-		NewFunctionBuilder().WithGoModuleFunction(FUN(fn.variant_deep_hash), ARG{I64, I64, I64, I64, I32}, RET{}).Export("variant_deep_hash").
+		NewFunctionBuilder().WithGoModuleFunction(FUN(fn.variant_deep_hash), ARG{I64, I64, I64, I32, I32}, RET{}).Export("variant_deep_hash").
 		NewFunctionBuilder().WithGoModuleFunction(FUN(fn.variant_get_index), ARG{I64, I64, I64, I64, I64, I64, I32}, RET{I32}).Export("variant_get_index").
 		NewFunctionBuilder().WithGoModuleFunction(FUN(fn.variant_get_array), ARG{I64, I64, I64, I32, I32, I32}, RET{I32}).Export("variant_get_array").
 		NewFunctionBuilder().WithGoModuleFunction(FUN(fn.variant_get_field), ARG{I64, I64, I64, I32, I32}, RET{I32}).Export("variant_get_field").
@@ -1486,7 +1486,7 @@ func (wasm *wasmRuntime) variant_deep_copy(ctx context.Context, m api.Module, st
 func (wasm *wasmRuntime) variant_deep_hash(ctx context.Context, m api.Module, stack []uint64) {
 	// Call gdextension.Host.Host.Variants.Deep.Hash
 	arg0 := wasm.variant(stack[0:3])
-	arg1 := wasm.i64(stack[3])
+	// TODO: handle arg type int
 	// TODO: handle arg type gdextension.CallReturns[int64]
 	result := wasm.engine.Variants.Deep.Hash(arg0, arg1, arg2)
 }

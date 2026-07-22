@@ -867,9 +867,12 @@ void gd_classdb_register_property(uintptr_t class_name, uintptr_t info, uintptr_
     property_list *list = (property_list *)info;
     gdextension_classdb_register_extension_class_property(gd_library, (GDExtensionConstStringNamePtr)&class_name, list->info, (GDExtensionConstStringNamePtr)&setter, (GDExtensionConstStringNamePtr)&getter);
 };
-void gd_classdb_register_property_indexed(uintptr_t class_name, uintptr_t info, uintptr_t setter, uintptr_t getter, INT64(index)) {
+// The Go side passes the index as a single (32-bit safe) integer; INT keeps
+// int64_t natively and a single int32 on the web (INT64 would demand a
+// hi/lo pair the callers never sent).
+void gd_classdb_register_property_indexed(uintptr_t class_name, uintptr_t info, uintptr_t setter, uintptr_t getter, INT index) {
     property_list *list = (property_list *)info;
-    gdextension_classdb_register_extension_class_property_indexed(gd_library, (GDExtensionConstStringNamePtr)&class_name, list->info, (GDExtensionConstStringNamePtr)&setter, (GDExtensionConstStringNamePtr)&getter, INT64_FROM(index));
+    gdextension_classdb_register_extension_class_property_indexed(gd_library, (GDExtensionConstStringNamePtr)&class_name, list->info, (GDExtensionConstStringNamePtr)&setter, (GDExtensionConstStringNamePtr)&getter, index);
 };
 void gd_classdb_register_property_group(uintptr_t class_name, uintptr_t group, uintptr_t prefix) {
     gdextension_classdb_register_extension_class_property_group(gd_library, (GDExtensionConstStringNamePtr)&class_name, (GDExtensionConstStringNamePtr)&group, (GDExtensionConstStringPtr)&prefix);
@@ -1239,7 +1242,7 @@ uint64_t gd_object_unsafe_call_8(uintptr_t obj, uintptr_t method, UINT64(shape),
 // the per-node virtual callbacks nested inside can allocate on the fast path.
 struct gd_iter_args { uintptr_t obj; uintptr_t method; uint64_t shape; void *args; uint64_t result; };
 void gd_iterate_g0(struct gd_iter_args *a) {
-    a->result = gd_object_unsafe_call_8(a->obj, a->method, a->shape, a->args);
+    a->result = gd_object_unsafe_call_8(a->obj, a->method, UINT64_MAKE(a->shape), (ANY)(uintptr_t)a->args);
 }
 void *gd_iterate_g0_addr(void) { return (void*)&gd_iterate_g0; }
 // gd_resident_call: outbound method-bind ptrcall for resident-callback mode,
@@ -1673,7 +1676,7 @@ bool gd_variant_eval(uint32_t op, UINT64(a1), UINT64(a2), UINT64(a3), UINT64(b1)
     gdextension_variant_evaluate((GDExtensionVariantOperator)op, &a[0], &b[0], (GDExtensionUninitializedVariantPtr)result, &valid);
     return valid;
 };
-void gd_variant_hash(UINT64(v1), UINT64(v2), UINT64(v3), void *hash) {
+void gd_variant_hash(UINT64(v1), UINT64(v2), UINT64(v3), ANY hash) {
     uint64_t self[3] = {UINT64_FROM(v1), UINT64_FROM(v2), UINT64_FROM(v3)};
     *(int64_t*)hash = gdextension_variant_hash(&self);
 };
@@ -1695,7 +1698,7 @@ void gd_variant_deep_copy(UINT64(v1), UINT64(v2), UINT64(v3), ANY result) {
     uint64_t self[3] = {UINT64_FROM(v1), UINT64_FROM(v2), UINT64_FROM(v3)};
     gdextension_variant_duplicate(&self, (GDExtensionVariantPtr)result, true);
 };
-void gd_variant_deep_hash(UINT64(v1), UINT64(v2), UINT64(v3), INT recursion, void *hash) {
+void gd_variant_deep_hash(UINT64(v1), UINT64(v2), UINT64(v3), INT recursion, ANY hash) {
     uint64_t self[3] = {UINT64_FROM(v1), UINT64_FROM(v2), UINT64_FROM(v3)};
     *(int64_t*)hash = gdextension_variant_recursive_hash(&self, recursion);
 };
@@ -1919,6 +1922,10 @@ extern "C" {
         }
     }
 }
+
+// Generated raw exports for the rest of the gd_* surface, so the Go module's
+// //go:wasmimport bindings resolve directly instead of via syscall/js+embind.
+#include "gd_web_exports.h"
 
 using namespace emscripten;
 EMSCRIPTEN_BINDINGS(my_module) {

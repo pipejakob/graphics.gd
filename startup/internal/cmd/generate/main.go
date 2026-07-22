@@ -470,6 +470,8 @@ func ctypeOf(rtype reflect.Type) string {
 func main() {
 	if err := errors.Join(
 		generate_startup_js(),
+		generate_startup_wasm_v2(),
+		generate_gd_web_exports(),
 		generate_startup_cgo(),
 		generate_gdextension_web_cgo_callbacks(),
 		generate_startup_wasm_exports(),

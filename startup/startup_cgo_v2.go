@@ -1195,7 +1195,7 @@ func init() {
 		threadcheck.LeaveCall()
 		return
 	}
-	gdextension.Host.Variants.Deep.Hash = func(p0 gdextension.Variant, p1 int64, p2 gdextension.CallReturns[int64]) {
+	gdextension.Host.Variants.Deep.Hash = func(p0 gdextension.Variant, p1 int, p2 gdextension.CallReturns[int64]) {
 		threadcheck.EnterCall()
 		C.gd_variant_deep_hash(C.uint64_t(p0[0]), C.uint64_t(p0[1]), C.uint64_t(p0[2]), C.int64_t(p1), unsafe.Pointer(p2))
 		threadcheck.LeaveCall()
