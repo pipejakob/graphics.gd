@@ -16,12 +16,13 @@ import (
 	"unsafe"
 )
 
-// runtimePCs is written by the overlaid runtime/cgocall.go (via go:linkname)
-// with the entry PCs of runtime.fastcbSetResident, fastcbClearResident,
-// fastcbYield and fastcbCallC, in that order.
-//
-//go:linkname runtimePCs
-var runtimePCs [4]uintptr
+// runtimePCs holds the entry PCs of runtime.fastcbSetResident,
+// fastcbClearResident, fastcbYield and fastcbCallC, in that order,
+// written by the patched runtime on the first C->Go callback. How the
+// var is wired depends on the toolchain — see pcs_stock.go (the gd
+// CLI's cgocall.go overlay pushes into our declaration) and
+// pcs_gd.go (the compiler.gd fork carries the machinery in its own
+// runtime and sets the `gd` build tag; we alias its published array).
 
 type funcval struct{ fn uintptr }
 
