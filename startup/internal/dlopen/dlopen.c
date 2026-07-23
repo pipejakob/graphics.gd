@@ -675,6 +675,78 @@ static void *foreign_wrap(void *real_func) {
 #endif
 }
 
+/* --- proc-addr getter interposition -------------------------------------------
+ *
+ * Loaders like Vulkan and GLX hand out further entry points through their own
+ * getter functions (vkGetInstanceProcAddr, vkGetDeviceProcAddr,
+ * glXGetProcAddress, eglGetProcAddress). Those pointers cross the musl<->glibc
+ * boundary as plain data, so dlsym's trampoline wrapping never sees them and
+ * the caller ends up invoking raw glibc code under the musl TLS register. The
+ * first TLS-dependent thing that code touches then reads a bogus TCB - e.g.
+ * glibc's __ctype_tolower_loc() returning a junk locale table inside the
+ * Vulkan loader's strcasecmp, crashing on a NULL-based table index.
+ *
+ * Fix: when dlsym is asked for one of these getters, hand back a native shim
+ * instead. The shim calls the real getter through its foreign trampoline (so
+ * the lookup itself runs under glibc TLS) and passes every function pointer it
+ * returns through foreign_wrap before it re-enters native code. Self
+ * references (asking a getter for itself, or for the device-level getter) are
+ * answered with the shims again so no raw getter ever escapes. */
+
+static void *(*vk_gipa_real)(void *instance, const char *name); /* trampolined */
+static void *(*vk_gdpa_real)(void *device, const char *name);   /* trampolined */
+static void *(*gl_gpa_real)(const char *name);                  /* trampolined */
+
+static void *gd_vkGetDeviceProcAddr(void *device, const char *name);
+
+static void *gd_vkGetInstanceProcAddr(void *instance, const char *name) {
+  if (!vk_gipa_real || !name) return NULL;
+  if (!strcmp(name, "vkGetInstanceProcAddr"))
+    return (void *)gd_vkGetInstanceProcAddr;
+  void *raw = vk_gipa_real(instance, name);
+  if (!raw) return NULL;
+  if (!strcmp(name, "vkGetDeviceProcAddr")) {
+    if (!vk_gdpa_real)
+      vk_gdpa_real = (void *(*)(void *, const char *))foreign_wrap(raw);
+    return (void *)gd_vkGetDeviceProcAddr;
+  }
+  return foreign_wrap(raw);
+}
+
+static void *gd_vkGetDeviceProcAddr(void *device, const char *name) {
+  if (!vk_gdpa_real || !name) return NULL;
+  if (!strcmp(name, "vkGetDeviceProcAddr"))
+    return (void *)gd_vkGetDeviceProcAddr;
+  return foreign_wrap(vk_gdpa_real(device, name));
+}
+
+static void *gd_glGetProcAddress(const char *name) {
+  if (!gl_gpa_real || !name) return NULL;
+  return foreign_wrap(gl_gpa_real(name));
+}
+
+/* Called from dlsym with the requested symbol name and its already-wrapped
+ * trampoline. Returns the shim to hand out instead, or NULL to let dlsym
+ * return `wrapped` unchanged. */
+static void *interpose_proc_getter(const char *name, void *wrapped) {
+  if (!name) return NULL;
+  if (!strcmp(name, "vkGetInstanceProcAddr")) {
+    vk_gipa_real = (void *(*)(void *, const char *))wrapped;
+    return (void *)gd_vkGetInstanceProcAddr;
+  }
+  if (!strcmp(name, "vkGetDeviceProcAddr")) {
+    vk_gdpa_real = (void *(*)(void *, const char *))wrapped;
+    return (void *)gd_vkGetDeviceProcAddr;
+  }
+  if (!strcmp(name, "glXGetProcAddress") ||
+      !strcmp(name, "glXGetProcAddressARB") ||
+      !strcmp(name, "eglGetProcAddress")) {
+    gl_gpa_real = (void *(*)(const char *))wrapped;
+    return (void *)gd_glGetProcAddress;
+  }
+  return NULL;
+}
+
 /* --- embedded prebuilt helper -------------------------------------------------
  *
  * helper_bin_<arch>.c defines these (guarded by arch) with the ELF cross-built
@@ -977,7 +1049,13 @@ void *dlsym(void *handle, const char *name) {
 
   /* Wrap the function pointer so calling it from native (musl) code switches to
    * this thread's glibc TLS for the duration of the call. */
-  return foreign_wrap(real_func);
+  void *wrapped = foreign_wrap(real_func);
+  if (!wrapped) return NULL;
+
+  /* Proc-addr getters need deeper treatment: the pointers THEY return must be
+   * wrapped too, so hand out an interposing shim instead of the getter. */
+  void *shim = interpose_proc_getter(name, wrapped);
+  return shim ? shim : wrapped;
 }
 
 int dlclose(void *handle) {
