@@ -413,6 +413,17 @@ func fastcbSetResident() {
 		throw("fastcbSetResident: goroutine not locked to OS thread")
 	}
 	fastcbM.set(gp.m)
+	// Arm Windows extra-M retention now, not at DLL load. gcc_libinit_windows.c
+	// reserves the FLS slot at preinit but leaves _cgo_pthread_key_created
+	// zero, so the extension DLL loads on the stock needm/dropm path (arming
+	// during load hangs a go test -c c-shared binary at extension load). This
+	// runs on the main thread once residency engages — after load, before the
+	// steady-state frame churn where the no-retention dropm/GC race bites.
+	// Idempotent (residency re-engages each frame after a yield); the constant
+	// GOOS check folds this away everywhere else.
+	if GOOS == "windows" && _cgo_pthread_key_created != nil {
+		*(*uintptr)(_cgo_pthread_key_created) = 1
+	}
 }
 
 // fastcbClearResident ends resident-callback mode. On a foreign (extra-m)

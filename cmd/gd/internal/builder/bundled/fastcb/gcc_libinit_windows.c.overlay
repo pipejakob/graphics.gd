@@ -67,14 +67,22 @@ _cgo_preinit_init() {
 
 	 InitializeCriticalSection(&runtime_init_cs);
 
-	 // fastcb: create the fiber-local g slot that backs extra-M retention
+	 // fastcb: reserve the fiber-local g slot that backs extra-M retention
 	 // (see the comment on fls_g above). Runs exactly once, before any C->Go
-	 // callback can exist. On failure the flag stays zero and callbacks fall
-	 // back to the stock per-callback needm/dropm behavior.
+	 // callback can exist.
+	 //
+	 // The retention FLAG (x_cgo_pthread_key_created) is deliberately NOT set
+	 // here: while the host is still loading the extension DLL, the runtime
+	 // must use the stock per-callback needm/dropm path. Arming retention
+	 // during the load window is unsafe for a `go test -c` c-shared binary —
+	 // the DLL never finishes loading and the host hangs at extension load
+	 // (godot stops right after "EDITOR API HASH"). Arming is deferred until
+	 // residency engages: fastcbSetResident (cgocall.go, main thread, well
+	 // after load) sets the flag through the runtime's _cgo_pthread_key_created
+	 // pointer — before the steady-state frame churn where the no-retention
+	 // GC race would otherwise bite. The FLS slot is still reserved here so
+	 // x_cgo_bindm has a valid key once retention is armed.
 	 fls_g = FlsAlloc(fls_g_destructor);
-	 if (fls_g != FLS_OUT_OF_INDEXES) {
-		x_cgo_pthread_key_created = 1;
-	 }
 }
 
 // Make sure that the preinit sequence has run.
