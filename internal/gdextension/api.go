@@ -563,18 +563,23 @@ func (shape Shape) Alignment() int {
 	}
 }
 
+// shapeSizes and shapeAlignMasks index by shape nibble code: the packed size
+// and (alignment-1) of each shape, for the argument-walk hot paths. Every
+// size is a multiple of its alignment, so align-then-add and add-then-align
+// produce identical offsets.
+var shapeSizes = [16]uint32{0, 1, 2, 4, 8, 8, 12, 16, 16, 24, 24, 36, 48, 64, 0, 0}
+var shapeAlignMasks = [16]uint32{0, 0, 1, 3, 7, 3, 3, 7, 3, 7, 3, 3, 3, 3, 0, 0}
+
 func (shape Shape) SizeArguments() (size int) {
-	for i := 1; i < 16; i++ {
-		var current = (shape >> (i * 4)) & 0xF
-		switch current {
-		case ShapeEmpty:
-			return size
-		default:
-			size += current.SizeResult()
-			size = int(alignUp(uint32(size), uint32(current.Alignment())))
-		}
+	// Argument nibbles are contiguous from nibble 1 with all higher nibbles
+	// zero, so the walk can stop when the remaining bits run out.
+	var n uint32
+	for s := shape >> 4; s != 0; s >>= 4 {
+		c := s & 0xF
+		m := shapeAlignMasks[c]
+		n = ((n + m) &^ m) + shapeSizes[c]
 	}
-	return
+	return int(n)
 }
 
 type VariantType uint32

@@ -58,10 +58,34 @@ func (r *Ring) Buffer(object, method uintptr, shape uint64, args unsafe.Pointer,
 	e.Shape = shape
 	n := gdextension.Shape(shape).SizeArguments()
 	if n > 0 && args != nil {
-		copy(e.Args[:n], unsafe.Slice((*byte)(args), n))
+		copyArgs(&e.Args, args, n)
 	}
 	e.PC = pc
 	r.head++
+}
+
+// copyArgs copies the packed argument bytes into an entry. The common
+// argument sizes take exact fixed-size copies (direct moves, no memmove
+// call): a variable-length copy costs more than the arguments themselves
+// for the small packs nearly every buffered call carries.
+func copyArgs(dst *[256]byte, args unsafe.Pointer, n int) {
+	p := unsafe.Pointer(dst)
+	switch n {
+	case 4:
+		*(*[4]byte)(p) = *(*[4]byte)(args)
+	case 8:
+		*(*[8]byte)(p) = *(*[8]byte)(args)
+	case 12:
+		*(*[12]byte)(p) = *(*[12]byte)(args)
+	case 16:
+		*(*[16]byte)(p) = *(*[16]byte)(args)
+	case 24:
+		*(*[24]byte)(p) = *(*[24]byte)(args)
+	case 32:
+		*(*[32]byte)(p) = *(*[32]byte)(args)
+	default:
+		copy(dst[:n], unsafe.Slice((*byte)(args), n))
+	}
 }
 
 func (r *Ring) Flush() {

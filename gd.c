@@ -515,35 +515,24 @@ void prepare_variants(void **frame, uint32_t argc, ANY args) {
 }
 // Helper macro to align a value to the next multiple of 'align'
 #define ALIGN_UP(value, align) (((value) + ((align) - 1)) & ~((align) - 1))
+// Packed size and alignment of each shape nibble code, mirroring the Go
+// side's shapeSizes/shapeAlignMasks (gdextension.SizeArguments).
+static const uint8_t gd_shape_sizes[16]  = {0, 1, 2, 4, 8, 8, 12, 16, 16, 24, 24, 36, 48, 64, 0, 0};
+static const uint8_t gd_shape_aligns[16] = {1, 1, 2, 4, 8, 4, 4, 8, 4, 8, 4, 4, 4, 4, 1, 1};
 uint8_t prepare_callframe(int skip, void **frame, uint64_t shape, ANY args) {
     uint8_t *head = (uint8_t *)args;
     ptrdiff_t offset = 0; // Track current offset in the frame
-    for (int i = skip; i < 16; i++) {
-        Shape code = (Shape)((shape >> (i * 4)) & 0xF);
-        uint32_t size;
-        uint32_t align;
-        // Determine size based on code
-        switch (code) {
-            case ShapeEmpty: size = 0; frame[i-skip] = NULL; return i-skip;
-            case ShapeBytes1: size = 1; align = 1; break;
-            case ShapeBytes2: size = 2; align = 2; break;
-            case ShapeBytes4: size = 4; align = 4; break;
-            case ShapeBytes8: size = 8; align = 8; break;
-            case ShapeBytes4x2: size = 4*2; align = 4; break;
-            case ShapeBytes4x3: size = 4*3; align = 4; break;
-            case ShapeBytes8x2: size = 8*2; align = 8; break;
-            case ShapeBytes4x4: size = 4*4; align = 4; break;
-            case ShapeBytes8x3: size = 8*3; align = 8; break;
-            case ShapeBytes4x6: size = 4*6; align = 4; break;
-            case ShapeBytes4x9: size = 4*9; align = 4; break;
-            case ShapeBytes4x12: size = 4*12; align = 4; break;
-            case ShapeBytes4x16: size = 4*16; align = 4; break;
-        }
-        offset = ALIGN_UP(offset, align);
-        frame[i-skip] = head + offset;     // Set frame pointer to the aligned address
-        offset += size;                 // Move offset forward by the size of the current argument
+    int i = 0;
+    // Nibbles are contiguous with all higher nibbles zero, so the walk can
+    // stop when the remaining bits run out.
+    for (uint64_t s = shape >> (skip * 4); s; s >>= 4, i++) {
+        Shape code = (Shape)(s & 0xF);
+        offset = ALIGN_UP(offset, gd_shape_aligns[code]);
+        frame[i] = head + offset;
+        offset += gd_shape_sizes[code];
     }
-    return 16-skip;
+    if (i < 16 - skip) frame[i] = NULL;
+    return i;
 }
 uintptr_t gd_builtin_name(uintptr_t name, INT64(hash)) { return (uintptr_t)gdextension_variant_get_ptr_utility_function((GDExtensionConstStringNamePtr)&name, INT64_FROM(hash));}
 void gd_builtin_call(uintptr_t fn, ANY result, UINT64(shape), ANY args) {
@@ -1121,7 +1110,9 @@ void gd_ring_flush(void *entries, uint32_t tail, uint32_t head, uint32_t *crash_
         // result bytes from an earlier call would be unref'd here — freeing
         // a value that a previous caller copied out and still owns (the
         // direct call paths zero their local result buffer the same way).
-        __builtin_memset(e->result, 0, sizeof e->result);
+        // Void methods (result nibble empty) never write the slot, so the
+        // zeroing is skipped for them — they are the bulk of buffered calls.
+        if (e->shape & 0xF) __builtin_memset(e->result, 0, sizeof e->result);
         gdextension_object_method_bind_ptrcall(
             (GDExtensionMethodBindPtr)e->method,
             (GDExtensionObjectPtr)e->object,

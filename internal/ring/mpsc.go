@@ -205,7 +205,7 @@ func (r *MPSC) fill(i uint32, object, method uintptr, shape uint64, args unsafe.
 	e.Shape = shape
 	n := gdextension.Shape(shape).SizeArguments()
 	if n > 0 && args != nil {
-		copy(e.Args[:n], unsafe.Slice((*byte)(args), n))
+		copyArgs(&e.Args, args, n)
 	}
 	e.PC = pc
 }
