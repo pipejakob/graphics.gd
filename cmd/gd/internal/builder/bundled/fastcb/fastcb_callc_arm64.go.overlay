@@ -20,11 +20,11 @@ func fastcbCallCFast(fn, arg unsafe.Pointer)
 // fastcbCallCFastPC reports the ABIInternal entry of the fused crossing,
 // or 0 where it must not be used: the asm skips the osPreemptExtEnter/Exit
 // pairing, which is only correct where those are no-ops (not Windows).
-// arm64 is enabled on darwin first (the verified platform); linux/arm64
-// (Android) stays on the generic crossing until it has been exercised on a
-// device.
+// arm64 is enabled on darwin and ios (identical TLS and unwind
+// mechanics, both device-verified); linux/arm64 (Android) stays on the
+// generic crossing until it has been exercised on a device.
 func fastcbCallCFastPC() uintptr {
-	if GOOS == "darwin" {
+	if GOOS == "darwin" || GOOS == "ios" {
 		return abi.FuncPCABIInternal(fastcbCallCFast)
 	}
 	return 0
@@ -42,7 +42,7 @@ func fastcbentryexit()
 // fastcbEntryFastPC reports the C-callable entry of the direct thunk, or 0
 // where it must not be armed. Same gate as the fused crossing.
 func fastcbEntryFastPC() uintptr {
-	if GOOS == "darwin" {
+	if GOOS == "darwin" || GOOS == "ios" {
 		return abi.FuncPCABI0(fastcbentryfast)
 	}
 	return 0
