@@ -1,0 +1,181 @@
+// Copyright 2026 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+#include "go_asm.h"
+#include "go_tls.h"
+#include "funcdata.h"
+#include "textflag.h"
+
+// Windows amd64 port of the direct virtual-call entry in
+// fastcb_callc_amd64.s — see that file for the full design discussion.
+// The differences are pure ABI:
+//
+//   - Win64 argument registers: CX = p_instance, DX = p_name (unused),
+//     R8 = p_virtual_call_userdata, R9 = p_args, and the FIFTH argument
+//     (r_ret) on the stack at [RSP+40] (return address + 32 bytes of
+//     shadow space).
+//   - The Win64 callee-saved set is much larger than System V's: RBX,
+//     RBP, RDI, RSI, R12-R15 and XMM6-XMM15 — all clobbered by Go code,
+//     so the full 224-byte block is saved around the dispatch.
+//   - The Windows preemptExtLock/winsyscall discipline lives in the Go
+//     half (fastcbentrygofast), mirroring the resident fast path in
+//     cgocallbackg; the thunk itself only moves registers.
+//
+// The fused outbound crossing is NOT ported: it would need the
+// preemptExtLock handling in assembly. fastcbCallCFastPC returns 0 on
+// windows, outbound resident calls keep the generic fastcbCallC (which
+// takes the lock in Go), and the body below exists only to satisfy the
+// declaration — it aborts if ever reached.
+TEXT runtime·fastcbCallCFast<ABIInternal>(SB),NOSPLIT|NOFRAME,$0-16
+	NO_LOCAL_POINTERS
+	CALL	runtime·abort(SB)
+	RET
+
+// Save-block layout (232 bytes; entry RSP ≡ 8 mod 16, so the SUB leaves
+// RSP 16-aligned for the XMM stores):
+//	  0..159  X6-X15
+//	160..223  BX, BP, DI, SI, R12, R13, R14, R15
+//	224..231  pad
+// The engine's fifth argument (r_ret) sits at [SP+272] after the SUB.
+TEXT runtime·fastcbentryfast(SB),NOSPLIT|NOFRAME,$0
+	NO_LOCAL_POINTERS
+	get_tls(R10)
+	MOVQ	g(R10), R11
+	TESTQ	R11, R11
+	JZ	fallback
+	MOVQ	g_m(R11), R11		// R11 = m (live through commit)
+	CMPQ	runtime·fastcbM(SB), R11
+	JNE	fallback
+	MOVQ	m_curg(R11), AX		// AX = curg (live through commit)
+	MOVL	g_atomicstatus(AX), R10
+	CMPL	R10, $2			// _Grunning
+	JE	statusok
+	CMPL	R10, $0x1002		// _Gscanrunning
+	JNE	fallback
+statusok:
+	MOVQ	(g_sched+gobuf_sp)(AX), R10
+	CMPQ	R10, (g_stack+stack_lo)(AX)
+	JBE	fallback
+	CMPQ	R10, (g_stack+stack_hi)(AX)
+	JA	fallback
+	MOVQ	runtime·fastcbEntryDepth(SB), R10
+	CMPQ	R10, $8			// len(fastcbEntrySaved)
+	JGE	fallback
+
+	// Commit. Save the Win64 callee-saved block.
+	SUBQ	$232, SP
+	MOVUPS	X6, 0(SP)
+	MOVUPS	X7, 16(SP)
+	MOVUPS	X8, 32(SP)
+	MOVUPS	X9, 48(SP)
+	MOVUPS	X10, 64(SP)
+	MOVUPS	X11, 80(SP)
+	MOVUPS	X12, 96(SP)
+	MOVUPS	X13, 112(SP)
+	MOVUPS	X14, 128(SP)
+	MOVUPS	X15, 144(SP)
+	MOVQ	BX, 160(SP)
+	MOVQ	BP, 168(SP)
+	MOVQ	DI, 176(SP)
+	MOVQ	SI, 184(SP)
+	MOVQ	R12, 192(SP)
+	MOVQ	R13, 200(SP)
+	MOVQ	R14, 208(SP)
+	MOVQ	R15, 216(SP)
+
+	MOVQ	272(SP), R12		// r_ret (fifth C argument)
+
+	// Stash the C context at this nesting depth and repoint g0.sched.sp
+	// below the engine's live C frames, exactly as cgocallback does.
+	MOVQ	runtime·fastcbEntryDepth(SB), R13
+	SHLQ	$4, R13
+	LEAQ	runtime·fastcbEntrySaved(SB), R14
+	ADDQ	R13, R14
+	MOVQ	SP, 0(R14)
+	MOVQ	m_g0(R11), R15
+	MOVQ	(g_sched+gobuf_sp)(R15), BX
+	MOVQ	BX, 8(R14)
+	MOVQ	SP, (g_sched+gobuf_sp)(R15)
+	INCQ	runtime·fastcbEntryDepth(SB)
+
+	// Enter the Go execution context.
+	get_tls(R10)
+	MOVQ	AX, g(R10)
+	MOVQ	AX, R14			// ABIInternal g register
+	XORPS	X15, X15		// ABIInternal zero register
+
+	// Switch to the resident goroutine's stack (see the System V file:
+	// sched.pc planted at sched.sp-8 as fastcbentrycall's return
+	// address). Dispatcher ABIInternal arguments: AX=instance
+	// BX=userdata CX=args DI=ret.
+	MOVQ	(g_sched+gobuf_sp)(R14), R13
+	MOVQ	(g_sched+gobuf_pc)(R14), R15
+	MOVQ	R15, -8(R13)
+	MOVQ	(g_sched+gobuf_bp)(R14), BP
+	MOVQ	CX, AX			// instance
+	MOVQ	R9, CX			// args
+	MOVQ	R8, BX			// userdata
+	MOVQ	R12, DI			// ret
+	LEAQ	-8(R13), SP
+	JMP	runtime·fastcbentrycall(SB)
+
+fallback:
+	// Nothing committed: the Win64 argument registers and the stack
+	// argument are untouched, so a tail jump hands the call to the stock
+	// entry unchanged.
+	MOVQ	runtime·fastcbEntryFallback(SB), AX
+	TESTQ	AX, AX
+	JZ	drop
+	JMP	AX
+drop:
+	RET
+
+// fastcbentrycall — identical to the System V version (the trampoline is
+// ABI-internal on both sides of the call); duplicated here because each
+// OS's file must be self-contained (one definition per symbol per build).
+TEXT runtime·fastcbentrycall(SB),NOSPLIT,$32
+	NO_LOCAL_POINTERS
+	CALL	runtime·fastcbentrygofast<ABIInternal>(SB)
+	MOVQ	40(SP), AX
+	MOVQ	AX, (g_sched+gobuf_pc)(R14)
+	LEAQ	48(SP), AX
+	MOVQ	AX, (g_sched+gobuf_sp)(R14)
+	JMP	runtime·fastcbentryexit<ABIInternal>(SB)
+
+// fastcbentryexit unwinds to the engine's C frame with the full Win64
+// callee-saved block restored.
+TEXT runtime·fastcbentryexit<ABIInternal>(SB),NOSPLIT|NOFRAME,$0-0
+	NO_LOCAL_POINTERS
+	DECQ	runtime·fastcbEntryDepth(SB)
+	MOVQ	runtime·fastcbEntryDepth(SB), R12
+	SHLQ	$4, R12
+	LEAQ	runtime·fastcbEntrySaved(SB), R13
+	ADDQ	R12, R13
+	MOVQ	g_m(R14), R11
+	MOVQ	m_g0(R11), R10
+	MOVQ	8(R13), AX
+	MOVQ	AX, (g_sched+gobuf_sp)(R10)
+	get_tls(R9)
+	MOVQ	R10, g(R9)
+	MOVQ	0(R13), SP
+	MOVUPS	0(SP), X6
+	MOVUPS	16(SP), X7
+	MOVUPS	32(SP), X8
+	MOVUPS	48(SP), X9
+	MOVUPS	64(SP), X10
+	MOVUPS	80(SP), X11
+	MOVUPS	96(SP), X12
+	MOVUPS	112(SP), X13
+	MOVUPS	128(SP), X14
+	MOVUPS	144(SP), X15
+	MOVQ	160(SP), BX
+	MOVQ	168(SP), BP
+	MOVQ	176(SP), DI
+	MOVQ	184(SP), SI
+	MOVQ	192(SP), R12
+	MOVQ	200(SP), R13
+	MOVQ	208(SP), R14
+	MOVQ	216(SP), R15
+	ADDQ	$232, SP
+	RET

@@ -37,11 +37,11 @@ func fastcbentryfast()
 func fastcbentryexit()
 
 // fastcbEntryFastPC reports the C-callable entry of the direct thunk, or 0
-// where it must not be armed. Same gate as the fused crossing: the entry
-// composes with fastcbCallCFast's sched save/restore contract and skips the
-// Windows preemptExtLock discipline.
+// where it must not be armed. Windows is included: its thunk
+// (fastcb_callc_windows_amd64.s) saves the Win64 callee-saved block and the
+// Go half carries the preemptExtLock/winsyscall discipline.
 func fastcbEntryFastPC() uintptr {
-	if GOOS == "linux" {
+	if GOOS == "linux" || GOOS == "windows" {
 		return abi.FuncPCABI0(fastcbentryfast)
 	}
 	return 0
@@ -55,7 +55,35 @@ func fastcbEntryFastPC() uintptr {
 // cgocallbackg, then returns to the trampoline, which unwinds to the
 // engine through fastcbentryexit.
 func fastcbentrygofast(instance, userdata, args, ret uintptr) {
+	if GOOS == "windows" {
+		// Mirror the resident fast path in cgocallbackg: a stock base
+		// entry returned to C holding preemptExtLock (engine C code may
+		// call ExitProcess, which must not race preemptM's
+		// SuspendThread), so release it while the dispatch's Go code
+		// runs and retake it for the return to C, saving m.winsyscall
+		// around the dispatch exactly as the stock path does. The
+		// constant GOOS check folds this block away everywhere else.
+		gp := getg()
+		stockBase := fastcbSavedPC != 0 || fastcbCallCDepth != 0
+		winsyscall := gp.m.winsyscall
+		if stockBase {
+			osPreemptExtExit(gp.m)
+		}
+		fastcbEntryFn(instance, userdata, ret, args)
+		if stockBase {
+			osPreemptExtEnter(gp.m)
+		}
+		fastcbentrygoyield()
+		gp.m.winsyscall = winsyscall
+		return
+	}
 	fastcbEntryFn(instance, userdata, ret, args)
+	fastcbentrygoyield()
+}
+
+// fastcbentrygoyield is the deferred yield/clear epilogue shared with the
+// resident fast path in cgocallbackg.
+func fastcbentrygoyield() {
 	if fastcbCallCDepth == 0 && (fastcbYieldFlag != 0 || fastcbM == 0) {
 		fastcbYieldFlag = 0
 		if fastcbSavedPC != 0 {
