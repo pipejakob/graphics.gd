@@ -22,6 +22,21 @@ import (
 //go:embed bundled/fastcb/cgocall.go.overlay
 var fastcb_cgocall []byte
 
+// The fused resident outbound crossing (see fastcb_callc_amd64.s.overlay):
+// three companion files added to package runtime alongside the cgocall.go
+// replacement. The .s and its amd64 declaration file are arch-gated by
+// filename; the stub keeps fastcbCallCFastPC defined elsewhere. go build
+// overlays support adding files that do not exist in the original tree.
+//
+//go:embed bundled/fastcb/fastcb_callc_amd64.s.overlay
+var fastcb_callc_asm []byte
+
+//go:embed bundled/fastcb/fastcb_callc_amd64.go.overlay
+var fastcb_callc_decl []byte
+
+//go:embed bundled/fastcb/fastcb_callc_stub.go.overlay
+var fastcb_callc_stub []byte
+
 // fastcbAllowed lists the targets where the fastcb patch is applied. On
 // Windows the patch preserves the stock callback path's osPreemptExtEnter/
 // Exit pairing and m.winsyscall save/restore across the resident fast path.
@@ -105,6 +120,18 @@ func fastcbFlags(target, baseTags string) []string {
 	replace := map[string]string{
 		filepath.Join(goroot, "src", "runtime", "cgocall.go"): cgocall,
 	}
+	// The fused-crossing companions are pure additions to package runtime;
+	// if writing them fails the build proceeds with the cgocall.go patch
+	// alone (fastcbCallCFastPC is then undefined only if cgocall.go is the
+	// bundled copy, so treat a partial write as all-or-nothing).
+	if companions, err := fastcbCallCFiles(); err == nil {
+		for name, path := range companions {
+			replace[filepath.Join(goroot, "src", "runtime", name)] = path
+		}
+	} else {
+		fmt.Fprintf(os.Stderr, "gd: building without the resident-callback runtime patch: cannot write the fused-crossing files: %v\n", err)
+		return flags
+	}
 	// Windows needs two more runtime replacements for extra-M retention: see
 	// fastcbWindowsRetention. Without them every C->Go callback pays a
 	// needm/dropm cycle, which both defeats resident-callback mode and races
@@ -125,6 +152,30 @@ func fastcbFlags(target, baseTags string) []string {
 		return flags
 	}
 	return append(flags, "-overlay="+overlay)
+}
+
+// fastcbCallCFiles writes the fused-crossing companion files under
+// gdpaths.Lib/fastcb and returns their runtime-relative names mapped to the
+// written paths.
+func fastcbCallCFiles() (map[string]string, error) {
+	dir := filepath.Join(gdpaths.Lib, "fastcb")
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return nil, err
+	}
+	files := map[string][]byte{
+		"fastcb_callc_amd64.s":  fastcb_callc_asm,
+		"fastcb_callc_amd64.go": fastcb_callc_decl,
+		"fastcb_callc_stub.go":  fastcb_callc_stub,
+	}
+	out := make(map[string]string, len(files))
+	for name, blob := range files {
+		path := filepath.Join(dir, name)
+		if err := os.WriteFile(path, blob, 0644); err != nil {
+			return nil, err
+		}
+		out[name] = path
+	}
+	return out, nil
 }
 
 // mergeTags returns base plus the GD_EXTRA_TAGS additions (comma-separated),

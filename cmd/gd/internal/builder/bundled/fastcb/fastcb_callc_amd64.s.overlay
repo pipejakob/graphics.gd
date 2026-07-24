@@ -1,0 +1,323 @@
+// Copyright 2026 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+#include "go_asm.h"
+#include "go_tls.h"
+#include "funcdata.h"
+#include "textflag.h"
+
+// fastcbCallCFast is the resident OUTBOUND crossing, fused: it is
+// fastcbCallC + asmcgocall specialized for the one callsite that matters —
+// the resident goroutine, on the main thread, calling a C function that
+// takes a single pointer argument and whose errno result is ignored. The
+// generic path pays for an ABIInternal→ABI0 bridge, the wrapper's
+// getg/osPreemptExt bookkeeping, asmcgocall's am-I-on-g0/gsignal entry
+// checks, FP-relative argument reloads, and the landingpad hop; none of
+// that is needed here.
+//
+// What IS kept is the full nested-callback contract, bit-for-bit with
+// asmcgocall's:
+//
+//   - curg's sched.pc/sp/bp are published before leaving the goroutine
+//     stack: a nested C->Go callback (cgocallback) resumes the goroutine
+//     stack at sched.sp with sched.pc as the fake return PC, and the
+//     traceback anchor is systemstack_switch+8 exactly as asmcgocall
+//     leaves it.
+//   - the anchor layout is EXACT: at systemstack_switch+8 the unwinder's
+//     pcsp delta is 8 (the function is non-leaf, so it has a BP-push
+//     prologue), meaning it reads the frame's saved BP at sched.sp+0 and
+//     its return PC at sched.sp+8. The PUSHQ BP below builds that fake
+//     one-slot frame, so a GC scan or copystack that unwinds a nested
+//     callback down through the fake PC walks cleanly into our caller.
+//     (The stock gosave_systemstack_switch anchor does NOT satisfy this —
+//     [sched.sp+8] lands on asmcgocall's fn argument — but plain cgo
+//     syscall goroutines are unwound from syscallpc/sp instead, so it
+//     never fires there. The resident goroutine stays _Grunning and IS
+//     unwound through this anchor when preempt-scanned inside a nested
+//     callback, so the layout must be exact.)
+//   - TLS g is switched to g0 for the duration of the C call (the signal
+//     path and any system-stack excursion read g from TLS).
+//   - our goroutine SP is saved as a DEPTH from stack.hi in the g0 frame:
+//     a nested callback may grow and therefore MOVE the stack, and
+//     copystack adjusts g.sched but cannot see raw SPs stashed on the g0
+//     stack.
+//   - X15 is re-zeroed after C returns (caller-saved in the C ABI,
+//     must-be-zero in ABIInternal); R14/g are restored from the g0 frame.
+//
+// fastcbCallCDepth is maintained here (the Go wrapper does it on the
+// generic path) so the deferred-yield gate in the resident callback exit
+// still sees outbound calls in flight. osPreemptExtEnter/Exit are Linux
+// no-ops; the publish (fastcbCallCFastPC) is gated to GOOS values where
+// that holds, so the Windows preemptExtLock discipline is never bypassed.
+TEXT runtime·fastcbCallCFast<ABIInternal>(SB),NOSPLIT|NOFRAME,$0-16
+	NO_LOCAL_POINTERS
+	// AX = fn, BX = arg (ABIInternal argument registers).
+	INCQ	runtime·fastcbCallCDepth(SB)
+	MOVQ	g_m(R14), R8
+	MOVQ	m_g0(R8), SI		// SI = g0
+
+	// Capture the PREVIOUS sched anchor before overwriting it, so it can
+	// be restored on the way out. sched must stay canonical at all times:
+	// a later engine->Go entry (the direct thunk fastcbentryfast or a
+	// stock cgocallback) consumes sched.sp/pc as its stack-switch target,
+	// and a stale anchor left by a returned crossing points into stack
+	// space that has been reused by live frames. The old sp is stored as
+	// a DEPTH from stack.hi (a nested callback may move the stack;
+	// copystack cannot adjust raw pointers stashed on the g0 stack).
+	MOVQ	(g_stack+stack_hi)(R14), R10
+	SUBQ	(g_sched+gobuf_sp)(R14), R10	// R10 = old sched.sp depth
+	MOVQ	(g_sched+gobuf_pc)(R14), R11	// R11 = old sched.pc
+
+	// Publish the resume point: a fake systemstack_switch frame —
+	// [sched.sp]=saved BP, [sched.sp+8]=our return PC (see above).
+	PUSHQ	BP
+	MOVQ	$runtime·systemstack_switch+8(SB), R9
+	MOVQ	R9, (g_sched+gobuf_pc)(R14)
+	MOVQ	SP, (g_sched+gobuf_sp)(R14)
+	MOVQ	BP, (g_sched+gobuf_bp)(R14)
+
+	// Switch to the system stack.
+	MOVQ	SP, DX
+	get_tls(CX)
+	MOVQ	SI, g(CX)
+	MOVQ	(g_sched+gobuf_sp)(SI), SP
+	SUBQ	$32, SP
+	ANDQ	$~15, SP		// alignment for the gcc ABI
+	MOVQ	R14, 8(SP)		// save curg
+	MOVQ	(g_stack+stack_hi)(R14), DI
+	SUBQ	DX, DI
+	MOVQ	DI, 0(SP)		// save depth (stack may move)
+	MOVQ	R10, 16(SP)		// old sched.sp depth
+	MOVQ	R11, 24(SP)		// old sched.pc
+	MOVQ	BX, DI			// C argument
+	CALL	AX
+
+	// Back from C: restore g, goroutine SP (via depth), the previous
+	// sched anchor, and the ABI registers. All g0-frame slots are read
+	// before SP leaves the system stack.
+	get_tls(CX)
+	MOVQ	8(SP), R14
+	MOVQ	16(SP), R10		// old sched.sp depth
+	MOVQ	24(SP), R11		// old sched.pc
+	MOVQ	(g_stack+stack_hi)(R14), SI
+	MOVQ	SI, DX
+	SUBQ	0(SP), SI		// SI = our goroutine SP
+	SUBQ	R10, DX			// DX = old sched.sp (move-adjusted)
+	MOVQ	R14, g(CX)
+	MOVQ	DX, (g_sched+gobuf_sp)(R14)
+	MOVQ	R11, (g_sched+gobuf_pc)(R14)
+	MOVQ	SI, SP
+	POPQ	BP			// unwind the fake systemstack_switch frame
+	XORPS	X15, X15
+	DECQ	runtime·fastcbCallCDepth(SB)
+	RET
+
+// fastcbentryfast is the direct C-ABI virtual-call entry for the OVERLAY:
+// the fork's runtime.fastcbentry ported to a form that needs no toolchain
+// support. The fork thunk CALLs its Go half, which places the thunk's own
+// SPWRITE frame in every nested unwind chain — walkable only with the
+// FuncID_cgocallback exemption the fork bakes into cmd/internal/objabi.
+// This port instead PUSHES the resident goroutine's sched.pc as a fake
+// return address and JMPs into the Go dispatcher, so the unwind chain is
+//
+//	[callback Go frames] -> fastcbentrygofast -> fake PC (= sched.pc)
+//	-> the outer anchor frames
+//
+// and this thunk's frame never appears in it. The fake PC lands at
+// sched.sp-8, so the unwinder's continuation frame sits exactly at
+// sched.sp — composing with whatever contract the outer context left
+// there: fastcbCallCFast's fake systemstack_switch frame (nested case),
+// a stock cgocallback's restored anchor, or the goexit stack bottom
+// (base case). Because the dispatcher is entered by JMP, it can never
+// return normally (its "return address" is an unwind anchor, not code);
+// it finishes by calling fastcbentryexit, which unwinds to the C frame
+// captured here.
+//
+// The engine calls this PC with the GDExtensionClassCallVirtualWithData
+// arguments in System V registers:
+//
+//	DI = p_instance   SI = p_name (unused)   DX = p_virtual_call_userdata
+//	CX = p_args       R8 = r_ret
+//
+// Fast-path preconditions, checked before anything is committed (any
+// failure tail-jumps, arguments untouched, to the stock entry in
+// fastcbEntryFallback): this thread has a TLS g, its m is the resident m,
+// and the resident goroutine is _Grunning (a transient _Gscanrunning is
+// admitted — that is suspendG pinning the status word while it posts a
+// preemption request, honored at the dispatcher's first prologue).
+//
+// The C context (C SP after the callee-saved pushes, and the previous
+// g0.sched.sp) is stashed in fastcbEntrySaved, indexed by nesting depth —
+// globals, because the goroutine stack may move while the callback runs.
+// g0.sched.sp is repointed at the current C SP for the callback's
+// duration, exactly as cgocallback does: any system-stack excursion
+// (morestack, a preemption's trip through the scheduler) resumes g0 at
+// g0.sched.sp, which must sit BELOW the engine's live C frames.
+TEXT runtime·fastcbentryfast(SB),NOSPLIT|NOFRAME,$0
+	NO_LOCAL_POINTERS
+	get_tls(R9)
+	MOVQ	g(R9), R10
+	TESTQ	R10, R10
+	JZ	fallback
+	MOVQ	g_m(R10), R11
+	CMPQ	runtime·fastcbM(SB), R11
+	JNE	fallback
+	MOVQ	m_curg(R11), R10
+	MOVL	g_atomicstatus(R10), AX
+	CMPL	AX, $2			// _Grunning
+	JE	statusok
+	CMPL	AX, $0x1002		// _Gscanrunning
+	JNE	fallback
+statusok:
+	// The resume anchor must point into the resident goroutine's stack:
+	// the fake return PC is written at sched.sp-8 and the dispatcher
+	// runs below it, so a stale or foreign anchor would corrupt live
+	// memory. Out of range -> stock entry.
+	MOVQ	(g_sched+gobuf_sp)(R10), AX
+	CMPQ	AX, (g_stack+stack_lo)(R10)
+	JBE	fallback
+	CMPQ	AX, (g_stack+stack_hi)(R10)
+	JA	fallback
+
+commit:
+	// Save the C callee-saved registers we may clobber.
+	PUSHQ	BX
+	PUSHQ	BP
+	PUSHQ	R12
+	PUSHQ	R13
+	PUSHQ	R14
+	PUSHQ	R15
+
+	// Stash the C context at this nesting depth (16 bytes per level:
+	// [0]=C SP after the pushes, [8]=previous g0.sched.sp).
+	MOVQ	runtime·fastcbEntryDepth(SB), R12
+	CMPQ	R12, $8			// len(fastcbEntrySaved)
+	JGE	toodeep
+	SHLQ	$4, R12
+	LEAQ	runtime·fastcbEntrySaved(SB), R13
+	ADDQ	R12, R13
+	MOVQ	SP, 0(R13)
+	MOVQ	m_g0(R11), BX
+	MOVQ	(g_sched+gobuf_sp)(BX), AX
+	MOVQ	AX, 8(R13)
+	MOVQ	SP, (g_sched+gobuf_sp)(BX)
+	INCQ	runtime·fastcbEntryDepth(SB)
+
+	// Enter the Go execution context: TLS g = curg (morestack and the
+	// signal path reload g from TLS), R14 = curg (ABIInternal g
+	// register), X15 = 0 (ABIInternal zero register; caller-saved in
+	// the C ABI, so neither save nor restore is needed).
+	MOVQ	R10, g(R9)
+	MOVQ	R10, R14
+	XORPS	X15, X15
+
+	// Switch to the resident goroutine's stack: store sched.pc at
+	// sched.sp-8, where it serves as fastcbentrycall's return address
+	// for the unwinder, and JMP to fastcbentrycall — a REAL $32-frame
+	// function whose REAL CALL enters the dispatcher. This solves the
+	// three failure modes of entering the dispatcher directly:
+	//
+	//	- ABIInternal register arguments SPILL INTO THE CALLER'S
+	//	  FRAME, just above the return address: entering the
+	//	  dispatcher with a fabricated frame puts those spills on top
+	//	  of live outer memory (the instance pointer overwriting the
+	//	  outer crossing's anchor was the root cause of every
+	//	  corruption signature in this saga). entrycall's 32-byte
+	//	  frame is exactly that spill space.
+	//	- a JMP-entered never-returning dispatcher desyncs the
+	//	  return-stack buffer by one entry per callback (a storm of
+	//	  return mispredicts, ~+35ns); entrycall keeps CALL/RET
+	//	  paired.
+	//	- the unwinder needs a walkable chain: [dispatcher frames] ->
+	//	  return PC inside entrycall (ordinary frame, pcsp delta 40)
+	//	  -> return PC at [sched.sp-8] = sched.pc -> the outer anchor.
+	//
+	// sched itself is NOT modified here; entrycall republishes it on
+	// the way out (parks inside the dispatch zero sched.sp via gogo).
+	//
+	// Dispatcher ABIInternal arguments: AX=instance BX=userdata CX=args
+	// DI=ret.
+	MOVQ	(g_sched+gobuf_sp)(R10), R13
+	MOVQ	(g_sched+gobuf_pc)(R10), AX
+	MOVQ	AX, -8(R13)
+	MOVQ	(g_sched+gobuf_bp)(R10), BP
+	LEAQ	-8(R13), SP
+	MOVQ	DI, AX			// instance
+	MOVQ	DX, BX			// userdata
+	MOVQ	R8, DI			// ret (CX = args already in place)
+	JMP	runtime·fastcbentrycall(SB)
+
+toodeep:
+	POPQ	R15
+	POPQ	R14
+	POPQ	R13
+	POPQ	R12
+	POPQ	BP
+	POPQ	BX
+fallback:
+	MOVQ	runtime·fastcbEntryFallback(SB), AX
+	TESTQ	AX, AX
+	JZ	drop
+	JMP	AX
+drop:
+	RET
+
+// fastcbentrycall is the dispatcher's caller frame: an ordinary $32
+// frame (prologue: PUSHQ BP + SUBQ $32, pcsp delta 40) whose real CALL
+// keeps the return-stack buffer balanced, whose 32 bytes of locals are
+// the dispatcher's ABIInternal argument-spill space, and whose return
+// address — placed by the thunk at sched.sp-8 — is the sched.pc value
+// that chains the unwind into the outer anchor. When the dispatcher
+// returns, control republishes the anchor and tail-jumps into
+// fastcbentryexit, which unwinds to the engine's C frame; the return
+// address is never executed.
+TEXT runtime·fastcbentrycall(SB),NOSPLIT,$32
+	NO_LOCAL_POINTERS
+	CALL	runtime·fastcbentrygofast<ABIInternal>(SB)
+	// Self-heal the resume anchor before leaving, exactly as stock
+	// cgocallback's exit does: any park inside the dispatch resumed via
+	// gogo, which ZEROES gp.sched.sp — leaving it stale would send the
+	// next entry's frame (stock or thunk) into live stack memory. Our
+	// own frame position locates the anchor (adjusted automatically if
+	// the stack moved): SP sits at sched.sp-48 here, with the sched.pc
+	// value at 40(SP).
+	MOVQ	40(SP), AX
+	MOVQ	AX, (g_sched+gobuf_pc)(R14)
+	LEAQ	48(SP), AX
+	MOVQ	AX, (g_sched+gobuf_sp)(R14)
+	JMP	runtime·fastcbentryexit<ABIInternal>(SB)
+
+// fastcbentryexit unwinds from fastcbentrycall back to the engine's C
+// frame captured by fastcbentryfast at the current nesting depth. It
+// never returns to its caller: it restores the previous g0.sched.sp,
+// leaves the Go execution context, switches back to the saved C SP and
+// returns to the engine with the C callee-saved registers restored.
+// sched needs no repair here — the thunk never modified it, and every
+// nested crossing restores it on exit.
+TEXT runtime·fastcbentryexit<ABIInternal>(SB),NOSPLIT|NOFRAME,$0-0
+	NO_LOCAL_POINTERS
+	DECQ	runtime·fastcbEntryDepth(SB)
+	MOVQ	runtime·fastcbEntryDepth(SB), R12
+	SHLQ	$4, R12
+	LEAQ	runtime·fastcbEntrySaved(SB), R13
+	ADDQ	R12, R13
+	MOVQ	g_m(R14), R11
+	MOVQ	m_g0(R11), R10
+	MOVQ	8(R13), AX
+	MOVQ	AX, (g_sched+gobuf_sp)(R10)
+	get_tls(R9)
+	MOVQ	R10, g(R9)
+	MOVQ	0(R13), SP
+	// The saved C callee-saved registers (pushed by fastcbentryfast)
+	// sit at 0..40(SP). Explicit loads rather than POPs: the assembler's
+	// static PUSH/POP balance check cannot see the cross-function
+	// pairing.
+	MOVQ	0(SP), R15
+	MOVQ	8(SP), R14
+	MOVQ	16(SP), R13
+	MOVQ	24(SP), R12
+	MOVQ	32(SP), BP
+	MOVQ	40(SP), BX
+	ADDQ	$48, SP
+	RET

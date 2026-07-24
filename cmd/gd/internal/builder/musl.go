@@ -345,6 +345,16 @@ func muslOverlay(GOROOT string) (string, error) {
 	}
 	if p := fastcbCgocall("musl"); p != "" {
 		replace[filepath.Join(GOROOT, "src", "runtime", "cgocall.go")] = p
+		// The bundled cgocall.go references the fused-crossing companions
+		// (fastcbCallCFastPC), so the replacement and the additions are
+		// all-or-nothing.
+		companions, err := fastcbCallCFiles()
+		if err != nil {
+			return "", err
+		}
+		for name, path := range companions {
+			replace[filepath.Join(GOROOT, "src", "runtime", name)] = path
+		}
 	}
 	return writeOverlay("musl.json", replace)
 }

@@ -339,6 +339,56 @@ var fastcbM muintptr
 //go:linkname graphicsFastcbPCs graphics.gd/internal/fastcb.runtimePCs
 var graphicsFastcbPCs [4]uintptr
 
+// graphicsFastcbCallCFastPC aliases graphics.gd/internal/fastcb's
+// runtimeCallCFastPC: the ABIInternal PC of the fused resident outbound
+// crossing (fastcbCallCFast, fastcb_callc_amd64.s), or 0 where the fused
+// crossing is unavailable (non-amd64, or a GOOS where osPreemptExtEnter is
+// not a no-op). A separate variable rather than a fifth graphicsFastcbPCs
+// slot so overlay and graphics.gd versions can skew without an array-size
+// mismatch: an older graphics.gd simply never declares (or reads) the
+// symbol, an older overlay simply never writes it.
+//
+//go:linkname graphicsFastcbCallCFastPC graphics.gd/internal/fastcb.runtimeCallCFastPC
+var graphicsFastcbCallCFastPC uintptr
+
+// graphicsFastcbArmEntryPC aliases graphics.gd/internal/fastcb's
+// runtimeArmEntryPC: the ABIInternal PC of fastcbArmEntry, through which
+// graphics.gd registers the virtual dispatch target and obtains the direct
+// entry thunk's C-callable PC. Same skew-tolerant separate-variable bridge
+// as graphicsFastcbCallCFastPC.
+//
+//go:linkname graphicsFastcbArmEntryPC graphics.gd/internal/fastcb.runtimeArmEntryPC
+var graphicsFastcbArmEntryPC uintptr
+
+// Direct virtual-call entry state (see fastcb_callc_amd64.s). fastcbEntryFn
+// is the graphics.gd dispatch target; fastcbEntryFallback the stock
+// five-argument virtual entry the thunk tail-jumps to whenever the fast
+// path's preconditions do not hold. fastcbEntrySaved stashes, per nesting
+// depth, the C SP (after the thunk's callee-saved pushes) and the previous
+// g0.sched.sp — globals, because the goroutine stack may move while a
+// callback runs. All are touched only on the resident m.
+var (
+	fastcbEntryFn       func(instance, userdata, result, args uintptr)
+	fastcbEntryFallback uintptr
+	fastcbEntryDepth    uintptr
+	fastcbEntrySaved    [8][2]uintptr
+)
+
+// fastcbArmEntry registers the virtual dispatch target and the stock
+// fallback entry, and returns the C-callable PC of the direct entry thunk
+// (0 when the platform does not support it — the caller then registers
+// nothing). Arming is required only once; the thunk self-checks residency
+// on every call.
+func fastcbArmEntry(dispatch func(instance, userdata, result, args uintptr), fallback unsafe.Pointer) uintptr {
+	pc := fastcbEntryFastPC()
+	if pc == 0 || dispatch == nil || fallback == nil {
+		return 0
+	}
+	fastcbEntryFn = dispatch
+	fastcbEntryFallback = uintptr(fallback)
+	return pc
+}
+
 // fastcbSetResident marks the current m as hosting resident callbacks. The
 // caller must be locked to its OS thread (enforced here — this is what makes
 // a per-callback lockOSThread unnecessary: blocking or preemption inside a
@@ -459,6 +509,8 @@ func cgocallbackg(fn, frame unsafe.Pointer, ctxt uintptr) {
 		graphicsFastcbPCs[1] = abi.FuncPCABIInternal(fastcbClearResident)
 		graphicsFastcbPCs[2] = abi.FuncPCABIInternal(fastcbYield)
 		graphicsFastcbPCs[3] = abi.FuncPCABIInternal(fastcbCallC)
+		graphicsFastcbCallCFastPC = fastcbCallCFastPC()
+		graphicsFastcbArmEntryPC = abi.FuncPCABIInternal(fastcbArmEntry)
 		graphicsFastcbPCs[0] = abi.FuncPCABIInternal(fastcbSetResident)
 	}
 

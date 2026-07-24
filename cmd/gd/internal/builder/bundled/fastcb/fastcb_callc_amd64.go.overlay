@@ -1,0 +1,70 @@
+// Copyright 2026 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+//go:build amd64
+
+package runtime
+
+import (
+	"internal/abi"
+	"unsafe"
+)
+
+// fastcbCallCFast is the fused resident outbound crossing
+// (fastcb_callc_amd64.s): fastcbCallC + asmcgocall specialized for the
+// resident goroutine calling a single-pointer-argument C function with the
+// errno ignored. Callers must hold the same preconditions as fastcbCallC.
+func fastcbCallCFast(fn, arg unsafe.Pointer)
+
+// fastcbCallCFastPC reports the ABIInternal entry of the fused crossing,
+// or 0 where it must not be used: the asm skips the osPreemptExtEnter/Exit
+// pairing, which is only correct where those are no-ops (not Windows).
+func fastcbCallCFastPC() uintptr {
+	if GOOS == "linux" {
+		return abi.FuncPCABIInternal(fastcbCallCFast)
+	}
+	return 0
+}
+
+// fastcbentryfast is the direct C-ABI virtual-call entry thunk
+// (fastcb_callc_amd64.s). Never called from Go — the engine calls its PC
+// with C ABI arguments.
+func fastcbentryfast()
+
+// fastcbentryexit unwinds from fastcbentrygofast back to the engine's C
+// frame (fastcb_callc_amd64.s). Never returns.
+func fastcbentryexit()
+
+// fastcbEntryFastPC reports the C-callable entry of the direct thunk, or 0
+// where it must not be armed. Same gate as the fused crossing: the entry
+// composes with fastcbCallCFast's sched save/restore contract and skips the
+// Windows preemptExtLock discipline.
+func fastcbEntryFastPC() uintptr {
+	if GOOS == "linux" {
+		return abi.FuncPCABI0(fastcbentryfast)
+	}
+	return 0
+}
+
+// fastcbentrygofast is the Go half of fastcbentryfast, called from the
+// fastcbentrycall trampoline on the resident goroutine's stack. It runs
+// as ordinary splittable Go code — its prologue performs stack growth,
+// preemption and scan cooperation. After the dispatch it performs the
+// same deferred yield/clear epilogue as the resident fast path in
+// cgocallbackg, then returns to the trampoline, which unwinds to the
+// engine through fastcbentryexit.
+func fastcbentrygofast(instance, userdata, args, ret uintptr) {
+	fastcbEntryFn(instance, userdata, ret, args)
+	if fastcbCallCDepth == 0 && (fastcbYieldFlag != 0 || fastcbM == 0) {
+		fastcbYieldFlag = 0
+		if fastcbSavedPC != 0 {
+			gp := getg()
+			bp := uintptr(0)
+			if fastcbSavedBPDepth != 0 {
+				bp = gp.stack.hi - fastcbSavedBPDepth
+			}
+			reentersyscall(fastcbSavedPC, gp.stack.hi-fastcbSavedSPDepth, bp)
+		}
+	}
+}
