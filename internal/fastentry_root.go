@@ -42,6 +42,21 @@ func init() {
 	})
 }
 
+// RearmVirtualDispatch replaces the armed dispatch target with the final
+// classdb closure (see classdb/sticky_wire.go), so resident virtual calls
+// skip the dispatchVirtual init-order trampoline — one fewer global load,
+// nil check and indirect call on every virtual. Safe at any time: re-arming
+// just replaces the registered target (stock stashes it until the hook PCs
+// publish; the fork re-arms immediately).
+func RearmVirtualDispatch(dispatch func(instance, userdata, result, args uintptr)) {
+	if os.Getenv("GD_NO_FASTENTRY") != "" {
+		return
+	}
+	fastcb.ArmEntry(dispatch, unsafe.Pointer(C.gd_stock_virtual_entry()), func(pc uintptr) {
+		C.gd_sticky_call_virtual = unsafe.Pointer(pc)
+	})
+}
+
 // dispatchVirtual forwards a resident virtual call to the classdb dispatch
 // wired into sticky.Dispatch (see classdb/sticky_wire.go). The indirection
 // tolerates init order: package gd initialises before classdb, but no virtual
