@@ -140,7 +140,7 @@ func (self Instance) TakeConnection() StreamPeerUDS.Instance { //gd:UDSServer.ta
 type Advanced = class
 type class [1]gdclass.UDSServer
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewUDSServer(obj[0])
@@ -155,7 +155,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -191,9 +191,9 @@ func (self class) TakeConnection() [1]gdclass.StreamPeerUDS { //gd:UDSServer.tak
 func (o class) AsUDSServer() Advanced                         { return Advanced(o) }
 func (o Instance) AsUDSServer() Instance                      { return o }
 func (o *Extension[T]) AsUDSServer() Instance                 { return o.Super() }
-func (o class) AsSocketServer() SocketServer.Advanced         { return *(*SocketServer.Advanced)(ie.As(&o)) }
+func (o class) AsSocketServer() SocketServer.Advanced         { return SocketServer.Advanced{gdclass.NewSocketServer(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsSocketServer() SocketServer.Instance { return o.Super().AsSocketServer() }
-func (o Instance) AsSocketServer() SocketServer.Instance      { return *(*SocketServer.Instance)(ie.As(&o)) }
+func (o Instance) AsSocketServer() SocketServer.Instance      { return SocketServer.Instance{gdclass.NewSocketServer(o[0].AsObject()[0])} }
 func (o class) AsRefCounted() ie.RC                           { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                   { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                        { return *(*ie.RC)(ie.As(&o)) }

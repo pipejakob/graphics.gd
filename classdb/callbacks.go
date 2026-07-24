@@ -19,6 +19,12 @@ import (
 
 type pinnedVirtualFunc struct {
 	fn gd.ExtensionClassCallVirtualFunc
+
+	// tab is the receiver class's static itab (classImplementation.tab):
+	// with it, dispatch rebuilds the receiver interface directly from the
+	// instance word (fastInterface) instead of resolving the instance
+	// record. Nil on portable builds, which fall back to the table.
+	tab unsafe.Pointer
 }
 
 var (
@@ -51,9 +57,16 @@ func init() {
 			fmt.Fprintf(os.Stderr, "%s now owned by %s (%s:%d)\n", gd.ObjectGetClass(gdreference.RawObject(obj)).String(), owner, file, line)
 		}
 		if goOnly {
+			// Go owns the object now: drop the strong root AND the
+			// dispatch-word pin so the GC may collect the wrapper (its
+			// cleanup then frees the engine object). The engine no
+			// longer holds meaningful references, so it will not
+			// dispatch on the (now unpinned) instance word.
 			impl.strong = nil
+			impl.pinner.Unpin()
 		} else {
 			impl.strong, _ = impl.Interface()
+			repinInstance(impl)
 		}
 		val, ok := impl.Interface()
 		if !ok {
@@ -159,7 +172,15 @@ func init() {
 			},
 			Called: func(instance gdextension.ExtensionInstanceID, callData gdextension.Pointer, result gdextension.Returns[any], args gdextension.Accepts[any]) {
 				pv := (*pinnedVirtualFunc)(*(*unsafe.Pointer)(unsafe.Pointer(&callData))) // runtime.Pinned, so this is ok.
+				if ptr, ok := fastInterface(pv.tab, instance); ok {
+					pv.fn(ptr, gdextension.Pointer(args), gdextension.Pointer(result))
+					gdreference.Barrier()
+					return
+				}
 				receiver := instances.Get(instance)
+				if receiver == nil {
+					return
+				}
 				ptr, ok := receiver.Interface()
 				if !ok {
 					return
@@ -214,7 +235,9 @@ func init() {
 				gdreference.Barrier()
 			},
 			Free: func(instance gdextension.ExtensionInstanceID) {
-				instances.Get(instance).Free()
+				if impl := instances.Get(instance); impl != nil {
+					impl.Free()
+				}
 				instances.Del(instance)
 			},
 		},
@@ -242,11 +265,12 @@ func init() {
 				})
 			},
 			Caller: func(class gdextension.ExtensionClassID, method gdextension.StringName, hash uint32) uintptr {
-				virtual, ok := classes.Get(class).GetVirtual(pointers.Let[gd.StringName](method)).(gd.ExtensionClassCallVirtualFunc)
+				classImpl := classes.Get(class)
+				virtual, ok := classImpl.GetVirtual(pointers.Let[gd.StringName](method)).(gd.ExtensionClassCallVirtualFunc)
 				if !ok || virtual == nil {
 					return 0
 				}
-				pv := &pinnedVirtualFunc{fn: virtual}
+				pv := &pinnedVirtualFunc{fn: virtual, tab: classImpl.tab}
 				virtualPinner.Pin(pv)
 				pinnedVirtuals = append(pinnedVirtuals, pv)
 				return uintptr(unsafe.Pointer(pv))

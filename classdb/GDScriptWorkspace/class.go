@@ -161,7 +161,7 @@ func (self Instance) PublishDiagnostics(path string) { //gd:GDScriptWorkspace.pu
 type Advanced = class
 type class [1]gdclass.GDScriptWorkspace
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGDScriptWorkspace(obj[0])
@@ -176,7 +176,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {

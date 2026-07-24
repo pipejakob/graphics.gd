@@ -120,7 +120,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.TextServerAdvanced
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTextServerAdvanced(obj[0])
@@ -135,7 +135,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -162,17 +162,17 @@ func (o class) AsTextServerAdvanced() Advanced         { return Advanced(o) }
 func (o Instance) AsTextServerAdvanced() Instance      { return o }
 func (o *Extension[T]) AsTextServerAdvanced() Instance { return o.Super() }
 func (o class) AsTextServerExtension() TextServerExtension.Advanced {
-	return *(*TextServerExtension.Advanced)(ie.As(&o))
+	return TextServerExtension.Advanced{gdclass.NewTextServerExtension(o[0].AsObject()[0])}
 }
 func (o *Extension[T]) AsTextServerExtension() TextServerExtension.Instance {
 	return o.Super().AsTextServerExtension()
 }
 func (o Instance) AsTextServerExtension() TextServerExtension.Instance {
-	return *(*TextServerExtension.Instance)(ie.As(&o))
+	return TextServerExtension.Instance{gdclass.NewTextServerExtension(o[0].AsObject()[0])}
 }
-func (o class) AsTextServer() TextServer.Advanced         { return *(*TextServer.Advanced)(ie.As(&o)) }
+func (o class) AsTextServer() TextServer.Advanced         { return TextServer.Advanced{gdclass.NewTextServer(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsTextServer() TextServer.Instance { return o.Super().AsTextServer() }
-func (o Instance) AsTextServer() TextServer.Instance      { return *(*TextServer.Instance)(ie.As(&o)) }
+func (o Instance) AsTextServer() TextServer.Instance      { return TextServer.Instance{gdclass.NewTextServer(o[0].AsObject()[0])} }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

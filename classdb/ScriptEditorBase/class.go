@@ -16,7 +16,6 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
-import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -146,7 +145,7 @@ func (self Instance) GetBaseEditor() Control.Instance { //gd:ScriptEditorBase.ge
 type Advanced = class
 type class [1]gdclass.ScriptEditorBase
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewScriptEditorBase(obj[0])
@@ -161,7 +160,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -360,26 +359,26 @@ func (self class) GoToMethod() Signal.Any {
 func (o class) AsScriptEditorBase() Advanced                    { return Advanced(o) }
 func (o Instance) AsScriptEditorBase() Instance                 { return o }
 func (o *Extension[T]) AsScriptEditorBase() Instance            { return o.Super() }
-func (o class) AsVBoxContainer() VBoxContainer.Advanced         { return *(*VBoxContainer.Advanced)(ie.As(&o)) }
+func (o class) AsVBoxContainer() VBoxContainer.Advanced         { return VBoxContainer.Advanced{gdclass.NewVBoxContainer(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsVBoxContainer() VBoxContainer.Instance { return o.Super().AsVBoxContainer() }
 func (o Instance) AsVBoxContainer() VBoxContainer.Instance {
-	return *(*VBoxContainer.Instance)(ie.As(&o))
+	return VBoxContainer.Instance{gdclass.NewVBoxContainer(o[0].AsObject()[0])}
 }
-func (o class) AsBoxContainer() BoxContainer.Advanced         { return *(*BoxContainer.Advanced)(ie.As(&o)) }
+func (o class) AsBoxContainer() BoxContainer.Advanced         { return BoxContainer.Advanced{gdclass.NewBoxContainer(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsBoxContainer() BoxContainer.Instance { return o.Super().AsBoxContainer() }
-func (o Instance) AsBoxContainer() BoxContainer.Instance      { return *(*BoxContainer.Instance)(ie.As(&o)) }
-func (o class) AsContainer() Container.Advanced               { return *(*Container.Advanced)(ie.As(&o)) }
+func (o Instance) AsBoxContainer() BoxContainer.Instance      { return BoxContainer.Instance{gdclass.NewBoxContainer(o[0].AsObject()[0])} }
+func (o class) AsContainer() Container.Advanced               { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsContainer() Container.Instance       { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance            { return *(*Container.Instance)(ie.As(&o)) }
-func (o class) AsControl() Control.Advanced                   { return *(*Control.Advanced)(ie.As(&o)) }
+func (o Instance) AsContainer() Container.Instance            { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o class) AsControl() Control.Advanced                   { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsControl() Control.Instance           { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance                { return *(*Control.Instance)(ie.As(&o)) }
-func (o class) AsCanvasItem() CanvasItem.Advanced             { return *(*CanvasItem.Advanced)(ie.As(&o)) }
+func (o Instance) AsControl() Control.Instance                { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o class) AsCanvasItem() CanvasItem.Advanced             { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance     { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance          { return *(*CanvasItem.Instance)(ie.As(&o)) }
-func (o class) AsNode() Node.Advanced                         { return *(*Node.Advanced)(ie.As(&o)) }
+func (o Instance) AsCanvasItem() CanvasItem.Instance          { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced                         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsNode() Node.Instance                 { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                      { return *(*Node.Instance)(ie.As(&o)) }
+func (o Instance) AsNode() Node.Instance                      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

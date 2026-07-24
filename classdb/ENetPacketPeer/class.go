@@ -306,7 +306,7 @@ func (self Instance) IsActive() bool { //gd:ENetPacketPeer.is_active
 type Advanced = class
 type class [1]gdclass.ENetPacketPeer
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewENetPacketPeer(obj[0])
@@ -321,7 +321,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -423,9 +423,9 @@ func (self class) IsActive() bool { //gd:ENetPacketPeer.is_active
 func (o class) AsENetPacketPeer() Advanced                { return Advanced(o) }
 func (o Instance) AsENetPacketPeer() Instance             { return o }
 func (o *Extension[T]) AsENetPacketPeer() Instance        { return o.Super() }
-func (o class) AsPacketPeer() PacketPeer.Advanced         { return *(*PacketPeer.Advanced)(ie.As(&o)) }
+func (o class) AsPacketPeer() PacketPeer.Advanced         { return PacketPeer.Advanced{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsPacketPeer() PacketPeer.Instance { return o.Super().AsPacketPeer() }
-func (o Instance) AsPacketPeer() PacketPeer.Instance      { return *(*PacketPeer.Instance)(ie.As(&o)) }
+func (o Instance) AsPacketPeer() PacketPeer.Instance      { return PacketPeer.Instance{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

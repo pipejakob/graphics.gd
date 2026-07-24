@@ -227,6 +227,7 @@ func Register[T Class](exports ...any) {
 			RefCounted:     refCounted,
 			isMainLoop:     isMainLoop,
 			InEditor:       Engine.IsEditorHint(),
+			tab:            classTab(classType),
 			VirtualMethods: reference.Virtual,
 			Constructor: func() reflect.Value {
 				return reflect.New(classType)
@@ -579,6 +580,12 @@ type classImplementation struct {
 
 	Type reflect.Type
 
+	// tab is the static itab of (*Type, gdclass.Pointer), resolved once at
+	// registration so virtual dispatch can rebuild the receiver interface
+	// from (tab, instance word) without touching the instance record. Nil
+	// on builds where the interface layout is unknown (iface_portable.go).
+	tab unsafe.Pointer
+
 	VirtualMethods func(string) reflect.Value
 	Constructor    func() reflect.Value
 
@@ -633,7 +640,7 @@ func (class classImplementation) CreateInstanceFrom(value reflect.Value, notify_
 	// return RefCounted with refcount=1), so we must NOT InitRef again here.
 	gdreference.PinObject(super, gdextension.Host.Objects.Make(pointers.Get(class.EngineClass)))
 	instance := class.reloadInstance(value, super)
-	id := gdextension.ExtensionInstanceID(instances.New(instance))
+	id := instances.New(instance, value)
 	gdextension.Host.Objects.Extension.Setup(gdreference.GetObject(*super), pointers.Get(class.Name), id)
 	if keepalive := compile_keepalive(reflect.PointerTo(class.Type)); keepalive != nil {
 		roots.Insert(value, keepalive)
@@ -772,6 +779,13 @@ type instanceImplementation struct {
 
 	// FIXME use a bitfield for these booleans.
 	isEditor, isMainLoop, freed bool
+
+	// pinner pins the user's struct while the engine holds its address as
+	// the instance's dispatch word (see instanceID in iface_gc.go). Held
+	// from creation until the engine frees the instance, released early if
+	// Go takes sole ownership of the object (ExtensionInstanceGoOnly).
+	// Unused on portable builds, where the dispatch word is opaque.
+	pinner runtime.Pinner
 }
 
 var lastGC int

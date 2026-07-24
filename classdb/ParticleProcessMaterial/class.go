@@ -246,7 +246,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.ParticleProcessMaterial
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewParticleProcessMaterial(obj[0])
@@ -261,7 +261,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -2667,12 +2667,12 @@ func (self class) EmissionShapeChanged() Signal.Any {
 func (o class) AsParticleProcessMaterial() Advanced         { return Advanced(o) }
 func (o Instance) AsParticleProcessMaterial() Instance      { return o }
 func (o *Extension[T]) AsParticleProcessMaterial() Instance { return o.Super() }
-func (o class) AsMaterial() Material.Advanced               { return *(*Material.Advanced)(ie.As(&o)) }
+func (o class) AsMaterial() Material.Advanced               { return Material.Advanced{gdclass.NewMaterial(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsMaterial() Material.Instance       { return o.Super().AsMaterial() }
-func (o Instance) AsMaterial() Material.Instance            { return *(*Material.Instance)(ie.As(&o)) }
-func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
+func (o Instance) AsMaterial() Material.Instance            { return Material.Instance{gdclass.NewMaterial(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
+func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

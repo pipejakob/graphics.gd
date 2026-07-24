@@ -4,48 +4,48 @@
 package gdclass
 
 type AESContext struct {
-	object
 	_AESContext struct{}
+	object
 }
 
 func NewAESContext(obj Object) AESContext    { return AESContext{object: object(obj)} }
 func GetAESContext(obj AESContext) [1]Object { return obj.AsObject() }
 
 type AStar2D struct {
-	object
 	_AStar2D struct{}
+	object
 }
 
 func NewAStar2D(obj Object) AStar2D    { return AStar2D{object: object(obj)} }
 func GetAStar2D(obj AStar2D) [1]Object { return obj.AsObject() }
 
 type AStar3D struct {
-	object
 	_AStar3D struct{}
+	object
 }
 
 func NewAStar3D(obj Object) AStar3D    { return AStar3D{object: object(obj)} }
 func GetAStar3D(obj AStar3D) [1]Object { return obj.AsObject() }
 
 type AStarGrid2D struct {
-	object
 	_AStarGrid2D struct{}
+	object
 }
 
 func NewAStarGrid2D(obj Object) AStarGrid2D    { return AStarGrid2D{object: object(obj)} }
 func GetAStarGrid2D(obj AStarGrid2D) [1]Object { return obj.AsObject() }
 
 type AcceptDialog struct {
-	object
 	_AcceptDialog struct{}
+	object
 }
 
 func NewAcceptDialog(obj Object) AcceptDialog    { return AcceptDialog{object: object(obj)} }
 func GetAcceptDialog(obj AcceptDialog) [1]Object { return obj.AsObject() }
 
 type AccessibilityServer struct {
-	object
 	_AccessibilityServer struct{}
+	object
 }
 
 func NewAccessibilityServer(obj Object) AccessibilityServer {
@@ -54,88 +54,88 @@ func NewAccessibilityServer(obj Object) AccessibilityServer {
 func GetAccessibilityServer(obj AccessibilityServer) [1]Object { return obj.AsObject() }
 
 type AimModifier3D struct {
-	object
 	_AimModifier3D struct{}
+	object
 }
 
 func NewAimModifier3D(obj Object) AimModifier3D    { return AimModifier3D{object: object(obj)} }
 func GetAimModifier3D(obj AimModifier3D) [1]Object { return obj.AsObject() }
 
 type AnimatableBody2D struct {
-	object
 	_AnimatableBody2D struct{}
+	object
 }
 
 func NewAnimatableBody2D(obj Object) AnimatableBody2D    { return AnimatableBody2D{object: object(obj)} }
 func GetAnimatableBody2D(obj AnimatableBody2D) [1]Object { return obj.AsObject() }
 
 type AnimatableBody3D struct {
-	object
 	_AnimatableBody3D struct{}
+	object
 }
 
 func NewAnimatableBody3D(obj Object) AnimatableBody3D    { return AnimatableBody3D{object: object(obj)} }
 func GetAnimatableBody3D(obj AnimatableBody3D) [1]Object { return obj.AsObject() }
 
 type AnimatedSprite2D struct {
-	object
 	_AnimatedSprite2D struct{}
+	object
 }
 
 func NewAnimatedSprite2D(obj Object) AnimatedSprite2D    { return AnimatedSprite2D{object: object(obj)} }
 func GetAnimatedSprite2D(obj AnimatedSprite2D) [1]Object { return obj.AsObject() }
 
 type AnimatedSprite3D struct {
-	object
 	_AnimatedSprite3D struct{}
+	object
 }
 
 func NewAnimatedSprite3D(obj Object) AnimatedSprite3D    { return AnimatedSprite3D{object: object(obj)} }
 func GetAnimatedSprite3D(obj AnimatedSprite3D) [1]Object { return obj.AsObject() }
 
 type AnimatedTexture struct {
-	object
 	_AnimatedTexture struct{}
+	object
 }
 
 func NewAnimatedTexture(obj Object) AnimatedTexture    { return AnimatedTexture{object: object(obj)} }
 func GetAnimatedTexture(obj AnimatedTexture) [1]Object { return obj.AsObject() }
 
 type Animation struct {
-	object
 	_Animation struct{}
+	object
 }
 
 func NewAnimation(obj Object) Animation    { return Animation{object: object(obj)} }
 func GetAnimation(obj Animation) [1]Object { return obj.AsObject() }
 
 type AnimationLibrary struct {
-	object
 	_AnimationLibrary struct{}
+	object
 }
 
 func NewAnimationLibrary(obj Object) AnimationLibrary    { return AnimationLibrary{object: object(obj)} }
 func GetAnimationLibrary(obj AnimationLibrary) [1]Object { return obj.AsObject() }
 
 type AnimationMixer struct {
-	object
 	_AnimationMixer struct{}
+	object
 }
 
 func NewAnimationMixer(obj Object) AnimationMixer    { return AnimationMixer{object: object(obj)} }
 func GetAnimationMixer(obj AnimationMixer) [1]Object { return obj.AsObject() }
 
 type AnimationNode struct {
-	object
 	_AnimationNode struct{}
+	object
 }
 
 func NewAnimationNode(obj Object) AnimationNode    { return AnimationNode{object: object(obj)} }
 func GetAnimationNode(obj AnimationNode) [1]Object { return obj.AsObject() }
 
 type AnimationNodeAdd2 struct {
-	object
 	_AnimationNodeAdd2 struct{}
+	object
 }
 
 func NewAnimationNodeAdd2(obj Object) AnimationNodeAdd2 {
@@ -144,8 +144,8 @@ func NewAnimationNodeAdd2(obj Object) AnimationNodeAdd2 {
 func GetAnimationNodeAdd2(obj AnimationNodeAdd2) [1]Object { return obj.AsObject() }
 
 type AnimationNodeAdd3 struct {
-	object
 	_AnimationNodeAdd3 struct{}
+	object
 }
 
 func NewAnimationNodeAdd3(obj Object) AnimationNodeAdd3 {
@@ -154,8 +154,8 @@ func NewAnimationNodeAdd3(obj Object) AnimationNodeAdd3 {
 func GetAnimationNodeAdd3(obj AnimationNodeAdd3) [1]Object { return obj.AsObject() }
 
 type AnimationNodeAnimation struct {
-	object
 	_AnimationNodeAnimation struct{}
+	object
 }
 
 func NewAnimationNodeAnimation(obj Object) AnimationNodeAnimation {
@@ -164,8 +164,8 @@ func NewAnimationNodeAnimation(obj Object) AnimationNodeAnimation {
 func GetAnimationNodeAnimation(obj AnimationNodeAnimation) [1]Object { return obj.AsObject() }
 
 type AnimationNodeBlend2 struct {
-	object
 	_AnimationNodeBlend2 struct{}
+	object
 }
 
 func NewAnimationNodeBlend2(obj Object) AnimationNodeBlend2 {
@@ -174,8 +174,8 @@ func NewAnimationNodeBlend2(obj Object) AnimationNodeBlend2 {
 func GetAnimationNodeBlend2(obj AnimationNodeBlend2) [1]Object { return obj.AsObject() }
 
 type AnimationNodeBlend3 struct {
-	object
 	_AnimationNodeBlend3 struct{}
+	object
 }
 
 func NewAnimationNodeBlend3(obj Object) AnimationNodeBlend3 {
@@ -184,8 +184,8 @@ func NewAnimationNodeBlend3(obj Object) AnimationNodeBlend3 {
 func GetAnimationNodeBlend3(obj AnimationNodeBlend3) [1]Object { return obj.AsObject() }
 
 type AnimationNodeBlendSpace1D struct {
-	object
 	_AnimationNodeBlendSpace1D struct{}
+	object
 }
 
 func NewAnimationNodeBlendSpace1D(obj Object) AnimationNodeBlendSpace1D {
@@ -194,8 +194,8 @@ func NewAnimationNodeBlendSpace1D(obj Object) AnimationNodeBlendSpace1D {
 func GetAnimationNodeBlendSpace1D(obj AnimationNodeBlendSpace1D) [1]Object { return obj.AsObject() }
 
 type AnimationNodeBlendSpace2D struct {
-	object
 	_AnimationNodeBlendSpace2D struct{}
+	object
 }
 
 func NewAnimationNodeBlendSpace2D(obj Object) AnimationNodeBlendSpace2D {
@@ -204,8 +204,8 @@ func NewAnimationNodeBlendSpace2D(obj Object) AnimationNodeBlendSpace2D {
 func GetAnimationNodeBlendSpace2D(obj AnimationNodeBlendSpace2D) [1]Object { return obj.AsObject() }
 
 type AnimationNodeBlendTree struct {
-	object
 	_AnimationNodeBlendTree struct{}
+	object
 }
 
 func NewAnimationNodeBlendTree(obj Object) AnimationNodeBlendTree {
@@ -214,8 +214,8 @@ func NewAnimationNodeBlendTree(obj Object) AnimationNodeBlendTree {
 func GetAnimationNodeBlendTree(obj AnimationNodeBlendTree) [1]Object { return obj.AsObject() }
 
 type AnimationNodeExtension struct {
-	object
 	_AnimationNodeExtension struct{}
+	object
 }
 
 func NewAnimationNodeExtension(obj Object) AnimationNodeExtension {
@@ -224,8 +224,8 @@ func NewAnimationNodeExtension(obj Object) AnimationNodeExtension {
 func GetAnimationNodeExtension(obj AnimationNodeExtension) [1]Object { return obj.AsObject() }
 
 type AnimationNodeOneShot struct {
-	object
 	_AnimationNodeOneShot struct{}
+	object
 }
 
 func NewAnimationNodeOneShot(obj Object) AnimationNodeOneShot {
@@ -234,8 +234,8 @@ func NewAnimationNodeOneShot(obj Object) AnimationNodeOneShot {
 func GetAnimationNodeOneShot(obj AnimationNodeOneShot) [1]Object { return obj.AsObject() }
 
 type AnimationNodeOutput struct {
-	object
 	_AnimationNodeOutput struct{}
+	object
 }
 
 func NewAnimationNodeOutput(obj Object) AnimationNodeOutput {
@@ -244,8 +244,8 @@ func NewAnimationNodeOutput(obj Object) AnimationNodeOutput {
 func GetAnimationNodeOutput(obj AnimationNodeOutput) [1]Object { return obj.AsObject() }
 
 type AnimationNodeStateMachine struct {
-	object
 	_AnimationNodeStateMachine struct{}
+	object
 }
 
 func NewAnimationNodeStateMachine(obj Object) AnimationNodeStateMachine {
@@ -254,8 +254,8 @@ func NewAnimationNodeStateMachine(obj Object) AnimationNodeStateMachine {
 func GetAnimationNodeStateMachine(obj AnimationNodeStateMachine) [1]Object { return obj.AsObject() }
 
 type AnimationNodeStateMachinePlayback struct {
-	object
 	_AnimationNodeStateMachinePlayback struct{}
+	object
 }
 
 func NewAnimationNodeStateMachinePlayback(obj Object) AnimationNodeStateMachinePlayback {
@@ -266,8 +266,8 @@ func GetAnimationNodeStateMachinePlayback(obj AnimationNodeStateMachinePlayback)
 }
 
 type AnimationNodeStateMachineTransition struct {
-	object
 	_AnimationNodeStateMachineTransition struct{}
+	object
 }
 
 func NewAnimationNodeStateMachineTransition(obj Object) AnimationNodeStateMachineTransition {
@@ -278,8 +278,8 @@ func GetAnimationNodeStateMachineTransition(obj AnimationNodeStateMachineTransit
 }
 
 type AnimationNodeSub2 struct {
-	object
 	_AnimationNodeSub2 struct{}
+	object
 }
 
 func NewAnimationNodeSub2(obj Object) AnimationNodeSub2 {
@@ -288,8 +288,8 @@ func NewAnimationNodeSub2(obj Object) AnimationNodeSub2 {
 func GetAnimationNodeSub2(obj AnimationNodeSub2) [1]Object { return obj.AsObject() }
 
 type AnimationNodeSync struct {
-	object
 	_AnimationNodeSync struct{}
+	object
 }
 
 func NewAnimationNodeSync(obj Object) AnimationNodeSync {
@@ -298,8 +298,8 @@ func NewAnimationNodeSync(obj Object) AnimationNodeSync {
 func GetAnimationNodeSync(obj AnimationNodeSync) [1]Object { return obj.AsObject() }
 
 type AnimationNodeTimeScale struct {
-	object
 	_AnimationNodeTimeScale struct{}
+	object
 }
 
 func NewAnimationNodeTimeScale(obj Object) AnimationNodeTimeScale {
@@ -308,8 +308,8 @@ func NewAnimationNodeTimeScale(obj Object) AnimationNodeTimeScale {
 func GetAnimationNodeTimeScale(obj AnimationNodeTimeScale) [1]Object { return obj.AsObject() }
 
 type AnimationNodeTimeSeek struct {
-	object
 	_AnimationNodeTimeSeek struct{}
+	object
 }
 
 func NewAnimationNodeTimeSeek(obj Object) AnimationNodeTimeSeek {
@@ -318,8 +318,8 @@ func NewAnimationNodeTimeSeek(obj Object) AnimationNodeTimeSeek {
 func GetAnimationNodeTimeSeek(obj AnimationNodeTimeSeek) [1]Object { return obj.AsObject() }
 
 type AnimationNodeTransition struct {
-	object
 	_AnimationNodeTransition struct{}
+	object
 }
 
 func NewAnimationNodeTransition(obj Object) AnimationNodeTransition {
@@ -328,16 +328,16 @@ func NewAnimationNodeTransition(obj Object) AnimationNodeTransition {
 func GetAnimationNodeTransition(obj AnimationNodeTransition) [1]Object { return obj.AsObject() }
 
 type AnimationPlayer struct {
-	object
 	_AnimationPlayer struct{}
+	object
 }
 
 func NewAnimationPlayer(obj Object) AnimationPlayer    { return AnimationPlayer{object: object(obj)} }
 func GetAnimationPlayer(obj AnimationPlayer) [1]Object { return obj.AsObject() }
 
 type AnimationRootNode struct {
-	object
 	_AnimationRootNode struct{}
+	object
 }
 
 func NewAnimationRootNode(obj Object) AnimationRootNode {
@@ -346,56 +346,56 @@ func NewAnimationRootNode(obj Object) AnimationRootNode {
 func GetAnimationRootNode(obj AnimationRootNode) [1]Object { return obj.AsObject() }
 
 type AnimationTree struct {
-	object
 	_AnimationTree struct{}
+	object
 }
 
 func NewAnimationTree(obj Object) AnimationTree    { return AnimationTree{object: object(obj)} }
 func GetAnimationTree(obj AnimationTree) [1]Object { return obj.AsObject() }
 
 type Area2D struct {
-	object
 	_Area2D struct{}
+	object
 }
 
 func NewArea2D(obj Object) Area2D    { return Area2D{object: object(obj)} }
 func GetArea2D(obj Area2D) [1]Object { return obj.AsObject() }
 
 type Area3D struct {
-	object
 	_Area3D struct{}
+	object
 }
 
 func NewArea3D(obj Object) Area3D    { return Area3D{object: object(obj)} }
 func GetArea3D(obj Area3D) [1]Object { return obj.AsObject() }
 
 type AreaLight3D struct {
-	object
 	_AreaLight3D struct{}
+	object
 }
 
 func NewAreaLight3D(obj Object) AreaLight3D    { return AreaLight3D{object: object(obj)} }
 func GetAreaLight3D(obj AreaLight3D) [1]Object { return obj.AsObject() }
 
 type ArrayMesh struct {
-	object
 	_ArrayMesh struct{}
+	object
 }
 
 func NewArrayMesh(obj Object) ArrayMesh    { return ArrayMesh{object: object(obj)} }
 func GetArrayMesh(obj ArrayMesh) [1]Object { return obj.AsObject() }
 
 type ArrayOccluder3D struct {
-	object
 	_ArrayOccluder3D struct{}
+	object
 }
 
 func NewArrayOccluder3D(obj Object) ArrayOccluder3D    { return ArrayOccluder3D{object: object(obj)} }
 func GetArrayOccluder3D(obj ArrayOccluder3D) [1]Object { return obj.AsObject() }
 
 type AspectRatioContainer struct {
-	object
 	_AspectRatioContainer struct{}
+	object
 }
 
 func NewAspectRatioContainer(obj Object) AspectRatioContainer {
@@ -404,32 +404,32 @@ func NewAspectRatioContainer(obj Object) AspectRatioContainer {
 func GetAspectRatioContainer(obj AspectRatioContainer) [1]Object { return obj.AsObject() }
 
 type AtlasTexture struct {
-	object
 	_AtlasTexture struct{}
+	object
 }
 
 func NewAtlasTexture(obj Object) AtlasTexture    { return AtlasTexture{object: object(obj)} }
 func GetAtlasTexture(obj AtlasTexture) [1]Object { return obj.AsObject() }
 
 type AudioBusLayout struct {
-	object
 	_AudioBusLayout struct{}
+	object
 }
 
 func NewAudioBusLayout(obj Object) AudioBusLayout    { return AudioBusLayout{object: object(obj)} }
 func GetAudioBusLayout(obj AudioBusLayout) [1]Object { return obj.AsObject() }
 
 type AudioEffect struct {
-	object
 	_AudioEffect struct{}
+	object
 }
 
 func NewAudioEffect(obj Object) AudioEffect    { return AudioEffect{object: object(obj)} }
 func GetAudioEffect(obj AudioEffect) [1]Object { return obj.AsObject() }
 
 type AudioEffectAmplify struct {
-	object
 	_AudioEffectAmplify struct{}
+	object
 }
 
 func NewAudioEffectAmplify(obj Object) AudioEffectAmplify {
@@ -438,8 +438,8 @@ func NewAudioEffectAmplify(obj Object) AudioEffectAmplify {
 func GetAudioEffectAmplify(obj AudioEffectAmplify) [1]Object { return obj.AsObject() }
 
 type AudioEffectBandLimitFilter struct {
-	object
 	_AudioEffectBandLimitFilter struct{}
+	object
 }
 
 func NewAudioEffectBandLimitFilter(obj Object) AudioEffectBandLimitFilter {
@@ -448,8 +448,8 @@ func NewAudioEffectBandLimitFilter(obj Object) AudioEffectBandLimitFilter {
 func GetAudioEffectBandLimitFilter(obj AudioEffectBandLimitFilter) [1]Object { return obj.AsObject() }
 
 type AudioEffectBandPassFilter struct {
-	object
 	_AudioEffectBandPassFilter struct{}
+	object
 }
 
 func NewAudioEffectBandPassFilter(obj Object) AudioEffectBandPassFilter {
@@ -458,8 +458,8 @@ func NewAudioEffectBandPassFilter(obj Object) AudioEffectBandPassFilter {
 func GetAudioEffectBandPassFilter(obj AudioEffectBandPassFilter) [1]Object { return obj.AsObject() }
 
 type AudioEffectCapture struct {
-	object
 	_AudioEffectCapture struct{}
+	object
 }
 
 func NewAudioEffectCapture(obj Object) AudioEffectCapture {
@@ -468,8 +468,8 @@ func NewAudioEffectCapture(obj Object) AudioEffectCapture {
 func GetAudioEffectCapture(obj AudioEffectCapture) [1]Object { return obj.AsObject() }
 
 type AudioEffectChorus struct {
-	object
 	_AudioEffectChorus struct{}
+	object
 }
 
 func NewAudioEffectChorus(obj Object) AudioEffectChorus {
@@ -478,8 +478,8 @@ func NewAudioEffectChorus(obj Object) AudioEffectChorus {
 func GetAudioEffectChorus(obj AudioEffectChorus) [1]Object { return obj.AsObject() }
 
 type AudioEffectCompressor struct {
-	object
 	_AudioEffectCompressor struct{}
+	object
 }
 
 func NewAudioEffectCompressor(obj Object) AudioEffectCompressor {
@@ -488,16 +488,16 @@ func NewAudioEffectCompressor(obj Object) AudioEffectCompressor {
 func GetAudioEffectCompressor(obj AudioEffectCompressor) [1]Object { return obj.AsObject() }
 
 type AudioEffectDelay struct {
-	object
 	_AudioEffectDelay struct{}
+	object
 }
 
 func NewAudioEffectDelay(obj Object) AudioEffectDelay    { return AudioEffectDelay{object: object(obj)} }
 func GetAudioEffectDelay(obj AudioEffectDelay) [1]Object { return obj.AsObject() }
 
 type AudioEffectDistortion struct {
-	object
 	_AudioEffectDistortion struct{}
+	object
 }
 
 func NewAudioEffectDistortion(obj Object) AudioEffectDistortion {
@@ -506,40 +506,40 @@ func NewAudioEffectDistortion(obj Object) AudioEffectDistortion {
 func GetAudioEffectDistortion(obj AudioEffectDistortion) [1]Object { return obj.AsObject() }
 
 type AudioEffectEQ struct {
-	object
 	_AudioEffectEQ struct{}
+	object
 }
 
 func NewAudioEffectEQ(obj Object) AudioEffectEQ    { return AudioEffectEQ{object: object(obj)} }
 func GetAudioEffectEQ(obj AudioEffectEQ) [1]Object { return obj.AsObject() }
 
 type AudioEffectEQ10 struct {
-	object
 	_AudioEffectEQ10 struct{}
+	object
 }
 
 func NewAudioEffectEQ10(obj Object) AudioEffectEQ10    { return AudioEffectEQ10{object: object(obj)} }
 func GetAudioEffectEQ10(obj AudioEffectEQ10) [1]Object { return obj.AsObject() }
 
 type AudioEffectEQ21 struct {
-	object
 	_AudioEffectEQ21 struct{}
+	object
 }
 
 func NewAudioEffectEQ21(obj Object) AudioEffectEQ21    { return AudioEffectEQ21{object: object(obj)} }
 func GetAudioEffectEQ21(obj AudioEffectEQ21) [1]Object { return obj.AsObject() }
 
 type AudioEffectEQ6 struct {
-	object
 	_AudioEffectEQ6 struct{}
+	object
 }
 
 func NewAudioEffectEQ6(obj Object) AudioEffectEQ6    { return AudioEffectEQ6{object: object(obj)} }
 func GetAudioEffectEQ6(obj AudioEffectEQ6) [1]Object { return obj.AsObject() }
 
 type AudioEffectFilter struct {
-	object
 	_AudioEffectFilter struct{}
+	object
 }
 
 func NewAudioEffectFilter(obj Object) AudioEffectFilter {
@@ -548,8 +548,8 @@ func NewAudioEffectFilter(obj Object) AudioEffectFilter {
 func GetAudioEffectFilter(obj AudioEffectFilter) [1]Object { return obj.AsObject() }
 
 type AudioEffectHardLimiter struct {
-	object
 	_AudioEffectHardLimiter struct{}
+	object
 }
 
 func NewAudioEffectHardLimiter(obj Object) AudioEffectHardLimiter {
@@ -558,8 +558,8 @@ func NewAudioEffectHardLimiter(obj Object) AudioEffectHardLimiter {
 func GetAudioEffectHardLimiter(obj AudioEffectHardLimiter) [1]Object { return obj.AsObject() }
 
 type AudioEffectHighPassFilter struct {
-	object
 	_AudioEffectHighPassFilter struct{}
+	object
 }
 
 func NewAudioEffectHighPassFilter(obj Object) AudioEffectHighPassFilter {
@@ -568,8 +568,8 @@ func NewAudioEffectHighPassFilter(obj Object) AudioEffectHighPassFilter {
 func GetAudioEffectHighPassFilter(obj AudioEffectHighPassFilter) [1]Object { return obj.AsObject() }
 
 type AudioEffectHighShelfFilter struct {
-	object
 	_AudioEffectHighShelfFilter struct{}
+	object
 }
 
 func NewAudioEffectHighShelfFilter(obj Object) AudioEffectHighShelfFilter {
@@ -578,8 +578,8 @@ func NewAudioEffectHighShelfFilter(obj Object) AudioEffectHighShelfFilter {
 func GetAudioEffectHighShelfFilter(obj AudioEffectHighShelfFilter) [1]Object { return obj.AsObject() }
 
 type AudioEffectInstance struct {
-	object
 	_AudioEffectInstance struct{}
+	object
 }
 
 func NewAudioEffectInstance(obj Object) AudioEffectInstance {
@@ -588,8 +588,8 @@ func NewAudioEffectInstance(obj Object) AudioEffectInstance {
 func GetAudioEffectInstance(obj AudioEffectInstance) [1]Object { return obj.AsObject() }
 
 type AudioEffectLimiter struct {
-	object
 	_AudioEffectLimiter struct{}
+	object
 }
 
 func NewAudioEffectLimiter(obj Object) AudioEffectLimiter {
@@ -598,8 +598,8 @@ func NewAudioEffectLimiter(obj Object) AudioEffectLimiter {
 func GetAudioEffectLimiter(obj AudioEffectLimiter) [1]Object { return obj.AsObject() }
 
 type AudioEffectLowPassFilter struct {
-	object
 	_AudioEffectLowPassFilter struct{}
+	object
 }
 
 func NewAudioEffectLowPassFilter(obj Object) AudioEffectLowPassFilter {
@@ -608,8 +608,8 @@ func NewAudioEffectLowPassFilter(obj Object) AudioEffectLowPassFilter {
 func GetAudioEffectLowPassFilter(obj AudioEffectLowPassFilter) [1]Object { return obj.AsObject() }
 
 type AudioEffectLowShelfFilter struct {
-	object
 	_AudioEffectLowShelfFilter struct{}
+	object
 }
 
 func NewAudioEffectLowShelfFilter(obj Object) AudioEffectLowShelfFilter {
@@ -618,8 +618,8 @@ func NewAudioEffectLowShelfFilter(obj Object) AudioEffectLowShelfFilter {
 func GetAudioEffectLowShelfFilter(obj AudioEffectLowShelfFilter) [1]Object { return obj.AsObject() }
 
 type AudioEffectNotchFilter struct {
-	object
 	_AudioEffectNotchFilter struct{}
+	object
 }
 
 func NewAudioEffectNotchFilter(obj Object) AudioEffectNotchFilter {
@@ -628,8 +628,8 @@ func NewAudioEffectNotchFilter(obj Object) AudioEffectNotchFilter {
 func GetAudioEffectNotchFilter(obj AudioEffectNotchFilter) [1]Object { return obj.AsObject() }
 
 type AudioEffectPanner struct {
-	object
 	_AudioEffectPanner struct{}
+	object
 }
 
 func NewAudioEffectPanner(obj Object) AudioEffectPanner {
@@ -638,8 +638,8 @@ func NewAudioEffectPanner(obj Object) AudioEffectPanner {
 func GetAudioEffectPanner(obj AudioEffectPanner) [1]Object { return obj.AsObject() }
 
 type AudioEffectPhaser struct {
-	object
 	_AudioEffectPhaser struct{}
+	object
 }
 
 func NewAudioEffectPhaser(obj Object) AudioEffectPhaser {
@@ -648,8 +648,8 @@ func NewAudioEffectPhaser(obj Object) AudioEffectPhaser {
 func GetAudioEffectPhaser(obj AudioEffectPhaser) [1]Object { return obj.AsObject() }
 
 type AudioEffectPitchShift struct {
-	object
 	_AudioEffectPitchShift struct{}
+	object
 }
 
 func NewAudioEffectPitchShift(obj Object) AudioEffectPitchShift {
@@ -658,8 +658,8 @@ func NewAudioEffectPitchShift(obj Object) AudioEffectPitchShift {
 func GetAudioEffectPitchShift(obj AudioEffectPitchShift) [1]Object { return obj.AsObject() }
 
 type AudioEffectRecord struct {
-	object
 	_AudioEffectRecord struct{}
+	object
 }
 
 func NewAudioEffectRecord(obj Object) AudioEffectRecord {
@@ -668,8 +668,8 @@ func NewAudioEffectRecord(obj Object) AudioEffectRecord {
 func GetAudioEffectRecord(obj AudioEffectRecord) [1]Object { return obj.AsObject() }
 
 type AudioEffectReverb struct {
-	object
 	_AudioEffectReverb struct{}
+	object
 }
 
 func NewAudioEffectReverb(obj Object) AudioEffectReverb {
@@ -678,8 +678,8 @@ func NewAudioEffectReverb(obj Object) AudioEffectReverb {
 func GetAudioEffectReverb(obj AudioEffectReverb) [1]Object { return obj.AsObject() }
 
 type AudioEffectSpectrumAnalyzer struct {
-	object
 	_AudioEffectSpectrumAnalyzer struct{}
+	object
 }
 
 func NewAudioEffectSpectrumAnalyzer(obj Object) AudioEffectSpectrumAnalyzer {
@@ -688,8 +688,8 @@ func NewAudioEffectSpectrumAnalyzer(obj Object) AudioEffectSpectrumAnalyzer {
 func GetAudioEffectSpectrumAnalyzer(obj AudioEffectSpectrumAnalyzer) [1]Object { return obj.AsObject() }
 
 type AudioEffectSpectrumAnalyzerInstance struct {
-	object
 	_AudioEffectSpectrumAnalyzerInstance struct{}
+	object
 }
 
 func NewAudioEffectSpectrumAnalyzerInstance(obj Object) AudioEffectSpectrumAnalyzerInstance {
@@ -700,8 +700,8 @@ func GetAudioEffectSpectrumAnalyzerInstance(obj AudioEffectSpectrumAnalyzerInsta
 }
 
 type AudioEffectStereoEnhance struct {
-	object
 	_AudioEffectStereoEnhance struct{}
+	object
 }
 
 func NewAudioEffectStereoEnhance(obj Object) AudioEffectStereoEnhance {
@@ -710,32 +710,32 @@ func NewAudioEffectStereoEnhance(obj Object) AudioEffectStereoEnhance {
 func GetAudioEffectStereoEnhance(obj AudioEffectStereoEnhance) [1]Object { return obj.AsObject() }
 
 type AudioListener2D struct {
-	object
 	_AudioListener2D struct{}
+	object
 }
 
 func NewAudioListener2D(obj Object) AudioListener2D    { return AudioListener2D{object: object(obj)} }
 func GetAudioListener2D(obj AudioListener2D) [1]Object { return obj.AsObject() }
 
 type AudioListener3D struct {
-	object
 	_AudioListener3D struct{}
+	object
 }
 
 func NewAudioListener3D(obj Object) AudioListener3D    { return AudioListener3D{object: object(obj)} }
 func GetAudioListener3D(obj AudioListener3D) [1]Object { return obj.AsObject() }
 
 type AudioSample struct {
-	object
 	_AudioSample struct{}
+	object
 }
 
 func NewAudioSample(obj Object) AudioSample    { return AudioSample{object: object(obj)} }
 func GetAudioSample(obj AudioSample) [1]Object { return obj.AsObject() }
 
 type AudioSamplePlayback struct {
-	object
 	_AudioSamplePlayback struct{}
+	object
 }
 
 func NewAudioSamplePlayback(obj Object) AudioSamplePlayback {
@@ -744,24 +744,24 @@ func NewAudioSamplePlayback(obj Object) AudioSamplePlayback {
 func GetAudioSamplePlayback(obj AudioSamplePlayback) [1]Object { return obj.AsObject() }
 
 type AudioServer struct {
-	object
 	_AudioServer struct{}
+	object
 }
 
 func NewAudioServer(obj Object) AudioServer    { return AudioServer{object: object(obj)} }
 func GetAudioServer(obj AudioServer) [1]Object { return obj.AsObject() }
 
 type AudioStream struct {
-	object
 	_AudioStream struct{}
+	object
 }
 
 func NewAudioStream(obj Object) AudioStream    { return AudioStream{object: object(obj)} }
 func GetAudioStream(obj AudioStream) [1]Object { return obj.AsObject() }
 
 type AudioStreamGenerator struct {
-	object
 	_AudioStreamGenerator struct{}
+	object
 }
 
 func NewAudioStreamGenerator(obj Object) AudioStreamGenerator {
@@ -770,8 +770,8 @@ func NewAudioStreamGenerator(obj Object) AudioStreamGenerator {
 func GetAudioStreamGenerator(obj AudioStreamGenerator) [1]Object { return obj.AsObject() }
 
 type AudioStreamGeneratorPlayback struct {
-	object
 	_AudioStreamGeneratorPlayback struct{}
+	object
 }
 
 func NewAudioStreamGeneratorPlayback(obj Object) AudioStreamGeneratorPlayback {
@@ -782,8 +782,8 @@ func GetAudioStreamGeneratorPlayback(obj AudioStreamGeneratorPlayback) [1]Object
 }
 
 type AudioStreamInteractive struct {
-	object
 	_AudioStreamInteractive struct{}
+	object
 }
 
 func NewAudioStreamInteractive(obj Object) AudioStreamInteractive {
@@ -792,16 +792,16 @@ func NewAudioStreamInteractive(obj Object) AudioStreamInteractive {
 func GetAudioStreamInteractive(obj AudioStreamInteractive) [1]Object { return obj.AsObject() }
 
 type AudioStreamMP3 struct {
-	object
 	_AudioStreamMP3 struct{}
+	object
 }
 
 func NewAudioStreamMP3(obj Object) AudioStreamMP3    { return AudioStreamMP3{object: object(obj)} }
 func GetAudioStreamMP3(obj AudioStreamMP3) [1]Object { return obj.AsObject() }
 
 type AudioStreamMicrophone struct {
-	object
 	_AudioStreamMicrophone struct{}
+	object
 }
 
 func NewAudioStreamMicrophone(obj Object) AudioStreamMicrophone {
@@ -810,8 +810,8 @@ func NewAudioStreamMicrophone(obj Object) AudioStreamMicrophone {
 func GetAudioStreamMicrophone(obj AudioStreamMicrophone) [1]Object { return obj.AsObject() }
 
 type AudioStreamOggVorbis struct {
-	object
 	_AudioStreamOggVorbis struct{}
+	object
 }
 
 func NewAudioStreamOggVorbis(obj Object) AudioStreamOggVorbis {
@@ -820,8 +820,8 @@ func NewAudioStreamOggVorbis(obj Object) AudioStreamOggVorbis {
 func GetAudioStreamOggVorbis(obj AudioStreamOggVorbis) [1]Object { return obj.AsObject() }
 
 type AudioStreamPlayback struct {
-	object
 	_AudioStreamPlayback struct{}
+	object
 }
 
 func NewAudioStreamPlayback(obj Object) AudioStreamPlayback {
@@ -830,8 +830,8 @@ func NewAudioStreamPlayback(obj Object) AudioStreamPlayback {
 func GetAudioStreamPlayback(obj AudioStreamPlayback) [1]Object { return obj.AsObject() }
 
 type AudioStreamPlaybackInteractive struct {
-	object
 	_AudioStreamPlaybackInteractive struct{}
+	object
 }
 
 func NewAudioStreamPlaybackInteractive(obj Object) AudioStreamPlaybackInteractive {
@@ -842,8 +842,8 @@ func GetAudioStreamPlaybackInteractive(obj AudioStreamPlaybackInteractive) [1]Ob
 }
 
 type AudioStreamPlaybackOggVorbis struct {
-	object
 	_AudioStreamPlaybackOggVorbis struct{}
+	object
 }
 
 func NewAudioStreamPlaybackOggVorbis(obj Object) AudioStreamPlaybackOggVorbis {
@@ -854,8 +854,8 @@ func GetAudioStreamPlaybackOggVorbis(obj AudioStreamPlaybackOggVorbis) [1]Object
 }
 
 type AudioStreamPlaybackPlaylist struct {
-	object
 	_AudioStreamPlaybackPlaylist struct{}
+	object
 }
 
 func NewAudioStreamPlaybackPlaylist(obj Object) AudioStreamPlaybackPlaylist {
@@ -864,8 +864,8 @@ func NewAudioStreamPlaybackPlaylist(obj Object) AudioStreamPlaybackPlaylist {
 func GetAudioStreamPlaybackPlaylist(obj AudioStreamPlaybackPlaylist) [1]Object { return obj.AsObject() }
 
 type AudioStreamPlaybackPolyphonic struct {
-	object
 	_AudioStreamPlaybackPolyphonic struct{}
+	object
 }
 
 func NewAudioStreamPlaybackPolyphonic(obj Object) AudioStreamPlaybackPolyphonic {
@@ -876,8 +876,8 @@ func GetAudioStreamPlaybackPolyphonic(obj AudioStreamPlaybackPolyphonic) [1]Obje
 }
 
 type AudioStreamPlaybackResampled struct {
-	object
 	_AudioStreamPlaybackResampled struct{}
+	object
 }
 
 func NewAudioStreamPlaybackResampled(obj Object) AudioStreamPlaybackResampled {
@@ -888,8 +888,8 @@ func GetAudioStreamPlaybackResampled(obj AudioStreamPlaybackResampled) [1]Object
 }
 
 type AudioStreamPlaybackSynchronized struct {
-	object
 	_AudioStreamPlaybackSynchronized struct{}
+	object
 }
 
 func NewAudioStreamPlaybackSynchronized(obj Object) AudioStreamPlaybackSynchronized {
@@ -900,8 +900,8 @@ func GetAudioStreamPlaybackSynchronized(obj AudioStreamPlaybackSynchronized) [1]
 }
 
 type AudioStreamPlayer struct {
-	object
 	_AudioStreamPlayer struct{}
+	object
 }
 
 func NewAudioStreamPlayer(obj Object) AudioStreamPlayer {
@@ -910,8 +910,8 @@ func NewAudioStreamPlayer(obj Object) AudioStreamPlayer {
 func GetAudioStreamPlayer(obj AudioStreamPlayer) [1]Object { return obj.AsObject() }
 
 type AudioStreamPlayer2D struct {
-	object
 	_AudioStreamPlayer2D struct{}
+	object
 }
 
 func NewAudioStreamPlayer2D(obj Object) AudioStreamPlayer2D {
@@ -920,8 +920,8 @@ func NewAudioStreamPlayer2D(obj Object) AudioStreamPlayer2D {
 func GetAudioStreamPlayer2D(obj AudioStreamPlayer2D) [1]Object { return obj.AsObject() }
 
 type AudioStreamPlayer3D struct {
-	object
 	_AudioStreamPlayer3D struct{}
+	object
 }
 
 func NewAudioStreamPlayer3D(obj Object) AudioStreamPlayer3D {
@@ -930,8 +930,8 @@ func NewAudioStreamPlayer3D(obj Object) AudioStreamPlayer3D {
 func GetAudioStreamPlayer3D(obj AudioStreamPlayer3D) [1]Object { return obj.AsObject() }
 
 type AudioStreamPlaylist struct {
-	object
 	_AudioStreamPlaylist struct{}
+	object
 }
 
 func NewAudioStreamPlaylist(obj Object) AudioStreamPlaylist {
@@ -940,8 +940,8 @@ func NewAudioStreamPlaylist(obj Object) AudioStreamPlaylist {
 func GetAudioStreamPlaylist(obj AudioStreamPlaylist) [1]Object { return obj.AsObject() }
 
 type AudioStreamPolyphonic struct {
-	object
 	_AudioStreamPolyphonic struct{}
+	object
 }
 
 func NewAudioStreamPolyphonic(obj Object) AudioStreamPolyphonic {
@@ -950,8 +950,8 @@ func NewAudioStreamPolyphonic(obj Object) AudioStreamPolyphonic {
 func GetAudioStreamPolyphonic(obj AudioStreamPolyphonic) [1]Object { return obj.AsObject() }
 
 type AudioStreamRandomizer struct {
-	object
 	_AudioStreamRandomizer struct{}
+	object
 }
 
 func NewAudioStreamRandomizer(obj Object) AudioStreamRandomizer {
@@ -960,8 +960,8 @@ func NewAudioStreamRandomizer(obj Object) AudioStreamRandomizer {
 func GetAudioStreamRandomizer(obj AudioStreamRandomizer) [1]Object { return obj.AsObject() }
 
 type AudioStreamSynchronized struct {
-	object
 	_AudioStreamSynchronized struct{}
+	object
 }
 
 func NewAudioStreamSynchronized(obj Object) AudioStreamSynchronized {
@@ -970,96 +970,96 @@ func NewAudioStreamSynchronized(obj Object) AudioStreamSynchronized {
 func GetAudioStreamSynchronized(obj AudioStreamSynchronized) [1]Object { return obj.AsObject() }
 
 type AudioStreamWAV struct {
-	object
 	_AudioStreamWAV struct{}
+	object
 }
 
 func NewAudioStreamWAV(obj Object) AudioStreamWAV    { return AudioStreamWAV{object: object(obj)} }
 func GetAudioStreamWAV(obj AudioStreamWAV) [1]Object { return obj.AsObject() }
 
 type AwaitTweener struct {
-	object
 	_AwaitTweener struct{}
+	object
 }
 
 func NewAwaitTweener(obj Object) AwaitTweener    { return AwaitTweener{object: object(obj)} }
 func GetAwaitTweener(obj AwaitTweener) [1]Object { return obj.AsObject() }
 
 type BackBufferCopy struct {
-	object
 	_BackBufferCopy struct{}
+	object
 }
 
 func NewBackBufferCopy(obj Object) BackBufferCopy    { return BackBufferCopy{object: object(obj)} }
 func GetBackBufferCopy(obj BackBufferCopy) [1]Object { return obj.AsObject() }
 
 type BaseButton struct {
-	object
 	_BaseButton struct{}
+	object
 }
 
 func NewBaseButton(obj Object) BaseButton    { return BaseButton{object: object(obj)} }
 func GetBaseButton(obj BaseButton) [1]Object { return obj.AsObject() }
 
 type BaseMaterial3D struct {
-	object
 	_BaseMaterial3D struct{}
+	object
 }
 
 func NewBaseMaterial3D(obj Object) BaseMaterial3D    { return BaseMaterial3D{object: object(obj)} }
 func GetBaseMaterial3D(obj BaseMaterial3D) [1]Object { return obj.AsObject() }
 
 type BitMap struct {
-	object
 	_BitMap struct{}
+	object
 }
 
 func NewBitMap(obj Object) BitMap    { return BitMap{object: object(obj)} }
 func GetBitMap(obj BitMap) [1]Object { return obj.AsObject() }
 
 type BlitMaterial struct {
-	object
 	_BlitMaterial struct{}
+	object
 }
 
 func NewBlitMaterial(obj Object) BlitMaterial    { return BlitMaterial{object: object(obj)} }
 func GetBlitMaterial(obj BlitMaterial) [1]Object { return obj.AsObject() }
 
 type Bone2D struct {
-	object
 	_Bone2D struct{}
+	object
 }
 
 func NewBone2D(obj Object) Bone2D    { return Bone2D{object: object(obj)} }
 func GetBone2D(obj Bone2D) [1]Object { return obj.AsObject() }
 
 type BoneAttachment3D struct {
-	object
 	_BoneAttachment3D struct{}
+	object
 }
 
 func NewBoneAttachment3D(obj Object) BoneAttachment3D    { return BoneAttachment3D{object: object(obj)} }
 func GetBoneAttachment3D(obj BoneAttachment3D) [1]Object { return obj.AsObject() }
 
 type BoneConstraint3D struct {
-	object
 	_BoneConstraint3D struct{}
+	object
 }
 
 func NewBoneConstraint3D(obj Object) BoneConstraint3D    { return BoneConstraint3D{object: object(obj)} }
 func GetBoneConstraint3D(obj BoneConstraint3D) [1]Object { return obj.AsObject() }
 
 type BoneMap struct {
-	object
 	_BoneMap struct{}
+	object
 }
 
 func NewBoneMap(obj Object) BoneMap    { return BoneMap{object: object(obj)} }
 func GetBoneMap(obj BoneMap) [1]Object { return obj.AsObject() }
 
 type BoneTwistDisperser3D struct {
-	object
 	_BoneTwistDisperser3D struct{}
+	object
 }
 
 func NewBoneTwistDisperser3D(obj Object) BoneTwistDisperser3D {
@@ -1068,184 +1068,184 @@ func NewBoneTwistDisperser3D(obj Object) BoneTwistDisperser3D {
 func GetBoneTwistDisperser3D(obj BoneTwistDisperser3D) [1]Object { return obj.AsObject() }
 
 type BoxContainer struct {
-	object
 	_BoxContainer struct{}
+	object
 }
 
 func NewBoxContainer(obj Object) BoxContainer    { return BoxContainer{object: object(obj)} }
 func GetBoxContainer(obj BoxContainer) [1]Object { return obj.AsObject() }
 
 type BoxMesh struct {
-	object
 	_BoxMesh struct{}
+	object
 }
 
 func NewBoxMesh(obj Object) BoxMesh    { return BoxMesh{object: object(obj)} }
 func GetBoxMesh(obj BoxMesh) [1]Object { return obj.AsObject() }
 
 type BoxOccluder3D struct {
-	object
 	_BoxOccluder3D struct{}
+	object
 }
 
 func NewBoxOccluder3D(obj Object) BoxOccluder3D    { return BoxOccluder3D{object: object(obj)} }
 func GetBoxOccluder3D(obj BoxOccluder3D) [1]Object { return obj.AsObject() }
 
 type BoxShape3D struct {
-	object
 	_BoxShape3D struct{}
+	object
 }
 
 func NewBoxShape3D(obj Object) BoxShape3D    { return BoxShape3D{object: object(obj)} }
 func GetBoxShape3D(obj BoxShape3D) [1]Object { return obj.AsObject() }
 
 type Button struct {
-	object
 	_Button struct{}
+	object
 }
 
 func NewButton(obj Object) Button    { return Button{object: object(obj)} }
 func GetButton(obj Button) [1]Object { return obj.AsObject() }
 
 type ButtonGroup struct {
-	object
 	_ButtonGroup struct{}
+	object
 }
 
 func NewButtonGroup(obj Object) ButtonGroup    { return ButtonGroup{object: object(obj)} }
 func GetButtonGroup(obj ButtonGroup) [1]Object { return obj.AsObject() }
 
 type CCDIK3D struct {
-	object
 	_CCDIK3D struct{}
+	object
 }
 
 func NewCCDIK3D(obj Object) CCDIK3D    { return CCDIK3D{object: object(obj)} }
 func GetCCDIK3D(obj CCDIK3D) [1]Object { return obj.AsObject() }
 
 type CPUParticles2D struct {
-	object
 	_CPUParticles2D struct{}
+	object
 }
 
 func NewCPUParticles2D(obj Object) CPUParticles2D    { return CPUParticles2D{object: object(obj)} }
 func GetCPUParticles2D(obj CPUParticles2D) [1]Object { return obj.AsObject() }
 
 type CPUParticles3D struct {
-	object
 	_CPUParticles3D struct{}
+	object
 }
 
 func NewCPUParticles3D(obj Object) CPUParticles3D    { return CPUParticles3D{object: object(obj)} }
 func GetCPUParticles3D(obj CPUParticles3D) [1]Object { return obj.AsObject() }
 
 type CSGBox3D struct {
-	object
 	_CSGBox3D struct{}
+	object
 }
 
 func NewCSGBox3D(obj Object) CSGBox3D    { return CSGBox3D{object: object(obj)} }
 func GetCSGBox3D(obj CSGBox3D) [1]Object { return obj.AsObject() }
 
 type CSGCombiner3D struct {
-	object
 	_CSGCombiner3D struct{}
+	object
 }
 
 func NewCSGCombiner3D(obj Object) CSGCombiner3D    { return CSGCombiner3D{object: object(obj)} }
 func GetCSGCombiner3D(obj CSGCombiner3D) [1]Object { return obj.AsObject() }
 
 type CSGCylinder3D struct {
-	object
 	_CSGCylinder3D struct{}
+	object
 }
 
 func NewCSGCylinder3D(obj Object) CSGCylinder3D    { return CSGCylinder3D{object: object(obj)} }
 func GetCSGCylinder3D(obj CSGCylinder3D) [1]Object { return obj.AsObject() }
 
 type CSGMesh3D struct {
-	object
 	_CSGMesh3D struct{}
+	object
 }
 
 func NewCSGMesh3D(obj Object) CSGMesh3D    { return CSGMesh3D{object: object(obj)} }
 func GetCSGMesh3D(obj CSGMesh3D) [1]Object { return obj.AsObject() }
 
 type CSGPolygon3D struct {
-	object
 	_CSGPolygon3D struct{}
+	object
 }
 
 func NewCSGPolygon3D(obj Object) CSGPolygon3D    { return CSGPolygon3D{object: object(obj)} }
 func GetCSGPolygon3D(obj CSGPolygon3D) [1]Object { return obj.AsObject() }
 
 type CSGPrimitive3D struct {
-	object
 	_CSGPrimitive3D struct{}
+	object
 }
 
 func NewCSGPrimitive3D(obj Object) CSGPrimitive3D    { return CSGPrimitive3D{object: object(obj)} }
 func GetCSGPrimitive3D(obj CSGPrimitive3D) [1]Object { return obj.AsObject() }
 
 type CSGShape3D struct {
-	object
 	_CSGShape3D struct{}
+	object
 }
 
 func NewCSGShape3D(obj Object) CSGShape3D    { return CSGShape3D{object: object(obj)} }
 func GetCSGShape3D(obj CSGShape3D) [1]Object { return obj.AsObject() }
 
 type CSGSphere3D struct {
-	object
 	_CSGSphere3D struct{}
+	object
 }
 
 func NewCSGSphere3D(obj Object) CSGSphere3D    { return CSGSphere3D{object: object(obj)} }
 func GetCSGSphere3D(obj CSGSphere3D) [1]Object { return obj.AsObject() }
 
 type CSGTorus3D struct {
-	object
 	_CSGTorus3D struct{}
+	object
 }
 
 func NewCSGTorus3D(obj Object) CSGTorus3D    { return CSGTorus3D{object: object(obj)} }
 func GetCSGTorus3D(obj CSGTorus3D) [1]Object { return obj.AsObject() }
 
 type CallbackTweener struct {
-	object
 	_CallbackTweener struct{}
+	object
 }
 
 func NewCallbackTweener(obj Object) CallbackTweener    { return CallbackTweener{object: object(obj)} }
 func GetCallbackTweener(obj CallbackTweener) [1]Object { return obj.AsObject() }
 
 type Camera2D struct {
-	object
 	_Camera2D struct{}
+	object
 }
 
 func NewCamera2D(obj Object) Camera2D    { return Camera2D{object: object(obj)} }
 func GetCamera2D(obj Camera2D) [1]Object { return obj.AsObject() }
 
 type Camera3D struct {
-	object
 	_Camera3D struct{}
+	object
 }
 
 func NewCamera3D(obj Object) Camera3D    { return Camera3D{object: object(obj)} }
 func GetCamera3D(obj Camera3D) [1]Object { return obj.AsObject() }
 
 type CameraAttributes struct {
-	object
 	_CameraAttributes struct{}
+	object
 }
 
 func NewCameraAttributes(obj Object) CameraAttributes    { return CameraAttributes{object: object(obj)} }
 func GetCameraAttributes(obj CameraAttributes) [1]Object { return obj.AsObject() }
 
 type CameraAttributesPhysical struct {
-	object
 	_CameraAttributesPhysical struct{}
+	object
 }
 
 func NewCameraAttributesPhysical(obj Object) CameraAttributesPhysical {
@@ -1254,8 +1254,8 @@ func NewCameraAttributesPhysical(obj Object) CameraAttributesPhysical {
 func GetCameraAttributesPhysical(obj CameraAttributesPhysical) [1]Object { return obj.AsObject() }
 
 type CameraAttributesPractical struct {
-	object
 	_CameraAttributesPractical struct{}
+	object
 }
 
 func NewCameraAttributesPractical(obj Object) CameraAttributesPractical {
@@ -1264,48 +1264,48 @@ func NewCameraAttributesPractical(obj Object) CameraAttributesPractical {
 func GetCameraAttributesPractical(obj CameraAttributesPractical) [1]Object { return obj.AsObject() }
 
 type CameraFeed struct {
-	object
 	_CameraFeed struct{}
+	object
 }
 
 func NewCameraFeed(obj Object) CameraFeed    { return CameraFeed{object: object(obj)} }
 func GetCameraFeed(obj CameraFeed) [1]Object { return obj.AsObject() }
 
 type CameraServer struct {
-	object
 	_CameraServer struct{}
+	object
 }
 
 func NewCameraServer(obj Object) CameraServer    { return CameraServer{object: object(obj)} }
 func GetCameraServer(obj CameraServer) [1]Object { return obj.AsObject() }
 
 type CameraTexture struct {
-	object
 	_CameraTexture struct{}
+	object
 }
 
 func NewCameraTexture(obj Object) CameraTexture    { return CameraTexture{object: object(obj)} }
 func GetCameraTexture(obj CameraTexture) [1]Object { return obj.AsObject() }
 
 type CanvasGroup struct {
-	object
 	_CanvasGroup struct{}
+	object
 }
 
 func NewCanvasGroup(obj Object) CanvasGroup    { return CanvasGroup{object: object(obj)} }
 func GetCanvasGroup(obj CanvasGroup) [1]Object { return obj.AsObject() }
 
 type CanvasItem struct {
-	object
 	_CanvasItem struct{}
+	object
 }
 
 func NewCanvasItem(obj Object) CanvasItem    { return CanvasItem{object: object(obj)} }
 func GetCanvasItem(obj CanvasItem) [1]Object { return obj.AsObject() }
 
 type CanvasItemMaterial struct {
-	object
 	_CanvasItemMaterial struct{}
+	object
 }
 
 func NewCanvasItemMaterial(obj Object) CanvasItemMaterial {
@@ -1314,144 +1314,144 @@ func NewCanvasItemMaterial(obj Object) CanvasItemMaterial {
 func GetCanvasItemMaterial(obj CanvasItemMaterial) [1]Object { return obj.AsObject() }
 
 type CanvasLayer struct {
-	object
 	_CanvasLayer struct{}
+	object
 }
 
 func NewCanvasLayer(obj Object) CanvasLayer    { return CanvasLayer{object: object(obj)} }
 func GetCanvasLayer(obj CanvasLayer) [1]Object { return obj.AsObject() }
 
 type CanvasModulate struct {
-	object
 	_CanvasModulate struct{}
+	object
 }
 
 func NewCanvasModulate(obj Object) CanvasModulate    { return CanvasModulate{object: object(obj)} }
 func GetCanvasModulate(obj CanvasModulate) [1]Object { return obj.AsObject() }
 
 type CanvasTexture struct {
-	object
 	_CanvasTexture struct{}
+	object
 }
 
 func NewCanvasTexture(obj Object) CanvasTexture    { return CanvasTexture{object: object(obj)} }
 func GetCanvasTexture(obj CanvasTexture) [1]Object { return obj.AsObject() }
 
 type CapsuleMesh struct {
-	object
 	_CapsuleMesh struct{}
+	object
 }
 
 func NewCapsuleMesh(obj Object) CapsuleMesh    { return CapsuleMesh{object: object(obj)} }
 func GetCapsuleMesh(obj CapsuleMesh) [1]Object { return obj.AsObject() }
 
 type CapsuleShape2D struct {
-	object
 	_CapsuleShape2D struct{}
+	object
 }
 
 func NewCapsuleShape2D(obj Object) CapsuleShape2D    { return CapsuleShape2D{object: object(obj)} }
 func GetCapsuleShape2D(obj CapsuleShape2D) [1]Object { return obj.AsObject() }
 
 type CapsuleShape3D struct {
-	object
 	_CapsuleShape3D struct{}
+	object
 }
 
 func NewCapsuleShape3D(obj Object) CapsuleShape3D    { return CapsuleShape3D{object: object(obj)} }
 func GetCapsuleShape3D(obj CapsuleShape3D) [1]Object { return obj.AsObject() }
 
 type CenterContainer struct {
-	object
 	_CenterContainer struct{}
+	object
 }
 
 func NewCenterContainer(obj Object) CenterContainer    { return CenterContainer{object: object(obj)} }
 func GetCenterContainer(obj CenterContainer) [1]Object { return obj.AsObject() }
 
 type ChainIK3D struct {
-	object
 	_ChainIK3D struct{}
+	object
 }
 
 func NewChainIK3D(obj Object) ChainIK3D    { return ChainIK3D{object: object(obj)} }
 func GetChainIK3D(obj ChainIK3D) [1]Object { return obj.AsObject() }
 
 type CharFXTransform struct {
-	object
 	_CharFXTransform struct{}
+	object
 }
 
 func NewCharFXTransform(obj Object) CharFXTransform    { return CharFXTransform{object: object(obj)} }
 func GetCharFXTransform(obj CharFXTransform) [1]Object { return obj.AsObject() }
 
 type CharacterBody2D struct {
-	object
 	_CharacterBody2D struct{}
+	object
 }
 
 func NewCharacterBody2D(obj Object) CharacterBody2D    { return CharacterBody2D{object: object(obj)} }
 func GetCharacterBody2D(obj CharacterBody2D) [1]Object { return obj.AsObject() }
 
 type CharacterBody3D struct {
-	object
 	_CharacterBody3D struct{}
+	object
 }
 
 func NewCharacterBody3D(obj Object) CharacterBody3D    { return CharacterBody3D{object: object(obj)} }
 func GetCharacterBody3D(obj CharacterBody3D) [1]Object { return obj.AsObject() }
 
 type CheckBox struct {
-	object
 	_CheckBox struct{}
+	object
 }
 
 func NewCheckBox(obj Object) CheckBox    { return CheckBox{object: object(obj)} }
 func GetCheckBox(obj CheckBox) [1]Object { return obj.AsObject() }
 
 type CheckButton struct {
-	object
 	_CheckButton struct{}
+	object
 }
 
 func NewCheckButton(obj Object) CheckButton    { return CheckButton{object: object(obj)} }
 func GetCheckButton(obj CheckButton) [1]Object { return obj.AsObject() }
 
 type CircleShape2D struct {
-	object
 	_CircleShape2D struct{}
+	object
 }
 
 func NewCircleShape2D(obj Object) CircleShape2D    { return CircleShape2D{object: object(obj)} }
 func GetCircleShape2D(obj CircleShape2D) [1]Object { return obj.AsObject() }
 
 type ClassDB struct {
-	object
 	_ClassDB struct{}
+	object
 }
 
 func NewClassDB(obj Object) ClassDB    { return ClassDB{object: object(obj)} }
 func GetClassDB(obj ClassDB) [1]Object { return obj.AsObject() }
 
 type CodeEdit struct {
-	object
 	_CodeEdit struct{}
+	object
 }
 
 func NewCodeEdit(obj Object) CodeEdit    { return CodeEdit{object: object(obj)} }
 func GetCodeEdit(obj CodeEdit) [1]Object { return obj.AsObject() }
 
 type CodeHighlighter struct {
-	object
 	_CodeHighlighter struct{}
+	object
 }
 
 func NewCodeHighlighter(obj Object) CodeHighlighter    { return CodeHighlighter{object: object(obj)} }
 func GetCodeHighlighter(obj CodeHighlighter) [1]Object { return obj.AsObject() }
 
 type CollisionObject2D struct {
-	object
 	_CollisionObject2D struct{}
+	object
 }
 
 func NewCollisionObject2D(obj Object) CollisionObject2D {
@@ -1460,8 +1460,8 @@ func NewCollisionObject2D(obj Object) CollisionObject2D {
 func GetCollisionObject2D(obj CollisionObject2D) [1]Object { return obj.AsObject() }
 
 type CollisionObject3D struct {
-	object
 	_CollisionObject3D struct{}
+	object
 }
 
 func NewCollisionObject3D(obj Object) CollisionObject3D {
@@ -1470,8 +1470,8 @@ func NewCollisionObject3D(obj Object) CollisionObject3D {
 func GetCollisionObject3D(obj CollisionObject3D) [1]Object { return obj.AsObject() }
 
 type CollisionPolygon2D struct {
-	object
 	_CollisionPolygon2D struct{}
+	object
 }
 
 func NewCollisionPolygon2D(obj Object) CollisionPolygon2D {
@@ -1480,8 +1480,8 @@ func NewCollisionPolygon2D(obj Object) CollisionPolygon2D {
 func GetCollisionPolygon2D(obj CollisionPolygon2D) [1]Object { return obj.AsObject() }
 
 type CollisionPolygon3D struct {
-	object
 	_CollisionPolygon3D struct{}
+	object
 }
 
 func NewCollisionPolygon3D(obj Object) CollisionPolygon3D {
@@ -1490,40 +1490,40 @@ func NewCollisionPolygon3D(obj Object) CollisionPolygon3D {
 func GetCollisionPolygon3D(obj CollisionPolygon3D) [1]Object { return obj.AsObject() }
 
 type CollisionShape2D struct {
-	object
 	_CollisionShape2D struct{}
+	object
 }
 
 func NewCollisionShape2D(obj Object) CollisionShape2D    { return CollisionShape2D{object: object(obj)} }
 func GetCollisionShape2D(obj CollisionShape2D) [1]Object { return obj.AsObject() }
 
 type CollisionShape3D struct {
-	object
 	_CollisionShape3D struct{}
+	object
 }
 
 func NewCollisionShape3D(obj Object) CollisionShape3D    { return CollisionShape3D{object: object(obj)} }
 func GetCollisionShape3D(obj CollisionShape3D) [1]Object { return obj.AsObject() }
 
 type ColorPalette struct {
-	object
 	_ColorPalette struct{}
+	object
 }
 
 func NewColorPalette(obj Object) ColorPalette    { return ColorPalette{object: object(obj)} }
 func GetColorPalette(obj ColorPalette) [1]Object { return obj.AsObject() }
 
 type ColorPicker struct {
-	object
 	_ColorPicker struct{}
+	object
 }
 
 func NewColorPicker(obj Object) ColorPicker    { return ColorPicker{object: object(obj)} }
 func GetColorPicker(obj ColorPicker) [1]Object { return obj.AsObject() }
 
 type ColorPickerButton struct {
-	object
 	_ColorPickerButton struct{}
+	object
 }
 
 func NewColorPickerButton(obj Object) ColorPickerButton {
@@ -1532,32 +1532,32 @@ func NewColorPickerButton(obj Object) ColorPickerButton {
 func GetColorPickerButton(obj ColorPickerButton) [1]Object { return obj.AsObject() }
 
 type ColorRect struct {
-	object
 	_ColorRect struct{}
+	object
 }
 
 func NewColorRect(obj Object) ColorRect    { return ColorRect{object: object(obj)} }
 func GetColorRect(obj ColorRect) [1]Object { return obj.AsObject() }
 
 type Compositor struct {
-	object
 	_Compositor struct{}
+	object
 }
 
 func NewCompositor(obj Object) Compositor    { return Compositor{object: object(obj)} }
 func GetCompositor(obj Compositor) [1]Object { return obj.AsObject() }
 
 type CompositorEffect struct {
-	object
 	_CompositorEffect struct{}
+	object
 }
 
 func NewCompositorEffect(obj Object) CompositorEffect    { return CompositorEffect{object: object(obj)} }
 func GetCompositorEffect(obj CompositorEffect) [1]Object { return obj.AsObject() }
 
 type CompressedCubemap struct {
-	object
 	_CompressedCubemap struct{}
+	object
 }
 
 func NewCompressedCubemap(obj Object) CompressedCubemap {
@@ -1566,8 +1566,8 @@ func NewCompressedCubemap(obj Object) CompressedCubemap {
 func GetCompressedCubemap(obj CompressedCubemap) [1]Object { return obj.AsObject() }
 
 type CompressedCubemapArray struct {
-	object
 	_CompressedCubemapArray struct{}
+	object
 }
 
 func NewCompressedCubemapArray(obj Object) CompressedCubemapArray {
@@ -1576,8 +1576,8 @@ func NewCompressedCubemapArray(obj Object) CompressedCubemapArray {
 func GetCompressedCubemapArray(obj CompressedCubemapArray) [1]Object { return obj.AsObject() }
 
 type CompressedTexture2D struct {
-	object
 	_CompressedTexture2D struct{}
+	object
 }
 
 func NewCompressedTexture2D(obj Object) CompressedTexture2D {
@@ -1586,8 +1586,8 @@ func NewCompressedTexture2D(obj Object) CompressedTexture2D {
 func GetCompressedTexture2D(obj CompressedTexture2D) [1]Object { return obj.AsObject() }
 
 type CompressedTexture2DArray struct {
-	object
 	_CompressedTexture2DArray struct{}
+	object
 }
 
 func NewCompressedTexture2DArray(obj Object) CompressedTexture2DArray {
@@ -1596,8 +1596,8 @@ func NewCompressedTexture2DArray(obj Object) CompressedTexture2DArray {
 func GetCompressedTexture2DArray(obj CompressedTexture2DArray) [1]Object { return obj.AsObject() }
 
 type CompressedTexture3D struct {
-	object
 	_CompressedTexture3D struct{}
+	object
 }
 
 func NewCompressedTexture3D(obj Object) CompressedTexture3D {
@@ -1606,8 +1606,8 @@ func NewCompressedTexture3D(obj Object) CompressedTexture3D {
 func GetCompressedTexture3D(obj CompressedTexture3D) [1]Object { return obj.AsObject() }
 
 type CompressedTextureLayered struct {
-	object
 	_CompressedTextureLayered struct{}
+	object
 }
 
 func NewCompressedTextureLayered(obj Object) CompressedTextureLayered {
@@ -1616,8 +1616,8 @@ func NewCompressedTextureLayered(obj Object) CompressedTextureLayered {
 func GetCompressedTextureLayered(obj CompressedTextureLayered) [1]Object { return obj.AsObject() }
 
 type ConcavePolygonShape2D struct {
-	object
 	_ConcavePolygonShape2D struct{}
+	object
 }
 
 func NewConcavePolygonShape2D(obj Object) ConcavePolygonShape2D {
@@ -1626,8 +1626,8 @@ func NewConcavePolygonShape2D(obj Object) ConcavePolygonShape2D {
 func GetConcavePolygonShape2D(obj ConcavePolygonShape2D) [1]Object { return obj.AsObject() }
 
 type ConcavePolygonShape3D struct {
-	object
 	_ConcavePolygonShape3D struct{}
+	object
 }
 
 func NewConcavePolygonShape3D(obj Object) ConcavePolygonShape3D {
@@ -1636,24 +1636,24 @@ func NewConcavePolygonShape3D(obj Object) ConcavePolygonShape3D {
 func GetConcavePolygonShape3D(obj ConcavePolygonShape3D) [1]Object { return obj.AsObject() }
 
 type ConeTwistJoint3D struct {
-	object
 	_ConeTwistJoint3D struct{}
+	object
 }
 
 func NewConeTwistJoint3D(obj Object) ConeTwistJoint3D    { return ConeTwistJoint3D{object: object(obj)} }
 func GetConeTwistJoint3D(obj ConeTwistJoint3D) [1]Object { return obj.AsObject() }
 
 type ConfigFile struct {
-	object
 	_ConfigFile struct{}
+	object
 }
 
 func NewConfigFile(obj Object) ConfigFile    { return ConfigFile{object: object(obj)} }
 func GetConfigFile(obj ConfigFile) [1]Object { return obj.AsObject() }
 
 type ConfirmationDialog struct {
-	object
 	_ConfirmationDialog struct{}
+	object
 }
 
 func NewConfirmationDialog(obj Object) ConfirmationDialog {
@@ -1662,24 +1662,24 @@ func NewConfirmationDialog(obj Object) ConfirmationDialog {
 func GetConfirmationDialog(obj ConfirmationDialog) [1]Object { return obj.AsObject() }
 
 type Container struct {
-	object
 	_Container struct{}
+	object
 }
 
 func NewContainer(obj Object) Container    { return Container{object: object(obj)} }
 func GetContainer(obj Container) [1]Object { return obj.AsObject() }
 
 type Control struct {
-	object
 	_Control struct{}
+	object
 }
 
 func NewControl(obj Object) Control    { return Control{object: object(obj)} }
 func GetControl(obj Control) [1]Object { return obj.AsObject() }
 
 type ConvertTransformModifier3D struct {
-	object
 	_ConvertTransformModifier3D struct{}
+	object
 }
 
 func NewConvertTransformModifier3D(obj Object) ConvertTransformModifier3D {
@@ -1688,8 +1688,8 @@ func NewConvertTransformModifier3D(obj Object) ConvertTransformModifier3D {
 func GetConvertTransformModifier3D(obj ConvertTransformModifier3D) [1]Object { return obj.AsObject() }
 
 type ConvexPolygonShape2D struct {
-	object
 	_ConvexPolygonShape2D struct{}
+	object
 }
 
 func NewConvexPolygonShape2D(obj Object) ConvexPolygonShape2D {
@@ -1698,8 +1698,8 @@ func NewConvexPolygonShape2D(obj Object) ConvexPolygonShape2D {
 func GetConvexPolygonShape2D(obj ConvexPolygonShape2D) [1]Object { return obj.AsObject() }
 
 type ConvexPolygonShape3D struct {
-	object
 	_ConvexPolygonShape3D struct{}
+	object
 }
 
 func NewConvexPolygonShape3D(obj Object) ConvexPolygonShape3D {
@@ -1708,8 +1708,8 @@ func NewConvexPolygonShape3D(obj Object) ConvexPolygonShape3D {
 func GetConvexPolygonShape3D(obj ConvexPolygonShape3D) [1]Object { return obj.AsObject() }
 
 type CopyTransformModifier3D struct {
-	object
 	_CopyTransformModifier3D struct{}
+	object
 }
 
 func NewCopyTransformModifier3D(obj Object) CopyTransformModifier3D {
@@ -1718,112 +1718,112 @@ func NewCopyTransformModifier3D(obj Object) CopyTransformModifier3D {
 func GetCopyTransformModifier3D(obj CopyTransformModifier3D) [1]Object { return obj.AsObject() }
 
 type Crypto struct {
-	object
 	_Crypto struct{}
+	object
 }
 
 func NewCrypto(obj Object) Crypto    { return Crypto{object: object(obj)} }
 func GetCrypto(obj Crypto) [1]Object { return obj.AsObject() }
 
 type CryptoKey struct {
-	object
 	_CryptoKey struct{}
+	object
 }
 
 func NewCryptoKey(obj Object) CryptoKey    { return CryptoKey{object: object(obj)} }
 func GetCryptoKey(obj CryptoKey) [1]Object { return obj.AsObject() }
 
 type Cubemap struct {
-	object
 	_Cubemap struct{}
+	object
 }
 
 func NewCubemap(obj Object) Cubemap    { return Cubemap{object: object(obj)} }
 func GetCubemap(obj Cubemap) [1]Object { return obj.AsObject() }
 
 type CubemapArray struct {
-	object
 	_CubemapArray struct{}
+	object
 }
 
 func NewCubemapArray(obj Object) CubemapArray    { return CubemapArray{object: object(obj)} }
 func GetCubemapArray(obj CubemapArray) [1]Object { return obj.AsObject() }
 
 type Curve struct {
-	object
 	_Curve struct{}
+	object
 }
 
 func NewCurve(obj Object) Curve    { return Curve{object: object(obj)} }
 func GetCurve(obj Curve) [1]Object { return obj.AsObject() }
 
 type Curve2D struct {
-	object
 	_Curve2D struct{}
+	object
 }
 
 func NewCurve2D(obj Object) Curve2D    { return Curve2D{object: object(obj)} }
 func GetCurve2D(obj Curve2D) [1]Object { return obj.AsObject() }
 
 type Curve3D struct {
-	object
 	_Curve3D struct{}
+	object
 }
 
 func NewCurve3D(obj Object) Curve3D    { return Curve3D{object: object(obj)} }
 func GetCurve3D(obj Curve3D) [1]Object { return obj.AsObject() }
 
 type CurveTexture struct {
-	object
 	_CurveTexture struct{}
+	object
 }
 
 func NewCurveTexture(obj Object) CurveTexture    { return CurveTexture{object: object(obj)} }
 func GetCurveTexture(obj CurveTexture) [1]Object { return obj.AsObject() }
 
 type CurveXYZTexture struct {
-	object
 	_CurveXYZTexture struct{}
+	object
 }
 
 func NewCurveXYZTexture(obj Object) CurveXYZTexture    { return CurveXYZTexture{object: object(obj)} }
 func GetCurveXYZTexture(obj CurveXYZTexture) [1]Object { return obj.AsObject() }
 
 type CylinderMesh struct {
-	object
 	_CylinderMesh struct{}
+	object
 }
 
 func NewCylinderMesh(obj Object) CylinderMesh    { return CylinderMesh{object: object(obj)} }
 func GetCylinderMesh(obj CylinderMesh) [1]Object { return obj.AsObject() }
 
 type CylinderShape3D struct {
-	object
 	_CylinderShape3D struct{}
+	object
 }
 
 func NewCylinderShape3D(obj Object) CylinderShape3D    { return CylinderShape3D{object: object(obj)} }
 func GetCylinderShape3D(obj CylinderShape3D) [1]Object { return obj.AsObject() }
 
 type DPITexture struct {
-	object
 	_DPITexture struct{}
+	object
 }
 
 func NewDPITexture(obj Object) DPITexture    { return DPITexture{object: object(obj)} }
 func GetDPITexture(obj DPITexture) [1]Object { return obj.AsObject() }
 
 type DTLSServer struct {
-	object
 	_DTLSServer struct{}
+	object
 }
 
 func NewDTLSServer(obj Object) DTLSServer    { return DTLSServer{object: object(obj)} }
 func GetDTLSServer(obj DTLSServer) [1]Object { return obj.AsObject() }
 
 type DampedSpringJoint2D struct {
-	object
 	_DampedSpringJoint2D struct{}
+	object
 }
 
 func NewDampedSpringJoint2D(obj Object) DampedSpringJoint2D {
@@ -1832,24 +1832,24 @@ func NewDampedSpringJoint2D(obj Object) DampedSpringJoint2D {
 func GetDampedSpringJoint2D(obj DampedSpringJoint2D) [1]Object { return obj.AsObject() }
 
 type Decal struct {
-	object
 	_Decal struct{}
+	object
 }
 
 func NewDecal(obj Object) Decal    { return Decal{object: object(obj)} }
 func GetDecal(obj Decal) [1]Object { return obj.AsObject() }
 
 type DirAccess struct {
-	object
 	_DirAccess struct{}
+	object
 }
 
 func NewDirAccess(obj Object) DirAccess    { return DirAccess{object: object(obj)} }
 func GetDirAccess(obj DirAccess) [1]Object { return obj.AsObject() }
 
 type DirectionalLight2D struct {
-	object
 	_DirectionalLight2D struct{}
+	object
 }
 
 func NewDirectionalLight2D(obj Object) DirectionalLight2D {
@@ -1858,8 +1858,8 @@ func NewDirectionalLight2D(obj Object) DirectionalLight2D {
 func GetDirectionalLight2D(obj DirectionalLight2D) [1]Object { return obj.AsObject() }
 
 type DirectionalLight3D struct {
-	object
 	_DirectionalLight3D struct{}
+	object
 }
 
 func NewDirectionalLight3D(obj Object) DirectionalLight3D {
@@ -1868,16 +1868,16 @@ func NewDirectionalLight3D(obj Object) DirectionalLight3D {
 func GetDirectionalLight3D(obj DirectionalLight3D) [1]Object { return obj.AsObject() }
 
 type DisplayServer struct {
-	object
 	_DisplayServer struct{}
+	object
 }
 
 func NewDisplayServer(obj Object) DisplayServer    { return DisplayServer{object: object(obj)} }
 func GetDisplayServer(obj DisplayServer) [1]Object { return obj.AsObject() }
 
 type DrawableTexture2D struct {
-	object
 	_DrawableTexture2D struct{}
+	object
 }
 
 func NewDrawableTexture2D(obj Object) DrawableTexture2D {
@@ -1886,16 +1886,16 @@ func NewDrawableTexture2D(obj Object) DrawableTexture2D {
 func GetDrawableTexture2D(obj DrawableTexture2D) [1]Object { return obj.AsObject() }
 
 type ENetConnection struct {
-	object
 	_ENetConnection struct{}
+	object
 }
 
 func NewENetConnection(obj Object) ENetConnection    { return ENetConnection{object: object(obj)} }
 func GetENetConnection(obj ENetConnection) [1]Object { return obj.AsObject() }
 
 type ENetMultiplayerPeer struct {
-	object
 	_ENetMultiplayerPeer struct{}
+	object
 }
 
 func NewENetMultiplayerPeer(obj Object) ENetMultiplayerPeer {
@@ -1904,16 +1904,16 @@ func NewENetMultiplayerPeer(obj Object) ENetMultiplayerPeer {
 func GetENetMultiplayerPeer(obj ENetMultiplayerPeer) [1]Object { return obj.AsObject() }
 
 type ENetPacketPeer struct {
-	object
 	_ENetPacketPeer struct{}
+	object
 }
 
 func NewENetPacketPeer(obj Object) ENetPacketPeer    { return ENetPacketPeer{object: object(obj)} }
 func GetENetPacketPeer(obj ENetPacketPeer) [1]Object { return obj.AsObject() }
 
 type EditorCommandPalette struct {
-	object
 	_EditorCommandPalette struct{}
+	object
 }
 
 func NewEditorCommandPalette(obj Object) EditorCommandPalette {
@@ -1922,8 +1922,8 @@ func NewEditorCommandPalette(obj Object) EditorCommandPalette {
 func GetEditorCommandPalette(obj EditorCommandPalette) [1]Object { return obj.AsObject() }
 
 type EditorContextMenuPlugin struct {
-	object
 	_EditorContextMenuPlugin struct{}
+	object
 }
 
 func NewEditorContextMenuPlugin(obj Object) EditorContextMenuPlugin {
@@ -1932,8 +1932,8 @@ func NewEditorContextMenuPlugin(obj Object) EditorContextMenuPlugin {
 func GetEditorContextMenuPlugin(obj EditorContextMenuPlugin) [1]Object { return obj.AsObject() }
 
 type EditorDebuggerPlugin struct {
-	object
 	_EditorDebuggerPlugin struct{}
+	object
 }
 
 func NewEditorDebuggerPlugin(obj Object) EditorDebuggerPlugin {
@@ -1942,8 +1942,8 @@ func NewEditorDebuggerPlugin(obj Object) EditorDebuggerPlugin {
 func GetEditorDebuggerPlugin(obj EditorDebuggerPlugin) [1]Object { return obj.AsObject() }
 
 type EditorDebuggerSession struct {
-	object
 	_EditorDebuggerSession struct{}
+	object
 }
 
 func NewEditorDebuggerSession(obj Object) EditorDebuggerSession {
@@ -1952,16 +1952,16 @@ func NewEditorDebuggerSession(obj Object) EditorDebuggerSession {
 func GetEditorDebuggerSession(obj EditorDebuggerSession) [1]Object { return obj.AsObject() }
 
 type EditorDock struct {
-	object
 	_EditorDock struct{}
+	object
 }
 
 func NewEditorDock(obj Object) EditorDock    { return EditorDock{object: object(obj)} }
 func GetEditorDock(obj EditorDock) [1]Object { return obj.AsObject() }
 
 type EditorExportPlatform struct {
-	object
 	_EditorExportPlatform struct{}
+	object
 }
 
 func NewEditorExportPlatform(obj Object) EditorExportPlatform {
@@ -1970,8 +1970,8 @@ func NewEditorExportPlatform(obj Object) EditorExportPlatform {
 func GetEditorExportPlatform(obj EditorExportPlatform) [1]Object { return obj.AsObject() }
 
 type EditorExportPlatformAndroid struct {
-	object
 	_EditorExportPlatformAndroid struct{}
+	object
 }
 
 func NewEditorExportPlatformAndroid(obj Object) EditorExportPlatformAndroid {
@@ -1980,8 +1980,8 @@ func NewEditorExportPlatformAndroid(obj Object) EditorExportPlatformAndroid {
 func GetEditorExportPlatformAndroid(obj EditorExportPlatformAndroid) [1]Object { return obj.AsObject() }
 
 type EditorExportPlatformAppleEmbedded struct {
-	object
 	_EditorExportPlatformAppleEmbedded struct{}
+	object
 }
 
 func NewEditorExportPlatformAppleEmbedded(obj Object) EditorExportPlatformAppleEmbedded {
@@ -1992,8 +1992,8 @@ func GetEditorExportPlatformAppleEmbedded(obj EditorExportPlatformAppleEmbedded)
 }
 
 type EditorExportPlatformExtension struct {
-	object
 	_EditorExportPlatformExtension struct{}
+	object
 }
 
 func NewEditorExportPlatformExtension(obj Object) EditorExportPlatformExtension {
@@ -2004,8 +2004,8 @@ func GetEditorExportPlatformExtension(obj EditorExportPlatformExtension) [1]Obje
 }
 
 type EditorExportPlatformIOS struct {
-	object
 	_EditorExportPlatformIOS struct{}
+	object
 }
 
 func NewEditorExportPlatformIOS(obj Object) EditorExportPlatformIOS {
@@ -2014,8 +2014,8 @@ func NewEditorExportPlatformIOS(obj Object) EditorExportPlatformIOS {
 func GetEditorExportPlatformIOS(obj EditorExportPlatformIOS) [1]Object { return obj.AsObject() }
 
 type EditorExportPlatformLinuxBSD struct {
-	object
 	_EditorExportPlatformLinuxBSD struct{}
+	object
 }
 
 func NewEditorExportPlatformLinuxBSD(obj Object) EditorExportPlatformLinuxBSD {
@@ -2026,8 +2026,8 @@ func GetEditorExportPlatformLinuxBSD(obj EditorExportPlatformLinuxBSD) [1]Object
 }
 
 type EditorExportPlatformMacOS struct {
-	object
 	_EditorExportPlatformMacOS struct{}
+	object
 }
 
 func NewEditorExportPlatformMacOS(obj Object) EditorExportPlatformMacOS {
@@ -2036,8 +2036,8 @@ func NewEditorExportPlatformMacOS(obj Object) EditorExportPlatformMacOS {
 func GetEditorExportPlatformMacOS(obj EditorExportPlatformMacOS) [1]Object { return obj.AsObject() }
 
 type EditorExportPlatformPC struct {
-	object
 	_EditorExportPlatformPC struct{}
+	object
 }
 
 func NewEditorExportPlatformPC(obj Object) EditorExportPlatformPC {
@@ -2046,8 +2046,8 @@ func NewEditorExportPlatformPC(obj Object) EditorExportPlatformPC {
 func GetEditorExportPlatformPC(obj EditorExportPlatformPC) [1]Object { return obj.AsObject() }
 
 type EditorExportPlatformVisionOS struct {
-	object
 	_EditorExportPlatformVisionOS struct{}
+	object
 }
 
 func NewEditorExportPlatformVisionOS(obj Object) EditorExportPlatformVisionOS {
@@ -2058,8 +2058,8 @@ func GetEditorExportPlatformVisionOS(obj EditorExportPlatformVisionOS) [1]Object
 }
 
 type EditorExportPlatformWeb struct {
-	object
 	_EditorExportPlatformWeb struct{}
+	object
 }
 
 func NewEditorExportPlatformWeb(obj Object) EditorExportPlatformWeb {
@@ -2068,8 +2068,8 @@ func NewEditorExportPlatformWeb(obj Object) EditorExportPlatformWeb {
 func GetEditorExportPlatformWeb(obj EditorExportPlatformWeb) [1]Object { return obj.AsObject() }
 
 type EditorExportPlatformWindows struct {
-	object
 	_EditorExportPlatformWindows struct{}
+	object
 }
 
 func NewEditorExportPlatformWindows(obj Object) EditorExportPlatformWindows {
@@ -2078,8 +2078,8 @@ func NewEditorExportPlatformWindows(obj Object) EditorExportPlatformWindows {
 func GetEditorExportPlatformWindows(obj EditorExportPlatformWindows) [1]Object { return obj.AsObject() }
 
 type EditorExportPlugin struct {
-	object
 	_EditorExportPlugin struct{}
+	object
 }
 
 func NewEditorExportPlugin(obj Object) EditorExportPlugin {
@@ -2088,8 +2088,8 @@ func NewEditorExportPlugin(obj Object) EditorExportPlugin {
 func GetEditorExportPlugin(obj EditorExportPlugin) [1]Object { return obj.AsObject() }
 
 type EditorExportPreset struct {
-	object
 	_EditorExportPreset struct{}
+	object
 }
 
 func NewEditorExportPreset(obj Object) EditorExportPreset {
@@ -2098,8 +2098,8 @@ func NewEditorExportPreset(obj Object) EditorExportPreset {
 func GetEditorExportPreset(obj EditorExportPreset) [1]Object { return obj.AsObject() }
 
 type EditorFeatureProfile struct {
-	object
 	_EditorFeatureProfile struct{}
+	object
 }
 
 func NewEditorFeatureProfile(obj Object) EditorFeatureProfile {
@@ -2108,24 +2108,24 @@ func NewEditorFeatureProfile(obj Object) EditorFeatureProfile {
 func GetEditorFeatureProfile(obj EditorFeatureProfile) [1]Object { return obj.AsObject() }
 
 type EditorFileDialog struct {
-	object
 	_EditorFileDialog struct{}
+	object
 }
 
 func NewEditorFileDialog(obj Object) EditorFileDialog    { return EditorFileDialog{object: object(obj)} }
 func GetEditorFileDialog(obj EditorFileDialog) [1]Object { return obj.AsObject() }
 
 type EditorFileSystem struct {
-	object
 	_EditorFileSystem struct{}
+	object
 }
 
 func NewEditorFileSystem(obj Object) EditorFileSystem    { return EditorFileSystem{object: object(obj)} }
 func GetEditorFileSystem(obj EditorFileSystem) [1]Object { return obj.AsObject() }
 
 type EditorFileSystemDirectory struct {
-	object
 	_EditorFileSystemDirectory struct{}
+	object
 }
 
 func NewEditorFileSystemDirectory(obj Object) EditorFileSystemDirectory {
@@ -2134,8 +2134,8 @@ func NewEditorFileSystemDirectory(obj Object) EditorFileSystemDirectory {
 func GetEditorFileSystemDirectory(obj EditorFileSystemDirectory) [1]Object { return obj.AsObject() }
 
 type EditorFileSystemImportFormatSupportQuery struct {
-	object
 	_EditorFileSystemImportFormatSupportQuery struct{}
+	object
 }
 
 func NewEditorFileSystemImportFormatSupportQuery(obj Object) EditorFileSystemImportFormatSupportQuery {
@@ -2146,8 +2146,8 @@ func GetEditorFileSystemImportFormatSupportQuery(obj EditorFileSystemImportForma
 }
 
 type EditorImportPlugin struct {
-	object
 	_EditorImportPlugin struct{}
+	object
 }
 
 func NewEditorImportPlugin(obj Object) EditorImportPlugin {
@@ -2156,16 +2156,16 @@ func NewEditorImportPlugin(obj Object) EditorImportPlugin {
 func GetEditorImportPlugin(obj EditorImportPlugin) [1]Object { return obj.AsObject() }
 
 type EditorInspector struct {
-	object
 	_EditorInspector struct{}
+	object
 }
 
 func NewEditorInspector(obj Object) EditorInspector    { return EditorInspector{object: object(obj)} }
 func GetEditorInspector(obj EditorInspector) [1]Object { return obj.AsObject() }
 
 type EditorInspectorPlugin struct {
-	object
 	_EditorInspectorPlugin struct{}
+	object
 }
 
 func NewEditorInspectorPlugin(obj Object) EditorInspectorPlugin {
@@ -2174,16 +2174,16 @@ func NewEditorInspectorPlugin(obj Object) EditorInspectorPlugin {
 func GetEditorInspectorPlugin(obj EditorInspectorPlugin) [1]Object { return obj.AsObject() }
 
 type EditorInterface struct {
-	object
 	_EditorInterface struct{}
+	object
 }
 
 func NewEditorInterface(obj Object) EditorInterface    { return EditorInterface{object: object(obj)} }
 func GetEditorInterface(obj EditorInterface) [1]Object { return obj.AsObject() }
 
 type EditorNode3DGizmo struct {
-	object
 	_EditorNode3DGizmo struct{}
+	object
 }
 
 func NewEditorNode3DGizmo(obj Object) EditorNode3DGizmo {
@@ -2192,8 +2192,8 @@ func NewEditorNode3DGizmo(obj Object) EditorNode3DGizmo {
 func GetEditorNode3DGizmo(obj EditorNode3DGizmo) [1]Object { return obj.AsObject() }
 
 type EditorNode3DGizmoPlugin struct {
-	object
 	_EditorNode3DGizmoPlugin struct{}
+	object
 }
 
 func NewEditorNode3DGizmoPlugin(obj Object) EditorNode3DGizmoPlugin {
@@ -2202,32 +2202,32 @@ func NewEditorNode3DGizmoPlugin(obj Object) EditorNode3DGizmoPlugin {
 func GetEditorNode3DGizmoPlugin(obj EditorNode3DGizmoPlugin) [1]Object { return obj.AsObject() }
 
 type EditorPaths struct {
-	object
 	_EditorPaths struct{}
+	object
 }
 
 func NewEditorPaths(obj Object) EditorPaths    { return EditorPaths{object: object(obj)} }
 func GetEditorPaths(obj EditorPaths) [1]Object { return obj.AsObject() }
 
 type EditorPlugin struct {
-	object
 	_EditorPlugin struct{}
+	object
 }
 
 func NewEditorPlugin(obj Object) EditorPlugin    { return EditorPlugin{object: object(obj)} }
 func GetEditorPlugin(obj EditorPlugin) [1]Object { return obj.AsObject() }
 
 type EditorProperty struct {
-	object
 	_EditorProperty struct{}
+	object
 }
 
 func NewEditorProperty(obj Object) EditorProperty    { return EditorProperty{object: object(obj)} }
 func GetEditorProperty(obj EditorProperty) [1]Object { return obj.AsObject() }
 
 type EditorResourceConversionPlugin struct {
-	object
 	_EditorResourceConversionPlugin struct{}
+	object
 }
 
 func NewEditorResourceConversionPlugin(obj Object) EditorResourceConversionPlugin {
@@ -2238,8 +2238,8 @@ func GetEditorResourceConversionPlugin(obj EditorResourceConversionPlugin) [1]Ob
 }
 
 type EditorResourcePicker struct {
-	object
 	_EditorResourcePicker struct{}
+	object
 }
 
 func NewEditorResourcePicker(obj Object) EditorResourcePicker {
@@ -2248,8 +2248,8 @@ func NewEditorResourcePicker(obj Object) EditorResourcePicker {
 func GetEditorResourcePicker(obj EditorResourcePicker) [1]Object { return obj.AsObject() }
 
 type EditorResourcePreview struct {
-	object
 	_EditorResourcePreview struct{}
+	object
 }
 
 func NewEditorResourcePreview(obj Object) EditorResourcePreview {
@@ -2258,8 +2258,8 @@ func NewEditorResourcePreview(obj Object) EditorResourcePreview {
 func GetEditorResourcePreview(obj EditorResourcePreview) [1]Object { return obj.AsObject() }
 
 type EditorResourcePreviewGenerator struct {
-	object
 	_EditorResourcePreviewGenerator struct{}
+	object
 }
 
 func NewEditorResourcePreviewGenerator(obj Object) EditorResourcePreviewGenerator {
@@ -2270,8 +2270,8 @@ func GetEditorResourcePreviewGenerator(obj EditorResourcePreviewGenerator) [1]Ob
 }
 
 type EditorResourceTooltipPlugin struct {
-	object
 	_EditorResourceTooltipPlugin struct{}
+	object
 }
 
 func NewEditorResourceTooltipPlugin(obj Object) EditorResourceTooltipPlugin {
@@ -2280,8 +2280,8 @@ func NewEditorResourceTooltipPlugin(obj Object) EditorResourceTooltipPlugin {
 func GetEditorResourceTooltipPlugin(obj EditorResourceTooltipPlugin) [1]Object { return obj.AsObject() }
 
 type EditorSceneFormatImporter struct {
-	object
 	_EditorSceneFormatImporter struct{}
+	object
 }
 
 func NewEditorSceneFormatImporter(obj Object) EditorSceneFormatImporter {
@@ -2290,8 +2290,8 @@ func NewEditorSceneFormatImporter(obj Object) EditorSceneFormatImporter {
 func GetEditorSceneFormatImporter(obj EditorSceneFormatImporter) [1]Object { return obj.AsObject() }
 
 type EditorSceneFormatImporterBlend struct {
-	object
 	_EditorSceneFormatImporterBlend struct{}
+	object
 }
 
 func NewEditorSceneFormatImporterBlend(obj Object) EditorSceneFormatImporterBlend {
@@ -2302,8 +2302,8 @@ func GetEditorSceneFormatImporterBlend(obj EditorSceneFormatImporterBlend) [1]Ob
 }
 
 type EditorSceneFormatImporterFBX2GLTF struct {
-	object
 	_EditorSceneFormatImporterFBX2GLTF struct{}
+	object
 }
 
 func NewEditorSceneFormatImporterFBX2GLTF(obj Object) EditorSceneFormatImporterFBX2GLTF {
@@ -2314,8 +2314,8 @@ func GetEditorSceneFormatImporterFBX2GLTF(obj EditorSceneFormatImporterFBX2GLTF)
 }
 
 type EditorSceneFormatImporterGLTF struct {
-	object
 	_EditorSceneFormatImporterGLTF struct{}
+	object
 }
 
 func NewEditorSceneFormatImporterGLTF(obj Object) EditorSceneFormatImporterGLTF {
@@ -2326,8 +2326,8 @@ func GetEditorSceneFormatImporterGLTF(obj EditorSceneFormatImporterGLTF) [1]Obje
 }
 
 type EditorSceneFormatImporterUFBX struct {
-	object
 	_EditorSceneFormatImporterUFBX struct{}
+	object
 }
 
 func NewEditorSceneFormatImporterUFBX(obj Object) EditorSceneFormatImporterUFBX {
@@ -2338,8 +2338,8 @@ func GetEditorSceneFormatImporterUFBX(obj EditorSceneFormatImporterUFBX) [1]Obje
 }
 
 type EditorScenePostImport struct {
-	object
 	_EditorScenePostImport struct{}
+	object
 }
 
 func NewEditorScenePostImport(obj Object) EditorScenePostImport {
@@ -2348,8 +2348,8 @@ func NewEditorScenePostImport(obj Object) EditorScenePostImport {
 func GetEditorScenePostImport(obj EditorScenePostImport) [1]Object { return obj.AsObject() }
 
 type EditorScenePostImportPlugin struct {
-	object
 	_EditorScenePostImportPlugin struct{}
+	object
 }
 
 func NewEditorScenePostImportPlugin(obj Object) EditorScenePostImportPlugin {
@@ -2358,16 +2358,16 @@ func NewEditorScenePostImportPlugin(obj Object) EditorScenePostImportPlugin {
 func GetEditorScenePostImportPlugin(obj EditorScenePostImportPlugin) [1]Object { return obj.AsObject() }
 
 type EditorScript struct {
-	object
 	_EditorScript struct{}
+	object
 }
 
 func NewEditorScript(obj Object) EditorScript    { return EditorScript{object: object(obj)} }
 func GetEditorScript(obj EditorScript) [1]Object { return obj.AsObject() }
 
 type EditorScriptPicker struct {
-	object
 	_EditorScriptPicker struct{}
+	object
 }
 
 func NewEditorScriptPicker(obj Object) EditorScriptPicker {
@@ -2376,32 +2376,32 @@ func NewEditorScriptPicker(obj Object) EditorScriptPicker {
 func GetEditorScriptPicker(obj EditorScriptPicker) [1]Object { return obj.AsObject() }
 
 type EditorSelection struct {
-	object
 	_EditorSelection struct{}
+	object
 }
 
 func NewEditorSelection(obj Object) EditorSelection    { return EditorSelection{object: object(obj)} }
 func GetEditorSelection(obj EditorSelection) [1]Object { return obj.AsObject() }
 
 type EditorSettings struct {
-	object
 	_EditorSettings struct{}
+	object
 }
 
 func NewEditorSettings(obj Object) EditorSettings    { return EditorSettings{object: object(obj)} }
 func GetEditorSettings(obj EditorSettings) [1]Object { return obj.AsObject() }
 
 type EditorSpinSlider struct {
-	object
 	_EditorSpinSlider struct{}
+	object
 }
 
 func NewEditorSpinSlider(obj Object) EditorSpinSlider    { return EditorSpinSlider{object: object(obj)} }
 func GetEditorSpinSlider(obj EditorSpinSlider) [1]Object { return obj.AsObject() }
 
 type EditorSyntaxHighlighter struct {
-	object
 	_EditorSyntaxHighlighter struct{}
+	object
 }
 
 func NewEditorSyntaxHighlighter(obj Object) EditorSyntaxHighlighter {
@@ -2410,16 +2410,16 @@ func NewEditorSyntaxHighlighter(obj Object) EditorSyntaxHighlighter {
 func GetEditorSyntaxHighlighter(obj EditorSyntaxHighlighter) [1]Object { return obj.AsObject() }
 
 type EditorToaster struct {
-	object
 	_EditorToaster struct{}
+	object
 }
 
 func NewEditorToaster(obj Object) EditorToaster    { return EditorToaster{object: object(obj)} }
 func GetEditorToaster(obj EditorToaster) [1]Object { return obj.AsObject() }
 
 type EditorTranslationParserPlugin struct {
-	object
 	_EditorTranslationParserPlugin struct{}
+	object
 }
 
 func NewEditorTranslationParserPlugin(obj Object) EditorTranslationParserPlugin {
@@ -2430,8 +2430,8 @@ func GetEditorTranslationParserPlugin(obj EditorTranslationParserPlugin) [1]Obje
 }
 
 type EditorUndoRedoManager struct {
-	object
 	_EditorUndoRedoManager struct{}
+	object
 }
 
 func NewEditorUndoRedoManager(obj Object) EditorUndoRedoManager {
@@ -2440,8 +2440,8 @@ func NewEditorUndoRedoManager(obj Object) EditorUndoRedoManager {
 func GetEditorUndoRedoManager(obj EditorUndoRedoManager) [1]Object { return obj.AsObject() }
 
 type EditorVCSInterface struct {
-	object
 	_EditorVCSInterface struct{}
+	object
 }
 
 func NewEditorVCSInterface(obj Object) EditorVCSInterface {
@@ -2450,8 +2450,8 @@ func NewEditorVCSInterface(obj Object) EditorVCSInterface {
 func GetEditorVCSInterface(obj EditorVCSInterface) [1]Object { return obj.AsObject() }
 
 type EncodedObjectAsID struct {
-	object
 	_EncodedObjectAsID struct{}
+	object
 }
 
 func NewEncodedObjectAsID(obj Object) EncodedObjectAsID {
@@ -2460,136 +2460,136 @@ func NewEncodedObjectAsID(obj Object) EncodedObjectAsID {
 func GetEncodedObjectAsID(obj EncodedObjectAsID) [1]Object { return obj.AsObject() }
 
 type Engine struct {
-	object
 	_Engine struct{}
+	object
 }
 
 func NewEngine(obj Object) Engine    { return Engine{object: object(obj)} }
 func GetEngine(obj Engine) [1]Object { return obj.AsObject() }
 
 type EngineDebugger struct {
-	object
 	_EngineDebugger struct{}
+	object
 }
 
 func NewEngineDebugger(obj Object) EngineDebugger    { return EngineDebugger{object: object(obj)} }
 func GetEngineDebugger(obj EngineDebugger) [1]Object { return obj.AsObject() }
 
 type EngineProfiler struct {
-	object
 	_EngineProfiler struct{}
+	object
 }
 
 func NewEngineProfiler(obj Object) EngineProfiler    { return EngineProfiler{object: object(obj)} }
 func GetEngineProfiler(obj EngineProfiler) [1]Object { return obj.AsObject() }
 
 type Environment struct {
-	object
 	_Environment struct{}
+	object
 }
 
 func NewEnvironment(obj Object) Environment    { return Environment{object: object(obj)} }
 func GetEnvironment(obj Environment) [1]Object { return obj.AsObject() }
 
 type Expression struct {
-	object
 	_Expression struct{}
+	object
 }
 
 func NewExpression(obj Object) Expression    { return Expression{object: object(obj)} }
 func GetExpression(obj Expression) [1]Object { return obj.AsObject() }
 
 type ExternalTexture struct {
-	object
 	_ExternalTexture struct{}
+	object
 }
 
 func NewExternalTexture(obj Object) ExternalTexture    { return ExternalTexture{object: object(obj)} }
 func GetExternalTexture(obj ExternalTexture) [1]Object { return obj.AsObject() }
 
 type FABRIK3D struct {
-	object
 	_FABRIK3D struct{}
+	object
 }
 
 func NewFABRIK3D(obj Object) FABRIK3D    { return FABRIK3D{object: object(obj)} }
 func GetFABRIK3D(obj FABRIK3D) [1]Object { return obj.AsObject() }
 
 type FBXDocument struct {
-	object
 	_FBXDocument struct{}
+	object
 }
 
 func NewFBXDocument(obj Object) FBXDocument    { return FBXDocument{object: object(obj)} }
 func GetFBXDocument(obj FBXDocument) [1]Object { return obj.AsObject() }
 
 type FBXState struct {
-	object
 	_FBXState struct{}
+	object
 }
 
 func NewFBXState(obj Object) FBXState    { return FBXState{object: object(obj)} }
 func GetFBXState(obj FBXState) [1]Object { return obj.AsObject() }
 
 type FastNoiseLite struct {
-	object
 	_FastNoiseLite struct{}
+	object
 }
 
 func NewFastNoiseLite(obj Object) FastNoiseLite    { return FastNoiseLite{object: object(obj)} }
 func GetFastNoiseLite(obj FastNoiseLite) [1]Object { return obj.AsObject() }
 
 type FileAccess struct {
-	object
 	_FileAccess struct{}
+	object
 }
 
 func NewFileAccess(obj Object) FileAccess    { return FileAccess{object: object(obj)} }
 func GetFileAccess(obj FileAccess) [1]Object { return obj.AsObject() }
 
 type FileDialog struct {
-	object
 	_FileDialog struct{}
+	object
 }
 
 func NewFileDialog(obj Object) FileDialog    { return FileDialog{object: object(obj)} }
 func GetFileDialog(obj FileDialog) [1]Object { return obj.AsObject() }
 
 type FileSystemDock struct {
-	object
 	_FileSystemDock struct{}
+	object
 }
 
 func NewFileSystemDock(obj Object) FileSystemDock    { return FileSystemDock{object: object(obj)} }
 func GetFileSystemDock(obj FileSystemDock) [1]Object { return obj.AsObject() }
 
 type FlowContainer struct {
-	object
 	_FlowContainer struct{}
+	object
 }
 
 func NewFlowContainer(obj Object) FlowContainer    { return FlowContainer{object: object(obj)} }
 func GetFlowContainer(obj FlowContainer) [1]Object { return obj.AsObject() }
 
 type FogMaterial struct {
-	object
 	_FogMaterial struct{}
+	object
 }
 
 func NewFogMaterial(obj Object) FogMaterial    { return FogMaterial{object: object(obj)} }
 func GetFogMaterial(obj FogMaterial) [1]Object { return obj.AsObject() }
 
 type FogVolume struct {
-	object
 	_FogVolume struct{}
+	object
 }
 
 func NewFogVolume(obj Object) FogVolume    { return FogVolume{object: object(obj)} }
 func GetFogVolume(obj FogVolume) [1]Object { return obj.AsObject() }
 
 type FoldableContainer struct {
-	object
 	_FoldableContainer struct{}
+	object
 }
 
 func NewFoldableContainer(obj Object) FoldableContainer {
@@ -2598,40 +2598,40 @@ func NewFoldableContainer(obj Object) FoldableContainer {
 func GetFoldableContainer(obj FoldableContainer) [1]Object { return obj.AsObject() }
 
 type FoldableGroup struct {
-	object
 	_FoldableGroup struct{}
+	object
 }
 
 func NewFoldableGroup(obj Object) FoldableGroup    { return FoldableGroup{object: object(obj)} }
 func GetFoldableGroup(obj FoldableGroup) [1]Object { return obj.AsObject() }
 
 type Font struct {
-	object
 	_Font struct{}
+	object
 }
 
 func NewFont(obj Object) Font    { return Font{object: object(obj)} }
 func GetFont(obj Font) [1]Object { return obj.AsObject() }
 
 type FontFile struct {
-	object
 	_FontFile struct{}
+	object
 }
 
 func NewFontFile(obj Object) FontFile    { return FontFile{object: object(obj)} }
 func GetFontFile(obj FontFile) [1]Object { return obj.AsObject() }
 
 type FontVariation struct {
-	object
 	_FontVariation struct{}
+	object
 }
 
 func NewFontVariation(obj Object) FontVariation    { return FontVariation{object: object(obj)} }
 func GetFontVariation(obj FontVariation) [1]Object { return obj.AsObject() }
 
 type FramebufferCacheRD struct {
-	object
 	_FramebufferCacheRD struct{}
+	object
 }
 
 func NewFramebufferCacheRD(obj Object) FramebufferCacheRD {
@@ -2640,16 +2640,16 @@ func NewFramebufferCacheRD(obj Object) FramebufferCacheRD {
 func GetFramebufferCacheRD(obj FramebufferCacheRD) [1]Object { return obj.AsObject() }
 
 type GDExtension struct {
-	object
 	_GDExtension struct{}
+	object
 }
 
 func NewGDExtension(obj Object) GDExtension    { return GDExtension{object: object(obj)} }
 func GetGDExtension(obj GDExtension) [1]Object { return obj.AsObject() }
 
 type GDExtensionManager struct {
-	object
 	_GDExtensionManager struct{}
+	object
 }
 
 func NewGDExtensionManager(obj Object) GDExtensionManager {
@@ -2658,16 +2658,16 @@ func NewGDExtensionManager(obj Object) GDExtensionManager {
 func GetGDExtensionManager(obj GDExtensionManager) [1]Object { return obj.AsObject() }
 
 type GDScript struct {
-	object
 	_GDScript struct{}
+	object
 }
 
 func NewGDScript(obj Object) GDScript    { return GDScript{object: object(obj)} }
 func GetGDScript(obj GDScript) [1]Object { return obj.AsObject() }
 
 type GDScriptLanguageProtocol struct {
-	object
 	_GDScriptLanguageProtocol struct{}
+	object
 }
 
 func NewGDScriptLanguageProtocol(obj Object) GDScriptLanguageProtocol {
@@ -2676,8 +2676,8 @@ func NewGDScriptLanguageProtocol(obj Object) GDScriptLanguageProtocol {
 func GetGDScriptLanguageProtocol(obj GDScriptLanguageProtocol) [1]Object { return obj.AsObject() }
 
 type GDScriptSyntaxHighlighter struct {
-	object
 	_GDScriptSyntaxHighlighter struct{}
+	object
 }
 
 func NewGDScriptSyntaxHighlighter(obj Object) GDScriptSyntaxHighlighter {
@@ -2686,8 +2686,8 @@ func NewGDScriptSyntaxHighlighter(obj Object) GDScriptSyntaxHighlighter {
 func GetGDScriptSyntaxHighlighter(obj GDScriptSyntaxHighlighter) [1]Object { return obj.AsObject() }
 
 type GDScriptTextDocument struct {
-	object
 	_GDScriptTextDocument struct{}
+	object
 }
 
 func NewGDScriptTextDocument(obj Object) GDScriptTextDocument {
@@ -2696,8 +2696,8 @@ func NewGDScriptTextDocument(obj Object) GDScriptTextDocument {
 func GetGDScriptTextDocument(obj GDScriptTextDocument) [1]Object { return obj.AsObject() }
 
 type GDScriptWorkspace struct {
-	object
 	_GDScriptWorkspace struct{}
+	object
 }
 
 func NewGDScriptWorkspace(obj Object) GDScriptWorkspace {
@@ -2706,48 +2706,48 @@ func NewGDScriptWorkspace(obj Object) GDScriptWorkspace {
 func GetGDScriptWorkspace(obj GDScriptWorkspace) [1]Object { return obj.AsObject() }
 
 type GLTFAccessor struct {
-	object
 	_GLTFAccessor struct{}
+	object
 }
 
 func NewGLTFAccessor(obj Object) GLTFAccessor    { return GLTFAccessor{object: object(obj)} }
 func GetGLTFAccessor(obj GLTFAccessor) [1]Object { return obj.AsObject() }
 
 type GLTFAnimation struct {
-	object
 	_GLTFAnimation struct{}
+	object
 }
 
 func NewGLTFAnimation(obj Object) GLTFAnimation    { return GLTFAnimation{object: object(obj)} }
 func GetGLTFAnimation(obj GLTFAnimation) [1]Object { return obj.AsObject() }
 
 type GLTFBufferView struct {
-	object
 	_GLTFBufferView struct{}
+	object
 }
 
 func NewGLTFBufferView(obj Object) GLTFBufferView    { return GLTFBufferView{object: object(obj)} }
 func GetGLTFBufferView(obj GLTFBufferView) [1]Object { return obj.AsObject() }
 
 type GLTFCamera struct {
-	object
 	_GLTFCamera struct{}
+	object
 }
 
 func NewGLTFCamera(obj Object) GLTFCamera    { return GLTFCamera{object: object(obj)} }
 func GetGLTFCamera(obj GLTFCamera) [1]Object { return obj.AsObject() }
 
 type GLTFDocument struct {
-	object
 	_GLTFDocument struct{}
+	object
 }
 
 func NewGLTFDocument(obj Object) GLTFDocument    { return GLTFDocument{object: object(obj)} }
 func GetGLTFDocument(obj GLTFDocument) [1]Object { return obj.AsObject() }
 
 type GLTFDocumentExtension struct {
-	object
 	_GLTFDocumentExtension struct{}
+	object
 }
 
 func NewGLTFDocumentExtension(obj Object) GLTFDocumentExtension {
@@ -2756,8 +2756,8 @@ func NewGLTFDocumentExtension(obj Object) GLTFDocumentExtension {
 func GetGLTFDocumentExtension(obj GLTFDocumentExtension) [1]Object { return obj.AsObject() }
 
 type GLTFDocumentExtensionConvertImporterMesh struct {
-	object
 	_GLTFDocumentExtensionConvertImporterMesh struct{}
+	object
 }
 
 func NewGLTFDocumentExtensionConvertImporterMesh(obj Object) GLTFDocumentExtensionConvertImporterMesh {
@@ -2768,32 +2768,32 @@ func GetGLTFDocumentExtensionConvertImporterMesh(obj GLTFDocumentExtensionConver
 }
 
 type GLTFLight struct {
-	object
 	_GLTFLight struct{}
+	object
 }
 
 func NewGLTFLight(obj Object) GLTFLight    { return GLTFLight{object: object(obj)} }
 func GetGLTFLight(obj GLTFLight) [1]Object { return obj.AsObject() }
 
 type GLTFMesh struct {
-	object
 	_GLTFMesh struct{}
+	object
 }
 
 func NewGLTFMesh(obj Object) GLTFMesh    { return GLTFMesh{object: object(obj)} }
 func GetGLTFMesh(obj GLTFMesh) [1]Object { return obj.AsObject() }
 
 type GLTFNode struct {
-	object
 	_GLTFNode struct{}
+	object
 }
 
 func NewGLTFNode(obj Object) GLTFNode    { return GLTFNode{object: object(obj)} }
 func GetGLTFNode(obj GLTFNode) [1]Object { return obj.AsObject() }
 
 type GLTFObjectModelProperty struct {
-	object
 	_GLTFObjectModelProperty struct{}
+	object
 }
 
 func NewGLTFObjectModelProperty(obj Object) GLTFObjectModelProperty {
@@ -2802,64 +2802,64 @@ func NewGLTFObjectModelProperty(obj Object) GLTFObjectModelProperty {
 func GetGLTFObjectModelProperty(obj GLTFObjectModelProperty) [1]Object { return obj.AsObject() }
 
 type GLTFPhysicsBody struct {
-	object
 	_GLTFPhysicsBody struct{}
+	object
 }
 
 func NewGLTFPhysicsBody(obj Object) GLTFPhysicsBody    { return GLTFPhysicsBody{object: object(obj)} }
 func GetGLTFPhysicsBody(obj GLTFPhysicsBody) [1]Object { return obj.AsObject() }
 
 type GLTFPhysicsShape struct {
-	object
 	_GLTFPhysicsShape struct{}
+	object
 }
 
 func NewGLTFPhysicsShape(obj Object) GLTFPhysicsShape    { return GLTFPhysicsShape{object: object(obj)} }
 func GetGLTFPhysicsShape(obj GLTFPhysicsShape) [1]Object { return obj.AsObject() }
 
 type GLTFSkeleton struct {
-	object
 	_GLTFSkeleton struct{}
+	object
 }
 
 func NewGLTFSkeleton(obj Object) GLTFSkeleton    { return GLTFSkeleton{object: object(obj)} }
 func GetGLTFSkeleton(obj GLTFSkeleton) [1]Object { return obj.AsObject() }
 
 type GLTFSkin struct {
-	object
 	_GLTFSkin struct{}
+	object
 }
 
 func NewGLTFSkin(obj Object) GLTFSkin    { return GLTFSkin{object: object(obj)} }
 func GetGLTFSkin(obj GLTFSkin) [1]Object { return obj.AsObject() }
 
 type GLTFSpecGloss struct {
-	object
 	_GLTFSpecGloss struct{}
+	object
 }
 
 func NewGLTFSpecGloss(obj Object) GLTFSpecGloss    { return GLTFSpecGloss{object: object(obj)} }
 func GetGLTFSpecGloss(obj GLTFSpecGloss) [1]Object { return obj.AsObject() }
 
 type GLTFState struct {
-	object
 	_GLTFState struct{}
+	object
 }
 
 func NewGLTFState(obj Object) GLTFState    { return GLTFState{object: object(obj)} }
 func GetGLTFState(obj GLTFState) [1]Object { return obj.AsObject() }
 
 type GLTFTexture struct {
-	object
 	_GLTFTexture struct{}
+	object
 }
 
 func NewGLTFTexture(obj Object) GLTFTexture    { return GLTFTexture{object: object(obj)} }
 func GetGLTFTexture(obj GLTFTexture) [1]Object { return obj.AsObject() }
 
 type GLTFTextureSampler struct {
-	object
 	_GLTFTextureSampler struct{}
+	object
 }
 
 func NewGLTFTextureSampler(obj Object) GLTFTextureSampler {
@@ -2868,24 +2868,24 @@ func NewGLTFTextureSampler(obj Object) GLTFTextureSampler {
 func GetGLTFTextureSampler(obj GLTFTextureSampler) [1]Object { return obj.AsObject() }
 
 type GPUParticles2D struct {
-	object
 	_GPUParticles2D struct{}
+	object
 }
 
 func NewGPUParticles2D(obj Object) GPUParticles2D    { return GPUParticles2D{object: object(obj)} }
 func GetGPUParticles2D(obj GPUParticles2D) [1]Object { return obj.AsObject() }
 
 type GPUParticles3D struct {
-	object
 	_GPUParticles3D struct{}
+	object
 }
 
 func NewGPUParticles3D(obj Object) GPUParticles3D    { return GPUParticles3D{object: object(obj)} }
 func GetGPUParticles3D(obj GPUParticles3D) [1]Object { return obj.AsObject() }
 
 type GPUParticlesAttractor3D struct {
-	object
 	_GPUParticlesAttractor3D struct{}
+	object
 }
 
 func NewGPUParticlesAttractor3D(obj Object) GPUParticlesAttractor3D {
@@ -2894,8 +2894,8 @@ func NewGPUParticlesAttractor3D(obj Object) GPUParticlesAttractor3D {
 func GetGPUParticlesAttractor3D(obj GPUParticlesAttractor3D) [1]Object { return obj.AsObject() }
 
 type GPUParticlesAttractorBox3D struct {
-	object
 	_GPUParticlesAttractorBox3D struct{}
+	object
 }
 
 func NewGPUParticlesAttractorBox3D(obj Object) GPUParticlesAttractorBox3D {
@@ -2904,8 +2904,8 @@ func NewGPUParticlesAttractorBox3D(obj Object) GPUParticlesAttractorBox3D {
 func GetGPUParticlesAttractorBox3D(obj GPUParticlesAttractorBox3D) [1]Object { return obj.AsObject() }
 
 type GPUParticlesAttractorSphere3D struct {
-	object
 	_GPUParticlesAttractorSphere3D struct{}
+	object
 }
 
 func NewGPUParticlesAttractorSphere3D(obj Object) GPUParticlesAttractorSphere3D {
@@ -2916,8 +2916,8 @@ func GetGPUParticlesAttractorSphere3D(obj GPUParticlesAttractorSphere3D) [1]Obje
 }
 
 type GPUParticlesAttractorVectorField3D struct {
-	object
 	_GPUParticlesAttractorVectorField3D struct{}
+	object
 }
 
 func NewGPUParticlesAttractorVectorField3D(obj Object) GPUParticlesAttractorVectorField3D {
@@ -2928,8 +2928,8 @@ func GetGPUParticlesAttractorVectorField3D(obj GPUParticlesAttractorVectorField3
 }
 
 type GPUParticlesCollision3D struct {
-	object
 	_GPUParticlesCollision3D struct{}
+	object
 }
 
 func NewGPUParticlesCollision3D(obj Object) GPUParticlesCollision3D {
@@ -2938,8 +2938,8 @@ func NewGPUParticlesCollision3D(obj Object) GPUParticlesCollision3D {
 func GetGPUParticlesCollision3D(obj GPUParticlesCollision3D) [1]Object { return obj.AsObject() }
 
 type GPUParticlesCollisionBox3D struct {
-	object
 	_GPUParticlesCollisionBox3D struct{}
+	object
 }
 
 func NewGPUParticlesCollisionBox3D(obj Object) GPUParticlesCollisionBox3D {
@@ -2948,8 +2948,8 @@ func NewGPUParticlesCollisionBox3D(obj Object) GPUParticlesCollisionBox3D {
 func GetGPUParticlesCollisionBox3D(obj GPUParticlesCollisionBox3D) [1]Object { return obj.AsObject() }
 
 type GPUParticlesCollisionHeightField3D struct {
-	object
 	_GPUParticlesCollisionHeightField3D struct{}
+	object
 }
 
 func NewGPUParticlesCollisionHeightField3D(obj Object) GPUParticlesCollisionHeightField3D {
@@ -2960,8 +2960,8 @@ func GetGPUParticlesCollisionHeightField3D(obj GPUParticlesCollisionHeightField3
 }
 
 type GPUParticlesCollisionSDF3D struct {
-	object
 	_GPUParticlesCollisionSDF3D struct{}
+	object
 }
 
 func NewGPUParticlesCollisionSDF3D(obj Object) GPUParticlesCollisionSDF3D {
@@ -2970,8 +2970,8 @@ func NewGPUParticlesCollisionSDF3D(obj Object) GPUParticlesCollisionSDF3D {
 func GetGPUParticlesCollisionSDF3D(obj GPUParticlesCollisionSDF3D) [1]Object { return obj.AsObject() }
 
 type GPUParticlesCollisionSphere3D struct {
-	object
 	_GPUParticlesCollisionSphere3D struct{}
+	object
 }
 
 func NewGPUParticlesCollisionSphere3D(obj Object) GPUParticlesCollisionSphere3D {
@@ -2982,8 +2982,8 @@ func GetGPUParticlesCollisionSphere3D(obj GPUParticlesCollisionSphere3D) [1]Obje
 }
 
 type Generic6DOFJoint3D struct {
-	object
 	_Generic6DOFJoint3D struct{}
+	object
 }
 
 func NewGeneric6DOFJoint3D(obj Object) Generic6DOFJoint3D {
@@ -2992,24 +2992,24 @@ func NewGeneric6DOFJoint3D(obj Object) Generic6DOFJoint3D {
 func GetGeneric6DOFJoint3D(obj Generic6DOFJoint3D) [1]Object { return obj.AsObject() }
 
 type Geometry2D struct {
-	object
 	_Geometry2D struct{}
+	object
 }
 
 func NewGeometry2D(obj Object) Geometry2D    { return Geometry2D{object: object(obj)} }
 func GetGeometry2D(obj Geometry2D) [1]Object { return obj.AsObject() }
 
 type Geometry3D struct {
-	object
 	_Geometry3D struct{}
+	object
 }
 
 func NewGeometry3D(obj Object) Geometry3D    { return Geometry3D{object: object(obj)} }
 func GetGeometry3D(obj Geometry3D) [1]Object { return obj.AsObject() }
 
 type GeometryInstance3D struct {
-	object
 	_GeometryInstance3D struct{}
+	object
 }
 
 func NewGeometryInstance3D(obj Object) GeometryInstance3D {
@@ -3018,24 +3018,24 @@ func NewGeometryInstance3D(obj Object) GeometryInstance3D {
 func GetGeometryInstance3D(obj GeometryInstance3D) [1]Object { return obj.AsObject() }
 
 type Startup struct {
-	object
 	_Startup struct{}
+	object
 }
 
 func NewStartup(obj Object) Startup    { return Startup{object: object(obj)} }
 func GetStartup(obj Startup) [1]Object { return obj.AsObject() }
 
 type Gradient struct {
-	object
 	_Gradient struct{}
+	object
 }
 
 func NewGradient(obj Object) Gradient    { return Gradient{object: object(obj)} }
 func GetGradient(obj Gradient) [1]Object { return obj.AsObject() }
 
 type GradientTexture1D struct {
-	object
 	_GradientTexture1D struct{}
+	object
 }
 
 func NewGradientTexture1D(obj Object) GradientTexture1D {
@@ -3044,8 +3044,8 @@ func NewGradientTexture1D(obj Object) GradientTexture1D {
 func GetGradientTexture1D(obj GradientTexture1D) [1]Object { return obj.AsObject() }
 
 type GradientTexture2D struct {
-	object
 	_GradientTexture2D struct{}
+	object
 }
 
 func NewGradientTexture2D(obj Object) GradientTexture2D {
@@ -3054,56 +3054,56 @@ func NewGradientTexture2D(obj Object) GradientTexture2D {
 func GetGradientTexture2D(obj GradientTexture2D) [1]Object { return obj.AsObject() }
 
 type GraphEdit struct {
-	object
 	_GraphEdit struct{}
+	object
 }
 
 func NewGraphEdit(obj Object) GraphEdit    { return GraphEdit{object: object(obj)} }
 func GetGraphEdit(obj GraphEdit) [1]Object { return obj.AsObject() }
 
 type GraphElement struct {
-	object
 	_GraphElement struct{}
+	object
 }
 
 func NewGraphElement(obj Object) GraphElement    { return GraphElement{object: object(obj)} }
 func GetGraphElement(obj GraphElement) [1]Object { return obj.AsObject() }
 
 type GraphFrame struct {
-	object
 	_GraphFrame struct{}
+	object
 }
 
 func NewGraphFrame(obj Object) GraphFrame    { return GraphFrame{object: object(obj)} }
 func GetGraphFrame(obj GraphFrame) [1]Object { return obj.AsObject() }
 
 type GraphNode struct {
-	object
 	_GraphNode struct{}
+	object
 }
 
 func NewGraphNode(obj Object) GraphNode    { return GraphNode{object: object(obj)} }
 func GetGraphNode(obj GraphNode) [1]Object { return obj.AsObject() }
 
 type GridContainer struct {
-	object
 	_GridContainer struct{}
+	object
 }
 
 func NewGridContainer(obj Object) GridContainer    { return GridContainer{object: object(obj)} }
 func GetGridContainer(obj GridContainer) [1]Object { return obj.AsObject() }
 
 type GridMap struct {
-	object
 	_GridMap struct{}
+	object
 }
 
 func NewGridMap(obj Object) GridMap    { return GridMap{object: object(obj)} }
 func GetGridMap(obj GridMap) [1]Object { return obj.AsObject() }
 
 type GridMapEditorPlugin struct {
-	object
 	_GridMapEditorPlugin struct{}
+	object
 }
 
 func NewGridMapEditorPlugin(obj Object) GridMapEditorPlugin {
@@ -3112,136 +3112,136 @@ func NewGridMapEditorPlugin(obj Object) GridMapEditorPlugin {
 func GetGridMapEditorPlugin(obj GridMapEditorPlugin) [1]Object { return obj.AsObject() }
 
 type GrooveJoint2D struct {
-	object
 	_GrooveJoint2D struct{}
+	object
 }
 
 func NewGrooveJoint2D(obj Object) GrooveJoint2D    { return GrooveJoint2D{object: object(obj)} }
 func GetGrooveJoint2D(obj GrooveJoint2D) [1]Object { return obj.AsObject() }
 
 type HBoxContainer struct {
-	object
 	_HBoxContainer struct{}
+	object
 }
 
 func NewHBoxContainer(obj Object) HBoxContainer    { return HBoxContainer{object: object(obj)} }
 func GetHBoxContainer(obj HBoxContainer) [1]Object { return obj.AsObject() }
 
 type HFlowContainer struct {
-	object
 	_HFlowContainer struct{}
+	object
 }
 
 func NewHFlowContainer(obj Object) HFlowContainer    { return HFlowContainer{object: object(obj)} }
 func GetHFlowContainer(obj HFlowContainer) [1]Object { return obj.AsObject() }
 
 type HMACContext struct {
-	object
 	_HMACContext struct{}
+	object
 }
 
 func NewHMACContext(obj Object) HMACContext    { return HMACContext{object: object(obj)} }
 func GetHMACContext(obj HMACContext) [1]Object { return obj.AsObject() }
 
 type HScrollBar struct {
-	object
 	_HScrollBar struct{}
+	object
 }
 
 func NewHScrollBar(obj Object) HScrollBar    { return HScrollBar{object: object(obj)} }
 func GetHScrollBar(obj HScrollBar) [1]Object { return obj.AsObject() }
 
 type HSeparator struct {
-	object
 	_HSeparator struct{}
+	object
 }
 
 func NewHSeparator(obj Object) HSeparator    { return HSeparator{object: object(obj)} }
 func GetHSeparator(obj HSeparator) [1]Object { return obj.AsObject() }
 
 type HSlider struct {
-	object
 	_HSlider struct{}
+	object
 }
 
 func NewHSlider(obj Object) HSlider    { return HSlider{object: object(obj)} }
 func GetHSlider(obj HSlider) [1]Object { return obj.AsObject() }
 
 type HSplitContainer struct {
-	object
 	_HSplitContainer struct{}
+	object
 }
 
 func NewHSplitContainer(obj Object) HSplitContainer    { return HSplitContainer{object: object(obj)} }
 func GetHSplitContainer(obj HSplitContainer) [1]Object { return obj.AsObject() }
 
 type HTTPClient struct {
-	object
 	_HTTPClient struct{}
+	object
 }
 
 func NewHTTPClient(obj Object) HTTPClient    { return HTTPClient{object: object(obj)} }
 func GetHTTPClient(obj HTTPClient) [1]Object { return obj.AsObject() }
 
 type HTTPRequest struct {
-	object
 	_HTTPRequest struct{}
+	object
 }
 
 func NewHTTPRequest(obj Object) HTTPRequest    { return HTTPRequest{object: object(obj)} }
 func GetHTTPRequest(obj HTTPRequest) [1]Object { return obj.AsObject() }
 
 type HashingContext struct {
-	object
 	_HashingContext struct{}
+	object
 }
 
 func NewHashingContext(obj Object) HashingContext    { return HashingContext{object: object(obj)} }
 func GetHashingContext(obj HashingContext) [1]Object { return obj.AsObject() }
 
 type HeightMapShape3D struct {
-	object
 	_HeightMapShape3D struct{}
+	object
 }
 
 func NewHeightMapShape3D(obj Object) HeightMapShape3D    { return HeightMapShape3D{object: object(obj)} }
 func GetHeightMapShape3D(obj HeightMapShape3D) [1]Object { return obj.AsObject() }
 
 type HingeJoint3D struct {
-	object
 	_HingeJoint3D struct{}
+	object
 }
 
 func NewHingeJoint3D(obj Object) HingeJoint3D    { return HingeJoint3D{object: object(obj)} }
 func GetHingeJoint3D(obj HingeJoint3D) [1]Object { return obj.AsObject() }
 
 type IKModifier3D struct {
-	object
 	_IKModifier3D struct{}
+	object
 }
 
 func NewIKModifier3D(obj Object) IKModifier3D    { return IKModifier3D{object: object(obj)} }
 func GetIKModifier3D(obj IKModifier3D) [1]Object { return obj.AsObject() }
 
 type IP struct {
-	object
 	_IP struct{}
+	object
 }
 
 func NewIP(obj Object) IP    { return IP{object: object(obj)} }
 func GetIP(obj IP) [1]Object { return obj.AsObject() }
 
 type Image struct {
-	object
 	_Image struct{}
+	object
 }
 
 func NewImage(obj Object) Image    { return Image{object: object(obj)} }
 func GetImage(obj Image) [1]Object { return obj.AsObject() }
 
 type ImageFormatLoader struct {
-	object
 	_ImageFormatLoader struct{}
+	object
 }
 
 func NewImageFormatLoader(obj Object) ImageFormatLoader {
@@ -3250,8 +3250,8 @@ func NewImageFormatLoader(obj Object) ImageFormatLoader {
 func GetImageFormatLoader(obj ImageFormatLoader) [1]Object { return obj.AsObject() }
 
 type ImageFormatLoaderExtension struct {
-	object
 	_ImageFormatLoaderExtension struct{}
+	object
 }
 
 func NewImageFormatLoaderExtension(obj Object) ImageFormatLoaderExtension {
@@ -3260,24 +3260,24 @@ func NewImageFormatLoaderExtension(obj Object) ImageFormatLoaderExtension {
 func GetImageFormatLoaderExtension(obj ImageFormatLoaderExtension) [1]Object { return obj.AsObject() }
 
 type ImageTexture struct {
-	object
 	_ImageTexture struct{}
+	object
 }
 
 func NewImageTexture(obj Object) ImageTexture    { return ImageTexture{object: object(obj)} }
 func GetImageTexture(obj ImageTexture) [1]Object { return obj.AsObject() }
 
 type ImageTexture3D struct {
-	object
 	_ImageTexture3D struct{}
+	object
 }
 
 func NewImageTexture3D(obj Object) ImageTexture3D    { return ImageTexture3D{object: object(obj)} }
 func GetImageTexture3D(obj ImageTexture3D) [1]Object { return obj.AsObject() }
 
 type ImageTextureLayered struct {
-	object
 	_ImageTextureLayered struct{}
+	object
 }
 
 func NewImageTextureLayered(obj Object) ImageTextureLayered {
@@ -3286,24 +3286,24 @@ func NewImageTextureLayered(obj Object) ImageTextureLayered {
 func GetImageTextureLayered(obj ImageTextureLayered) [1]Object { return obj.AsObject() }
 
 type ImmediateMesh struct {
-	object
 	_ImmediateMesh struct{}
+	object
 }
 
 func NewImmediateMesh(obj Object) ImmediateMesh    { return ImmediateMesh{object: object(obj)} }
 func GetImmediateMesh(obj ImmediateMesh) [1]Object { return obj.AsObject() }
 
 type ImporterMesh struct {
-	object
 	_ImporterMesh struct{}
+	object
 }
 
 func NewImporterMesh(obj Object) ImporterMesh    { return ImporterMesh{object: object(obj)} }
 func GetImporterMesh(obj ImporterMesh) [1]Object { return obj.AsObject() }
 
 type ImporterMeshInstance3D struct {
-	object
 	_ImporterMeshInstance3D struct{}
+	object
 }
 
 func NewImporterMeshInstance3D(obj Object) ImporterMeshInstance3D {
@@ -3312,32 +3312,32 @@ func NewImporterMeshInstance3D(obj Object) ImporterMeshInstance3D {
 func GetImporterMeshInstance3D(obj ImporterMeshInstance3D) [1]Object { return obj.AsObject() }
 
 type Input struct {
-	object
 	_Input struct{}
+	object
 }
 
 func NewInput(obj Object) Input    { return Input{object: object(obj)} }
 func GetInput(obj Input) [1]Object { return obj.AsObject() }
 
 type InputEvent struct {
-	object
 	_InputEvent struct{}
+	object
 }
 
 func NewInputEvent(obj Object) InputEvent    { return InputEvent{object: object(obj)} }
 func GetInputEvent(obj InputEvent) [1]Object { return obj.AsObject() }
 
 type InputEventAction struct {
-	object
 	_InputEventAction struct{}
+	object
 }
 
 func NewInputEventAction(obj Object) InputEventAction    { return InputEventAction{object: object(obj)} }
 func GetInputEventAction(obj InputEventAction) [1]Object { return obj.AsObject() }
 
 type InputEventFromWindow struct {
-	object
 	_InputEventFromWindow struct{}
+	object
 }
 
 func NewInputEventFromWindow(obj Object) InputEventFromWindow {
@@ -3346,8 +3346,8 @@ func NewInputEventFromWindow(obj Object) InputEventFromWindow {
 func GetInputEventFromWindow(obj InputEventFromWindow) [1]Object { return obj.AsObject() }
 
 type InputEventGesture struct {
-	object
 	_InputEventGesture struct{}
+	object
 }
 
 func NewInputEventGesture(obj Object) InputEventGesture {
@@ -3356,8 +3356,8 @@ func NewInputEventGesture(obj Object) InputEventGesture {
 func GetInputEventGesture(obj InputEventGesture) [1]Object { return obj.AsObject() }
 
 type InputEventJoypadButton struct {
-	object
 	_InputEventJoypadButton struct{}
+	object
 }
 
 func NewInputEventJoypadButton(obj Object) InputEventJoypadButton {
@@ -3366,8 +3366,8 @@ func NewInputEventJoypadButton(obj Object) InputEventJoypadButton {
 func GetInputEventJoypadButton(obj InputEventJoypadButton) [1]Object { return obj.AsObject() }
 
 type InputEventJoypadMotion struct {
-	object
 	_InputEventJoypadMotion struct{}
+	object
 }
 
 func NewInputEventJoypadMotion(obj Object) InputEventJoypadMotion {
@@ -3376,24 +3376,24 @@ func NewInputEventJoypadMotion(obj Object) InputEventJoypadMotion {
 func GetInputEventJoypadMotion(obj InputEventJoypadMotion) [1]Object { return obj.AsObject() }
 
 type InputEventKey struct {
-	object
 	_InputEventKey struct{}
+	object
 }
 
 func NewInputEventKey(obj Object) InputEventKey    { return InputEventKey{object: object(obj)} }
 func GetInputEventKey(obj InputEventKey) [1]Object { return obj.AsObject() }
 
 type InputEventMIDI struct {
-	object
 	_InputEventMIDI struct{}
+	object
 }
 
 func NewInputEventMIDI(obj Object) InputEventMIDI    { return InputEventMIDI{object: object(obj)} }
 func GetInputEventMIDI(obj InputEventMIDI) [1]Object { return obj.AsObject() }
 
 type InputEventMagnifyGesture struct {
-	object
 	_InputEventMagnifyGesture struct{}
+	object
 }
 
 func NewInputEventMagnifyGesture(obj Object) InputEventMagnifyGesture {
@@ -3402,16 +3402,16 @@ func NewInputEventMagnifyGesture(obj Object) InputEventMagnifyGesture {
 func GetInputEventMagnifyGesture(obj InputEventMagnifyGesture) [1]Object { return obj.AsObject() }
 
 type InputEventMouse struct {
-	object
 	_InputEventMouse struct{}
+	object
 }
 
 func NewInputEventMouse(obj Object) InputEventMouse    { return InputEventMouse{object: object(obj)} }
 func GetInputEventMouse(obj InputEventMouse) [1]Object { return obj.AsObject() }
 
 type InputEventMouseButton struct {
-	object
 	_InputEventMouseButton struct{}
+	object
 }
 
 func NewInputEventMouseButton(obj Object) InputEventMouseButton {
@@ -3420,8 +3420,8 @@ func NewInputEventMouseButton(obj Object) InputEventMouseButton {
 func GetInputEventMouseButton(obj InputEventMouseButton) [1]Object { return obj.AsObject() }
 
 type InputEventMouseMotion struct {
-	object
 	_InputEventMouseMotion struct{}
+	object
 }
 
 func NewInputEventMouseMotion(obj Object) InputEventMouseMotion {
@@ -3430,8 +3430,8 @@ func NewInputEventMouseMotion(obj Object) InputEventMouseMotion {
 func GetInputEventMouseMotion(obj InputEventMouseMotion) [1]Object { return obj.AsObject() }
 
 type InputEventPanGesture struct {
-	object
 	_InputEventPanGesture struct{}
+	object
 }
 
 func NewInputEventPanGesture(obj Object) InputEventPanGesture {
@@ -3440,8 +3440,8 @@ func NewInputEventPanGesture(obj Object) InputEventPanGesture {
 func GetInputEventPanGesture(obj InputEventPanGesture) [1]Object { return obj.AsObject() }
 
 type InputEventScreenDrag struct {
-	object
 	_InputEventScreenDrag struct{}
+	object
 }
 
 func NewInputEventScreenDrag(obj Object) InputEventScreenDrag {
@@ -3450,8 +3450,8 @@ func NewInputEventScreenDrag(obj Object) InputEventScreenDrag {
 func GetInputEventScreenDrag(obj InputEventScreenDrag) [1]Object { return obj.AsObject() }
 
 type InputEventScreenTouch struct {
-	object
 	_InputEventScreenTouch struct{}
+	object
 }
 
 func NewInputEventScreenTouch(obj Object) InputEventScreenTouch {
@@ -3460,8 +3460,8 @@ func NewInputEventScreenTouch(obj Object) InputEventScreenTouch {
 func GetInputEventScreenTouch(obj InputEventScreenTouch) [1]Object { return obj.AsObject() }
 
 type InputEventShortcut struct {
-	object
 	_InputEventShortcut struct{}
+	object
 }
 
 func NewInputEventShortcut(obj Object) InputEventShortcut {
@@ -3470,8 +3470,8 @@ func NewInputEventShortcut(obj Object) InputEventShortcut {
 func GetInputEventShortcut(obj InputEventShortcut) [1]Object { return obj.AsObject() }
 
 type InputEventWithModifiers struct {
-	object
 	_InputEventWithModifiers struct{}
+	object
 }
 
 func NewInputEventWithModifiers(obj Object) InputEventWithModifiers {
@@ -3480,16 +3480,16 @@ func NewInputEventWithModifiers(obj Object) InputEventWithModifiers {
 func GetInputEventWithModifiers(obj InputEventWithModifiers) [1]Object { return obj.AsObject() }
 
 type InputMap struct {
-	object
 	_InputMap struct{}
+	object
 }
 
 func NewInputMap(obj Object) InputMap    { return InputMap{object: object(obj)} }
 func GetInputMap(obj InputMap) [1]Object { return obj.AsObject() }
 
 type InstancePlaceholder struct {
-	object
 	_InstancePlaceholder struct{}
+	object
 }
 
 func NewInstancePlaceholder(obj Object) InstancePlaceholder {
@@ -3498,120 +3498,120 @@ func NewInstancePlaceholder(obj Object) InstancePlaceholder {
 func GetInstancePlaceholder(obj InstancePlaceholder) [1]Object { return obj.AsObject() }
 
 type IntervalTweener struct {
-	object
 	_IntervalTweener struct{}
+	object
 }
 
 func NewIntervalTweener(obj Object) IntervalTweener    { return IntervalTweener{object: object(obj)} }
 func GetIntervalTweener(obj IntervalTweener) [1]Object { return obj.AsObject() }
 
 type ItemList struct {
-	object
 	_ItemList struct{}
+	object
 }
 
 func NewItemList(obj Object) ItemList    { return ItemList{object: object(obj)} }
 func GetItemList(obj ItemList) [1]Object { return obj.AsObject() }
 
 type IterateIK3D struct {
-	object
 	_IterateIK3D struct{}
+	object
 }
 
 func NewIterateIK3D(obj Object) IterateIK3D    { return IterateIK3D{object: object(obj)} }
 func GetIterateIK3D(obj IterateIK3D) [1]Object { return obj.AsObject() }
 
 type JNISingleton struct {
-	object
 	_JNISingleton struct{}
+	object
 }
 
 func NewJNISingleton(obj Object) JNISingleton    { return JNISingleton{object: object(obj)} }
 func GetJNISingleton(obj JNISingleton) [1]Object { return obj.AsObject() }
 
 type JSON struct {
-	object
 	_JSON struct{}
+	object
 }
 
 func NewJSON(obj Object) JSON    { return JSON{object: object(obj)} }
 func GetJSON(obj JSON) [1]Object { return obj.AsObject() }
 
 type JSONRPC struct {
-	object
 	_JSONRPC struct{}
+	object
 }
 
 func NewJSONRPC(obj Object) JSONRPC    { return JSONRPC{object: object(obj)} }
 func GetJSONRPC(obj JSONRPC) [1]Object { return obj.AsObject() }
 
 type JacobianIK3D struct {
-	object
 	_JacobianIK3D struct{}
+	object
 }
 
 func NewJacobianIK3D(obj Object) JacobianIK3D    { return JacobianIK3D{object: object(obj)} }
 func GetJacobianIK3D(obj JacobianIK3D) [1]Object { return obj.AsObject() }
 
 type JavaClass struct {
-	object
 	_JavaClass struct{}
+	object
 }
 
 func NewJavaClass(obj Object) JavaClass    { return JavaClass{object: object(obj)} }
 func GetJavaClass(obj JavaClass) [1]Object { return obj.AsObject() }
 
 type JavaClassWrapper struct {
-	object
 	_JavaClassWrapper struct{}
+	object
 }
 
 func NewJavaClassWrapper(obj Object) JavaClassWrapper    { return JavaClassWrapper{object: object(obj)} }
 func GetJavaClassWrapper(obj JavaClassWrapper) [1]Object { return obj.AsObject() }
 
 type JavaObject struct {
-	object
 	_JavaObject struct{}
+	object
 }
 
 func NewJavaObject(obj Object) JavaObject    { return JavaObject{object: object(obj)} }
 func GetJavaObject(obj JavaObject) [1]Object { return obj.AsObject() }
 
 type JavaScriptBridge struct {
-	object
 	_JavaScriptBridge struct{}
+	object
 }
 
 func NewJavaScriptBridge(obj Object) JavaScriptBridge    { return JavaScriptBridge{object: object(obj)} }
 func GetJavaScriptBridge(obj JavaScriptBridge) [1]Object { return obj.AsObject() }
 
 type JavaScriptObject struct {
-	object
 	_JavaScriptObject struct{}
+	object
 }
 
 func NewJavaScriptObject(obj Object) JavaScriptObject    { return JavaScriptObject{object: object(obj)} }
 func GetJavaScriptObject(obj JavaScriptObject) [1]Object { return obj.AsObject() }
 
 type Joint2D struct {
-	object
 	_Joint2D struct{}
+	object
 }
 
 func NewJoint2D(obj Object) Joint2D    { return Joint2D{object: object(obj)} }
 func GetJoint2D(obj Joint2D) [1]Object { return obj.AsObject() }
 
 type Joint3D struct {
-	object
 	_Joint3D struct{}
+	object
 }
 
 func NewJoint3D(obj Object) Joint3D    { return Joint3D{object: object(obj)} }
 func GetJoint3D(obj Joint3D) [1]Object { return obj.AsObject() }
 
 type JointLimitation3D struct {
-	object
 	_JointLimitation3D struct{}
+	object
 }
 
 func NewJointLimitation3D(obj Object) JointLimitation3D {
@@ -3620,8 +3620,8 @@ func NewJointLimitation3D(obj Object) JointLimitation3D {
 func GetJointLimitation3D(obj JointLimitation3D) [1]Object { return obj.AsObject() }
 
 type JointLimitationCone3D struct {
-	object
 	_JointLimitationCone3D struct{}
+	object
 }
 
 func NewJointLimitationCone3D(obj Object) JointLimitationCone3D {
@@ -3630,8 +3630,8 @@ func NewJointLimitationCone3D(obj Object) JointLimitationCone3D {
 func GetJointLimitationCone3D(obj JointLimitationCone3D) [1]Object { return obj.AsObject() }
 
 type KinematicCollision2D struct {
-	object
 	_KinematicCollision2D struct{}
+	object
 }
 
 func NewKinematicCollision2D(obj Object) KinematicCollision2D {
@@ -3640,8 +3640,8 @@ func NewKinematicCollision2D(obj Object) KinematicCollision2D {
 func GetKinematicCollision2D(obj KinematicCollision2D) [1]Object { return obj.AsObject() }
 
 type KinematicCollision3D struct {
-	object
 	_KinematicCollision3D struct{}
+	object
 }
 
 func NewKinematicCollision3D(obj Object) KinematicCollision3D {
@@ -3650,96 +3650,96 @@ func NewKinematicCollision3D(obj Object) KinematicCollision3D {
 func GetKinematicCollision3D(obj KinematicCollision3D) [1]Object { return obj.AsObject() }
 
 type Label struct {
-	object
 	_Label struct{}
+	object
 }
 
 func NewLabel(obj Object) Label    { return Label{object: object(obj)} }
 func GetLabel(obj Label) [1]Object { return obj.AsObject() }
 
 type Label3D struct {
-	object
 	_Label3D struct{}
+	object
 }
 
 func NewLabel3D(obj Object) Label3D    { return Label3D{object: object(obj)} }
 func GetLabel3D(obj Label3D) [1]Object { return obj.AsObject() }
 
 type LabelSettings struct {
-	object
 	_LabelSettings struct{}
+	object
 }
 
 func NewLabelSettings(obj Object) LabelSettings    { return LabelSettings{object: object(obj)} }
 func GetLabelSettings(obj LabelSettings) [1]Object { return obj.AsObject() }
 
 type Light2D struct {
-	object
 	_Light2D struct{}
+	object
 }
 
 func NewLight2D(obj Object) Light2D    { return Light2D{object: object(obj)} }
 func GetLight2D(obj Light2D) [1]Object { return obj.AsObject() }
 
 type Light3D struct {
-	object
 	_Light3D struct{}
+	object
 }
 
 func NewLight3D(obj Object) Light3D    { return Light3D{object: object(obj)} }
 func GetLight3D(obj Light3D) [1]Object { return obj.AsObject() }
 
 type LightOccluder2D struct {
-	object
 	_LightOccluder2D struct{}
+	object
 }
 
 func NewLightOccluder2D(obj Object) LightOccluder2D    { return LightOccluder2D{object: object(obj)} }
 func GetLightOccluder2D(obj LightOccluder2D) [1]Object { return obj.AsObject() }
 
 type LightmapGI struct {
-	object
 	_LightmapGI struct{}
+	object
 }
 
 func NewLightmapGI(obj Object) LightmapGI    { return LightmapGI{object: object(obj)} }
 func GetLightmapGI(obj LightmapGI) [1]Object { return obj.AsObject() }
 
 type LightmapGIData struct {
-	object
 	_LightmapGIData struct{}
+	object
 }
 
 func NewLightmapGIData(obj Object) LightmapGIData    { return LightmapGIData{object: object(obj)} }
 func GetLightmapGIData(obj LightmapGIData) [1]Object { return obj.AsObject() }
 
 type LightmapProbe struct {
-	object
 	_LightmapProbe struct{}
+	object
 }
 
 func NewLightmapProbe(obj Object) LightmapProbe    { return LightmapProbe{object: object(obj)} }
 func GetLightmapProbe(obj LightmapProbe) [1]Object { return obj.AsObject() }
 
 type Lightmapper struct {
-	object
 	_Lightmapper struct{}
+	object
 }
 
 func NewLightmapper(obj Object) Lightmapper    { return Lightmapper{object: object(obj)} }
 func GetLightmapper(obj Lightmapper) [1]Object { return obj.AsObject() }
 
 type LightmapperRD struct {
-	object
 	_LightmapperRD struct{}
+	object
 }
 
 func NewLightmapperRD(obj Object) LightmapperRD    { return LightmapperRD{object: object(obj)} }
 func GetLightmapperRD(obj LightmapperRD) [1]Object { return obj.AsObject() }
 
 type LimitAngularVelocityModifier3D struct {
-	object
 	_LimitAngularVelocityModifier3D struct{}
+	object
 }
 
 func NewLimitAngularVelocityModifier3D(obj Object) LimitAngularVelocityModifier3D {
@@ -3750,120 +3750,120 @@ func GetLimitAngularVelocityModifier3D(obj LimitAngularVelocityModifier3D) [1]Ob
 }
 
 type Line2D struct {
-	object
 	_Line2D struct{}
+	object
 }
 
 func NewLine2D(obj Object) Line2D    { return Line2D{object: object(obj)} }
 func GetLine2D(obj Line2D) [1]Object { return obj.AsObject() }
 
 type LineEdit struct {
-	object
 	_LineEdit struct{}
+	object
 }
 
 func NewLineEdit(obj Object) LineEdit    { return LineEdit{object: object(obj)} }
 func GetLineEdit(obj LineEdit) [1]Object { return obj.AsObject() }
 
 type LinkButton struct {
-	object
 	_LinkButton struct{}
+	object
 }
 
 func NewLinkButton(obj Object) LinkButton    { return LinkButton{object: object(obj)} }
 func GetLinkButton(obj LinkButton) [1]Object { return obj.AsObject() }
 
 type Logger struct {
-	object
 	_Logger struct{}
+	object
 }
 
 func NewLogger(obj Object) Logger    { return Logger{object: object(obj)} }
 func GetLogger(obj Logger) [1]Object { return obj.AsObject() }
 
 type LookAtModifier3D struct {
-	object
 	_LookAtModifier3D struct{}
+	object
 }
 
 func NewLookAtModifier3D(obj Object) LookAtModifier3D    { return LookAtModifier3D{object: object(obj)} }
 func GetLookAtModifier3D(obj LookAtModifier3D) [1]Object { return obj.AsObject() }
 
 type MainLoop struct {
-	object
 	_MainLoop struct{}
+	object
 }
 
 func NewMainLoop(obj Object) MainLoop    { return MainLoop{object: object(obj)} }
 func GetMainLoop(obj MainLoop) [1]Object { return obj.AsObject() }
 
 type MarginContainer struct {
-	object
 	_MarginContainer struct{}
+	object
 }
 
 func NewMarginContainer(obj Object) MarginContainer    { return MarginContainer{object: object(obj)} }
 func GetMarginContainer(obj MarginContainer) [1]Object { return obj.AsObject() }
 
 type Marker2D struct {
-	object
 	_Marker2D struct{}
+	object
 }
 
 func NewMarker2D(obj Object) Marker2D    { return Marker2D{object: object(obj)} }
 func GetMarker2D(obj Marker2D) [1]Object { return obj.AsObject() }
 
 type Marker3D struct {
-	object
 	_Marker3D struct{}
+	object
 }
 
 func NewMarker3D(obj Object) Marker3D    { return Marker3D{object: object(obj)} }
 func GetMarker3D(obj Marker3D) [1]Object { return obj.AsObject() }
 
 type Marshalls struct {
-	object
 	_Marshalls struct{}
+	object
 }
 
 func NewMarshalls(obj Object) Marshalls    { return Marshalls{object: object(obj)} }
 func GetMarshalls(obj Marshalls) [1]Object { return obj.AsObject() }
 
 type Material struct {
-	object
 	_Material struct{}
+	object
 }
 
 func NewMaterial(obj Object) Material    { return Material{object: object(obj)} }
 func GetMaterial(obj Material) [1]Object { return obj.AsObject() }
 
 type MenuBar struct {
-	object
 	_MenuBar struct{}
+	object
 }
 
 func NewMenuBar(obj Object) MenuBar    { return MenuBar{object: object(obj)} }
 func GetMenuBar(obj MenuBar) [1]Object { return obj.AsObject() }
 
 type MenuButton struct {
-	object
 	_MenuButton struct{}
+	object
 }
 
 func NewMenuButton(obj Object) MenuButton    { return MenuButton{object: object(obj)} }
 func GetMenuButton(obj MenuButton) [1]Object { return obj.AsObject() }
 
 type Mesh struct {
-	object
 	_Mesh struct{}
+	object
 }
 
 func NewMesh(obj Object) Mesh    { return Mesh{object: object(obj)} }
 func GetMesh(obj Mesh) [1]Object { return obj.AsObject() }
 
 type MeshConvexDecompositionSettings struct {
-	object
 	_MeshConvexDecompositionSettings struct{}
+	object
 }
 
 func NewMeshConvexDecompositionSettings(obj Object) MeshConvexDecompositionSettings {
@@ -3874,72 +3874,72 @@ func GetMeshConvexDecompositionSettings(obj MeshConvexDecompositionSettings) [1]
 }
 
 type MeshDataTool struct {
-	object
 	_MeshDataTool struct{}
+	object
 }
 
 func NewMeshDataTool(obj Object) MeshDataTool    { return MeshDataTool{object: object(obj)} }
 func GetMeshDataTool(obj MeshDataTool) [1]Object { return obj.AsObject() }
 
 type MeshInstance2D struct {
-	object
 	_MeshInstance2D struct{}
+	object
 }
 
 func NewMeshInstance2D(obj Object) MeshInstance2D    { return MeshInstance2D{object: object(obj)} }
 func GetMeshInstance2D(obj MeshInstance2D) [1]Object { return obj.AsObject() }
 
 type MeshInstance3D struct {
-	object
 	_MeshInstance3D struct{}
+	object
 }
 
 func NewMeshInstance3D(obj Object) MeshInstance3D    { return MeshInstance3D{object: object(obj)} }
 func GetMeshInstance3D(obj MeshInstance3D) [1]Object { return obj.AsObject() }
 
 type MeshLibrary struct {
-	object
 	_MeshLibrary struct{}
+	object
 }
 
 func NewMeshLibrary(obj Object) MeshLibrary    { return MeshLibrary{object: object(obj)} }
 func GetMeshLibrary(obj MeshLibrary) [1]Object { return obj.AsObject() }
 
 type MeshTexture struct {
-	object
 	_MeshTexture struct{}
+	object
 }
 
 func NewMeshTexture(obj Object) MeshTexture    { return MeshTexture{object: object(obj)} }
 func GetMeshTexture(obj MeshTexture) [1]Object { return obj.AsObject() }
 
 type MethodTweener struct {
-	object
 	_MethodTweener struct{}
+	object
 }
 
 func NewMethodTweener(obj Object) MethodTweener    { return MethodTweener{object: object(obj)} }
 func GetMethodTweener(obj MethodTweener) [1]Object { return obj.AsObject() }
 
 type MissingNode struct {
-	object
 	_MissingNode struct{}
+	object
 }
 
 func NewMissingNode(obj Object) MissingNode    { return MissingNode{object: object(obj)} }
 func GetMissingNode(obj MissingNode) [1]Object { return obj.AsObject() }
 
 type MissingResource struct {
-	object
 	_MissingResource struct{}
+	object
 }
 
 func NewMissingResource(obj Object) MissingResource    { return MissingResource{object: object(obj)} }
 func GetMissingResource(obj MissingResource) [1]Object { return obj.AsObject() }
 
 type MobileVRInterface struct {
-	object
 	_MobileVRInterface struct{}
+	object
 }
 
 func NewMobileVRInterface(obj Object) MobileVRInterface {
@@ -3948,8 +3948,8 @@ func NewMobileVRInterface(obj Object) MobileVRInterface {
 func GetMobileVRInterface(obj MobileVRInterface) [1]Object { return obj.AsObject() }
 
 type ModifierBoneTarget3D struct {
-	object
 	_ModifierBoneTarget3D struct{}
+	object
 }
 
 func NewModifierBoneTarget3D(obj Object) ModifierBoneTarget3D {
@@ -3958,24 +3958,24 @@ func NewModifierBoneTarget3D(obj Object) ModifierBoneTarget3D {
 func GetModifierBoneTarget3D(obj ModifierBoneTarget3D) [1]Object { return obj.AsObject() }
 
 type MovieWriter struct {
-	object
 	_MovieWriter struct{}
+	object
 }
 
 func NewMovieWriter(obj Object) MovieWriter    { return MovieWriter{object: object(obj)} }
 func GetMovieWriter(obj MovieWriter) [1]Object { return obj.AsObject() }
 
 type MultiMesh struct {
-	object
 	_MultiMesh struct{}
+	object
 }
 
 func NewMultiMesh(obj Object) MultiMesh    { return MultiMesh{object: object(obj)} }
 func GetMultiMesh(obj MultiMesh) [1]Object { return obj.AsObject() }
 
 type MultiMeshInstance2D struct {
-	object
 	_MultiMeshInstance2D struct{}
+	object
 }
 
 func NewMultiMeshInstance2D(obj Object) MultiMeshInstance2D {
@@ -3984,8 +3984,8 @@ func NewMultiMeshInstance2D(obj Object) MultiMeshInstance2D {
 func GetMultiMeshInstance2D(obj MultiMeshInstance2D) [1]Object { return obj.AsObject() }
 
 type MultiMeshInstance3D struct {
-	object
 	_MultiMeshInstance3D struct{}
+	object
 }
 
 func NewMultiMeshInstance3D(obj Object) MultiMeshInstance3D {
@@ -3994,16 +3994,16 @@ func NewMultiMeshInstance3D(obj Object) MultiMeshInstance3D {
 func GetMultiMeshInstance3D(obj MultiMeshInstance3D) [1]Object { return obj.AsObject() }
 
 type MultiplayerAPI struct {
-	object
 	_MultiplayerAPI struct{}
+	object
 }
 
 func NewMultiplayerAPI(obj Object) MultiplayerAPI    { return MultiplayerAPI{object: object(obj)} }
 func GetMultiplayerAPI(obj MultiplayerAPI) [1]Object { return obj.AsObject() }
 
 type MultiplayerAPIExtension struct {
-	object
 	_MultiplayerAPIExtension struct{}
+	object
 }
 
 func NewMultiplayerAPIExtension(obj Object) MultiplayerAPIExtension {
@@ -4012,16 +4012,16 @@ func NewMultiplayerAPIExtension(obj Object) MultiplayerAPIExtension {
 func GetMultiplayerAPIExtension(obj MultiplayerAPIExtension) [1]Object { return obj.AsObject() }
 
 type MultiplayerPeer struct {
-	object
 	_MultiplayerPeer struct{}
+	object
 }
 
 func NewMultiplayerPeer(obj Object) MultiplayerPeer    { return MultiplayerPeer{object: object(obj)} }
 func GetMultiplayerPeer(obj MultiplayerPeer) [1]Object { return obj.AsObject() }
 
 type MultiplayerPeerExtension struct {
-	object
 	_MultiplayerPeerExtension struct{}
+	object
 }
 
 func NewMultiplayerPeerExtension(obj Object) MultiplayerPeerExtension {
@@ -4030,8 +4030,8 @@ func NewMultiplayerPeerExtension(obj Object) MultiplayerPeerExtension {
 func GetMultiplayerPeerExtension(obj MultiplayerPeerExtension) [1]Object { return obj.AsObject() }
 
 type MultiplayerSpawner struct {
-	object
 	_MultiplayerSpawner struct{}
+	object
 }
 
 func NewMultiplayerSpawner(obj Object) MultiplayerSpawner {
@@ -4040,8 +4040,8 @@ func NewMultiplayerSpawner(obj Object) MultiplayerSpawner {
 func GetMultiplayerSpawner(obj MultiplayerSpawner) [1]Object { return obj.AsObject() }
 
 type MultiplayerSynchronizer struct {
-	object
 	_MultiplayerSynchronizer struct{}
+	object
 }
 
 func NewMultiplayerSynchronizer(obj Object) MultiplayerSynchronizer {
@@ -4050,24 +4050,24 @@ func NewMultiplayerSynchronizer(obj Object) MultiplayerSynchronizer {
 func GetMultiplayerSynchronizer(obj MultiplayerSynchronizer) [1]Object { return obj.AsObject() }
 
 type Mutex struct {
-	object
 	_Mutex struct{}
+	object
 }
 
 func NewMutex(obj Object) Mutex    { return Mutex{object: object(obj)} }
 func GetMutex(obj Mutex) [1]Object { return obj.AsObject() }
 
 type NativeMenu struct {
-	object
 	_NativeMenu struct{}
+	object
 }
 
 func NewNativeMenu(obj Object) NativeMenu    { return NativeMenu{object: object(obj)} }
 func GetNativeMenu(obj NativeMenu) [1]Object { return obj.AsObject() }
 
 type NavigationAgent2D struct {
-	object
 	_NavigationAgent2D struct{}
+	object
 }
 
 func NewNavigationAgent2D(obj Object) NavigationAgent2D {
@@ -4076,8 +4076,8 @@ func NewNavigationAgent2D(obj Object) NavigationAgent2D {
 func GetNavigationAgent2D(obj NavigationAgent2D) [1]Object { return obj.AsObject() }
 
 type NavigationAgent3D struct {
-	object
 	_NavigationAgent3D struct{}
+	object
 }
 
 func NewNavigationAgent3D(obj Object) NavigationAgent3D {
@@ -4086,32 +4086,32 @@ func NewNavigationAgent3D(obj Object) NavigationAgent3D {
 func GetNavigationAgent3D(obj NavigationAgent3D) [1]Object { return obj.AsObject() }
 
 type NavigationLink2D struct {
-	object
 	_NavigationLink2D struct{}
+	object
 }
 
 func NewNavigationLink2D(obj Object) NavigationLink2D    { return NavigationLink2D{object: object(obj)} }
 func GetNavigationLink2D(obj NavigationLink2D) [1]Object { return obj.AsObject() }
 
 type NavigationLink3D struct {
-	object
 	_NavigationLink3D struct{}
+	object
 }
 
 func NewNavigationLink3D(obj Object) NavigationLink3D    { return NavigationLink3D{object: object(obj)} }
 func GetNavigationLink3D(obj NavigationLink3D) [1]Object { return obj.AsObject() }
 
 type NavigationMesh struct {
-	object
 	_NavigationMesh struct{}
+	object
 }
 
 func NewNavigationMesh(obj Object) NavigationMesh    { return NavigationMesh{object: object(obj)} }
 func GetNavigationMesh(obj NavigationMesh) [1]Object { return obj.AsObject() }
 
 type NavigationMeshGenerator struct {
-	object
 	_NavigationMeshGenerator struct{}
+	object
 }
 
 func NewNavigationMeshGenerator(obj Object) NavigationMeshGenerator {
@@ -4120,8 +4120,8 @@ func NewNavigationMeshGenerator(obj Object) NavigationMeshGenerator {
 func GetNavigationMeshGenerator(obj NavigationMeshGenerator) [1]Object { return obj.AsObject() }
 
 type NavigationMeshSourceGeometryData2D struct {
-	object
 	_NavigationMeshSourceGeometryData2D struct{}
+	object
 }
 
 func NewNavigationMeshSourceGeometryData2D(obj Object) NavigationMeshSourceGeometryData2D {
@@ -4132,8 +4132,8 @@ func GetNavigationMeshSourceGeometryData2D(obj NavigationMeshSourceGeometryData2
 }
 
 type NavigationMeshSourceGeometryData3D struct {
-	object
 	_NavigationMeshSourceGeometryData3D struct{}
+	object
 }
 
 func NewNavigationMeshSourceGeometryData3D(obj Object) NavigationMeshSourceGeometryData3D {
@@ -4144,8 +4144,8 @@ func GetNavigationMeshSourceGeometryData3D(obj NavigationMeshSourceGeometryData3
 }
 
 type NavigationObstacle2D struct {
-	object
 	_NavigationObstacle2D struct{}
+	object
 }
 
 func NewNavigationObstacle2D(obj Object) NavigationObstacle2D {
@@ -4154,8 +4154,8 @@ func NewNavigationObstacle2D(obj Object) NavigationObstacle2D {
 func GetNavigationObstacle2D(obj NavigationObstacle2D) [1]Object { return obj.AsObject() }
 
 type NavigationObstacle3D struct {
-	object
 	_NavigationObstacle3D struct{}
+	object
 }
 
 func NewNavigationObstacle3D(obj Object) NavigationObstacle3D {
@@ -4164,8 +4164,8 @@ func NewNavigationObstacle3D(obj Object) NavigationObstacle3D {
 func GetNavigationObstacle3D(obj NavigationObstacle3D) [1]Object { return obj.AsObject() }
 
 type NavigationPathQueryParameters2D struct {
-	object
 	_NavigationPathQueryParameters2D struct{}
+	object
 }
 
 func NewNavigationPathQueryParameters2D(obj Object) NavigationPathQueryParameters2D {
@@ -4176,8 +4176,8 @@ func GetNavigationPathQueryParameters2D(obj NavigationPathQueryParameters2D) [1]
 }
 
 type NavigationPathQueryParameters3D struct {
-	object
 	_NavigationPathQueryParameters3D struct{}
+	object
 }
 
 func NewNavigationPathQueryParameters3D(obj Object) NavigationPathQueryParameters3D {
@@ -4188,8 +4188,8 @@ func GetNavigationPathQueryParameters3D(obj NavigationPathQueryParameters3D) [1]
 }
 
 type NavigationPathQueryResult2D struct {
-	object
 	_NavigationPathQueryResult2D struct{}
+	object
 }
 
 func NewNavigationPathQueryResult2D(obj Object) NavigationPathQueryResult2D {
@@ -4198,8 +4198,8 @@ func NewNavigationPathQueryResult2D(obj Object) NavigationPathQueryResult2D {
 func GetNavigationPathQueryResult2D(obj NavigationPathQueryResult2D) [1]Object { return obj.AsObject() }
 
 type NavigationPathQueryResult3D struct {
-	object
 	_NavigationPathQueryResult3D struct{}
+	object
 }
 
 func NewNavigationPathQueryResult3D(obj Object) NavigationPathQueryResult3D {
@@ -4208,8 +4208,8 @@ func NewNavigationPathQueryResult3D(obj Object) NavigationPathQueryResult3D {
 func GetNavigationPathQueryResult3D(obj NavigationPathQueryResult3D) [1]Object { return obj.AsObject() }
 
 type NavigationPolygon struct {
-	object
 	_NavigationPolygon struct{}
+	object
 }
 
 func NewNavigationPolygon(obj Object) NavigationPolygon {
@@ -4218,8 +4218,8 @@ func NewNavigationPolygon(obj Object) NavigationPolygon {
 func GetNavigationPolygon(obj NavigationPolygon) [1]Object { return obj.AsObject() }
 
 type NavigationRegion2D struct {
-	object
 	_NavigationRegion2D struct{}
+	object
 }
 
 func NewNavigationRegion2D(obj Object) NavigationRegion2D {
@@ -4228,8 +4228,8 @@ func NewNavigationRegion2D(obj Object) NavigationRegion2D {
 func GetNavigationRegion2D(obj NavigationRegion2D) [1]Object { return obj.AsObject() }
 
 type NavigationRegion3D struct {
-	object
 	_NavigationRegion3D struct{}
+	object
 }
 
 func NewNavigationRegion3D(obj Object) NavigationRegion3D {
@@ -4238,8 +4238,8 @@ func NewNavigationRegion3D(obj Object) NavigationRegion3D {
 func GetNavigationRegion3D(obj NavigationRegion3D) [1]Object { return obj.AsObject() }
 
 type NavigationServer2D struct {
-	object
 	_NavigationServer2D struct{}
+	object
 }
 
 func NewNavigationServer2D(obj Object) NavigationServer2D {
@@ -4248,8 +4248,8 @@ func NewNavigationServer2D(obj Object) NavigationServer2D {
 func GetNavigationServer2D(obj NavigationServer2D) [1]Object { return obj.AsObject() }
 
 type NavigationServer2DManager struct {
-	object
 	_NavigationServer2DManager struct{}
+	object
 }
 
 func NewNavigationServer2DManager(obj Object) NavigationServer2DManager {
@@ -4258,8 +4258,8 @@ func NewNavigationServer2DManager(obj Object) NavigationServer2DManager {
 func GetNavigationServer2DManager(obj NavigationServer2DManager) [1]Object { return obj.AsObject() }
 
 type NavigationServer3D struct {
-	object
 	_NavigationServer3D struct{}
+	object
 }
 
 func NewNavigationServer3D(obj Object) NavigationServer3D {
@@ -4268,8 +4268,8 @@ func NewNavigationServer3D(obj Object) NavigationServer3D {
 func GetNavigationServer3D(obj NavigationServer3D) [1]Object { return obj.AsObject() }
 
 type NavigationServer3DManager struct {
-	object
 	_NavigationServer3DManager struct{}
+	object
 }
 
 func NewNavigationServer3DManager(obj Object) NavigationServer3DManager {
@@ -4278,96 +4278,96 @@ func NewNavigationServer3DManager(obj Object) NavigationServer3DManager {
 func GetNavigationServer3DManager(obj NavigationServer3DManager) [1]Object { return obj.AsObject() }
 
 type NinePatchRect struct {
-	object
 	_NinePatchRect struct{}
+	object
 }
 
 func NewNinePatchRect(obj Object) NinePatchRect    { return NinePatchRect{object: object(obj)} }
 func GetNinePatchRect(obj NinePatchRect) [1]Object { return obj.AsObject() }
 
 type Node struct {
-	object
 	_Node struct{}
+	object
 }
 
 func NewNode(obj Object) Node    { return Node{object: object(obj)} }
 func GetNode(obj Node) [1]Object { return obj.AsObject() }
 
 type Node2D struct {
-	object
 	_Node2D struct{}
+	object
 }
 
 func NewNode2D(obj Object) Node2D    { return Node2D{object: object(obj)} }
 func GetNode2D(obj Node2D) [1]Object { return obj.AsObject() }
 
 type Node3D struct {
-	object
 	_Node3D struct{}
+	object
 }
 
 func NewNode3D(obj Object) Node3D    { return Node3D{object: object(obj)} }
 func GetNode3D(obj Node3D) [1]Object { return obj.AsObject() }
 
 type Node3DGizmo struct {
-	object
 	_Node3DGizmo struct{}
+	object
 }
 
 func NewNode3DGizmo(obj Object) Node3DGizmo    { return Node3DGizmo{object: object(obj)} }
 func GetNode3DGizmo(obj Node3DGizmo) [1]Object { return obj.AsObject() }
 
 type Noise struct {
-	object
 	_Noise struct{}
+	object
 }
 
 func NewNoise(obj Object) Noise    { return Noise{object: object(obj)} }
 func GetNoise(obj Noise) [1]Object { return obj.AsObject() }
 
 type NoiseTexture2D struct {
-	object
 	_NoiseTexture2D struct{}
+	object
 }
 
 func NewNoiseTexture2D(obj Object) NoiseTexture2D    { return NoiseTexture2D{object: object(obj)} }
 func GetNoiseTexture2D(obj NoiseTexture2D) [1]Object { return obj.AsObject() }
 
 type NoiseTexture3D struct {
-	object
 	_NoiseTexture3D struct{}
+	object
 }
 
 func NewNoiseTexture3D(obj Object) NoiseTexture3D    { return NoiseTexture3D{object: object(obj)} }
 func GetNoiseTexture3D(obj NoiseTexture3D) [1]Object { return obj.AsObject() }
 
 type ORMMaterial3D struct {
-	object
 	_ORMMaterial3D struct{}
+	object
 }
 
 func NewORMMaterial3D(obj Object) ORMMaterial3D    { return ORMMaterial3D{object: object(obj)} }
 func GetORMMaterial3D(obj ORMMaterial3D) [1]Object { return obj.AsObject() }
 
 type OS struct {
-	object
 	_OS struct{}
+	object
 }
 
 func NewOS(obj Object) OS    { return OS{object: object(obj)} }
 func GetOS(obj OS) [1]Object { return obj.AsObject() }
 
 type Occluder3D struct {
-	object
 	_Occluder3D struct{}
+	object
 }
 
 func NewOccluder3D(obj Object) Occluder3D    { return Occluder3D{object: object(obj)} }
 func GetOccluder3D(obj Occluder3D) [1]Object { return obj.AsObject() }
 
 type OccluderInstance3D struct {
-	object
 	_OccluderInstance3D struct{}
+	object
 }
 
 func NewOccluderInstance3D(obj Object) OccluderInstance3D {
@@ -4376,8 +4376,8 @@ func NewOccluderInstance3D(obj Object) OccluderInstance3D {
 func GetOccluderInstance3D(obj OccluderInstance3D) [1]Object { return obj.AsObject() }
 
 type OccluderPolygon2D struct {
-	object
 	_OccluderPolygon2D struct{}
+	object
 }
 
 func NewOccluderPolygon2D(obj Object) OccluderPolygon2D {
@@ -4386,8 +4386,8 @@ func NewOccluderPolygon2D(obj Object) OccluderPolygon2D {
 func GetOccluderPolygon2D(obj OccluderPolygon2D) [1]Object { return obj.AsObject() }
 
 type OfflineMultiplayerPeer struct {
-	object
 	_OfflineMultiplayerPeer struct{}
+	object
 }
 
 func NewOfflineMultiplayerPeer(obj Object) OfflineMultiplayerPeer {
@@ -4396,8 +4396,8 @@ func NewOfflineMultiplayerPeer(obj Object) OfflineMultiplayerPeer {
 func GetOfflineMultiplayerPeer(obj OfflineMultiplayerPeer) [1]Object { return obj.AsObject() }
 
 type OggPacketSequence struct {
-	object
 	_OggPacketSequence struct{}
+	object
 }
 
 func NewOggPacketSequence(obj Object) OggPacketSequence {
@@ -4406,8 +4406,8 @@ func NewOggPacketSequence(obj Object) OggPacketSequence {
 func GetOggPacketSequence(obj OggPacketSequence) [1]Object { return obj.AsObject() }
 
 type OggPacketSequencePlayback struct {
-	object
 	_OggPacketSequencePlayback struct{}
+	object
 }
 
 func NewOggPacketSequencePlayback(obj Object) OggPacketSequencePlayback {
@@ -4416,16 +4416,16 @@ func NewOggPacketSequencePlayback(obj Object) OggPacketSequencePlayback {
 func GetOggPacketSequencePlayback(obj OggPacketSequencePlayback) [1]Object { return obj.AsObject() }
 
 type OmniLight3D struct {
-	object
 	_OmniLight3D struct{}
+	object
 }
 
 func NewOmniLight3D(obj Object) OmniLight3D    { return OmniLight3D{object: object(obj)} }
 func GetOmniLight3D(obj OmniLight3D) [1]Object { return obj.AsObject() }
 
 type OpenXRAPIExtension struct {
-	object
 	_OpenXRAPIExtension struct{}
+	object
 }
 
 func NewOpenXRAPIExtension(obj Object) OpenXRAPIExtension {
@@ -4434,16 +4434,16 @@ func NewOpenXRAPIExtension(obj Object) OpenXRAPIExtension {
 func GetOpenXRAPIExtension(obj OpenXRAPIExtension) [1]Object { return obj.AsObject() }
 
 type OpenXRAction struct {
-	object
 	_OpenXRAction struct{}
+	object
 }
 
 func NewOpenXRAction(obj Object) OpenXRAction    { return OpenXRAction{object: object(obj)} }
 func GetOpenXRAction(obj OpenXRAction) [1]Object { return obj.AsObject() }
 
 type OpenXRActionBindingModifier struct {
-	object
 	_OpenXRActionBindingModifier struct{}
+	object
 }
 
 func NewOpenXRActionBindingModifier(obj Object) OpenXRActionBindingModifier {
@@ -4452,24 +4452,24 @@ func NewOpenXRActionBindingModifier(obj Object) OpenXRActionBindingModifier {
 func GetOpenXRActionBindingModifier(obj OpenXRActionBindingModifier) [1]Object { return obj.AsObject() }
 
 type OpenXRActionMap struct {
-	object
 	_OpenXRActionMap struct{}
+	object
 }
 
 func NewOpenXRActionMap(obj Object) OpenXRActionMap    { return OpenXRActionMap{object: object(obj)} }
 func GetOpenXRActionMap(obj OpenXRActionMap) [1]Object { return obj.AsObject() }
 
 type OpenXRActionSet struct {
-	object
 	_OpenXRActionSet struct{}
+	object
 }
 
 func NewOpenXRActionSet(obj Object) OpenXRActionSet    { return OpenXRActionSet{object: object(obj)} }
 func GetOpenXRActionSet(obj OpenXRActionSet) [1]Object { return obj.AsObject() }
 
 type OpenXRAnalogThresholdModifier struct {
-	object
 	_OpenXRAnalogThresholdModifier struct{}
+	object
 }
 
 func NewOpenXRAnalogThresholdModifier(obj Object) OpenXRAnalogThresholdModifier {
@@ -4480,8 +4480,8 @@ func GetOpenXRAnalogThresholdModifier(obj OpenXRAnalogThresholdModifier) [1]Obje
 }
 
 type OpenXRAnchorTracker struct {
-	object
 	_OpenXRAnchorTracker struct{}
+	object
 }
 
 func NewOpenXRAnchorTracker(obj Object) OpenXRAnchorTracker {
@@ -4490,8 +4490,8 @@ func NewOpenXRAnchorTracker(obj Object) OpenXRAnchorTracker {
 func GetOpenXRAnchorTracker(obj OpenXRAnchorTracker) [1]Object { return obj.AsObject() }
 
 type OpenXRAndroidThreadSettingsExtension struct {
-	object
 	_OpenXRAndroidThreadSettingsExtension struct{}
+	object
 }
 
 func NewOpenXRAndroidThreadSettingsExtension(obj Object) OpenXRAndroidThreadSettingsExtension {
@@ -4502,8 +4502,8 @@ func GetOpenXRAndroidThreadSettingsExtension(obj OpenXRAndroidThreadSettingsExte
 }
 
 type OpenXRBindingModifier struct {
-	object
 	_OpenXRBindingModifier struct{}
+	object
 }
 
 func NewOpenXRBindingModifier(obj Object) OpenXRBindingModifier {
@@ -4512,8 +4512,8 @@ func NewOpenXRBindingModifier(obj Object) OpenXRBindingModifier {
 func GetOpenXRBindingModifier(obj OpenXRBindingModifier) [1]Object { return obj.AsObject() }
 
 type OpenXRBindingModifierEditor struct {
-	object
 	_OpenXRBindingModifierEditor struct{}
+	object
 }
 
 func NewOpenXRBindingModifierEditor(obj Object) OpenXRBindingModifierEditor {
@@ -4522,8 +4522,8 @@ func NewOpenXRBindingModifierEditor(obj Object) OpenXRBindingModifierEditor {
 func GetOpenXRBindingModifierEditor(obj OpenXRBindingModifierEditor) [1]Object { return obj.AsObject() }
 
 type OpenXRCompositionLayer struct {
-	object
 	_OpenXRCompositionLayer struct{}
+	object
 }
 
 func NewOpenXRCompositionLayer(obj Object) OpenXRCompositionLayer {
@@ -4532,8 +4532,8 @@ func NewOpenXRCompositionLayer(obj Object) OpenXRCompositionLayer {
 func GetOpenXRCompositionLayer(obj OpenXRCompositionLayer) [1]Object { return obj.AsObject() }
 
 type OpenXRCompositionLayerCylinder struct {
-	object
 	_OpenXRCompositionLayerCylinder struct{}
+	object
 }
 
 func NewOpenXRCompositionLayerCylinder(obj Object) OpenXRCompositionLayerCylinder {
@@ -4544,8 +4544,8 @@ func GetOpenXRCompositionLayerCylinder(obj OpenXRCompositionLayerCylinder) [1]Ob
 }
 
 type OpenXRCompositionLayerEquirect struct {
-	object
 	_OpenXRCompositionLayerEquirect struct{}
+	object
 }
 
 func NewOpenXRCompositionLayerEquirect(obj Object) OpenXRCompositionLayerEquirect {
@@ -4556,8 +4556,8 @@ func GetOpenXRCompositionLayerEquirect(obj OpenXRCompositionLayerEquirect) [1]Ob
 }
 
 type OpenXRCompositionLayerQuad struct {
-	object
 	_OpenXRCompositionLayerQuad struct{}
+	object
 }
 
 func NewOpenXRCompositionLayerQuad(obj Object) OpenXRCompositionLayerQuad {
@@ -4566,8 +4566,8 @@ func NewOpenXRCompositionLayerQuad(obj Object) OpenXRCompositionLayerQuad {
 func GetOpenXRCompositionLayerQuad(obj OpenXRCompositionLayerQuad) [1]Object { return obj.AsObject() }
 
 type OpenXRDpadBindingModifier struct {
-	object
 	_OpenXRDpadBindingModifier struct{}
+	object
 }
 
 func NewOpenXRDpadBindingModifier(obj Object) OpenXRDpadBindingModifier {
@@ -4576,8 +4576,8 @@ func NewOpenXRDpadBindingModifier(obj Object) OpenXRDpadBindingModifier {
 func GetOpenXRDpadBindingModifier(obj OpenXRDpadBindingModifier) [1]Object { return obj.AsObject() }
 
 type OpenXRExtensionWrapper struct {
-	object
 	_OpenXRExtensionWrapper struct{}
+	object
 }
 
 func NewOpenXRExtensionWrapper(obj Object) OpenXRExtensionWrapper {
@@ -4586,8 +4586,8 @@ func NewOpenXRExtensionWrapper(obj Object) OpenXRExtensionWrapper {
 func GetOpenXRExtensionWrapper(obj OpenXRExtensionWrapper) [1]Object { return obj.AsObject() }
 
 type OpenXRExtensionWrapperExtension struct {
-	object
 	_OpenXRExtensionWrapperExtension struct{}
+	object
 }
 
 func NewOpenXRExtensionWrapperExtension(obj Object) OpenXRExtensionWrapperExtension {
@@ -4598,8 +4598,8 @@ func GetOpenXRExtensionWrapperExtension(obj OpenXRExtensionWrapperExtension) [1]
 }
 
 type OpenXRFrameSynthesisExtension struct {
-	object
 	_OpenXRFrameSynthesisExtension struct{}
+	object
 }
 
 func NewOpenXRFrameSynthesisExtension(obj Object) OpenXRFrameSynthesisExtension {
@@ -4610,8 +4610,8 @@ func GetOpenXRFrameSynthesisExtension(obj OpenXRFrameSynthesisExtension) [1]Obje
 }
 
 type OpenXRFutureExtension struct {
-	object
 	_OpenXRFutureExtension struct{}
+	object
 }
 
 func NewOpenXRFutureExtension(obj Object) OpenXRFutureExtension {
@@ -4620,8 +4620,8 @@ func NewOpenXRFutureExtension(obj Object) OpenXRFutureExtension {
 func GetOpenXRFutureExtension(obj OpenXRFutureExtension) [1]Object { return obj.AsObject() }
 
 type OpenXRFutureResult struct {
-	object
 	_OpenXRFutureResult struct{}
+	object
 }
 
 func NewOpenXRFutureResult(obj Object) OpenXRFutureResult {
@@ -4630,24 +4630,24 @@ func NewOpenXRFutureResult(obj Object) OpenXRFutureResult {
 func GetOpenXRFutureResult(obj OpenXRFutureResult) [1]Object { return obj.AsObject() }
 
 type OpenXRHand struct {
-	object
 	_OpenXRHand struct{}
+	object
 }
 
 func NewOpenXRHand(obj Object) OpenXRHand    { return OpenXRHand{object: object(obj)} }
 func GetOpenXRHand(obj OpenXRHand) [1]Object { return obj.AsObject() }
 
 type OpenXRHapticBase struct {
-	object
 	_OpenXRHapticBase struct{}
+	object
 }
 
 func NewOpenXRHapticBase(obj Object) OpenXRHapticBase    { return OpenXRHapticBase{object: object(obj)} }
 func GetOpenXRHapticBase(obj OpenXRHapticBase) [1]Object { return obj.AsObject() }
 
 type OpenXRHapticVibration struct {
-	object
 	_OpenXRHapticVibration struct{}
+	object
 }
 
 func NewOpenXRHapticVibration(obj Object) OpenXRHapticVibration {
@@ -4656,16 +4656,16 @@ func NewOpenXRHapticVibration(obj Object) OpenXRHapticVibration {
 func GetOpenXRHapticVibration(obj OpenXRHapticVibration) [1]Object { return obj.AsObject() }
 
 type OpenXRIPBinding struct {
-	object
 	_OpenXRIPBinding struct{}
+	object
 }
 
 func NewOpenXRIPBinding(obj Object) OpenXRIPBinding    { return OpenXRIPBinding{object: object(obj)} }
 func GetOpenXRIPBinding(obj OpenXRIPBinding) [1]Object { return obj.AsObject() }
 
 type OpenXRIPBindingModifier struct {
-	object
 	_OpenXRIPBindingModifier struct{}
+	object
 }
 
 func NewOpenXRIPBindingModifier(obj Object) OpenXRIPBindingModifier {
@@ -4674,8 +4674,8 @@ func NewOpenXRIPBindingModifier(obj Object) OpenXRIPBindingModifier {
 func GetOpenXRIPBindingModifier(obj OpenXRIPBindingModifier) [1]Object { return obj.AsObject() }
 
 type OpenXRInteractionProfile struct {
-	object
 	_OpenXRInteractionProfile struct{}
+	object
 }
 
 func NewOpenXRInteractionProfile(obj Object) OpenXRInteractionProfile {
@@ -4684,8 +4684,8 @@ func NewOpenXRInteractionProfile(obj Object) OpenXRInteractionProfile {
 func GetOpenXRInteractionProfile(obj OpenXRInteractionProfile) [1]Object { return obj.AsObject() }
 
 type OpenXRInteractionProfileEditor struct {
-	object
 	_OpenXRInteractionProfileEditor struct{}
+	object
 }
 
 func NewOpenXRInteractionProfileEditor(obj Object) OpenXRInteractionProfileEditor {
@@ -4696,8 +4696,8 @@ func GetOpenXRInteractionProfileEditor(obj OpenXRInteractionProfileEditor) [1]Ob
 }
 
 type OpenXRInteractionProfileEditorBase struct {
-	object
 	_OpenXRInteractionProfileEditorBase struct{}
+	object
 }
 
 func NewOpenXRInteractionProfileEditorBase(obj Object) OpenXRInteractionProfileEditorBase {
@@ -4708,8 +4708,8 @@ func GetOpenXRInteractionProfileEditorBase(obj OpenXRInteractionProfileEditorBas
 }
 
 type OpenXRInteractionProfileMetadata struct {
-	object
 	_OpenXRInteractionProfileMetadata struct{}
+	object
 }
 
 func NewOpenXRInteractionProfileMetadata(obj Object) OpenXRInteractionProfileMetadata {
@@ -4720,16 +4720,16 @@ func GetOpenXRInteractionProfileMetadata(obj OpenXRInteractionProfileMetadata) [
 }
 
 type OpenXRInterface struct {
-	object
 	_OpenXRInterface struct{}
+	object
 }
 
 func NewOpenXRInterface(obj Object) OpenXRInterface    { return OpenXRInterface{object: object(obj)} }
 func GetOpenXRInterface(obj OpenXRInterface) [1]Object { return obj.AsObject() }
 
 type OpenXRMarkerTracker struct {
-	object
 	_OpenXRMarkerTracker struct{}
+	object
 }
 
 func NewOpenXRMarkerTracker(obj Object) OpenXRMarkerTracker {
@@ -4738,8 +4738,8 @@ func NewOpenXRMarkerTracker(obj Object) OpenXRMarkerTracker {
 func GetOpenXRMarkerTracker(obj OpenXRMarkerTracker) [1]Object { return obj.AsObject() }
 
 type OpenXRPlaneTracker struct {
-	object
 	_OpenXRPlaneTracker struct{}
+	object
 }
 
 func NewOpenXRPlaneTracker(obj Object) OpenXRPlaneTracker {
@@ -4748,8 +4748,8 @@ func NewOpenXRPlaneTracker(obj Object) OpenXRPlaneTracker {
 func GetOpenXRPlaneTracker(obj OpenXRPlaneTracker) [1]Object { return obj.AsObject() }
 
 type OpenXRRenderModel struct {
-	object
 	_OpenXRRenderModel struct{}
+	object
 }
 
 func NewOpenXRRenderModel(obj Object) OpenXRRenderModel {
@@ -4758,8 +4758,8 @@ func NewOpenXRRenderModel(obj Object) OpenXRRenderModel {
 func GetOpenXRRenderModel(obj OpenXRRenderModel) [1]Object { return obj.AsObject() }
 
 type OpenXRRenderModelExtension struct {
-	object
 	_OpenXRRenderModelExtension struct{}
+	object
 }
 
 func NewOpenXRRenderModelExtension(obj Object) OpenXRRenderModelExtension {
@@ -4768,8 +4768,8 @@ func NewOpenXRRenderModelExtension(obj Object) OpenXRRenderModelExtension {
 func GetOpenXRRenderModelExtension(obj OpenXRRenderModelExtension) [1]Object { return obj.AsObject() }
 
 type OpenXRRenderModelManager struct {
-	object
 	_OpenXRRenderModelManager struct{}
+	object
 }
 
 func NewOpenXRRenderModelManager(obj Object) OpenXRRenderModelManager {
@@ -4778,8 +4778,8 @@ func NewOpenXRRenderModelManager(obj Object) OpenXRRenderModelManager {
 func GetOpenXRRenderModelManager(obj OpenXRRenderModelManager) [1]Object { return obj.AsObject() }
 
 type OpenXRSpatialAnchorCapability struct {
-	object
 	_OpenXRSpatialAnchorCapability struct{}
+	object
 }
 
 func NewOpenXRSpatialAnchorCapability(obj Object) OpenXRSpatialAnchorCapability {
@@ -4790,8 +4790,8 @@ func GetOpenXRSpatialAnchorCapability(obj OpenXRSpatialAnchorCapability) [1]Obje
 }
 
 type OpenXRSpatialCapabilityConfigurationAnchor struct {
-	object
 	_OpenXRSpatialCapabilityConfigurationAnchor struct{}
+	object
 }
 
 func NewOpenXRSpatialCapabilityConfigurationAnchor(obj Object) OpenXRSpatialCapabilityConfigurationAnchor {
@@ -4802,8 +4802,8 @@ func GetOpenXRSpatialCapabilityConfigurationAnchor(obj OpenXRSpatialCapabilityCo
 }
 
 type OpenXRSpatialCapabilityConfigurationAprilTag struct {
-	object
 	_OpenXRSpatialCapabilityConfigurationAprilTag struct{}
+	object
 }
 
 func NewOpenXRSpatialCapabilityConfigurationAprilTag(obj Object) OpenXRSpatialCapabilityConfigurationAprilTag {
@@ -4814,8 +4814,8 @@ func GetOpenXRSpatialCapabilityConfigurationAprilTag(obj OpenXRSpatialCapability
 }
 
 type OpenXRSpatialCapabilityConfigurationAruco struct {
-	object
 	_OpenXRSpatialCapabilityConfigurationAruco struct{}
+	object
 }
 
 func NewOpenXRSpatialCapabilityConfigurationAruco(obj Object) OpenXRSpatialCapabilityConfigurationAruco {
@@ -4826,8 +4826,8 @@ func GetOpenXRSpatialCapabilityConfigurationAruco(obj OpenXRSpatialCapabilityCon
 }
 
 type OpenXRSpatialCapabilityConfigurationBaseHeader struct {
-	object
 	_OpenXRSpatialCapabilityConfigurationBaseHeader struct{}
+	object
 }
 
 func NewOpenXRSpatialCapabilityConfigurationBaseHeader(obj Object) OpenXRSpatialCapabilityConfigurationBaseHeader {
@@ -4838,8 +4838,8 @@ func GetOpenXRSpatialCapabilityConfigurationBaseHeader(obj OpenXRSpatialCapabili
 }
 
 type OpenXRSpatialCapabilityConfigurationMicroQrCode struct {
-	object
 	_OpenXRSpatialCapabilityConfigurationMicroQrCode struct{}
+	object
 }
 
 func NewOpenXRSpatialCapabilityConfigurationMicroQrCode(obj Object) OpenXRSpatialCapabilityConfigurationMicroQrCode {
@@ -4850,8 +4850,8 @@ func GetOpenXRSpatialCapabilityConfigurationMicroQrCode(obj OpenXRSpatialCapabil
 }
 
 type OpenXRSpatialCapabilityConfigurationPlaneTracking struct {
-	object
 	_OpenXRSpatialCapabilityConfigurationPlaneTracking struct{}
+	object
 }
 
 func NewOpenXRSpatialCapabilityConfigurationPlaneTracking(obj Object) OpenXRSpatialCapabilityConfigurationPlaneTracking {
@@ -4862,8 +4862,8 @@ func GetOpenXRSpatialCapabilityConfigurationPlaneTracking(obj OpenXRSpatialCapab
 }
 
 type OpenXRSpatialCapabilityConfigurationQrCode struct {
-	object
 	_OpenXRSpatialCapabilityConfigurationQrCode struct{}
+	object
 }
 
 func NewOpenXRSpatialCapabilityConfigurationQrCode(obj Object) OpenXRSpatialCapabilityConfigurationQrCode {
@@ -4874,8 +4874,8 @@ func GetOpenXRSpatialCapabilityConfigurationQrCode(obj OpenXRSpatialCapabilityCo
 }
 
 type OpenXRSpatialComponentAnchorList struct {
-	object
 	_OpenXRSpatialComponentAnchorList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentAnchorList(obj Object) OpenXRSpatialComponentAnchorList {
@@ -4886,8 +4886,8 @@ func GetOpenXRSpatialComponentAnchorList(obj OpenXRSpatialComponentAnchorList) [
 }
 
 type OpenXRSpatialComponentBounded2DList struct {
-	object
 	_OpenXRSpatialComponentBounded2DList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentBounded2DList(obj Object) OpenXRSpatialComponentBounded2DList {
@@ -4898,8 +4898,8 @@ func GetOpenXRSpatialComponentBounded2DList(obj OpenXRSpatialComponentBounded2DL
 }
 
 type OpenXRSpatialComponentBounded3DList struct {
-	object
 	_OpenXRSpatialComponentBounded3DList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentBounded3DList(obj Object) OpenXRSpatialComponentBounded3DList {
@@ -4910,8 +4910,8 @@ func GetOpenXRSpatialComponentBounded3DList(obj OpenXRSpatialComponentBounded3DL
 }
 
 type OpenXRSpatialComponentData struct {
-	object
 	_OpenXRSpatialComponentData struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentData(obj Object) OpenXRSpatialComponentData {
@@ -4920,8 +4920,8 @@ func NewOpenXRSpatialComponentData(obj Object) OpenXRSpatialComponentData {
 func GetOpenXRSpatialComponentData(obj OpenXRSpatialComponentData) [1]Object { return obj.AsObject() }
 
 type OpenXRSpatialComponentMarkerList struct {
-	object
 	_OpenXRSpatialComponentMarkerList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentMarkerList(obj Object) OpenXRSpatialComponentMarkerList {
@@ -4932,8 +4932,8 @@ func GetOpenXRSpatialComponentMarkerList(obj OpenXRSpatialComponentMarkerList) [
 }
 
 type OpenXRSpatialComponentMesh2DList struct {
-	object
 	_OpenXRSpatialComponentMesh2DList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentMesh2DList(obj Object) OpenXRSpatialComponentMesh2DList {
@@ -4944,8 +4944,8 @@ func GetOpenXRSpatialComponentMesh2DList(obj OpenXRSpatialComponentMesh2DList) [
 }
 
 type OpenXRSpatialComponentMesh3DList struct {
-	object
 	_OpenXRSpatialComponentMesh3DList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentMesh3DList(obj Object) OpenXRSpatialComponentMesh3DList {
@@ -4956,8 +4956,8 @@ func GetOpenXRSpatialComponentMesh3DList(obj OpenXRSpatialComponentMesh3DList) [
 }
 
 type OpenXRSpatialComponentParentList struct {
-	object
 	_OpenXRSpatialComponentParentList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentParentList(obj Object) OpenXRSpatialComponentParentList {
@@ -4968,8 +4968,8 @@ func GetOpenXRSpatialComponentParentList(obj OpenXRSpatialComponentParentList) [
 }
 
 type OpenXRSpatialComponentPersistenceList struct {
-	object
 	_OpenXRSpatialComponentPersistenceList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentPersistenceList(obj Object) OpenXRSpatialComponentPersistenceList {
@@ -4980,8 +4980,8 @@ func GetOpenXRSpatialComponentPersistenceList(obj OpenXRSpatialComponentPersiste
 }
 
 type OpenXRSpatialComponentPlaneAlignmentList struct {
-	object
 	_OpenXRSpatialComponentPlaneAlignmentList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentPlaneAlignmentList(obj Object) OpenXRSpatialComponentPlaneAlignmentList {
@@ -4992,8 +4992,8 @@ func GetOpenXRSpatialComponentPlaneAlignmentList(obj OpenXRSpatialComponentPlane
 }
 
 type OpenXRSpatialComponentPlaneSemanticLabelList struct {
-	object
 	_OpenXRSpatialComponentPlaneSemanticLabelList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentPlaneSemanticLabelList(obj Object) OpenXRSpatialComponentPlaneSemanticLabelList {
@@ -5004,8 +5004,8 @@ func GetOpenXRSpatialComponentPlaneSemanticLabelList(obj OpenXRSpatialComponentP
 }
 
 type OpenXRSpatialComponentPolygon2DList struct {
-	object
 	_OpenXRSpatialComponentPolygon2DList struct{}
+	object
 }
 
 func NewOpenXRSpatialComponentPolygon2DList(obj Object) OpenXRSpatialComponentPolygon2DList {
@@ -5016,8 +5016,8 @@ func GetOpenXRSpatialComponentPolygon2DList(obj OpenXRSpatialComponentPolygon2DL
 }
 
 type OpenXRSpatialContextPersistenceConfig struct {
-	object
 	_OpenXRSpatialContextPersistenceConfig struct{}
+	object
 }
 
 func NewOpenXRSpatialContextPersistenceConfig(obj Object) OpenXRSpatialContextPersistenceConfig {
@@ -5028,8 +5028,8 @@ func GetOpenXRSpatialContextPersistenceConfig(obj OpenXRSpatialContextPersistenc
 }
 
 type OpenXRSpatialEntityExtension struct {
-	object
 	_OpenXRSpatialEntityExtension struct{}
+	object
 }
 
 func NewOpenXRSpatialEntityExtension(obj Object) OpenXRSpatialEntityExtension {
@@ -5040,8 +5040,8 @@ func GetOpenXRSpatialEntityExtension(obj OpenXRSpatialEntityExtension) [1]Object
 }
 
 type OpenXRSpatialEntityTracker struct {
-	object
 	_OpenXRSpatialEntityTracker struct{}
+	object
 }
 
 func NewOpenXRSpatialEntityTracker(obj Object) OpenXRSpatialEntityTracker {
@@ -5050,8 +5050,8 @@ func NewOpenXRSpatialEntityTracker(obj Object) OpenXRSpatialEntityTracker {
 func GetOpenXRSpatialEntityTracker(obj OpenXRSpatialEntityTracker) [1]Object { return obj.AsObject() }
 
 type OpenXRSpatialMarkerTrackingCapability struct {
-	object
 	_OpenXRSpatialMarkerTrackingCapability struct{}
+	object
 }
 
 func NewOpenXRSpatialMarkerTrackingCapability(obj Object) OpenXRSpatialMarkerTrackingCapability {
@@ -5062,8 +5062,8 @@ func GetOpenXRSpatialMarkerTrackingCapability(obj OpenXRSpatialMarkerTrackingCap
 }
 
 type OpenXRSpatialPlaneTrackingCapability struct {
-	object
 	_OpenXRSpatialPlaneTrackingCapability struct{}
+	object
 }
 
 func NewOpenXRSpatialPlaneTrackingCapability(obj Object) OpenXRSpatialPlaneTrackingCapability {
@@ -5074,8 +5074,8 @@ func GetOpenXRSpatialPlaneTrackingCapability(obj OpenXRSpatialPlaneTrackingCapab
 }
 
 type OpenXRSpatialQueryResultData struct {
-	object
 	_OpenXRSpatialQueryResultData struct{}
+	object
 }
 
 func NewOpenXRSpatialQueryResultData(obj Object) OpenXRSpatialQueryResultData {
@@ -5086,8 +5086,8 @@ func GetOpenXRSpatialQueryResultData(obj OpenXRSpatialQueryResultData) [1]Object
 }
 
 type OpenXRStructureBase struct {
-	object
 	_OpenXRStructureBase struct{}
+	object
 }
 
 func NewOpenXRStructureBase(obj Object) OpenXRStructureBase {
@@ -5096,8 +5096,8 @@ func NewOpenXRStructureBase(obj Object) OpenXRStructureBase {
 func GetOpenXRStructureBase(obj OpenXRStructureBase) [1]Object { return obj.AsObject() }
 
 type OpenXRVisibilityMask struct {
-	object
 	_OpenXRVisibilityMask struct{}
+	object
 }
 
 func NewOpenXRVisibilityMask(obj Object) OpenXRVisibilityMask {
@@ -5106,8 +5106,8 @@ func NewOpenXRVisibilityMask(obj Object) OpenXRVisibilityMask {
 func GetOpenXRVisibilityMask(obj OpenXRVisibilityMask) [1]Object { return obj.AsObject() }
 
 type OptimizedTranslation struct {
-	object
 	_OptimizedTranslation struct{}
+	object
 }
 
 func NewOptimizedTranslation(obj Object) OptimizedTranslation {
@@ -5116,24 +5116,24 @@ func NewOptimizedTranslation(obj Object) OptimizedTranslation {
 func GetOptimizedTranslation(obj OptimizedTranslation) [1]Object { return obj.AsObject() }
 
 type OptionButton struct {
-	object
 	_OptionButton struct{}
+	object
 }
 
 func NewOptionButton(obj Object) OptionButton    { return OptionButton{object: object(obj)} }
 func GetOptionButton(obj OptionButton) [1]Object { return obj.AsObject() }
 
 type PCKPacker struct {
-	object
 	_PCKPacker struct{}
+	object
 }
 
 func NewPCKPacker(obj Object) PCKPacker    { return PCKPacker{object: object(obj)} }
 func GetPCKPacker(obj PCKPacker) [1]Object { return obj.AsObject() }
 
 type PackedDataContainer struct {
-	object
 	_PackedDataContainer struct{}
+	object
 }
 
 func NewPackedDataContainer(obj Object) PackedDataContainer {
@@ -5142,8 +5142,8 @@ func NewPackedDataContainer(obj Object) PackedDataContainer {
 func GetPackedDataContainer(obj PackedDataContainer) [1]Object { return obj.AsObject() }
 
 type PackedDataContainerRef struct {
-	object
 	_PackedDataContainerRef struct{}
+	object
 }
 
 func NewPackedDataContainerRef(obj Object) PackedDataContainerRef {
@@ -5152,32 +5152,32 @@ func NewPackedDataContainerRef(obj Object) PackedDataContainerRef {
 func GetPackedDataContainerRef(obj PackedDataContainerRef) [1]Object { return obj.AsObject() }
 
 type PackedScene struct {
-	object
 	_PackedScene struct{}
+	object
 }
 
 func NewPackedScene(obj Object) PackedScene    { return PackedScene{object: object(obj)} }
 func GetPackedScene(obj PackedScene) [1]Object { return obj.AsObject() }
 
 type PacketPeer struct {
-	object
 	_PacketPeer struct{}
+	object
 }
 
 func NewPacketPeer(obj Object) PacketPeer    { return PacketPeer{object: object(obj)} }
 func GetPacketPeer(obj PacketPeer) [1]Object { return obj.AsObject() }
 
 type PacketPeerDTLS struct {
-	object
 	_PacketPeerDTLS struct{}
+	object
 }
 
 func NewPacketPeerDTLS(obj Object) PacketPeerDTLS    { return PacketPeerDTLS{object: object(obj)} }
 func GetPacketPeerDTLS(obj PacketPeerDTLS) [1]Object { return obj.AsObject() }
 
 type PacketPeerExtension struct {
-	object
 	_PacketPeerExtension struct{}
+	object
 }
 
 func NewPacketPeerExtension(obj Object) PacketPeerExtension {
@@ -5186,40 +5186,40 @@ func NewPacketPeerExtension(obj Object) PacketPeerExtension {
 func GetPacketPeerExtension(obj PacketPeerExtension) [1]Object { return obj.AsObject() }
 
 type PacketPeerStream struct {
-	object
 	_PacketPeerStream struct{}
+	object
 }
 
 func NewPacketPeerStream(obj Object) PacketPeerStream    { return PacketPeerStream{object: object(obj)} }
 func GetPacketPeerStream(obj PacketPeerStream) [1]Object { return obj.AsObject() }
 
 type PacketPeerUDP struct {
-	object
 	_PacketPeerUDP struct{}
+	object
 }
 
 func NewPacketPeerUDP(obj Object) PacketPeerUDP    { return PacketPeerUDP{object: object(obj)} }
 func GetPacketPeerUDP(obj PacketPeerUDP) [1]Object { return obj.AsObject() }
 
 type Panel struct {
-	object
 	_Panel struct{}
+	object
 }
 
 func NewPanel(obj Object) Panel    { return Panel{object: object(obj)} }
 func GetPanel(obj Panel) [1]Object { return obj.AsObject() }
 
 type PanelContainer struct {
-	object
 	_PanelContainer struct{}
+	object
 }
 
 func NewPanelContainer(obj Object) PanelContainer    { return PanelContainer{object: object(obj)} }
 func GetPanelContainer(obj PanelContainer) [1]Object { return obj.AsObject() }
 
 type PanoramaSkyMaterial struct {
-	object
 	_PanoramaSkyMaterial struct{}
+	object
 }
 
 func NewPanoramaSkyMaterial(obj Object) PanoramaSkyMaterial {
@@ -5228,16 +5228,16 @@ func NewPanoramaSkyMaterial(obj Object) PanoramaSkyMaterial {
 func GetPanoramaSkyMaterial(obj PanoramaSkyMaterial) [1]Object { return obj.AsObject() }
 
 type Parallax2D struct {
-	object
 	_Parallax2D struct{}
+	object
 }
 
 func NewParallax2D(obj Object) Parallax2D    { return Parallax2D{object: object(obj)} }
 func GetParallax2D(obj Parallax2D) [1]Object { return obj.AsObject() }
 
 type ParallaxBackground struct {
-	object
 	_ParallaxBackground struct{}
+	object
 }
 
 func NewParallaxBackground(obj Object) ParallaxBackground {
@@ -5246,16 +5246,16 @@ func NewParallaxBackground(obj Object) ParallaxBackground {
 func GetParallaxBackground(obj ParallaxBackground) [1]Object { return obj.AsObject() }
 
 type ParallaxLayer struct {
-	object
 	_ParallaxLayer struct{}
+	object
 }
 
 func NewParallaxLayer(obj Object) ParallaxLayer    { return ParallaxLayer{object: object(obj)} }
 func GetParallaxLayer(obj ParallaxLayer) [1]Object { return obj.AsObject() }
 
 type ParticleProcessMaterial struct {
-	object
 	_ParticleProcessMaterial struct{}
+	object
 }
 
 func NewParticleProcessMaterial(obj Object) ParticleProcessMaterial {
@@ -5264,64 +5264,64 @@ func NewParticleProcessMaterial(obj Object) ParticleProcessMaterial {
 func GetParticleProcessMaterial(obj ParticleProcessMaterial) [1]Object { return obj.AsObject() }
 
 type Path2D struct {
-	object
 	_Path2D struct{}
+	object
 }
 
 func NewPath2D(obj Object) Path2D    { return Path2D{object: object(obj)} }
 func GetPath2D(obj Path2D) [1]Object { return obj.AsObject() }
 
 type Path3D struct {
-	object
 	_Path3D struct{}
+	object
 }
 
 func NewPath3D(obj Object) Path3D    { return Path3D{object: object(obj)} }
 func GetPath3D(obj Path3D) [1]Object { return obj.AsObject() }
 
 type PathFollow2D struct {
-	object
 	_PathFollow2D struct{}
+	object
 }
 
 func NewPathFollow2D(obj Object) PathFollow2D    { return PathFollow2D{object: object(obj)} }
 func GetPathFollow2D(obj PathFollow2D) [1]Object { return obj.AsObject() }
 
 type PathFollow3D struct {
-	object
 	_PathFollow3D struct{}
+	object
 }
 
 func NewPathFollow3D(obj Object) PathFollow3D    { return PathFollow3D{object: object(obj)} }
 func GetPathFollow3D(obj PathFollow3D) [1]Object { return obj.AsObject() }
 
 type Performance struct {
-	object
 	_Performance struct{}
+	object
 }
 
 func NewPerformance(obj Object) Performance    { return Performance{object: object(obj)} }
 func GetPerformance(obj Performance) [1]Object { return obj.AsObject() }
 
 type PhysicalBone2D struct {
-	object
 	_PhysicalBone2D struct{}
+	object
 }
 
 func NewPhysicalBone2D(obj Object) PhysicalBone2D    { return PhysicalBone2D{object: object(obj)} }
 func GetPhysicalBone2D(obj PhysicalBone2D) [1]Object { return obj.AsObject() }
 
 type PhysicalBone3D struct {
-	object
 	_PhysicalBone3D struct{}
+	object
 }
 
 func NewPhysicalBone3D(obj Object) PhysicalBone3D    { return PhysicalBone3D{object: object(obj)} }
 func GetPhysicalBone3D(obj PhysicalBone3D) [1]Object { return obj.AsObject() }
 
 type PhysicalBoneSimulator3D struct {
-	object
 	_PhysicalBoneSimulator3D struct{}
+	object
 }
 
 func NewPhysicalBoneSimulator3D(obj Object) PhysicalBoneSimulator3D {
@@ -5330,8 +5330,8 @@ func NewPhysicalBoneSimulator3D(obj Object) PhysicalBoneSimulator3D {
 func GetPhysicalBoneSimulator3D(obj PhysicalBoneSimulator3D) [1]Object { return obj.AsObject() }
 
 type PhysicalSkyMaterial struct {
-	object
 	_PhysicalSkyMaterial struct{}
+	object
 }
 
 func NewPhysicalSkyMaterial(obj Object) PhysicalSkyMaterial {
@@ -5340,24 +5340,24 @@ func NewPhysicalSkyMaterial(obj Object) PhysicalSkyMaterial {
 func GetPhysicalSkyMaterial(obj PhysicalSkyMaterial) [1]Object { return obj.AsObject() }
 
 type PhysicsBody2D struct {
-	object
 	_PhysicsBody2D struct{}
+	object
 }
 
 func NewPhysicsBody2D(obj Object) PhysicsBody2D    { return PhysicsBody2D{object: object(obj)} }
 func GetPhysicsBody2D(obj PhysicsBody2D) [1]Object { return obj.AsObject() }
 
 type PhysicsBody3D struct {
-	object
 	_PhysicsBody3D struct{}
+	object
 }
 
 func NewPhysicsBody3D(obj Object) PhysicsBody3D    { return PhysicsBody3D{object: object(obj)} }
 func GetPhysicsBody3D(obj PhysicsBody3D) [1]Object { return obj.AsObject() }
 
 type PhysicsDirectBodyState2D struct {
-	object
 	_PhysicsDirectBodyState2D struct{}
+	object
 }
 
 func NewPhysicsDirectBodyState2D(obj Object) PhysicsDirectBodyState2D {
@@ -5366,8 +5366,8 @@ func NewPhysicsDirectBodyState2D(obj Object) PhysicsDirectBodyState2D {
 func GetPhysicsDirectBodyState2D(obj PhysicsDirectBodyState2D) [1]Object { return obj.AsObject() }
 
 type PhysicsDirectBodyState2DExtension struct {
-	object
 	_PhysicsDirectBodyState2DExtension struct{}
+	object
 }
 
 func NewPhysicsDirectBodyState2DExtension(obj Object) PhysicsDirectBodyState2DExtension {
@@ -5378,8 +5378,8 @@ func GetPhysicsDirectBodyState2DExtension(obj PhysicsDirectBodyState2DExtension)
 }
 
 type PhysicsDirectBodyState3D struct {
-	object
 	_PhysicsDirectBodyState3D struct{}
+	object
 }
 
 func NewPhysicsDirectBodyState3D(obj Object) PhysicsDirectBodyState3D {
@@ -5388,8 +5388,8 @@ func NewPhysicsDirectBodyState3D(obj Object) PhysicsDirectBodyState3D {
 func GetPhysicsDirectBodyState3D(obj PhysicsDirectBodyState3D) [1]Object { return obj.AsObject() }
 
 type PhysicsDirectBodyState3DExtension struct {
-	object
 	_PhysicsDirectBodyState3DExtension struct{}
+	object
 }
 
 func NewPhysicsDirectBodyState3DExtension(obj Object) PhysicsDirectBodyState3DExtension {
@@ -5400,8 +5400,8 @@ func GetPhysicsDirectBodyState3DExtension(obj PhysicsDirectBodyState3DExtension)
 }
 
 type PhysicsDirectSpaceState2D struct {
-	object
 	_PhysicsDirectSpaceState2D struct{}
+	object
 }
 
 func NewPhysicsDirectSpaceState2D(obj Object) PhysicsDirectSpaceState2D {
@@ -5410,8 +5410,8 @@ func NewPhysicsDirectSpaceState2D(obj Object) PhysicsDirectSpaceState2D {
 func GetPhysicsDirectSpaceState2D(obj PhysicsDirectSpaceState2D) [1]Object { return obj.AsObject() }
 
 type PhysicsDirectSpaceState2DExtension struct {
-	object
 	_PhysicsDirectSpaceState2DExtension struct{}
+	object
 }
 
 func NewPhysicsDirectSpaceState2DExtension(obj Object) PhysicsDirectSpaceState2DExtension {
@@ -5422,8 +5422,8 @@ func GetPhysicsDirectSpaceState2DExtension(obj PhysicsDirectSpaceState2DExtensio
 }
 
 type PhysicsDirectSpaceState3D struct {
-	object
 	_PhysicsDirectSpaceState3D struct{}
+	object
 }
 
 func NewPhysicsDirectSpaceState3D(obj Object) PhysicsDirectSpaceState3D {
@@ -5432,8 +5432,8 @@ func NewPhysicsDirectSpaceState3D(obj Object) PhysicsDirectSpaceState3D {
 func GetPhysicsDirectSpaceState3D(obj PhysicsDirectSpaceState3D) [1]Object { return obj.AsObject() }
 
 type PhysicsDirectSpaceState3DExtension struct {
-	object
 	_PhysicsDirectSpaceState3DExtension struct{}
+	object
 }
 
 func NewPhysicsDirectSpaceState3DExtension(obj Object) PhysicsDirectSpaceState3DExtension {
@@ -5444,16 +5444,16 @@ func GetPhysicsDirectSpaceState3DExtension(obj PhysicsDirectSpaceState3DExtensio
 }
 
 type PhysicsMaterial struct {
-	object
 	_PhysicsMaterial struct{}
+	object
 }
 
 func NewPhysicsMaterial(obj Object) PhysicsMaterial    { return PhysicsMaterial{object: object(obj)} }
 func GetPhysicsMaterial(obj PhysicsMaterial) [1]Object { return obj.AsObject() }
 
 type PhysicsPointQueryParameters2D struct {
-	object
 	_PhysicsPointQueryParameters2D struct{}
+	object
 }
 
 func NewPhysicsPointQueryParameters2D(obj Object) PhysicsPointQueryParameters2D {
@@ -5464,8 +5464,8 @@ func GetPhysicsPointQueryParameters2D(obj PhysicsPointQueryParameters2D) [1]Obje
 }
 
 type PhysicsPointQueryParameters3D struct {
-	object
 	_PhysicsPointQueryParameters3D struct{}
+	object
 }
 
 func NewPhysicsPointQueryParameters3D(obj Object) PhysicsPointQueryParameters3D {
@@ -5476,8 +5476,8 @@ func GetPhysicsPointQueryParameters3D(obj PhysicsPointQueryParameters3D) [1]Obje
 }
 
 type PhysicsRayQueryParameters2D struct {
-	object
 	_PhysicsRayQueryParameters2D struct{}
+	object
 }
 
 func NewPhysicsRayQueryParameters2D(obj Object) PhysicsRayQueryParameters2D {
@@ -5486,8 +5486,8 @@ func NewPhysicsRayQueryParameters2D(obj Object) PhysicsRayQueryParameters2D {
 func GetPhysicsRayQueryParameters2D(obj PhysicsRayQueryParameters2D) [1]Object { return obj.AsObject() }
 
 type PhysicsRayQueryParameters3D struct {
-	object
 	_PhysicsRayQueryParameters3D struct{}
+	object
 }
 
 func NewPhysicsRayQueryParameters3D(obj Object) PhysicsRayQueryParameters3D {
@@ -5496,16 +5496,16 @@ func NewPhysicsRayQueryParameters3D(obj Object) PhysicsRayQueryParameters3D {
 func GetPhysicsRayQueryParameters3D(obj PhysicsRayQueryParameters3D) [1]Object { return obj.AsObject() }
 
 type PhysicsServer2D struct {
-	object
 	_PhysicsServer2D struct{}
+	object
 }
 
 func NewPhysicsServer2D(obj Object) PhysicsServer2D    { return PhysicsServer2D{object: object(obj)} }
 func GetPhysicsServer2D(obj PhysicsServer2D) [1]Object { return obj.AsObject() }
 
 type PhysicsServer2DExtension struct {
-	object
 	_PhysicsServer2DExtension struct{}
+	object
 }
 
 func NewPhysicsServer2DExtension(obj Object) PhysicsServer2DExtension {
@@ -5514,8 +5514,8 @@ func NewPhysicsServer2DExtension(obj Object) PhysicsServer2DExtension {
 func GetPhysicsServer2DExtension(obj PhysicsServer2DExtension) [1]Object { return obj.AsObject() }
 
 type PhysicsServer2DManager struct {
-	object
 	_PhysicsServer2DManager struct{}
+	object
 }
 
 func NewPhysicsServer2DManager(obj Object) PhysicsServer2DManager {
@@ -5524,16 +5524,16 @@ func NewPhysicsServer2DManager(obj Object) PhysicsServer2DManager {
 func GetPhysicsServer2DManager(obj PhysicsServer2DManager) [1]Object { return obj.AsObject() }
 
 type PhysicsServer3D struct {
-	object
 	_PhysicsServer3D struct{}
+	object
 }
 
 func NewPhysicsServer3D(obj Object) PhysicsServer3D    { return PhysicsServer3D{object: object(obj)} }
 func GetPhysicsServer3D(obj PhysicsServer3D) [1]Object { return obj.AsObject() }
 
 type PhysicsServer3DExtension struct {
-	object
 	_PhysicsServer3DExtension struct{}
+	object
 }
 
 func NewPhysicsServer3DExtension(obj Object) PhysicsServer3DExtension {
@@ -5542,8 +5542,8 @@ func NewPhysicsServer3DExtension(obj Object) PhysicsServer3DExtension {
 func GetPhysicsServer3DExtension(obj PhysicsServer3DExtension) [1]Object { return obj.AsObject() }
 
 type PhysicsServer3DManager struct {
-	object
 	_PhysicsServer3DManager struct{}
+	object
 }
 
 func NewPhysicsServer3DManager(obj Object) PhysicsServer3DManager {
@@ -5552,8 +5552,8 @@ func NewPhysicsServer3DManager(obj Object) PhysicsServer3DManager {
 func GetPhysicsServer3DManager(obj PhysicsServer3DManager) [1]Object { return obj.AsObject() }
 
 type PhysicsServer3DRenderingServerHandler struct {
-	object
 	_PhysicsServer3DRenderingServerHandler struct{}
+	object
 }
 
 func NewPhysicsServer3DRenderingServerHandler(obj Object) PhysicsServer3DRenderingServerHandler {
@@ -5564,8 +5564,8 @@ func GetPhysicsServer3DRenderingServerHandler(obj PhysicsServer3DRenderingServer
 }
 
 type PhysicsShapeQueryParameters2D struct {
-	object
 	_PhysicsShapeQueryParameters2D struct{}
+	object
 }
 
 func NewPhysicsShapeQueryParameters2D(obj Object) PhysicsShapeQueryParameters2D {
@@ -5576,8 +5576,8 @@ func GetPhysicsShapeQueryParameters2D(obj PhysicsShapeQueryParameters2D) [1]Obje
 }
 
 type PhysicsShapeQueryParameters3D struct {
-	object
 	_PhysicsShapeQueryParameters3D struct{}
+	object
 }
 
 func NewPhysicsShapeQueryParameters3D(obj Object) PhysicsShapeQueryParameters3D {
@@ -5588,8 +5588,8 @@ func GetPhysicsShapeQueryParameters3D(obj PhysicsShapeQueryParameters3D) [1]Obje
 }
 
 type PhysicsTestMotionParameters2D struct {
-	object
 	_PhysicsTestMotionParameters2D struct{}
+	object
 }
 
 func NewPhysicsTestMotionParameters2D(obj Object) PhysicsTestMotionParameters2D {
@@ -5600,8 +5600,8 @@ func GetPhysicsTestMotionParameters2D(obj PhysicsTestMotionParameters2D) [1]Obje
 }
 
 type PhysicsTestMotionParameters3D struct {
-	object
 	_PhysicsTestMotionParameters3D struct{}
+	object
 }
 
 func NewPhysicsTestMotionParameters3D(obj Object) PhysicsTestMotionParameters3D {
@@ -5612,8 +5612,8 @@ func GetPhysicsTestMotionParameters3D(obj PhysicsTestMotionParameters3D) [1]Obje
 }
 
 type PhysicsTestMotionResult2D struct {
-	object
 	_PhysicsTestMotionResult2D struct{}
+	object
 }
 
 func NewPhysicsTestMotionResult2D(obj Object) PhysicsTestMotionResult2D {
@@ -5622,8 +5622,8 @@ func NewPhysicsTestMotionResult2D(obj Object) PhysicsTestMotionResult2D {
 func GetPhysicsTestMotionResult2D(obj PhysicsTestMotionResult2D) [1]Object { return obj.AsObject() }
 
 type PhysicsTestMotionResult3D struct {
-	object
 	_PhysicsTestMotionResult3D struct{}
+	object
 }
 
 func NewPhysicsTestMotionResult3D(obj Object) PhysicsTestMotionResult3D {
@@ -5632,24 +5632,24 @@ func NewPhysicsTestMotionResult3D(obj Object) PhysicsTestMotionResult3D {
 func GetPhysicsTestMotionResult3D(obj PhysicsTestMotionResult3D) [1]Object { return obj.AsObject() }
 
 type PinJoint2D struct {
-	object
 	_PinJoint2D struct{}
+	object
 }
 
 func NewPinJoint2D(obj Object) PinJoint2D    { return PinJoint2D{object: object(obj)} }
 func GetPinJoint2D(obj PinJoint2D) [1]Object { return obj.AsObject() }
 
 type PinJoint3D struct {
-	object
 	_PinJoint3D struct{}
+	object
 }
 
 func NewPinJoint3D(obj Object) PinJoint3D    { return PinJoint3D{object: object(obj)} }
 func GetPinJoint3D(obj PinJoint3D) [1]Object { return obj.AsObject() }
 
 type PlaceholderCubemap struct {
-	object
 	_PlaceholderCubemap struct{}
+	object
 }
 
 func NewPlaceholderCubemap(obj Object) PlaceholderCubemap {
@@ -5658,8 +5658,8 @@ func NewPlaceholderCubemap(obj Object) PlaceholderCubemap {
 func GetPlaceholderCubemap(obj PlaceholderCubemap) [1]Object { return obj.AsObject() }
 
 type PlaceholderCubemapArray struct {
-	object
 	_PlaceholderCubemapArray struct{}
+	object
 }
 
 func NewPlaceholderCubemapArray(obj Object) PlaceholderCubemapArray {
@@ -5668,8 +5668,8 @@ func NewPlaceholderCubemapArray(obj Object) PlaceholderCubemapArray {
 func GetPlaceholderCubemapArray(obj PlaceholderCubemapArray) [1]Object { return obj.AsObject() }
 
 type PlaceholderMaterial struct {
-	object
 	_PlaceholderMaterial struct{}
+	object
 }
 
 func NewPlaceholderMaterial(obj Object) PlaceholderMaterial {
@@ -5678,16 +5678,16 @@ func NewPlaceholderMaterial(obj Object) PlaceholderMaterial {
 func GetPlaceholderMaterial(obj PlaceholderMaterial) [1]Object { return obj.AsObject() }
 
 type PlaceholderMesh struct {
-	object
 	_PlaceholderMesh struct{}
+	object
 }
 
 func NewPlaceholderMesh(obj Object) PlaceholderMesh    { return PlaceholderMesh{object: object(obj)} }
 func GetPlaceholderMesh(obj PlaceholderMesh) [1]Object { return obj.AsObject() }
 
 type PlaceholderTexture2D struct {
-	object
 	_PlaceholderTexture2D struct{}
+	object
 }
 
 func NewPlaceholderTexture2D(obj Object) PlaceholderTexture2D {
@@ -5696,8 +5696,8 @@ func NewPlaceholderTexture2D(obj Object) PlaceholderTexture2D {
 func GetPlaceholderTexture2D(obj PlaceholderTexture2D) [1]Object { return obj.AsObject() }
 
 type PlaceholderTexture2DArray struct {
-	object
 	_PlaceholderTexture2DArray struct{}
+	object
 }
 
 func NewPlaceholderTexture2DArray(obj Object) PlaceholderTexture2DArray {
@@ -5706,8 +5706,8 @@ func NewPlaceholderTexture2DArray(obj Object) PlaceholderTexture2DArray {
 func GetPlaceholderTexture2DArray(obj PlaceholderTexture2DArray) [1]Object { return obj.AsObject() }
 
 type PlaceholderTexture3D struct {
-	object
 	_PlaceholderTexture3D struct{}
+	object
 }
 
 func NewPlaceholderTexture3D(obj Object) PlaceholderTexture3D {
@@ -5716,8 +5716,8 @@ func NewPlaceholderTexture3D(obj Object) PlaceholderTexture3D {
 func GetPlaceholderTexture3D(obj PlaceholderTexture3D) [1]Object { return obj.AsObject() }
 
 type PlaceholderTextureLayered struct {
-	object
 	_PlaceholderTextureLayered struct{}
+	object
 }
 
 func NewPlaceholderTextureLayered(obj Object) PlaceholderTextureLayered {
@@ -5726,40 +5726,40 @@ func NewPlaceholderTextureLayered(obj Object) PlaceholderTextureLayered {
 func GetPlaceholderTextureLayered(obj PlaceholderTextureLayered) [1]Object { return obj.AsObject() }
 
 type PlaneMesh struct {
-	object
 	_PlaneMesh struct{}
+	object
 }
 
 func NewPlaneMesh(obj Object) PlaneMesh    { return PlaneMesh{object: object(obj)} }
 func GetPlaneMesh(obj PlaneMesh) [1]Object { return obj.AsObject() }
 
 type PointLight2D struct {
-	object
 	_PointLight2D struct{}
+	object
 }
 
 func NewPointLight2D(obj Object) PointLight2D    { return PointLight2D{object: object(obj)} }
 func GetPointLight2D(obj PointLight2D) [1]Object { return obj.AsObject() }
 
 type PointMesh struct {
-	object
 	_PointMesh struct{}
+	object
 }
 
 func NewPointMesh(obj Object) PointMesh    { return PointMesh{object: object(obj)} }
 func GetPointMesh(obj PointMesh) [1]Object { return obj.AsObject() }
 
 type Polygon2D struct {
-	object
 	_Polygon2D struct{}
+	object
 }
 
 func NewPolygon2D(obj Object) Polygon2D    { return Polygon2D{object: object(obj)} }
 func GetPolygon2D(obj Polygon2D) [1]Object { return obj.AsObject() }
 
 type PolygonOccluder3D struct {
-	object
 	_PolygonOccluder3D struct{}
+	object
 }
 
 func NewPolygonOccluder3D(obj Object) PolygonOccluder3D {
@@ -5768,8 +5768,8 @@ func NewPolygonOccluder3D(obj Object) PolygonOccluder3D {
 func GetPolygonOccluder3D(obj PolygonOccluder3D) [1]Object { return obj.AsObject() }
 
 type PolygonPathFinder struct {
-	object
 	_PolygonPathFinder struct{}
+	object
 }
 
 func NewPolygonPathFinder(obj Object) PolygonPathFinder {
@@ -5778,32 +5778,32 @@ func NewPolygonPathFinder(obj Object) PolygonPathFinder {
 func GetPolygonPathFinder(obj PolygonPathFinder) [1]Object { return obj.AsObject() }
 
 type Popup struct {
-	object
 	_Popup struct{}
+	object
 }
 
 func NewPopup(obj Object) Popup    { return Popup{object: object(obj)} }
 func GetPopup(obj Popup) [1]Object { return obj.AsObject() }
 
 type PopupMenu struct {
-	object
 	_PopupMenu struct{}
+	object
 }
 
 func NewPopupMenu(obj Object) PopupMenu    { return PopupMenu{object: object(obj)} }
 func GetPopupMenu(obj PopupMenu) [1]Object { return obj.AsObject() }
 
 type PopupPanel struct {
-	object
 	_PopupPanel struct{}
+	object
 }
 
 func NewPopupPanel(obj Object) PopupPanel    { return PopupPanel{object: object(obj)} }
 func GetPopupPanel(obj PopupPanel) [1]Object { return obj.AsObject() }
 
 type PortableCompressedTexture2D struct {
-	object
 	_PortableCompressedTexture2D struct{}
+	object
 }
 
 func NewPortableCompressedTexture2D(obj Object) PortableCompressedTexture2D {
@@ -5812,24 +5812,24 @@ func NewPortableCompressedTexture2D(obj Object) PortableCompressedTexture2D {
 func GetPortableCompressedTexture2D(obj PortableCompressedTexture2D) [1]Object { return obj.AsObject() }
 
 type PrimitiveMesh struct {
-	object
 	_PrimitiveMesh struct{}
+	object
 }
 
 func NewPrimitiveMesh(obj Object) PrimitiveMesh    { return PrimitiveMesh{object: object(obj)} }
 func GetPrimitiveMesh(obj PrimitiveMesh) [1]Object { return obj.AsObject() }
 
 type PrismMesh struct {
-	object
 	_PrismMesh struct{}
+	object
 }
 
 func NewPrismMesh(obj Object) PrismMesh    { return PrismMesh{object: object(obj)} }
 func GetPrismMesh(obj PrismMesh) [1]Object { return obj.AsObject() }
 
 type ProceduralSkyMaterial struct {
-	object
 	_ProceduralSkyMaterial struct{}
+	object
 }
 
 func NewProceduralSkyMaterial(obj Object) ProceduralSkyMaterial {
@@ -5838,48 +5838,48 @@ func NewProceduralSkyMaterial(obj Object) ProceduralSkyMaterial {
 func GetProceduralSkyMaterial(obj ProceduralSkyMaterial) [1]Object { return obj.AsObject() }
 
 type ProgressBar struct {
-	object
 	_ProgressBar struct{}
+	object
 }
 
 func NewProgressBar(obj Object) ProgressBar    { return ProgressBar{object: object(obj)} }
 func GetProgressBar(obj ProgressBar) [1]Object { return obj.AsObject() }
 
 type ProjectSettings struct {
-	object
 	_ProjectSettings struct{}
+	object
 }
 
 func NewProjectSettings(obj Object) ProjectSettings    { return ProjectSettings{object: object(obj)} }
 func GetProjectSettings(obj ProjectSettings) [1]Object { return obj.AsObject() }
 
 type PropertyTweener struct {
-	object
 	_PropertyTweener struct{}
+	object
 }
 
 func NewPropertyTweener(obj Object) PropertyTweener    { return PropertyTweener{object: object(obj)} }
 func GetPropertyTweener(obj PropertyTweener) [1]Object { return obj.AsObject() }
 
 type QuadMesh struct {
-	object
 	_QuadMesh struct{}
+	object
 }
 
 func NewQuadMesh(obj Object) QuadMesh    { return QuadMesh{object: object(obj)} }
 func GetQuadMesh(obj QuadMesh) [1]Object { return obj.AsObject() }
 
 type QuadOccluder3D struct {
-	object
 	_QuadOccluder3D struct{}
+	object
 }
 
 func NewQuadOccluder3D(obj Object) QuadOccluder3D    { return QuadOccluder3D{object: object(obj)} }
 func GetQuadOccluder3D(obj QuadOccluder3D) [1]Object { return obj.AsObject() }
 
 type RDAccelerationStructureGeometry struct {
-	object
 	_RDAccelerationStructureGeometry struct{}
+	object
 }
 
 func NewRDAccelerationStructureGeometry(obj Object) RDAccelerationStructureGeometry {
@@ -5890,8 +5890,8 @@ func GetRDAccelerationStructureGeometry(obj RDAccelerationStructureGeometry) [1]
 }
 
 type RDAccelerationStructureInstance struct {
-	object
 	_RDAccelerationStructureInstance struct{}
+	object
 }
 
 func NewRDAccelerationStructureInstance(obj Object) RDAccelerationStructureInstance {
@@ -5902,8 +5902,8 @@ func GetRDAccelerationStructureInstance(obj RDAccelerationStructureInstance) [1]
 }
 
 type RDAttachmentFormat struct {
-	object
 	_RDAttachmentFormat struct{}
+	object
 }
 
 func NewRDAttachmentFormat(obj Object) RDAttachmentFormat {
@@ -5912,8 +5912,8 @@ func NewRDAttachmentFormat(obj Object) RDAttachmentFormat {
 func GetRDAttachmentFormat(obj RDAttachmentFormat) [1]Object { return obj.AsObject() }
 
 type RDFramebufferPass struct {
-	object
 	_RDFramebufferPass struct{}
+	object
 }
 
 func NewRDFramebufferPass(obj Object) RDFramebufferPass {
@@ -5922,16 +5922,16 @@ func NewRDFramebufferPass(obj Object) RDFramebufferPass {
 func GetRDFramebufferPass(obj RDFramebufferPass) [1]Object { return obj.AsObject() }
 
 type RDHitGroup struct {
-	object
 	_RDHitGroup struct{}
+	object
 }
 
 func NewRDHitGroup(obj Object) RDHitGroup    { return RDHitGroup{object: object(obj)} }
 func GetRDHitGroup(obj RDHitGroup) [1]Object { return obj.AsObject() }
 
 type RDPipelineColorBlendState struct {
-	object
 	_RDPipelineColorBlendState struct{}
+	object
 }
 
 func NewRDPipelineColorBlendState(obj Object) RDPipelineColorBlendState {
@@ -5940,8 +5940,8 @@ func NewRDPipelineColorBlendState(obj Object) RDPipelineColorBlendState {
 func GetRDPipelineColorBlendState(obj RDPipelineColorBlendState) [1]Object { return obj.AsObject() }
 
 type RDPipelineColorBlendStateAttachment struct {
-	object
 	_RDPipelineColorBlendStateAttachment struct{}
+	object
 }
 
 func NewRDPipelineColorBlendStateAttachment(obj Object) RDPipelineColorBlendStateAttachment {
@@ -5952,8 +5952,8 @@ func GetRDPipelineColorBlendStateAttachment(obj RDPipelineColorBlendStateAttachm
 }
 
 type RDPipelineDepthStencilState struct {
-	object
 	_RDPipelineDepthStencilState struct{}
+	object
 }
 
 func NewRDPipelineDepthStencilState(obj Object) RDPipelineDepthStencilState {
@@ -5962,8 +5962,8 @@ func NewRDPipelineDepthStencilState(obj Object) RDPipelineDepthStencilState {
 func GetRDPipelineDepthStencilState(obj RDPipelineDepthStencilState) [1]Object { return obj.AsObject() }
 
 type RDPipelineMultisampleState struct {
-	object
 	_RDPipelineMultisampleState struct{}
+	object
 }
 
 func NewRDPipelineMultisampleState(obj Object) RDPipelineMultisampleState {
@@ -5972,8 +5972,8 @@ func NewRDPipelineMultisampleState(obj Object) RDPipelineMultisampleState {
 func GetRDPipelineMultisampleState(obj RDPipelineMultisampleState) [1]Object { return obj.AsObject() }
 
 type RDPipelineRasterizationState struct {
-	object
 	_RDPipelineRasterizationState struct{}
+	object
 }
 
 func NewRDPipelineRasterizationState(obj Object) RDPipelineRasterizationState {
@@ -5984,16 +5984,16 @@ func GetRDPipelineRasterizationState(obj RDPipelineRasterizationState) [1]Object
 }
 
 type RDPipelineShader struct {
-	object
 	_RDPipelineShader struct{}
+	object
 }
 
 func NewRDPipelineShader(obj Object) RDPipelineShader    { return RDPipelineShader{object: object(obj)} }
 func GetRDPipelineShader(obj RDPipelineShader) [1]Object { return obj.AsObject() }
 
 type RDPipelineSpecializationConstant struct {
-	object
 	_RDPipelineSpecializationConstant struct{}
+	object
 }
 
 func NewRDPipelineSpecializationConstant(obj Object) RDPipelineSpecializationConstant {
@@ -6004,64 +6004,64 @@ func GetRDPipelineSpecializationConstant(obj RDPipelineSpecializationConstant) [
 }
 
 type RDSamplerState struct {
-	object
 	_RDSamplerState struct{}
+	object
 }
 
 func NewRDSamplerState(obj Object) RDSamplerState    { return RDSamplerState{object: object(obj)} }
 func GetRDSamplerState(obj RDSamplerState) [1]Object { return obj.AsObject() }
 
 type RDShaderFile struct {
-	object
 	_RDShaderFile struct{}
+	object
 }
 
 func NewRDShaderFile(obj Object) RDShaderFile    { return RDShaderFile{object: object(obj)} }
 func GetRDShaderFile(obj RDShaderFile) [1]Object { return obj.AsObject() }
 
 type RDShaderSPIRV struct {
-	object
 	_RDShaderSPIRV struct{}
+	object
 }
 
 func NewRDShaderSPIRV(obj Object) RDShaderSPIRV    { return RDShaderSPIRV{object: object(obj)} }
 func GetRDShaderSPIRV(obj RDShaderSPIRV) [1]Object { return obj.AsObject() }
 
 type RDShaderSource struct {
-	object
 	_RDShaderSource struct{}
+	object
 }
 
 func NewRDShaderSource(obj Object) RDShaderSource    { return RDShaderSource{object: object(obj)} }
 func GetRDShaderSource(obj RDShaderSource) [1]Object { return obj.AsObject() }
 
 type RDTextureFormat struct {
-	object
 	_RDTextureFormat struct{}
+	object
 }
 
 func NewRDTextureFormat(obj Object) RDTextureFormat    { return RDTextureFormat{object: object(obj)} }
 func GetRDTextureFormat(obj RDTextureFormat) [1]Object { return obj.AsObject() }
 
 type RDTextureView struct {
-	object
 	_RDTextureView struct{}
+	object
 }
 
 func NewRDTextureView(obj Object) RDTextureView    { return RDTextureView{object: object(obj)} }
 func GetRDTextureView(obj RDTextureView) [1]Object { return obj.AsObject() }
 
 type RDUniform struct {
-	object
 	_RDUniform struct{}
+	object
 }
 
 func NewRDUniform(obj Object) RDUniform    { return RDUniform{object: object(obj)} }
 func GetRDUniform(obj RDUniform) [1]Object { return obj.AsObject() }
 
 type RDVertexAttribute struct {
-	object
 	_RDVertexAttribute struct{}
+	object
 }
 
 func NewRDVertexAttribute(obj Object) RDVertexAttribute {
@@ -6070,8 +6070,8 @@ func NewRDVertexAttribute(obj Object) RDVertexAttribute {
 func GetRDVertexAttribute(obj RDVertexAttribute) [1]Object { return obj.AsObject() }
 
 type RandomNumberGenerator struct {
-	object
 	_RandomNumberGenerator struct{}
+	object
 }
 
 func NewRandomNumberGenerator(obj Object) RandomNumberGenerator {
@@ -6080,72 +6080,72 @@ func NewRandomNumberGenerator(obj Object) RandomNumberGenerator {
 func GetRandomNumberGenerator(obj RandomNumberGenerator) [1]Object { return obj.AsObject() }
 
 type Range struct {
-	object
 	_Range struct{}
+	object
 }
 
 func NewRange(obj Object) Range    { return Range{object: object(obj)} }
 func GetRange(obj Range) [1]Object { return obj.AsObject() }
 
 type RayCast2D struct {
-	object
 	_RayCast2D struct{}
+	object
 }
 
 func NewRayCast2D(obj Object) RayCast2D    { return RayCast2D{object: object(obj)} }
 func GetRayCast2D(obj RayCast2D) [1]Object { return obj.AsObject() }
 
 type RayCast3D struct {
-	object
 	_RayCast3D struct{}
+	object
 }
 
 func NewRayCast3D(obj Object) RayCast3D    { return RayCast3D{object: object(obj)} }
 func GetRayCast3D(obj RayCast3D) [1]Object { return obj.AsObject() }
 
 type RectangleShape2D struct {
-	object
 	_RectangleShape2D struct{}
+	object
 }
 
 func NewRectangleShape2D(obj Object) RectangleShape2D    { return RectangleShape2D{object: object(obj)} }
 func GetRectangleShape2D(obj RectangleShape2D) [1]Object { return obj.AsObject() }
 
 type ReferenceRect struct {
-	object
 	_ReferenceRect struct{}
+	object
 }
 
 func NewReferenceRect(obj Object) ReferenceRect    { return ReferenceRect{object: object(obj)} }
 func GetReferenceRect(obj ReferenceRect) [1]Object { return obj.AsObject() }
 
 type ReflectionProbe struct {
-	object
 	_ReflectionProbe struct{}
+	object
 }
 
 func NewReflectionProbe(obj Object) ReflectionProbe    { return ReflectionProbe{object: object(obj)} }
 func GetReflectionProbe(obj ReflectionProbe) [1]Object { return obj.AsObject() }
 
 type RegEx struct {
-	object
 	_RegEx struct{}
+	object
 }
 
 func NewRegEx(obj Object) RegEx    { return RegEx{object: object(obj)} }
 func GetRegEx(obj RegEx) [1]Object { return obj.AsObject() }
 
 type RegExMatch struct {
-	object
 	_RegExMatch struct{}
+	object
 }
 
 func NewRegExMatch(obj Object) RegExMatch    { return RegExMatch{object: object(obj)} }
 func GetRegExMatch(obj RegExMatch) [1]Object { return obj.AsObject() }
 
 type RemoteTransform2D struct {
-	object
 	_RemoteTransform2D struct{}
+	object
 }
 
 func NewRemoteTransform2D(obj Object) RemoteTransform2D {
@@ -6154,8 +6154,8 @@ func NewRemoteTransform2D(obj Object) RemoteTransform2D {
 func GetRemoteTransform2D(obj RemoteTransform2D) [1]Object { return obj.AsObject() }
 
 type RemoteTransform3D struct {
-	object
 	_RemoteTransform3D struct{}
+	object
 }
 
 func NewRemoteTransform3D(obj Object) RemoteTransform3D {
@@ -6164,16 +6164,16 @@ func NewRemoteTransform3D(obj Object) RemoteTransform3D {
 func GetRemoteTransform3D(obj RemoteTransform3D) [1]Object { return obj.AsObject() }
 
 type RenderData struct {
-	object
 	_RenderData struct{}
+	object
 }
 
 func NewRenderData(obj Object) RenderData    { return RenderData{object: object(obj)} }
 func GetRenderData(obj RenderData) [1]Object { return obj.AsObject() }
 
 type RenderDataExtension struct {
-	object
 	_RenderDataExtension struct{}
+	object
 }
 
 func NewRenderDataExtension(obj Object) RenderDataExtension {
@@ -6182,16 +6182,16 @@ func NewRenderDataExtension(obj Object) RenderDataExtension {
 func GetRenderDataExtension(obj RenderDataExtension) [1]Object { return obj.AsObject() }
 
 type RenderDataRD struct {
-	object
 	_RenderDataRD struct{}
+	object
 }
 
 func NewRenderDataRD(obj Object) RenderDataRD    { return RenderDataRD{object: object(obj)} }
 func GetRenderDataRD(obj RenderDataRD) [1]Object { return obj.AsObject() }
 
 type RenderSceneBuffers struct {
-	object
 	_RenderSceneBuffers struct{}
+	object
 }
 
 func NewRenderSceneBuffers(obj Object) RenderSceneBuffers {
@@ -6200,8 +6200,8 @@ func NewRenderSceneBuffers(obj Object) RenderSceneBuffers {
 func GetRenderSceneBuffers(obj RenderSceneBuffers) [1]Object { return obj.AsObject() }
 
 type RenderSceneBuffersConfiguration struct {
-	object
 	_RenderSceneBuffersConfiguration struct{}
+	object
 }
 
 func NewRenderSceneBuffersConfiguration(obj Object) RenderSceneBuffersConfiguration {
@@ -6212,8 +6212,8 @@ func GetRenderSceneBuffersConfiguration(obj RenderSceneBuffersConfiguration) [1]
 }
 
 type RenderSceneBuffersExtension struct {
-	object
 	_RenderSceneBuffersExtension struct{}
+	object
 }
 
 func NewRenderSceneBuffersExtension(obj Object) RenderSceneBuffersExtension {
@@ -6222,8 +6222,8 @@ func NewRenderSceneBuffersExtension(obj Object) RenderSceneBuffersExtension {
 func GetRenderSceneBuffersExtension(obj RenderSceneBuffersExtension) [1]Object { return obj.AsObject() }
 
 type RenderSceneBuffersRD struct {
-	object
 	_RenderSceneBuffersRD struct{}
+	object
 }
 
 func NewRenderSceneBuffersRD(obj Object) RenderSceneBuffersRD {
@@ -6232,16 +6232,16 @@ func NewRenderSceneBuffersRD(obj Object) RenderSceneBuffersRD {
 func GetRenderSceneBuffersRD(obj RenderSceneBuffersRD) [1]Object { return obj.AsObject() }
 
 type RenderSceneData struct {
-	object
 	_RenderSceneData struct{}
+	object
 }
 
 func NewRenderSceneData(obj Object) RenderSceneData    { return RenderSceneData{object: object(obj)} }
 func GetRenderSceneData(obj RenderSceneData) [1]Object { return obj.AsObject() }
 
 type RenderSceneDataExtension struct {
-	object
 	_RenderSceneDataExtension struct{}
+	object
 }
 
 func NewRenderSceneDataExtension(obj Object) RenderSceneDataExtension {
@@ -6250,8 +6250,8 @@ func NewRenderSceneDataExtension(obj Object) RenderSceneDataExtension {
 func GetRenderSceneDataExtension(obj RenderSceneDataExtension) [1]Object { return obj.AsObject() }
 
 type RenderSceneDataRD struct {
-	object
 	_RenderSceneDataRD struct{}
+	object
 }
 
 func NewRenderSceneDataRD(obj Object) RenderSceneDataRD {
@@ -6260,32 +6260,32 @@ func NewRenderSceneDataRD(obj Object) RenderSceneDataRD {
 func GetRenderSceneDataRD(obj RenderSceneDataRD) [1]Object { return obj.AsObject() }
 
 type RenderingDevice struct {
-	object
 	_RenderingDevice struct{}
+	object
 }
 
 func NewRenderingDevice(obj Object) RenderingDevice    { return RenderingDevice{object: object(obj)} }
 func GetRenderingDevice(obj RenderingDevice) [1]Object { return obj.AsObject() }
 
 type RenderingServer struct {
-	object
 	_RenderingServer struct{}
+	object
 }
 
 func NewRenderingServer(obj Object) RenderingServer    { return RenderingServer{object: object(obj)} }
 func GetRenderingServer(obj RenderingServer) [1]Object { return obj.AsObject() }
 
 type Resource struct {
-	object
 	_Resource struct{}
+	object
 }
 
 func NewResource(obj Object) Resource    { return Resource{object: object(obj)} }
 func GetResource(obj Resource) [1]Object { return obj.AsObject() }
 
 type ResourceFormatLoader struct {
-	object
 	_ResourceFormatLoader struct{}
+	object
 }
 
 func NewResourceFormatLoader(obj Object) ResourceFormatLoader {
@@ -6294,8 +6294,8 @@ func NewResourceFormatLoader(obj Object) ResourceFormatLoader {
 func GetResourceFormatLoader(obj ResourceFormatLoader) [1]Object { return obj.AsObject() }
 
 type ResourceFormatSaver struct {
-	object
 	_ResourceFormatSaver struct{}
+	object
 }
 
 func NewResourceFormatSaver(obj Object) ResourceFormatSaver {
@@ -6304,16 +6304,16 @@ func NewResourceFormatSaver(obj Object) ResourceFormatSaver {
 func GetResourceFormatSaver(obj ResourceFormatSaver) [1]Object { return obj.AsObject() }
 
 type ResourceImporter struct {
-	object
 	_ResourceImporter struct{}
+	object
 }
 
 func NewResourceImporter(obj Object) ResourceImporter    { return ResourceImporter{object: object(obj)} }
 func GetResourceImporter(obj ResourceImporter) [1]Object { return obj.AsObject() }
 
 type ResourceImporterBMFont struct {
-	object
 	_ResourceImporterBMFont struct{}
+	object
 }
 
 func NewResourceImporterBMFont(obj Object) ResourceImporterBMFont {
@@ -6322,8 +6322,8 @@ func NewResourceImporterBMFont(obj Object) ResourceImporterBMFont {
 func GetResourceImporterBMFont(obj ResourceImporterBMFont) [1]Object { return obj.AsObject() }
 
 type ResourceImporterBitMap struct {
-	object
 	_ResourceImporterBitMap struct{}
+	object
 }
 
 func NewResourceImporterBitMap(obj Object) ResourceImporterBitMap {
@@ -6332,8 +6332,8 @@ func NewResourceImporterBitMap(obj Object) ResourceImporterBitMap {
 func GetResourceImporterBitMap(obj ResourceImporterBitMap) [1]Object { return obj.AsObject() }
 
 type ResourceImporterCSVTranslation struct {
-	object
 	_ResourceImporterCSVTranslation struct{}
+	object
 }
 
 func NewResourceImporterCSVTranslation(obj Object) ResourceImporterCSVTranslation {
@@ -6344,8 +6344,8 @@ func GetResourceImporterCSVTranslation(obj ResourceImporterCSVTranslation) [1]Ob
 }
 
 type ResourceImporterDynamicFont struct {
-	object
 	_ResourceImporterDynamicFont struct{}
+	object
 }
 
 func NewResourceImporterDynamicFont(obj Object) ResourceImporterDynamicFont {
@@ -6354,8 +6354,8 @@ func NewResourceImporterDynamicFont(obj Object) ResourceImporterDynamicFont {
 func GetResourceImporterDynamicFont(obj ResourceImporterDynamicFont) [1]Object { return obj.AsObject() }
 
 type ResourceImporterImage struct {
-	object
 	_ResourceImporterImage struct{}
+	object
 }
 
 func NewResourceImporterImage(obj Object) ResourceImporterImage {
@@ -6364,8 +6364,8 @@ func NewResourceImporterImage(obj Object) ResourceImporterImage {
 func GetResourceImporterImage(obj ResourceImporterImage) [1]Object { return obj.AsObject() }
 
 type ResourceImporterImageFont struct {
-	object
 	_ResourceImporterImageFont struct{}
+	object
 }
 
 func NewResourceImporterImageFont(obj Object) ResourceImporterImageFont {
@@ -6374,8 +6374,8 @@ func NewResourceImporterImageFont(obj Object) ResourceImporterImageFont {
 func GetResourceImporterImageFont(obj ResourceImporterImageFont) [1]Object { return obj.AsObject() }
 
 type ResourceImporterLayeredTexture struct {
-	object
 	_ResourceImporterLayeredTexture struct{}
+	object
 }
 
 func NewResourceImporterLayeredTexture(obj Object) ResourceImporterLayeredTexture {
@@ -6386,8 +6386,8 @@ func GetResourceImporterLayeredTexture(obj ResourceImporterLayeredTexture) [1]Ob
 }
 
 type ResourceImporterMP3 struct {
-	object
 	_ResourceImporterMP3 struct{}
+	object
 }
 
 func NewResourceImporterMP3(obj Object) ResourceImporterMP3 {
@@ -6396,8 +6396,8 @@ func NewResourceImporterMP3(obj Object) ResourceImporterMP3 {
 func GetResourceImporterMP3(obj ResourceImporterMP3) [1]Object { return obj.AsObject() }
 
 type ResourceImporterOBJ struct {
-	object
 	_ResourceImporterOBJ struct{}
+	object
 }
 
 func NewResourceImporterOBJ(obj Object) ResourceImporterOBJ {
@@ -6406,8 +6406,8 @@ func NewResourceImporterOBJ(obj Object) ResourceImporterOBJ {
 func GetResourceImporterOBJ(obj ResourceImporterOBJ) [1]Object { return obj.AsObject() }
 
 type ResourceImporterOggVorbis struct {
-	object
 	_ResourceImporterOggVorbis struct{}
+	object
 }
 
 func NewResourceImporterOggVorbis(obj Object) ResourceImporterOggVorbis {
@@ -6416,8 +6416,8 @@ func NewResourceImporterOggVorbis(obj Object) ResourceImporterOggVorbis {
 func GetResourceImporterOggVorbis(obj ResourceImporterOggVorbis) [1]Object { return obj.AsObject() }
 
 type ResourceImporterSVG struct {
-	object
 	_ResourceImporterSVG struct{}
+	object
 }
 
 func NewResourceImporterSVG(obj Object) ResourceImporterSVG {
@@ -6426,8 +6426,8 @@ func NewResourceImporterSVG(obj Object) ResourceImporterSVG {
 func GetResourceImporterSVG(obj ResourceImporterSVG) [1]Object { return obj.AsObject() }
 
 type ResourceImporterScene struct {
-	object
 	_ResourceImporterScene struct{}
+	object
 }
 
 func NewResourceImporterScene(obj Object) ResourceImporterScene {
@@ -6436,8 +6436,8 @@ func NewResourceImporterScene(obj Object) ResourceImporterScene {
 func GetResourceImporterScene(obj ResourceImporterScene) [1]Object { return obj.AsObject() }
 
 type ResourceImporterShaderFile struct {
-	object
 	_ResourceImporterShaderFile struct{}
+	object
 }
 
 func NewResourceImporterShaderFile(obj Object) ResourceImporterShaderFile {
@@ -6446,8 +6446,8 @@ func NewResourceImporterShaderFile(obj Object) ResourceImporterShaderFile {
 func GetResourceImporterShaderFile(obj ResourceImporterShaderFile) [1]Object { return obj.AsObject() }
 
 type ResourceImporterTexture struct {
-	object
 	_ResourceImporterTexture struct{}
+	object
 }
 
 func NewResourceImporterTexture(obj Object) ResourceImporterTexture {
@@ -6456,8 +6456,8 @@ func NewResourceImporterTexture(obj Object) ResourceImporterTexture {
 func GetResourceImporterTexture(obj ResourceImporterTexture) [1]Object { return obj.AsObject() }
 
 type ResourceImporterTextureAtlas struct {
-	object
 	_ResourceImporterTextureAtlas struct{}
+	object
 }
 
 func NewResourceImporterTextureAtlas(obj Object) ResourceImporterTextureAtlas {
@@ -6468,8 +6468,8 @@ func GetResourceImporterTextureAtlas(obj ResourceImporterTextureAtlas) [1]Object
 }
 
 type ResourceImporterWAV struct {
-	object
 	_ResourceImporterWAV struct{}
+	object
 }
 
 func NewResourceImporterWAV(obj Object) ResourceImporterWAV {
@@ -6478,16 +6478,16 @@ func NewResourceImporterWAV(obj Object) ResourceImporterWAV {
 func GetResourceImporterWAV(obj ResourceImporterWAV) [1]Object { return obj.AsObject() }
 
 type ResourceLoader struct {
-	object
 	_ResourceLoader struct{}
+	object
 }
 
 func NewResourceLoader(obj Object) ResourceLoader    { return ResourceLoader{object: object(obj)} }
 func GetResourceLoader(obj ResourceLoader) [1]Object { return obj.AsObject() }
 
 type ResourcePreloader struct {
-	object
 	_ResourcePreloader struct{}
+	object
 }
 
 func NewResourcePreloader(obj Object) ResourcePreloader {
@@ -6496,24 +6496,24 @@ func NewResourcePreloader(obj Object) ResourcePreloader {
 func GetResourcePreloader(obj ResourcePreloader) [1]Object { return obj.AsObject() }
 
 type ResourceSaver struct {
-	object
 	_ResourceSaver struct{}
+	object
 }
 
 func NewResourceSaver(obj Object) ResourceSaver    { return ResourceSaver{object: object(obj)} }
 func GetResourceSaver(obj ResourceSaver) [1]Object { return obj.AsObject() }
 
 type ResourceUID struct {
-	object
 	_ResourceUID struct{}
+	object
 }
 
 func NewResourceUID(obj Object) ResourceUID    { return ResourceUID{object: object(obj)} }
 func GetResourceUID(obj ResourceUID) [1]Object { return obj.AsObject() }
 
 type RetargetModifier3D struct {
-	object
 	_RetargetModifier3D struct{}
+	object
 }
 
 func NewRetargetModifier3D(obj Object) RetargetModifier3D {
@@ -6522,64 +6522,64 @@ func NewRetargetModifier3D(obj Object) RetargetModifier3D {
 func GetRetargetModifier3D(obj RetargetModifier3D) [1]Object { return obj.AsObject() }
 
 type RibbonTrailMesh struct {
-	object
 	_RibbonTrailMesh struct{}
+	object
 }
 
 func NewRibbonTrailMesh(obj Object) RibbonTrailMesh    { return RibbonTrailMesh{object: object(obj)} }
 func GetRibbonTrailMesh(obj RibbonTrailMesh) [1]Object { return obj.AsObject() }
 
 type RichTextEffect struct {
-	object
 	_RichTextEffect struct{}
+	object
 }
 
 func NewRichTextEffect(obj Object) RichTextEffect    { return RichTextEffect{object: object(obj)} }
 func GetRichTextEffect(obj RichTextEffect) [1]Object { return obj.AsObject() }
 
 type RichTextLabel struct {
-	object
 	_RichTextLabel struct{}
+	object
 }
 
 func NewRichTextLabel(obj Object) RichTextLabel    { return RichTextLabel{object: object(obj)} }
 func GetRichTextLabel(obj RichTextLabel) [1]Object { return obj.AsObject() }
 
 type RigidBody2D struct {
-	object
 	_RigidBody2D struct{}
+	object
 }
 
 func NewRigidBody2D(obj Object) RigidBody2D    { return RigidBody2D{object: object(obj)} }
 func GetRigidBody2D(obj RigidBody2D) [1]Object { return obj.AsObject() }
 
 type RigidBody3D struct {
-	object
 	_RigidBody3D struct{}
+	object
 }
 
 func NewRigidBody3D(obj Object) RigidBody3D    { return RigidBody3D{object: object(obj)} }
 func GetRigidBody3D(obj RigidBody3D) [1]Object { return obj.AsObject() }
 
 type RootMotionView struct {
-	object
 	_RootMotionView struct{}
+	object
 }
 
 func NewRootMotionView(obj Object) RootMotionView    { return RootMotionView{object: object(obj)} }
 func GetRootMotionView(obj RootMotionView) [1]Object { return obj.AsObject() }
 
 type SceneMultiplayer struct {
-	object
 	_SceneMultiplayer struct{}
+	object
 }
 
 func NewSceneMultiplayer(obj Object) SceneMultiplayer    { return SceneMultiplayer{object: object(obj)} }
 func GetSceneMultiplayer(obj SceneMultiplayer) [1]Object { return obj.AsObject() }
 
 type SceneReplicationConfig struct {
-	object
 	_SceneReplicationConfig struct{}
+	object
 }
 
 func NewSceneReplicationConfig(obj Object) SceneReplicationConfig {
@@ -6588,48 +6588,48 @@ func NewSceneReplicationConfig(obj Object) SceneReplicationConfig {
 func GetSceneReplicationConfig(obj SceneReplicationConfig) [1]Object { return obj.AsObject() }
 
 type SceneState struct {
-	object
 	_SceneState struct{}
+	object
 }
 
 func NewSceneState(obj Object) SceneState    { return SceneState{object: object(obj)} }
 func GetSceneState(obj SceneState) [1]Object { return obj.AsObject() }
 
 type SceneTree struct {
-	object
 	_SceneTree struct{}
+	object
 }
 
 func NewSceneTree(obj Object) SceneTree    { return SceneTree{object: object(obj)} }
 func GetSceneTree(obj SceneTree) [1]Object { return obj.AsObject() }
 
 type SceneTreeTimer struct {
-	object
 	_SceneTreeTimer struct{}
+	object
 }
 
 func NewSceneTreeTimer(obj Object) SceneTreeTimer    { return SceneTreeTimer{object: object(obj)} }
 func GetSceneTreeTimer(obj SceneTreeTimer) [1]Object { return obj.AsObject() }
 
 type Script struct {
-	object
 	_Script struct{}
+	object
 }
 
 func NewScript(obj Object) Script    { return Script{object: object(obj)} }
 func GetScript(obj Script) [1]Object { return obj.AsObject() }
 
 type ScriptBacktrace struct {
-	object
 	_ScriptBacktrace struct{}
+	object
 }
 
 func NewScriptBacktrace(obj Object) ScriptBacktrace    { return ScriptBacktrace{object: object(obj)} }
 func GetScriptBacktrace(obj ScriptBacktrace) [1]Object { return obj.AsObject() }
 
 type ScriptCreateDialog struct {
-	object
 	_ScriptCreateDialog struct{}
+	object
 }
 
 func NewScriptCreateDialog(obj Object) ScriptCreateDialog {
@@ -6638,40 +6638,40 @@ func NewScriptCreateDialog(obj Object) ScriptCreateDialog {
 func GetScriptCreateDialog(obj ScriptCreateDialog) [1]Object { return obj.AsObject() }
 
 type ScriptEditor struct {
-	object
 	_ScriptEditor struct{}
+	object
 }
 
 func NewScriptEditor(obj Object) ScriptEditor    { return ScriptEditor{object: object(obj)} }
 func GetScriptEditor(obj ScriptEditor) [1]Object { return obj.AsObject() }
 
 type ScriptEditorBase struct {
-	object
 	_ScriptEditorBase struct{}
+	object
 }
 
 func NewScriptEditorBase(obj Object) ScriptEditorBase    { return ScriptEditorBase{object: object(obj)} }
 func GetScriptEditorBase(obj ScriptEditorBase) [1]Object { return obj.AsObject() }
 
 type ScriptExtension struct {
-	object
 	_ScriptExtension struct{}
+	object
 }
 
 func NewScriptExtension(obj Object) ScriptExtension    { return ScriptExtension{object: object(obj)} }
 func GetScriptExtension(obj ScriptExtension) [1]Object { return obj.AsObject() }
 
 type ScriptLanguage struct {
-	object
 	_ScriptLanguage struct{}
+	object
 }
 
 func NewScriptLanguage(obj Object) ScriptLanguage    { return ScriptLanguage{object: object(obj)} }
 func GetScriptLanguage(obj ScriptLanguage) [1]Object { return obj.AsObject() }
 
 type ScriptLanguageExtension struct {
-	object
 	_ScriptLanguageExtension struct{}
+	object
 }
 
 func NewScriptLanguageExtension(obj Object) ScriptLanguageExtension {
@@ -6680,40 +6680,40 @@ func NewScriptLanguageExtension(obj Object) ScriptLanguageExtension {
 func GetScriptLanguageExtension(obj ScriptLanguageExtension) [1]Object { return obj.AsObject() }
 
 type ScrollBar struct {
-	object
 	_ScrollBar struct{}
+	object
 }
 
 func NewScrollBar(obj Object) ScrollBar    { return ScrollBar{object: object(obj)} }
 func GetScrollBar(obj ScrollBar) [1]Object { return obj.AsObject() }
 
 type ScrollContainer struct {
-	object
 	_ScrollContainer struct{}
+	object
 }
 
 func NewScrollContainer(obj Object) ScrollContainer    { return ScrollContainer{object: object(obj)} }
 func GetScrollContainer(obj ScrollContainer) [1]Object { return obj.AsObject() }
 
 type SegmentShape2D struct {
-	object
 	_SegmentShape2D struct{}
+	object
 }
 
 func NewSegmentShape2D(obj Object) SegmentShape2D    { return SegmentShape2D{object: object(obj)} }
 func GetSegmentShape2D(obj SegmentShape2D) [1]Object { return obj.AsObject() }
 
 type Semaphore struct {
-	object
 	_Semaphore struct{}
+	object
 }
 
 func NewSemaphore(obj Object) Semaphore    { return Semaphore{object: object(obj)} }
 func GetSemaphore(obj Semaphore) [1]Object { return obj.AsObject() }
 
 type SeparationRayShape2D struct {
-	object
 	_SeparationRayShape2D struct{}
+	object
 }
 
 func NewSeparationRayShape2D(obj Object) SeparationRayShape2D {
@@ -6722,8 +6722,8 @@ func NewSeparationRayShape2D(obj Object) SeparationRayShape2D {
 func GetSeparationRayShape2D(obj SeparationRayShape2D) [1]Object { return obj.AsObject() }
 
 type SeparationRayShape3D struct {
-	object
 	_SeparationRayShape3D struct{}
+	object
 }
 
 func NewSeparationRayShape3D(obj Object) SeparationRayShape3D {
@@ -6732,24 +6732,24 @@ func NewSeparationRayShape3D(obj Object) SeparationRayShape3D {
 func GetSeparationRayShape3D(obj SeparationRayShape3D) [1]Object { return obj.AsObject() }
 
 type Separator struct {
-	object
 	_Separator struct{}
+	object
 }
 
 func NewSeparator(obj Object) Separator    { return Separator{object: object(obj)} }
 func GetSeparator(obj Separator) [1]Object { return obj.AsObject() }
 
 type Shader struct {
-	object
 	_Shader struct{}
+	object
 }
 
 func NewShader(obj Object) Shader    { return Shader{object: object(obj)} }
 func GetShader(obj Shader) [1]Object { return obj.AsObject() }
 
 type ShaderGlobalsOverride struct {
-	object
 	_ShaderGlobalsOverride struct{}
+	object
 }
 
 func NewShaderGlobalsOverride(obj Object) ShaderGlobalsOverride {
@@ -6758,96 +6758,96 @@ func NewShaderGlobalsOverride(obj Object) ShaderGlobalsOverride {
 func GetShaderGlobalsOverride(obj ShaderGlobalsOverride) [1]Object { return obj.AsObject() }
 
 type ShaderInclude struct {
-	object
 	_ShaderInclude struct{}
+	object
 }
 
 func NewShaderInclude(obj Object) ShaderInclude    { return ShaderInclude{object: object(obj)} }
 func GetShaderInclude(obj ShaderInclude) [1]Object { return obj.AsObject() }
 
 type ShaderIncludeDB struct {
-	object
 	_ShaderIncludeDB struct{}
+	object
 }
 
 func NewShaderIncludeDB(obj Object) ShaderIncludeDB    { return ShaderIncludeDB{object: object(obj)} }
 func GetShaderIncludeDB(obj ShaderIncludeDB) [1]Object { return obj.AsObject() }
 
 type ShaderMaterial struct {
-	object
 	_ShaderMaterial struct{}
+	object
 }
 
 func NewShaderMaterial(obj Object) ShaderMaterial    { return ShaderMaterial{object: object(obj)} }
 func GetShaderMaterial(obj ShaderMaterial) [1]Object { return obj.AsObject() }
 
 type Shape2D struct {
-	object
 	_Shape2D struct{}
+	object
 }
 
 func NewShape2D(obj Object) Shape2D    { return Shape2D{object: object(obj)} }
 func GetShape2D(obj Shape2D) [1]Object { return obj.AsObject() }
 
 type Shape3D struct {
-	object
 	_Shape3D struct{}
+	object
 }
 
 func NewShape3D(obj Object) Shape3D    { return Shape3D{object: object(obj)} }
 func GetShape3D(obj Shape3D) [1]Object { return obj.AsObject() }
 
 type ShapeCast2D struct {
-	object
 	_ShapeCast2D struct{}
+	object
 }
 
 func NewShapeCast2D(obj Object) ShapeCast2D    { return ShapeCast2D{object: object(obj)} }
 func GetShapeCast2D(obj ShapeCast2D) [1]Object { return obj.AsObject() }
 
 type ShapeCast3D struct {
-	object
 	_ShapeCast3D struct{}
+	object
 }
 
 func NewShapeCast3D(obj Object) ShapeCast3D    { return ShapeCast3D{object: object(obj)} }
 func GetShapeCast3D(obj ShapeCast3D) [1]Object { return obj.AsObject() }
 
 type Shortcut struct {
-	object
 	_Shortcut struct{}
+	object
 }
 
 func NewShortcut(obj Object) Shortcut    { return Shortcut{object: object(obj)} }
 func GetShortcut(obj Shortcut) [1]Object { return obj.AsObject() }
 
 type Skeleton2D struct {
-	object
 	_Skeleton2D struct{}
+	object
 }
 
 func NewSkeleton2D(obj Object) Skeleton2D    { return Skeleton2D{object: object(obj)} }
 func GetSkeleton2D(obj Skeleton2D) [1]Object { return obj.AsObject() }
 
 type Skeleton3D struct {
-	object
 	_Skeleton3D struct{}
+	object
 }
 
 func NewSkeleton3D(obj Object) Skeleton3D    { return Skeleton3D{object: object(obj)} }
 func GetSkeleton3D(obj Skeleton3D) [1]Object { return obj.AsObject() }
 
 type SkeletonIK3D struct {
-	object
 	_SkeletonIK3D struct{}
+	object
 }
 
 func NewSkeletonIK3D(obj Object) SkeletonIK3D    { return SkeletonIK3D{object: object(obj)} }
 func GetSkeletonIK3D(obj SkeletonIK3D) [1]Object { return obj.AsObject() }
 
 type SkeletonModification2D struct {
-	object
 	_SkeletonModification2D struct{}
+	object
 }
 
 func NewSkeletonModification2D(obj Object) SkeletonModification2D {
@@ -6856,8 +6856,8 @@ func NewSkeletonModification2D(obj Object) SkeletonModification2D {
 func GetSkeletonModification2D(obj SkeletonModification2D) [1]Object { return obj.AsObject() }
 
 type SkeletonModification2DCCDIK struct {
-	object
 	_SkeletonModification2DCCDIK struct{}
+	object
 }
 
 func NewSkeletonModification2DCCDIK(obj Object) SkeletonModification2DCCDIK {
@@ -6866,8 +6866,8 @@ func NewSkeletonModification2DCCDIK(obj Object) SkeletonModification2DCCDIK {
 func GetSkeletonModification2DCCDIK(obj SkeletonModification2DCCDIK) [1]Object { return obj.AsObject() }
 
 type SkeletonModification2DFABRIK struct {
-	object
 	_SkeletonModification2DFABRIK struct{}
+	object
 }
 
 func NewSkeletonModification2DFABRIK(obj Object) SkeletonModification2DFABRIK {
@@ -6878,8 +6878,8 @@ func GetSkeletonModification2DFABRIK(obj SkeletonModification2DFABRIK) [1]Object
 }
 
 type SkeletonModification2DJiggle struct {
-	object
 	_SkeletonModification2DJiggle struct{}
+	object
 }
 
 func NewSkeletonModification2DJiggle(obj Object) SkeletonModification2DJiggle {
@@ -6890,8 +6890,8 @@ func GetSkeletonModification2DJiggle(obj SkeletonModification2DJiggle) [1]Object
 }
 
 type SkeletonModification2DLookAt struct {
-	object
 	_SkeletonModification2DLookAt struct{}
+	object
 }
 
 func NewSkeletonModification2DLookAt(obj Object) SkeletonModification2DLookAt {
@@ -6902,8 +6902,8 @@ func GetSkeletonModification2DLookAt(obj SkeletonModification2DLookAt) [1]Object
 }
 
 type SkeletonModification2DPhysicalBones struct {
-	object
 	_SkeletonModification2DPhysicalBones struct{}
+	object
 }
 
 func NewSkeletonModification2DPhysicalBones(obj Object) SkeletonModification2DPhysicalBones {
@@ -6914,8 +6914,8 @@ func GetSkeletonModification2DPhysicalBones(obj SkeletonModification2DPhysicalBo
 }
 
 type SkeletonModification2DStackHolder struct {
-	object
 	_SkeletonModification2DStackHolder struct{}
+	object
 }
 
 func NewSkeletonModification2DStackHolder(obj Object) SkeletonModification2DStackHolder {
@@ -6926,8 +6926,8 @@ func GetSkeletonModification2DStackHolder(obj SkeletonModification2DStackHolder)
 }
 
 type SkeletonModification2DTwoBoneIK struct {
-	object
 	_SkeletonModification2DTwoBoneIK struct{}
+	object
 }
 
 func NewSkeletonModification2DTwoBoneIK(obj Object) SkeletonModification2DTwoBoneIK {
@@ -6938,8 +6938,8 @@ func GetSkeletonModification2DTwoBoneIK(obj SkeletonModification2DTwoBoneIK) [1]
 }
 
 type SkeletonModificationStack2D struct {
-	object
 	_SkeletonModificationStack2D struct{}
+	object
 }
 
 func NewSkeletonModificationStack2D(obj Object) SkeletonModificationStack2D {
@@ -6948,8 +6948,8 @@ func NewSkeletonModificationStack2D(obj Object) SkeletonModificationStack2D {
 func GetSkeletonModificationStack2D(obj SkeletonModificationStack2D) [1]Object { return obj.AsObject() }
 
 type SkeletonModifier3D struct {
-	object
 	_SkeletonModifier3D struct{}
+	object
 }
 
 func NewSkeletonModifier3D(obj Object) SkeletonModifier3D {
@@ -6958,16 +6958,16 @@ func NewSkeletonModifier3D(obj Object) SkeletonModifier3D {
 func GetSkeletonModifier3D(obj SkeletonModifier3D) [1]Object { return obj.AsObject() }
 
 type SkeletonProfile struct {
-	object
 	_SkeletonProfile struct{}
+	object
 }
 
 func NewSkeletonProfile(obj Object) SkeletonProfile    { return SkeletonProfile{object: object(obj)} }
 func GetSkeletonProfile(obj SkeletonProfile) [1]Object { return obj.AsObject() }
 
 type SkeletonProfileHumanoid struct {
-	object
 	_SkeletonProfileHumanoid struct{}
+	object
 }
 
 func NewSkeletonProfileHumanoid(obj Object) SkeletonProfileHumanoid {
@@ -6976,128 +6976,128 @@ func NewSkeletonProfileHumanoid(obj Object) SkeletonProfileHumanoid {
 func GetSkeletonProfileHumanoid(obj SkeletonProfileHumanoid) [1]Object { return obj.AsObject() }
 
 type Skin struct {
-	object
 	_Skin struct{}
+	object
 }
 
 func NewSkin(obj Object) Skin    { return Skin{object: object(obj)} }
 func GetSkin(obj Skin) [1]Object { return obj.AsObject() }
 
 type SkinReference struct {
-	object
 	_SkinReference struct{}
+	object
 }
 
 func NewSkinReference(obj Object) SkinReference    { return SkinReference{object: object(obj)} }
 func GetSkinReference(obj SkinReference) [1]Object { return obj.AsObject() }
 
 type Sky struct {
-	object
 	_Sky struct{}
+	object
 }
 
 func NewSky(obj Object) Sky    { return Sky{object: object(obj)} }
 func GetSky(obj Sky) [1]Object { return obj.AsObject() }
 
 type Slider struct {
-	object
 	_Slider struct{}
+	object
 }
 
 func NewSlider(obj Object) Slider    { return Slider{object: object(obj)} }
 func GetSlider(obj Slider) [1]Object { return obj.AsObject() }
 
 type SliderJoint3D struct {
-	object
 	_SliderJoint3D struct{}
+	object
 }
 
 func NewSliderJoint3D(obj Object) SliderJoint3D    { return SliderJoint3D{object: object(obj)} }
 func GetSliderJoint3D(obj SliderJoint3D) [1]Object { return obj.AsObject() }
 
 type SocketServer struct {
-	object
 	_SocketServer struct{}
+	object
 }
 
 func NewSocketServer(obj Object) SocketServer    { return SocketServer{object: object(obj)} }
 func GetSocketServer(obj SocketServer) [1]Object { return obj.AsObject() }
 
 type SoftBody3D struct {
-	object
 	_SoftBody3D struct{}
+	object
 }
 
 func NewSoftBody3D(obj Object) SoftBody3D    { return SoftBody3D{object: object(obj)} }
 func GetSoftBody3D(obj SoftBody3D) [1]Object { return obj.AsObject() }
 
 type SphereMesh struct {
-	object
 	_SphereMesh struct{}
+	object
 }
 
 func NewSphereMesh(obj Object) SphereMesh    { return SphereMesh{object: object(obj)} }
 func GetSphereMesh(obj SphereMesh) [1]Object { return obj.AsObject() }
 
 type SphereOccluder3D struct {
-	object
 	_SphereOccluder3D struct{}
+	object
 }
 
 func NewSphereOccluder3D(obj Object) SphereOccluder3D    { return SphereOccluder3D{object: object(obj)} }
 func GetSphereOccluder3D(obj SphereOccluder3D) [1]Object { return obj.AsObject() }
 
 type SphereShape3D struct {
-	object
 	_SphereShape3D struct{}
+	object
 }
 
 func NewSphereShape3D(obj Object) SphereShape3D    { return SphereShape3D{object: object(obj)} }
 func GetSphereShape3D(obj SphereShape3D) [1]Object { return obj.AsObject() }
 
 type SpinBox struct {
-	object
 	_SpinBox struct{}
+	object
 }
 
 func NewSpinBox(obj Object) SpinBox    { return SpinBox{object: object(obj)} }
 func GetSpinBox(obj SpinBox) [1]Object { return obj.AsObject() }
 
 type SplineIK3D struct {
-	object
 	_SplineIK3D struct{}
+	object
 }
 
 func NewSplineIK3D(obj Object) SplineIK3D    { return SplineIK3D{object: object(obj)} }
 func GetSplineIK3D(obj SplineIK3D) [1]Object { return obj.AsObject() }
 
 type SplitContainer struct {
-	object
 	_SplitContainer struct{}
+	object
 }
 
 func NewSplitContainer(obj Object) SplitContainer    { return SplitContainer{object: object(obj)} }
 func GetSplitContainer(obj SplitContainer) [1]Object { return obj.AsObject() }
 
 type SpotLight3D struct {
-	object
 	_SpotLight3D struct{}
+	object
 }
 
 func NewSpotLight3D(obj Object) SpotLight3D    { return SpotLight3D{object: object(obj)} }
 func GetSpotLight3D(obj SpotLight3D) [1]Object { return obj.AsObject() }
 
 type SpringArm3D struct {
-	object
 	_SpringArm3D struct{}
+	object
 }
 
 func NewSpringArm3D(obj Object) SpringArm3D    { return SpringArm3D{object: object(obj)} }
 func GetSpringArm3D(obj SpringArm3D) [1]Object { return obj.AsObject() }
 
 type SpringBoneCollision3D struct {
-	object
 	_SpringBoneCollision3D struct{}
+	object
 }
 
 func NewSpringBoneCollision3D(obj Object) SpringBoneCollision3D {
@@ -7106,8 +7106,8 @@ func NewSpringBoneCollision3D(obj Object) SpringBoneCollision3D {
 func GetSpringBoneCollision3D(obj SpringBoneCollision3D) [1]Object { return obj.AsObject() }
 
 type SpringBoneCollisionCapsule3D struct {
-	object
 	_SpringBoneCollisionCapsule3D struct{}
+	object
 }
 
 func NewSpringBoneCollisionCapsule3D(obj Object) SpringBoneCollisionCapsule3D {
@@ -7118,8 +7118,8 @@ func GetSpringBoneCollisionCapsule3D(obj SpringBoneCollisionCapsule3D) [1]Object
 }
 
 type SpringBoneCollisionPlane3D struct {
-	object
 	_SpringBoneCollisionPlane3D struct{}
+	object
 }
 
 func NewSpringBoneCollisionPlane3D(obj Object) SpringBoneCollisionPlane3D {
@@ -7128,8 +7128,8 @@ func NewSpringBoneCollisionPlane3D(obj Object) SpringBoneCollisionPlane3D {
 func GetSpringBoneCollisionPlane3D(obj SpringBoneCollisionPlane3D) [1]Object { return obj.AsObject() }
 
 type SpringBoneCollisionSphere3D struct {
-	object
 	_SpringBoneCollisionSphere3D struct{}
+	object
 }
 
 func NewSpringBoneCollisionSphere3D(obj Object) SpringBoneCollisionSphere3D {
@@ -7138,8 +7138,8 @@ func NewSpringBoneCollisionSphere3D(obj Object) SpringBoneCollisionSphere3D {
 func GetSpringBoneCollisionSphere3D(obj SpringBoneCollisionSphere3D) [1]Object { return obj.AsObject() }
 
 type SpringBoneSimulator3D struct {
-	object
 	_SpringBoneSimulator3D struct{}
+	object
 }
 
 func NewSpringBoneSimulator3D(obj Object) SpringBoneSimulator3D {
@@ -7148,40 +7148,40 @@ func NewSpringBoneSimulator3D(obj Object) SpringBoneSimulator3D {
 func GetSpringBoneSimulator3D(obj SpringBoneSimulator3D) [1]Object { return obj.AsObject() }
 
 type Sprite2D struct {
-	object
 	_Sprite2D struct{}
+	object
 }
 
 func NewSprite2D(obj Object) Sprite2D    { return Sprite2D{object: object(obj)} }
 func GetSprite2D(obj Sprite2D) [1]Object { return obj.AsObject() }
 
 type Sprite3D struct {
-	object
 	_Sprite3D struct{}
+	object
 }
 
 func NewSprite3D(obj Object) Sprite3D    { return Sprite3D{object: object(obj)} }
 func GetSprite3D(obj Sprite3D) [1]Object { return obj.AsObject() }
 
 type SpriteBase3D struct {
-	object
 	_SpriteBase3D struct{}
+	object
 }
 
 func NewSpriteBase3D(obj Object) SpriteBase3D    { return SpriteBase3D{object: object(obj)} }
 func GetSpriteBase3D(obj SpriteBase3D) [1]Object { return obj.AsObject() }
 
 type SpriteFrames struct {
-	object
 	_SpriteFrames struct{}
+	object
 }
 
 func NewSpriteFrames(obj Object) SpriteFrames    { return SpriteFrames{object: object(obj)} }
 func GetSpriteFrames(obj SpriteFrames) [1]Object { return obj.AsObject() }
 
 type StandardMaterial3D struct {
-	object
 	_StandardMaterial3D struct{}
+	object
 }
 
 func NewStandardMaterial3D(obj Object) StandardMaterial3D {
@@ -7190,48 +7190,48 @@ func NewStandardMaterial3D(obj Object) StandardMaterial3D {
 func GetStandardMaterial3D(obj StandardMaterial3D) [1]Object { return obj.AsObject() }
 
 type StaticBody2D struct {
-	object
 	_StaticBody2D struct{}
+	object
 }
 
 func NewStaticBody2D(obj Object) StaticBody2D    { return StaticBody2D{object: object(obj)} }
 func GetStaticBody2D(obj StaticBody2D) [1]Object { return obj.AsObject() }
 
 type StaticBody3D struct {
-	object
 	_StaticBody3D struct{}
+	object
 }
 
 func NewStaticBody3D(obj Object) StaticBody3D    { return StaticBody3D{object: object(obj)} }
 func GetStaticBody3D(obj StaticBody3D) [1]Object { return obj.AsObject() }
 
 type StatusIndicator struct {
-	object
 	_StatusIndicator struct{}
+	object
 }
 
 func NewStatusIndicator(obj Object) StatusIndicator    { return StatusIndicator{object: object(obj)} }
 func GetStatusIndicator(obj StatusIndicator) [1]Object { return obj.AsObject() }
 
 type StreamPeer struct {
-	object
 	_StreamPeer struct{}
+	object
 }
 
 func NewStreamPeer(obj Object) StreamPeer    { return StreamPeer{object: object(obj)} }
 func GetStreamPeer(obj StreamPeer) [1]Object { return obj.AsObject() }
 
 type StreamPeerBuffer struct {
-	object
 	_StreamPeerBuffer struct{}
+	object
 }
 
 func NewStreamPeerBuffer(obj Object) StreamPeerBuffer    { return StreamPeerBuffer{object: object(obj)} }
 func GetStreamPeerBuffer(obj StreamPeerBuffer) [1]Object { return obj.AsObject() }
 
 type StreamPeerExtension struct {
-	object
 	_StreamPeerExtension struct{}
+	object
 }
 
 func NewStreamPeerExtension(obj Object) StreamPeerExtension {
@@ -7240,96 +7240,96 @@ func NewStreamPeerExtension(obj Object) StreamPeerExtension {
 func GetStreamPeerExtension(obj StreamPeerExtension) [1]Object { return obj.AsObject() }
 
 type StreamPeerGZIP struct {
-	object
 	_StreamPeerGZIP struct{}
+	object
 }
 
 func NewStreamPeerGZIP(obj Object) StreamPeerGZIP    { return StreamPeerGZIP{object: object(obj)} }
 func GetStreamPeerGZIP(obj StreamPeerGZIP) [1]Object { return obj.AsObject() }
 
 type StreamPeerSocket struct {
-	object
 	_StreamPeerSocket struct{}
+	object
 }
 
 func NewStreamPeerSocket(obj Object) StreamPeerSocket    { return StreamPeerSocket{object: object(obj)} }
 func GetStreamPeerSocket(obj StreamPeerSocket) [1]Object { return obj.AsObject() }
 
 type StreamPeerTCP struct {
-	object
 	_StreamPeerTCP struct{}
+	object
 }
 
 func NewStreamPeerTCP(obj Object) StreamPeerTCP    { return StreamPeerTCP{object: object(obj)} }
 func GetStreamPeerTCP(obj StreamPeerTCP) [1]Object { return obj.AsObject() }
 
 type StreamPeerTLS struct {
-	object
 	_StreamPeerTLS struct{}
+	object
 }
 
 func NewStreamPeerTLS(obj Object) StreamPeerTLS    { return StreamPeerTLS{object: object(obj)} }
 func GetStreamPeerTLS(obj StreamPeerTLS) [1]Object { return obj.AsObject() }
 
 type StreamPeerUDS struct {
-	object
 	_StreamPeerUDS struct{}
+	object
 }
 
 func NewStreamPeerUDS(obj Object) StreamPeerUDS    { return StreamPeerUDS{object: object(obj)} }
 func GetStreamPeerUDS(obj StreamPeerUDS) [1]Object { return obj.AsObject() }
 
 type StyleBox struct {
-	object
 	_StyleBox struct{}
+	object
 }
 
 func NewStyleBox(obj Object) StyleBox    { return StyleBox{object: object(obj)} }
 func GetStyleBox(obj StyleBox) [1]Object { return obj.AsObject() }
 
 type StyleBoxEmpty struct {
-	object
 	_StyleBoxEmpty struct{}
+	object
 }
 
 func NewStyleBoxEmpty(obj Object) StyleBoxEmpty    { return StyleBoxEmpty{object: object(obj)} }
 func GetStyleBoxEmpty(obj StyleBoxEmpty) [1]Object { return obj.AsObject() }
 
 type StyleBoxFlat struct {
-	object
 	_StyleBoxFlat struct{}
+	object
 }
 
 func NewStyleBoxFlat(obj Object) StyleBoxFlat    { return StyleBoxFlat{object: object(obj)} }
 func GetStyleBoxFlat(obj StyleBoxFlat) [1]Object { return obj.AsObject() }
 
 type StyleBoxLine struct {
-	object
 	_StyleBoxLine struct{}
+	object
 }
 
 func NewStyleBoxLine(obj Object) StyleBoxLine    { return StyleBoxLine{object: object(obj)} }
 func GetStyleBoxLine(obj StyleBoxLine) [1]Object { return obj.AsObject() }
 
 type StyleBoxTexture struct {
-	object
 	_StyleBoxTexture struct{}
+	object
 }
 
 func NewStyleBoxTexture(obj Object) StyleBoxTexture    { return StyleBoxTexture{object: object(obj)} }
 func GetStyleBoxTexture(obj StyleBoxTexture) [1]Object { return obj.AsObject() }
 
 type SubViewport struct {
-	object
 	_SubViewport struct{}
+	object
 }
 
 func NewSubViewport(obj Object) SubViewport    { return SubViewport{object: object(obj)} }
 func GetSubViewport(obj SubViewport) [1]Object { return obj.AsObject() }
 
 type SubViewportContainer struct {
-	object
 	_SubViewportContainer struct{}
+	object
 }
 
 func NewSubViewportContainer(obj Object) SubViewportContainer {
@@ -7338,24 +7338,24 @@ func NewSubViewportContainer(obj Object) SubViewportContainer {
 func GetSubViewportContainer(obj SubViewportContainer) [1]Object { return obj.AsObject() }
 
 type SubtweenTweener struct {
-	object
 	_SubtweenTweener struct{}
+	object
 }
 
 func NewSubtweenTweener(obj Object) SubtweenTweener    { return SubtweenTweener{object: object(obj)} }
 func GetSubtweenTweener(obj SubtweenTweener) [1]Object { return obj.AsObject() }
 
 type SurfaceTool struct {
-	object
 	_SurfaceTool struct{}
+	object
 }
 
 func NewSurfaceTool(obj Object) SurfaceTool    { return SurfaceTool{object: object(obj)} }
 func GetSurfaceTool(obj SurfaceTool) [1]Object { return obj.AsObject() }
 
 type SyntaxHighlighter struct {
-	object
 	_SyntaxHighlighter struct{}
+	object
 }
 
 func NewSyntaxHighlighter(obj Object) SyntaxHighlighter {
@@ -7364,88 +7364,88 @@ func NewSyntaxHighlighter(obj Object) SyntaxHighlighter {
 func GetSyntaxHighlighter(obj SyntaxHighlighter) [1]Object { return obj.AsObject() }
 
 type SystemFont struct {
-	object
 	_SystemFont struct{}
+	object
 }
 
 func NewSystemFont(obj Object) SystemFont    { return SystemFont{object: object(obj)} }
 func GetSystemFont(obj SystemFont) [1]Object { return obj.AsObject() }
 
 type TCPServer struct {
-	object
 	_TCPServer struct{}
+	object
 }
 
 func NewTCPServer(obj Object) TCPServer    { return TCPServer{object: object(obj)} }
 func GetTCPServer(obj TCPServer) [1]Object { return obj.AsObject() }
 
 type TLSOptions struct {
-	object
 	_TLSOptions struct{}
+	object
 }
 
 func NewTLSOptions(obj Object) TLSOptions    { return TLSOptions{object: object(obj)} }
 func GetTLSOptions(obj TLSOptions) [1]Object { return obj.AsObject() }
 
 type TabBar struct {
-	object
 	_TabBar struct{}
+	object
 }
 
 func NewTabBar(obj Object) TabBar    { return TabBar{object: object(obj)} }
 func GetTabBar(obj TabBar) [1]Object { return obj.AsObject() }
 
 type TabContainer struct {
-	object
 	_TabContainer struct{}
+	object
 }
 
 func NewTabContainer(obj Object) TabContainer    { return TabContainer{object: object(obj)} }
 func GetTabContainer(obj TabContainer) [1]Object { return obj.AsObject() }
 
 type TextEdit struct {
-	object
 	_TextEdit struct{}
+	object
 }
 
 func NewTextEdit(obj Object) TextEdit    { return TextEdit{object: object(obj)} }
 func GetTextEdit(obj TextEdit) [1]Object { return obj.AsObject() }
 
 type TextLine struct {
-	object
 	_TextLine struct{}
+	object
 }
 
 func NewTextLine(obj Object) TextLine    { return TextLine{object: object(obj)} }
 func GetTextLine(obj TextLine) [1]Object { return obj.AsObject() }
 
 type TextMesh struct {
-	object
 	_TextMesh struct{}
+	object
 }
 
 func NewTextMesh(obj Object) TextMesh    { return TextMesh{object: object(obj)} }
 func GetTextMesh(obj TextMesh) [1]Object { return obj.AsObject() }
 
 type TextParagraph struct {
-	object
 	_TextParagraph struct{}
+	object
 }
 
 func NewTextParagraph(obj Object) TextParagraph    { return TextParagraph{object: object(obj)} }
 func GetTextParagraph(obj TextParagraph) [1]Object { return obj.AsObject() }
 
 type TextServer struct {
-	object
 	_TextServer struct{}
+	object
 }
 
 func NewTextServer(obj Object) TextServer    { return TextServer{object: object(obj)} }
 func GetTextServer(obj TextServer) [1]Object { return obj.AsObject() }
 
 type TextServerAdvanced struct {
-	object
 	_TextServerAdvanced struct{}
+	object
 }
 
 func NewTextServerAdvanced(obj Object) TextServerAdvanced {
@@ -7454,16 +7454,16 @@ func NewTextServerAdvanced(obj Object) TextServerAdvanced {
 func GetTextServerAdvanced(obj TextServerAdvanced) [1]Object { return obj.AsObject() }
 
 type TextServerDummy struct {
-	object
 	_TextServerDummy struct{}
+	object
 }
 
 func NewTextServerDummy(obj Object) TextServerDummy    { return TextServerDummy{object: object(obj)} }
 func GetTextServerDummy(obj TextServerDummy) [1]Object { return obj.AsObject() }
 
 type TextServerExtension struct {
-	object
 	_TextServerExtension struct{}
+	object
 }
 
 func NewTextServerExtension(obj Object) TextServerExtension {
@@ -7472,8 +7472,8 @@ func NewTextServerExtension(obj Object) TextServerExtension {
 func GetTextServerExtension(obj TextServerExtension) [1]Object { return obj.AsObject() }
 
 type TextServerManager struct {
-	object
 	_TextServerManager struct{}
+	object
 }
 
 func NewTextServerManager(obj Object) TextServerManager {
@@ -7482,72 +7482,72 @@ func NewTextServerManager(obj Object) TextServerManager {
 func GetTextServerManager(obj TextServerManager) [1]Object { return obj.AsObject() }
 
 type Texture struct {
-	object
 	_Texture struct{}
+	object
 }
 
 func NewTexture(obj Object) Texture    { return Texture{object: object(obj)} }
 func GetTexture(obj Texture) [1]Object { return obj.AsObject() }
 
 type Texture2D struct {
-	object
 	_Texture2D struct{}
+	object
 }
 
 func NewTexture2D(obj Object) Texture2D    { return Texture2D{object: object(obj)} }
 func GetTexture2D(obj Texture2D) [1]Object { return obj.AsObject() }
 
 type Texture2DArray struct {
-	object
 	_Texture2DArray struct{}
+	object
 }
 
 func NewTexture2DArray(obj Object) Texture2DArray    { return Texture2DArray{object: object(obj)} }
 func GetTexture2DArray(obj Texture2DArray) [1]Object { return obj.AsObject() }
 
 type Texture2DArrayRD struct {
-	object
 	_Texture2DArrayRD struct{}
+	object
 }
 
 func NewTexture2DArrayRD(obj Object) Texture2DArrayRD    { return Texture2DArrayRD{object: object(obj)} }
 func GetTexture2DArrayRD(obj Texture2DArrayRD) [1]Object { return obj.AsObject() }
 
 type Texture2DRD struct {
-	object
 	_Texture2DRD struct{}
+	object
 }
 
 func NewTexture2DRD(obj Object) Texture2DRD    { return Texture2DRD{object: object(obj)} }
 func GetTexture2DRD(obj Texture2DRD) [1]Object { return obj.AsObject() }
 
 type Texture3D struct {
-	object
 	_Texture3D struct{}
+	object
 }
 
 func NewTexture3D(obj Object) Texture3D    { return Texture3D{object: object(obj)} }
 func GetTexture3D(obj Texture3D) [1]Object { return obj.AsObject() }
 
 type Texture3DRD struct {
-	object
 	_Texture3DRD struct{}
+	object
 }
 
 func NewTexture3DRD(obj Object) Texture3DRD    { return Texture3DRD{object: object(obj)} }
 func GetTexture3DRD(obj Texture3DRD) [1]Object { return obj.AsObject() }
 
 type TextureButton struct {
-	object
 	_TextureButton struct{}
+	object
 }
 
 func NewTextureButton(obj Object) TextureButton    { return TextureButton{object: object(obj)} }
 func GetTextureButton(obj TextureButton) [1]Object { return obj.AsObject() }
 
 type TextureCubemapArrayRD struct {
-	object
 	_TextureCubemapArrayRD struct{}
+	object
 }
 
 func NewTextureCubemapArrayRD(obj Object) TextureCubemapArrayRD {
@@ -7556,32 +7556,32 @@ func NewTextureCubemapArrayRD(obj Object) TextureCubemapArrayRD {
 func GetTextureCubemapArrayRD(obj TextureCubemapArrayRD) [1]Object { return obj.AsObject() }
 
 type TextureCubemapRD struct {
-	object
 	_TextureCubemapRD struct{}
+	object
 }
 
 func NewTextureCubemapRD(obj Object) TextureCubemapRD    { return TextureCubemapRD{object: object(obj)} }
 func GetTextureCubemapRD(obj TextureCubemapRD) [1]Object { return obj.AsObject() }
 
 type TextureLayered struct {
-	object
 	_TextureLayered struct{}
+	object
 }
 
 func NewTextureLayered(obj Object) TextureLayered    { return TextureLayered{object: object(obj)} }
 func GetTextureLayered(obj TextureLayered) [1]Object { return obj.AsObject() }
 
 type TextureLayeredRD struct {
-	object
 	_TextureLayeredRD struct{}
+	object
 }
 
 func NewTextureLayeredRD(obj Object) TextureLayeredRD    { return TextureLayeredRD{object: object(obj)} }
 func GetTextureLayeredRD(obj TextureLayeredRD) [1]Object { return obj.AsObject() }
 
 type TextureProgressBar struct {
-	object
 	_TextureProgressBar struct{}
+	object
 }
 
 func NewTextureProgressBar(obj Object) TextureProgressBar {
@@ -7590,80 +7590,80 @@ func NewTextureProgressBar(obj Object) TextureProgressBar {
 func GetTextureProgressBar(obj TextureProgressBar) [1]Object { return obj.AsObject() }
 
 type TextureRect struct {
-	object
 	_TextureRect struct{}
+	object
 }
 
 func NewTextureRect(obj Object) TextureRect    { return TextureRect{object: object(obj)} }
 func GetTextureRect(obj TextureRect) [1]Object { return obj.AsObject() }
 
 type Theme struct {
-	object
 	_Theme struct{}
+	object
 }
 
 func NewTheme(obj Object) Theme    { return Theme{object: object(obj)} }
 func GetTheme(obj Theme) [1]Object { return obj.AsObject() }
 
 type ThemeDB struct {
-	object
 	_ThemeDB struct{}
+	object
 }
 
 func NewThemeDB(obj Object) ThemeDB    { return ThemeDB{object: object(obj)} }
 func GetThemeDB(obj ThemeDB) [1]Object { return obj.AsObject() }
 
 type Thread struct {
-	object
 	_Thread struct{}
+	object
 }
 
 func NewThread(obj Object) Thread    { return Thread{object: object(obj)} }
 func GetThread(obj Thread) [1]Object { return obj.AsObject() }
 
 type TileData struct {
-	object
 	_TileData struct{}
+	object
 }
 
 func NewTileData(obj Object) TileData    { return TileData{object: object(obj)} }
 func GetTileData(obj TileData) [1]Object { return obj.AsObject() }
 
 type TileMap struct {
-	object
 	_TileMap struct{}
+	object
 }
 
 func NewTileMap(obj Object) TileMap    { return TileMap{object: object(obj)} }
 func GetTileMap(obj TileMap) [1]Object { return obj.AsObject() }
 
 type TileMapLayer struct {
-	object
 	_TileMapLayer struct{}
+	object
 }
 
 func NewTileMapLayer(obj Object) TileMapLayer    { return TileMapLayer{object: object(obj)} }
 func GetTileMapLayer(obj TileMapLayer) [1]Object { return obj.AsObject() }
 
 type TileMapPattern struct {
-	object
 	_TileMapPattern struct{}
+	object
 }
 
 func NewTileMapPattern(obj Object) TileMapPattern    { return TileMapPattern{object: object(obj)} }
 func GetTileMapPattern(obj TileMapPattern) [1]Object { return obj.AsObject() }
 
 type TileSet struct {
-	object
 	_TileSet struct{}
+	object
 }
 
 func NewTileSet(obj Object) TileSet    { return TileSet{object: object(obj)} }
 func GetTileSet(obj TileSet) [1]Object { return obj.AsObject() }
 
 type TileSetAtlasSource struct {
-	object
 	_TileSetAtlasSource struct{}
+	object
 }
 
 func NewTileSetAtlasSource(obj Object) TileSetAtlasSource {
@@ -7672,8 +7672,8 @@ func NewTileSetAtlasSource(obj Object) TileSetAtlasSource {
 func GetTileSetAtlasSource(obj TileSetAtlasSource) [1]Object { return obj.AsObject() }
 
 type TileSetScenesCollectionSource struct {
-	object
 	_TileSetScenesCollectionSource struct{}
+	object
 }
 
 func NewTileSetScenesCollectionSource(obj Object) TileSetScenesCollectionSource {
@@ -7684,40 +7684,40 @@ func GetTileSetScenesCollectionSource(obj TileSetScenesCollectionSource) [1]Obje
 }
 
 type TileSetSource struct {
-	object
 	_TileSetSource struct{}
+	object
 }
 
 func NewTileSetSource(obj Object) TileSetSource    { return TileSetSource{object: object(obj)} }
 func GetTileSetSource(obj TileSetSource) [1]Object { return obj.AsObject() }
 
 type Time struct {
-	object
 	_Time struct{}
+	object
 }
 
 func NewTime(obj Object) Time    { return Time{object: object(obj)} }
 func GetTime(obj Time) [1]Object { return obj.AsObject() }
 
 type Timer struct {
-	object
 	_Timer struct{}
+	object
 }
 
 func NewTimer(obj Object) Timer    { return Timer{object: object(obj)} }
 func GetTimer(obj Timer) [1]Object { return obj.AsObject() }
 
 type TorusMesh struct {
-	object
 	_TorusMesh struct{}
+	object
 }
 
 func NewTorusMesh(obj Object) TorusMesh    { return TorusMesh{object: object(obj)} }
 func GetTorusMesh(obj TorusMesh) [1]Object { return obj.AsObject() }
 
 type TouchScreenButton struct {
-	object
 	_TouchScreenButton struct{}
+	object
 }
 
 func NewTouchScreenButton(obj Object) TouchScreenButton {
@@ -7726,16 +7726,16 @@ func NewTouchScreenButton(obj Object) TouchScreenButton {
 func GetTouchScreenButton(obj TouchScreenButton) [1]Object { return obj.AsObject() }
 
 type Translation struct {
-	object
 	_Translation struct{}
+	object
 }
 
 func NewTranslation(obj Object) Translation    { return Translation{object: object(obj)} }
 func GetTranslation(obj Translation) [1]Object { return obj.AsObject() }
 
 type TranslationDomain struct {
-	object
 	_TranslationDomain struct{}
+	object
 }
 
 func NewTranslationDomain(obj Object) TranslationDomain {
@@ -7744,8 +7744,8 @@ func NewTranslationDomain(obj Object) TranslationDomain {
 func GetTranslationDomain(obj TranslationDomain) [1]Object { return obj.AsObject() }
 
 type TranslationServer struct {
-	object
 	_TranslationServer struct{}
+	object
 }
 
 func NewTranslationServer(obj Object) TranslationServer {
@@ -7754,104 +7754,104 @@ func NewTranslationServer(obj Object) TranslationServer {
 func GetTranslationServer(obj TranslationServer) [1]Object { return obj.AsObject() }
 
 type Tree struct {
-	object
 	_Tree struct{}
+	object
 }
 
 func NewTree(obj Object) Tree    { return Tree{object: object(obj)} }
 func GetTree(obj Tree) [1]Object { return obj.AsObject() }
 
 type TreeItem struct {
-	object
 	_TreeItem struct{}
+	object
 }
 
 func NewTreeItem(obj Object) TreeItem    { return TreeItem{object: object(obj)} }
 func GetTreeItem(obj TreeItem) [1]Object { return obj.AsObject() }
 
 type TriangleMesh struct {
-	object
 	_TriangleMesh struct{}
+	object
 }
 
 func NewTriangleMesh(obj Object) TriangleMesh    { return TriangleMesh{object: object(obj)} }
 func GetTriangleMesh(obj TriangleMesh) [1]Object { return obj.AsObject() }
 
 type TubeTrailMesh struct {
-	object
 	_TubeTrailMesh struct{}
+	object
 }
 
 func NewTubeTrailMesh(obj Object) TubeTrailMesh    { return TubeTrailMesh{object: object(obj)} }
 func GetTubeTrailMesh(obj TubeTrailMesh) [1]Object { return obj.AsObject() }
 
 type Tween struct {
-	object
 	_Tween struct{}
+	object
 }
 
 func NewTween(obj Object) Tween    { return Tween{object: object(obj)} }
 func GetTween(obj Tween) [1]Object { return obj.AsObject() }
 
 type Tweener struct {
-	object
 	_Tweener struct{}
+	object
 }
 
 func NewTweener(obj Object) Tweener    { return Tweener{object: object(obj)} }
 func GetTweener(obj Tweener) [1]Object { return obj.AsObject() }
 
 type TwoBoneIK3D struct {
-	object
 	_TwoBoneIK3D struct{}
+	object
 }
 
 func NewTwoBoneIK3D(obj Object) TwoBoneIK3D    { return TwoBoneIK3D{object: object(obj)} }
 func GetTwoBoneIK3D(obj TwoBoneIK3D) [1]Object { return obj.AsObject() }
 
 type UDPServer struct {
-	object
 	_UDPServer struct{}
+	object
 }
 
 func NewUDPServer(obj Object) UDPServer    { return UDPServer{object: object(obj)} }
 func GetUDPServer(obj UDPServer) [1]Object { return obj.AsObject() }
 
 type UDSServer struct {
-	object
 	_UDSServer struct{}
+	object
 }
 
 func NewUDSServer(obj Object) UDSServer    { return UDSServer{object: object(obj)} }
 func GetUDSServer(obj UDSServer) [1]Object { return obj.AsObject() }
 
 type UPNP struct {
-	object
 	_UPNP struct{}
+	object
 }
 
 func NewUPNP(obj Object) UPNP    { return UPNP{object: object(obj)} }
 func GetUPNP(obj UPNP) [1]Object { return obj.AsObject() }
 
 type UPNPDevice struct {
-	object
 	_UPNPDevice struct{}
+	object
 }
 
 func NewUPNPDevice(obj Object) UPNPDevice    { return UPNPDevice{object: object(obj)} }
 func GetUPNPDevice(obj UPNPDevice) [1]Object { return obj.AsObject() }
 
 type UndoRedo struct {
-	object
 	_UndoRedo struct{}
+	object
 }
 
 func NewUndoRedo(obj Object) UndoRedo    { return UndoRedo{object: object(obj)} }
 func GetUndoRedo(obj UndoRedo) [1]Object { return obj.AsObject() }
 
 type UniformSetCacheRD struct {
-	object
 	_UniformSetCacheRD struct{}
+	object
 }
 
 func NewUniformSetCacheRD(obj Object) UniformSetCacheRD {
@@ -7860,80 +7860,80 @@ func NewUniformSetCacheRD(obj Object) UniformSetCacheRD {
 func GetUniformSetCacheRD(obj UniformSetCacheRD) [1]Object { return obj.AsObject() }
 
 type VBoxContainer struct {
-	object
 	_VBoxContainer struct{}
+	object
 }
 
 func NewVBoxContainer(obj Object) VBoxContainer    { return VBoxContainer{object: object(obj)} }
 func GetVBoxContainer(obj VBoxContainer) [1]Object { return obj.AsObject() }
 
 type VFlowContainer struct {
-	object
 	_VFlowContainer struct{}
+	object
 }
 
 func NewVFlowContainer(obj Object) VFlowContainer    { return VFlowContainer{object: object(obj)} }
 func GetVFlowContainer(obj VFlowContainer) [1]Object { return obj.AsObject() }
 
 type VScrollBar struct {
-	object
 	_VScrollBar struct{}
+	object
 }
 
 func NewVScrollBar(obj Object) VScrollBar    { return VScrollBar{object: object(obj)} }
 func GetVScrollBar(obj VScrollBar) [1]Object { return obj.AsObject() }
 
 type VSeparator struct {
-	object
 	_VSeparator struct{}
+	object
 }
 
 func NewVSeparator(obj Object) VSeparator    { return VSeparator{object: object(obj)} }
 func GetVSeparator(obj VSeparator) [1]Object { return obj.AsObject() }
 
 type VSlider struct {
-	object
 	_VSlider struct{}
+	object
 }
 
 func NewVSlider(obj Object) VSlider    { return VSlider{object: object(obj)} }
 func GetVSlider(obj VSlider) [1]Object { return obj.AsObject() }
 
 type VSplitContainer struct {
-	object
 	_VSplitContainer struct{}
+	object
 }
 
 func NewVSplitContainer(obj Object) VSplitContainer    { return VSplitContainer{object: object(obj)} }
 func GetVSplitContainer(obj VSplitContainer) [1]Object { return obj.AsObject() }
 
 type VehicleBody3D struct {
-	object
 	_VehicleBody3D struct{}
+	object
 }
 
 func NewVehicleBody3D(obj Object) VehicleBody3D    { return VehicleBody3D{object: object(obj)} }
 func GetVehicleBody3D(obj VehicleBody3D) [1]Object { return obj.AsObject() }
 
 type VehicleWheel3D struct {
-	object
 	_VehicleWheel3D struct{}
+	object
 }
 
 func NewVehicleWheel3D(obj Object) VehicleWheel3D    { return VehicleWheel3D{object: object(obj)} }
 func GetVehicleWheel3D(obj VehicleWheel3D) [1]Object { return obj.AsObject() }
 
 type VideoStream struct {
-	object
 	_VideoStream struct{}
+	object
 }
 
 func NewVideoStream(obj Object) VideoStream    { return VideoStream{object: object(obj)} }
 func GetVideoStream(obj VideoStream) [1]Object { return obj.AsObject() }
 
 type VideoStreamPlayback struct {
-	object
 	_VideoStreamPlayback struct{}
+	object
 }
 
 func NewVideoStreamPlayback(obj Object) VideoStreamPlayback {
@@ -7942,8 +7942,8 @@ func NewVideoStreamPlayback(obj Object) VideoStreamPlayback {
 func GetVideoStreamPlayback(obj VideoStreamPlayback) [1]Object { return obj.AsObject() }
 
 type VideoStreamPlayer struct {
-	object
 	_VideoStreamPlayer struct{}
+	object
 }
 
 func NewVideoStreamPlayer(obj Object) VideoStreamPlayer {
@@ -7952,8 +7952,8 @@ func NewVideoStreamPlayer(obj Object) VideoStreamPlayer {
 func GetVideoStreamPlayer(obj VideoStreamPlayer) [1]Object { return obj.AsObject() }
 
 type VideoStreamTheora struct {
-	object
 	_VideoStreamTheora struct{}
+	object
 }
 
 func NewVideoStreamTheora(obj Object) VideoStreamTheora {
@@ -7962,32 +7962,32 @@ func NewVideoStreamTheora(obj Object) VideoStreamTheora {
 func GetVideoStreamTheora(obj VideoStreamTheora) [1]Object { return obj.AsObject() }
 
 type Viewport struct {
-	object
 	_Viewport struct{}
+	object
 }
 
 func NewViewport(obj Object) Viewport    { return Viewport{object: object(obj)} }
 func GetViewport(obj Viewport) [1]Object { return obj.AsObject() }
 
 type ViewportTexture struct {
-	object
 	_ViewportTexture struct{}
+	object
 }
 
 func NewViewportTexture(obj Object) ViewportTexture    { return ViewportTexture{object: object(obj)} }
 func GetViewportTexture(obj ViewportTexture) [1]Object { return obj.AsObject() }
 
 type VirtualJoystick struct {
-	object
 	_VirtualJoystick struct{}
+	object
 }
 
 func NewVirtualJoystick(obj Object) VirtualJoystick    { return VirtualJoystick{object: object(obj)} }
 func GetVirtualJoystick(obj VirtualJoystick) [1]Object { return obj.AsObject() }
 
 type VisibleOnScreenEnabler2D struct {
-	object
 	_VisibleOnScreenEnabler2D struct{}
+	object
 }
 
 func NewVisibleOnScreenEnabler2D(obj Object) VisibleOnScreenEnabler2D {
@@ -7996,8 +7996,8 @@ func NewVisibleOnScreenEnabler2D(obj Object) VisibleOnScreenEnabler2D {
 func GetVisibleOnScreenEnabler2D(obj VisibleOnScreenEnabler2D) [1]Object { return obj.AsObject() }
 
 type VisibleOnScreenEnabler3D struct {
-	object
 	_VisibleOnScreenEnabler3D struct{}
+	object
 }
 
 func NewVisibleOnScreenEnabler3D(obj Object) VisibleOnScreenEnabler3D {
@@ -8006,8 +8006,8 @@ func NewVisibleOnScreenEnabler3D(obj Object) VisibleOnScreenEnabler3D {
 func GetVisibleOnScreenEnabler3D(obj VisibleOnScreenEnabler3D) [1]Object { return obj.AsObject() }
 
 type VisibleOnScreenNotifier2D struct {
-	object
 	_VisibleOnScreenNotifier2D struct{}
+	object
 }
 
 func NewVisibleOnScreenNotifier2D(obj Object) VisibleOnScreenNotifier2D {
@@ -8016,8 +8016,8 @@ func NewVisibleOnScreenNotifier2D(obj Object) VisibleOnScreenNotifier2D {
 func GetVisibleOnScreenNotifier2D(obj VisibleOnScreenNotifier2D) [1]Object { return obj.AsObject() }
 
 type VisibleOnScreenNotifier3D struct {
-	object
 	_VisibleOnScreenNotifier3D struct{}
+	object
 }
 
 func NewVisibleOnScreenNotifier3D(obj Object) VisibleOnScreenNotifier3D {
@@ -8026,32 +8026,32 @@ func NewVisibleOnScreenNotifier3D(obj Object) VisibleOnScreenNotifier3D {
 func GetVisibleOnScreenNotifier3D(obj VisibleOnScreenNotifier3D) [1]Object { return obj.AsObject() }
 
 type VisualInstance3D struct {
-	object
 	_VisualInstance3D struct{}
+	object
 }
 
 func NewVisualInstance3D(obj Object) VisualInstance3D    { return VisualInstance3D{object: object(obj)} }
 func GetVisualInstance3D(obj VisualInstance3D) [1]Object { return obj.AsObject() }
 
 type VisualShader struct {
-	object
 	_VisualShader struct{}
+	object
 }
 
 func NewVisualShader(obj Object) VisualShader    { return VisualShader{object: object(obj)} }
 func GetVisualShader(obj VisualShader) [1]Object { return obj.AsObject() }
 
 type VisualShaderNode struct {
-	object
 	_VisualShaderNode struct{}
+	object
 }
 
 func NewVisualShaderNode(obj Object) VisualShaderNode    { return VisualShaderNode{object: object(obj)} }
 func GetVisualShaderNode(obj VisualShaderNode) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeBillboard struct {
-	object
 	_VisualShaderNodeBillboard struct{}
+	object
 }
 
 func NewVisualShaderNodeBillboard(obj Object) VisualShaderNodeBillboard {
@@ -8060,8 +8060,8 @@ func NewVisualShaderNodeBillboard(obj Object) VisualShaderNodeBillboard {
 func GetVisualShaderNodeBillboard(obj VisualShaderNodeBillboard) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeBooleanConstant struct {
-	object
 	_VisualShaderNodeBooleanConstant struct{}
+	object
 }
 
 func NewVisualShaderNodeBooleanConstant(obj Object) VisualShaderNodeBooleanConstant {
@@ -8072,8 +8072,8 @@ func GetVisualShaderNodeBooleanConstant(obj VisualShaderNodeBooleanConstant) [1]
 }
 
 type VisualShaderNodeBooleanParameter struct {
-	object
 	_VisualShaderNodeBooleanParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeBooleanParameter(obj Object) VisualShaderNodeBooleanParameter {
@@ -8084,8 +8084,8 @@ func GetVisualShaderNodeBooleanParameter(obj VisualShaderNodeBooleanParameter) [
 }
 
 type VisualShaderNodeClamp struct {
-	object
 	_VisualShaderNodeClamp struct{}
+	object
 }
 
 func NewVisualShaderNodeClamp(obj Object) VisualShaderNodeClamp {
@@ -8094,8 +8094,8 @@ func NewVisualShaderNodeClamp(obj Object) VisualShaderNodeClamp {
 func GetVisualShaderNodeClamp(obj VisualShaderNodeClamp) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeColorConstant struct {
-	object
 	_VisualShaderNodeColorConstant struct{}
+	object
 }
 
 func NewVisualShaderNodeColorConstant(obj Object) VisualShaderNodeColorConstant {
@@ -8106,8 +8106,8 @@ func GetVisualShaderNodeColorConstant(obj VisualShaderNodeColorConstant) [1]Obje
 }
 
 type VisualShaderNodeColorFunc struct {
-	object
 	_VisualShaderNodeColorFunc struct{}
+	object
 }
 
 func NewVisualShaderNodeColorFunc(obj Object) VisualShaderNodeColorFunc {
@@ -8116,8 +8116,8 @@ func NewVisualShaderNodeColorFunc(obj Object) VisualShaderNodeColorFunc {
 func GetVisualShaderNodeColorFunc(obj VisualShaderNodeColorFunc) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeColorOp struct {
-	object
 	_VisualShaderNodeColorOp struct{}
+	object
 }
 
 func NewVisualShaderNodeColorOp(obj Object) VisualShaderNodeColorOp {
@@ -8126,8 +8126,8 @@ func NewVisualShaderNodeColorOp(obj Object) VisualShaderNodeColorOp {
 func GetVisualShaderNodeColorOp(obj VisualShaderNodeColorOp) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeColorParameter struct {
-	object
 	_VisualShaderNodeColorParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeColorParameter(obj Object) VisualShaderNodeColorParameter {
@@ -8138,8 +8138,8 @@ func GetVisualShaderNodeColorParameter(obj VisualShaderNodeColorParameter) [1]Ob
 }
 
 type VisualShaderNodeComment struct {
-	object
 	_VisualShaderNodeComment struct{}
+	object
 }
 
 func NewVisualShaderNodeComment(obj Object) VisualShaderNodeComment {
@@ -8148,8 +8148,8 @@ func NewVisualShaderNodeComment(obj Object) VisualShaderNodeComment {
 func GetVisualShaderNodeComment(obj VisualShaderNodeComment) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeCompare struct {
-	object
 	_VisualShaderNodeCompare struct{}
+	object
 }
 
 func NewVisualShaderNodeCompare(obj Object) VisualShaderNodeCompare {
@@ -8158,8 +8158,8 @@ func NewVisualShaderNodeCompare(obj Object) VisualShaderNodeCompare {
 func GetVisualShaderNodeCompare(obj VisualShaderNodeCompare) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeConstant struct {
-	object
 	_VisualShaderNodeConstant struct{}
+	object
 }
 
 func NewVisualShaderNodeConstant(obj Object) VisualShaderNodeConstant {
@@ -8168,8 +8168,8 @@ func NewVisualShaderNodeConstant(obj Object) VisualShaderNodeConstant {
 func GetVisualShaderNodeConstant(obj VisualShaderNodeConstant) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeCubemap struct {
-	object
 	_VisualShaderNodeCubemap struct{}
+	object
 }
 
 func NewVisualShaderNodeCubemap(obj Object) VisualShaderNodeCubemap {
@@ -8178,8 +8178,8 @@ func NewVisualShaderNodeCubemap(obj Object) VisualShaderNodeCubemap {
 func GetVisualShaderNodeCubemap(obj VisualShaderNodeCubemap) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeCubemapParameter struct {
-	object
 	_VisualShaderNodeCubemapParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeCubemapParameter(obj Object) VisualShaderNodeCubemapParameter {
@@ -8190,8 +8190,8 @@ func GetVisualShaderNodeCubemapParameter(obj VisualShaderNodeCubemapParameter) [
 }
 
 type VisualShaderNodeCurveTexture struct {
-	object
 	_VisualShaderNodeCurveTexture struct{}
+	object
 }
 
 func NewVisualShaderNodeCurveTexture(obj Object) VisualShaderNodeCurveTexture {
@@ -8202,8 +8202,8 @@ func GetVisualShaderNodeCurveTexture(obj VisualShaderNodeCurveTexture) [1]Object
 }
 
 type VisualShaderNodeCurveXYZTexture struct {
-	object
 	_VisualShaderNodeCurveXYZTexture struct{}
+	object
 }
 
 func NewVisualShaderNodeCurveXYZTexture(obj Object) VisualShaderNodeCurveXYZTexture {
@@ -8214,8 +8214,8 @@ func GetVisualShaderNodeCurveXYZTexture(obj VisualShaderNodeCurveXYZTexture) [1]
 }
 
 type VisualShaderNodeCustom struct {
-	object
 	_VisualShaderNodeCustom struct{}
+	object
 }
 
 func NewVisualShaderNodeCustom(obj Object) VisualShaderNodeCustom {
@@ -8224,8 +8224,8 @@ func NewVisualShaderNodeCustom(obj Object) VisualShaderNodeCustom {
 func GetVisualShaderNodeCustom(obj VisualShaderNodeCustom) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeDerivativeFunc struct {
-	object
 	_VisualShaderNodeDerivativeFunc struct{}
+	object
 }
 
 func NewVisualShaderNodeDerivativeFunc(obj Object) VisualShaderNodeDerivativeFunc {
@@ -8236,8 +8236,8 @@ func GetVisualShaderNodeDerivativeFunc(obj VisualShaderNodeDerivativeFunc) [1]Ob
 }
 
 type VisualShaderNodeDeterminant struct {
-	object
 	_VisualShaderNodeDeterminant struct{}
+	object
 }
 
 func NewVisualShaderNodeDeterminant(obj Object) VisualShaderNodeDeterminant {
@@ -8246,8 +8246,8 @@ func NewVisualShaderNodeDeterminant(obj Object) VisualShaderNodeDeterminant {
 func GetVisualShaderNodeDeterminant(obj VisualShaderNodeDeterminant) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeDistanceFade struct {
-	object
 	_VisualShaderNodeDistanceFade struct{}
+	object
 }
 
 func NewVisualShaderNodeDistanceFade(obj Object) VisualShaderNodeDistanceFade {
@@ -8258,8 +8258,8 @@ func GetVisualShaderNodeDistanceFade(obj VisualShaderNodeDistanceFade) [1]Object
 }
 
 type VisualShaderNodeDotProduct struct {
-	object
 	_VisualShaderNodeDotProduct struct{}
+	object
 }
 
 func NewVisualShaderNodeDotProduct(obj Object) VisualShaderNodeDotProduct {
@@ -8268,8 +8268,8 @@ func NewVisualShaderNodeDotProduct(obj Object) VisualShaderNodeDotProduct {
 func GetVisualShaderNodeDotProduct(obj VisualShaderNodeDotProduct) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeExpression struct {
-	object
 	_VisualShaderNodeExpression struct{}
+	object
 }
 
 func NewVisualShaderNodeExpression(obj Object) VisualShaderNodeExpression {
@@ -8278,8 +8278,8 @@ func NewVisualShaderNodeExpression(obj Object) VisualShaderNodeExpression {
 func GetVisualShaderNodeExpression(obj VisualShaderNodeExpression) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeFaceForward struct {
-	object
 	_VisualShaderNodeFaceForward struct{}
+	object
 }
 
 func NewVisualShaderNodeFaceForward(obj Object) VisualShaderNodeFaceForward {
@@ -8288,8 +8288,8 @@ func NewVisualShaderNodeFaceForward(obj Object) VisualShaderNodeFaceForward {
 func GetVisualShaderNodeFaceForward(obj VisualShaderNodeFaceForward) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeFloatConstant struct {
-	object
 	_VisualShaderNodeFloatConstant struct{}
+	object
 }
 
 func NewVisualShaderNodeFloatConstant(obj Object) VisualShaderNodeFloatConstant {
@@ -8300,8 +8300,8 @@ func GetVisualShaderNodeFloatConstant(obj VisualShaderNodeFloatConstant) [1]Obje
 }
 
 type VisualShaderNodeFloatFunc struct {
-	object
 	_VisualShaderNodeFloatFunc struct{}
+	object
 }
 
 func NewVisualShaderNodeFloatFunc(obj Object) VisualShaderNodeFloatFunc {
@@ -8310,8 +8310,8 @@ func NewVisualShaderNodeFloatFunc(obj Object) VisualShaderNodeFloatFunc {
 func GetVisualShaderNodeFloatFunc(obj VisualShaderNodeFloatFunc) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeFloatOp struct {
-	object
 	_VisualShaderNodeFloatOp struct{}
+	object
 }
 
 func NewVisualShaderNodeFloatOp(obj Object) VisualShaderNodeFloatOp {
@@ -8320,8 +8320,8 @@ func NewVisualShaderNodeFloatOp(obj Object) VisualShaderNodeFloatOp {
 func GetVisualShaderNodeFloatOp(obj VisualShaderNodeFloatOp) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeFloatParameter struct {
-	object
 	_VisualShaderNodeFloatParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeFloatParameter(obj Object) VisualShaderNodeFloatParameter {
@@ -8332,8 +8332,8 @@ func GetVisualShaderNodeFloatParameter(obj VisualShaderNodeFloatParameter) [1]Ob
 }
 
 type VisualShaderNodeFrame struct {
-	object
 	_VisualShaderNodeFrame struct{}
+	object
 }
 
 func NewVisualShaderNodeFrame(obj Object) VisualShaderNodeFrame {
@@ -8342,8 +8342,8 @@ func NewVisualShaderNodeFrame(obj Object) VisualShaderNodeFrame {
 func GetVisualShaderNodeFrame(obj VisualShaderNodeFrame) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeFresnel struct {
-	object
 	_VisualShaderNodeFresnel struct{}
+	object
 }
 
 func NewVisualShaderNodeFresnel(obj Object) VisualShaderNodeFresnel {
@@ -8352,8 +8352,8 @@ func NewVisualShaderNodeFresnel(obj Object) VisualShaderNodeFresnel {
 func GetVisualShaderNodeFresnel(obj VisualShaderNodeFresnel) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeGlobalExpression struct {
-	object
 	_VisualShaderNodeGlobalExpression struct{}
+	object
 }
 
 func NewVisualShaderNodeGlobalExpression(obj Object) VisualShaderNodeGlobalExpression {
@@ -8364,8 +8364,8 @@ func GetVisualShaderNodeGlobalExpression(obj VisualShaderNodeGlobalExpression) [
 }
 
 type VisualShaderNodeGroupBase struct {
-	object
 	_VisualShaderNodeGroupBase struct{}
+	object
 }
 
 func NewVisualShaderNodeGroupBase(obj Object) VisualShaderNodeGroupBase {
@@ -8374,8 +8374,8 @@ func NewVisualShaderNodeGroupBase(obj Object) VisualShaderNodeGroupBase {
 func GetVisualShaderNodeGroupBase(obj VisualShaderNodeGroupBase) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeIf struct {
-	object
 	_VisualShaderNodeIf struct{}
+	object
 }
 
 func NewVisualShaderNodeIf(obj Object) VisualShaderNodeIf {
@@ -8384,8 +8384,8 @@ func NewVisualShaderNodeIf(obj Object) VisualShaderNodeIf {
 func GetVisualShaderNodeIf(obj VisualShaderNodeIf) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeInput struct {
-	object
 	_VisualShaderNodeInput struct{}
+	object
 }
 
 func NewVisualShaderNodeInput(obj Object) VisualShaderNodeInput {
@@ -8394,8 +8394,8 @@ func NewVisualShaderNodeInput(obj Object) VisualShaderNodeInput {
 func GetVisualShaderNodeInput(obj VisualShaderNodeInput) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeIntConstant struct {
-	object
 	_VisualShaderNodeIntConstant struct{}
+	object
 }
 
 func NewVisualShaderNodeIntConstant(obj Object) VisualShaderNodeIntConstant {
@@ -8404,8 +8404,8 @@ func NewVisualShaderNodeIntConstant(obj Object) VisualShaderNodeIntConstant {
 func GetVisualShaderNodeIntConstant(obj VisualShaderNodeIntConstant) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeIntFunc struct {
-	object
 	_VisualShaderNodeIntFunc struct{}
+	object
 }
 
 func NewVisualShaderNodeIntFunc(obj Object) VisualShaderNodeIntFunc {
@@ -8414,8 +8414,8 @@ func NewVisualShaderNodeIntFunc(obj Object) VisualShaderNodeIntFunc {
 func GetVisualShaderNodeIntFunc(obj VisualShaderNodeIntFunc) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeIntOp struct {
-	object
 	_VisualShaderNodeIntOp struct{}
+	object
 }
 
 func NewVisualShaderNodeIntOp(obj Object) VisualShaderNodeIntOp {
@@ -8424,8 +8424,8 @@ func NewVisualShaderNodeIntOp(obj Object) VisualShaderNodeIntOp {
 func GetVisualShaderNodeIntOp(obj VisualShaderNodeIntOp) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeIntParameter struct {
-	object
 	_VisualShaderNodeIntParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeIntParameter(obj Object) VisualShaderNodeIntParameter {
@@ -8436,8 +8436,8 @@ func GetVisualShaderNodeIntParameter(obj VisualShaderNodeIntParameter) [1]Object
 }
 
 type VisualShaderNodeIs struct {
-	object
 	_VisualShaderNodeIs struct{}
+	object
 }
 
 func NewVisualShaderNodeIs(obj Object) VisualShaderNodeIs {
@@ -8446,8 +8446,8 @@ func NewVisualShaderNodeIs(obj Object) VisualShaderNodeIs {
 func GetVisualShaderNodeIs(obj VisualShaderNodeIs) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeLinearSceneDepth struct {
-	object
 	_VisualShaderNodeLinearSceneDepth struct{}
+	object
 }
 
 func NewVisualShaderNodeLinearSceneDepth(obj Object) VisualShaderNodeLinearSceneDepth {
@@ -8458,8 +8458,8 @@ func GetVisualShaderNodeLinearSceneDepth(obj VisualShaderNodeLinearSceneDepth) [
 }
 
 type VisualShaderNodeMix struct {
-	object
 	_VisualShaderNodeMix struct{}
+	object
 }
 
 func NewVisualShaderNodeMix(obj Object) VisualShaderNodeMix {
@@ -8468,8 +8468,8 @@ func NewVisualShaderNodeMix(obj Object) VisualShaderNodeMix {
 func GetVisualShaderNodeMix(obj VisualShaderNodeMix) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeMultiplyAdd struct {
-	object
 	_VisualShaderNodeMultiplyAdd struct{}
+	object
 }
 
 func NewVisualShaderNodeMultiplyAdd(obj Object) VisualShaderNodeMultiplyAdd {
@@ -8478,8 +8478,8 @@ func NewVisualShaderNodeMultiplyAdd(obj Object) VisualShaderNodeMultiplyAdd {
 func GetVisualShaderNodeMultiplyAdd(obj VisualShaderNodeMultiplyAdd) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeOuterProduct struct {
-	object
 	_VisualShaderNodeOuterProduct struct{}
+	object
 }
 
 func NewVisualShaderNodeOuterProduct(obj Object) VisualShaderNodeOuterProduct {
@@ -8490,8 +8490,8 @@ func GetVisualShaderNodeOuterProduct(obj VisualShaderNodeOuterProduct) [1]Object
 }
 
 type VisualShaderNodeOutput struct {
-	object
 	_VisualShaderNodeOutput struct{}
+	object
 }
 
 func NewVisualShaderNodeOutput(obj Object) VisualShaderNodeOutput {
@@ -8500,8 +8500,8 @@ func NewVisualShaderNodeOutput(obj Object) VisualShaderNodeOutput {
 func GetVisualShaderNodeOutput(obj VisualShaderNodeOutput) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeParameter struct {
-	object
 	_VisualShaderNodeParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeParameter(obj Object) VisualShaderNodeParameter {
@@ -8510,8 +8510,8 @@ func NewVisualShaderNodeParameter(obj Object) VisualShaderNodeParameter {
 func GetVisualShaderNodeParameter(obj VisualShaderNodeParameter) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeParameterRef struct {
-	object
 	_VisualShaderNodeParameterRef struct{}
+	object
 }
 
 func NewVisualShaderNodeParameterRef(obj Object) VisualShaderNodeParameterRef {
@@ -8522,8 +8522,8 @@ func GetVisualShaderNodeParameterRef(obj VisualShaderNodeParameterRef) [1]Object
 }
 
 type VisualShaderNodeParticleAccelerator struct {
-	object
 	_VisualShaderNodeParticleAccelerator struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleAccelerator(obj Object) VisualShaderNodeParticleAccelerator {
@@ -8534,8 +8534,8 @@ func GetVisualShaderNodeParticleAccelerator(obj VisualShaderNodeParticleAccelera
 }
 
 type VisualShaderNodeParticleBoxEmitter struct {
-	object
 	_VisualShaderNodeParticleBoxEmitter struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleBoxEmitter(obj Object) VisualShaderNodeParticleBoxEmitter {
@@ -8546,8 +8546,8 @@ func GetVisualShaderNodeParticleBoxEmitter(obj VisualShaderNodeParticleBoxEmitte
 }
 
 type VisualShaderNodeParticleConeVelocity struct {
-	object
 	_VisualShaderNodeParticleConeVelocity struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleConeVelocity(obj Object) VisualShaderNodeParticleConeVelocity {
@@ -8558,8 +8558,8 @@ func GetVisualShaderNodeParticleConeVelocity(obj VisualShaderNodeParticleConeVel
 }
 
 type VisualShaderNodeParticleEmit struct {
-	object
 	_VisualShaderNodeParticleEmit struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleEmit(obj Object) VisualShaderNodeParticleEmit {
@@ -8570,8 +8570,8 @@ func GetVisualShaderNodeParticleEmit(obj VisualShaderNodeParticleEmit) [1]Object
 }
 
 type VisualShaderNodeParticleEmitter struct {
-	object
 	_VisualShaderNodeParticleEmitter struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleEmitter(obj Object) VisualShaderNodeParticleEmitter {
@@ -8582,8 +8582,8 @@ func GetVisualShaderNodeParticleEmitter(obj VisualShaderNodeParticleEmitter) [1]
 }
 
 type VisualShaderNodeParticleMeshEmitter struct {
-	object
 	_VisualShaderNodeParticleMeshEmitter struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleMeshEmitter(obj Object) VisualShaderNodeParticleMeshEmitter {
@@ -8594,8 +8594,8 @@ func GetVisualShaderNodeParticleMeshEmitter(obj VisualShaderNodeParticleMeshEmit
 }
 
 type VisualShaderNodeParticleMultiplyByAxisAngle struct {
-	object
 	_VisualShaderNodeParticleMultiplyByAxisAngle struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleMultiplyByAxisAngle(obj Object) VisualShaderNodeParticleMultiplyByAxisAngle {
@@ -8606,8 +8606,8 @@ func GetVisualShaderNodeParticleMultiplyByAxisAngle(obj VisualShaderNodeParticle
 }
 
 type VisualShaderNodeParticleOutput struct {
-	object
 	_VisualShaderNodeParticleOutput struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleOutput(obj Object) VisualShaderNodeParticleOutput {
@@ -8618,8 +8618,8 @@ func GetVisualShaderNodeParticleOutput(obj VisualShaderNodeParticleOutput) [1]Ob
 }
 
 type VisualShaderNodeParticleRandomness struct {
-	object
 	_VisualShaderNodeParticleRandomness struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleRandomness(obj Object) VisualShaderNodeParticleRandomness {
@@ -8630,8 +8630,8 @@ func GetVisualShaderNodeParticleRandomness(obj VisualShaderNodeParticleRandomnes
 }
 
 type VisualShaderNodeParticleRingEmitter struct {
-	object
 	_VisualShaderNodeParticleRingEmitter struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleRingEmitter(obj Object) VisualShaderNodeParticleRingEmitter {
@@ -8642,8 +8642,8 @@ func GetVisualShaderNodeParticleRingEmitter(obj VisualShaderNodeParticleRingEmit
 }
 
 type VisualShaderNodeParticleSphereEmitter struct {
-	object
 	_VisualShaderNodeParticleSphereEmitter struct{}
+	object
 }
 
 func NewVisualShaderNodeParticleSphereEmitter(obj Object) VisualShaderNodeParticleSphereEmitter {
@@ -8654,8 +8654,8 @@ func GetVisualShaderNodeParticleSphereEmitter(obj VisualShaderNodeParticleSphere
 }
 
 type VisualShaderNodeProximityFade struct {
-	object
 	_VisualShaderNodeProximityFade struct{}
+	object
 }
 
 func NewVisualShaderNodeProximityFade(obj Object) VisualShaderNodeProximityFade {
@@ -8666,8 +8666,8 @@ func GetVisualShaderNodeProximityFade(obj VisualShaderNodeProximityFade) [1]Obje
 }
 
 type VisualShaderNodeRandomRange struct {
-	object
 	_VisualShaderNodeRandomRange struct{}
+	object
 }
 
 func NewVisualShaderNodeRandomRange(obj Object) VisualShaderNodeRandomRange {
@@ -8676,8 +8676,8 @@ func NewVisualShaderNodeRandomRange(obj Object) VisualShaderNodeRandomRange {
 func GetVisualShaderNodeRandomRange(obj VisualShaderNodeRandomRange) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeRemap struct {
-	object
 	_VisualShaderNodeRemap struct{}
+	object
 }
 
 func NewVisualShaderNodeRemap(obj Object) VisualShaderNodeRemap {
@@ -8686,8 +8686,8 @@ func NewVisualShaderNodeRemap(obj Object) VisualShaderNodeRemap {
 func GetVisualShaderNodeRemap(obj VisualShaderNodeRemap) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeReroute struct {
-	object
 	_VisualShaderNodeReroute struct{}
+	object
 }
 
 func NewVisualShaderNodeReroute(obj Object) VisualShaderNodeReroute {
@@ -8696,8 +8696,8 @@ func NewVisualShaderNodeReroute(obj Object) VisualShaderNodeReroute {
 func GetVisualShaderNodeReroute(obj VisualShaderNodeReroute) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeResizableBase struct {
-	object
 	_VisualShaderNodeResizableBase struct{}
+	object
 }
 
 func NewVisualShaderNodeResizableBase(obj Object) VisualShaderNodeResizableBase {
@@ -8708,8 +8708,8 @@ func GetVisualShaderNodeResizableBase(obj VisualShaderNodeResizableBase) [1]Obje
 }
 
 type VisualShaderNodeRotationByAxis struct {
-	object
 	_VisualShaderNodeRotationByAxis struct{}
+	object
 }
 
 func NewVisualShaderNodeRotationByAxis(obj Object) VisualShaderNodeRotationByAxis {
@@ -8720,8 +8720,8 @@ func GetVisualShaderNodeRotationByAxis(obj VisualShaderNodeRotationByAxis) [1]Ob
 }
 
 type VisualShaderNodeSDFRaymarch struct {
-	object
 	_VisualShaderNodeSDFRaymarch struct{}
+	object
 }
 
 func NewVisualShaderNodeSDFRaymarch(obj Object) VisualShaderNodeSDFRaymarch {
@@ -8730,8 +8730,8 @@ func NewVisualShaderNodeSDFRaymarch(obj Object) VisualShaderNodeSDFRaymarch {
 func GetVisualShaderNodeSDFRaymarch(obj VisualShaderNodeSDFRaymarch) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeSDFToScreenUV struct {
-	object
 	_VisualShaderNodeSDFToScreenUV struct{}
+	object
 }
 
 func NewVisualShaderNodeSDFToScreenUV(obj Object) VisualShaderNodeSDFToScreenUV {
@@ -8742,8 +8742,8 @@ func GetVisualShaderNodeSDFToScreenUV(obj VisualShaderNodeSDFToScreenUV) [1]Obje
 }
 
 type VisualShaderNodeSample3D struct {
-	object
 	_VisualShaderNodeSample3D struct{}
+	object
 }
 
 func NewVisualShaderNodeSample3D(obj Object) VisualShaderNodeSample3D {
@@ -8752,8 +8752,8 @@ func NewVisualShaderNodeSample3D(obj Object) VisualShaderNodeSample3D {
 func GetVisualShaderNodeSample3D(obj VisualShaderNodeSample3D) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeScreenNormalWorldSpace struct {
-	object
 	_VisualShaderNodeScreenNormalWorldSpace struct{}
+	object
 }
 
 func NewVisualShaderNodeScreenNormalWorldSpace(obj Object) VisualShaderNodeScreenNormalWorldSpace {
@@ -8764,8 +8764,8 @@ func GetVisualShaderNodeScreenNormalWorldSpace(obj VisualShaderNodeScreenNormalW
 }
 
 type VisualShaderNodeScreenUVToSDF struct {
-	object
 	_VisualShaderNodeScreenUVToSDF struct{}
+	object
 }
 
 func NewVisualShaderNodeScreenUVToSDF(obj Object) VisualShaderNodeScreenUVToSDF {
@@ -8776,8 +8776,8 @@ func GetVisualShaderNodeScreenUVToSDF(obj VisualShaderNodeScreenUVToSDF) [1]Obje
 }
 
 type VisualShaderNodeSmoothStep struct {
-	object
 	_VisualShaderNodeSmoothStep struct{}
+	object
 }
 
 func NewVisualShaderNodeSmoothStep(obj Object) VisualShaderNodeSmoothStep {
@@ -8786,8 +8786,8 @@ func NewVisualShaderNodeSmoothStep(obj Object) VisualShaderNodeSmoothStep {
 func GetVisualShaderNodeSmoothStep(obj VisualShaderNodeSmoothStep) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeStep struct {
-	object
 	_VisualShaderNodeStep struct{}
+	object
 }
 
 func NewVisualShaderNodeStep(obj Object) VisualShaderNodeStep {
@@ -8796,8 +8796,8 @@ func NewVisualShaderNodeStep(obj Object) VisualShaderNodeStep {
 func GetVisualShaderNodeStep(obj VisualShaderNodeStep) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeSwitch struct {
-	object
 	_VisualShaderNodeSwitch struct{}
+	object
 }
 
 func NewVisualShaderNodeSwitch(obj Object) VisualShaderNodeSwitch {
@@ -8806,8 +8806,8 @@ func NewVisualShaderNodeSwitch(obj Object) VisualShaderNodeSwitch {
 func GetVisualShaderNodeSwitch(obj VisualShaderNodeSwitch) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeTexture struct {
-	object
 	_VisualShaderNodeTexture struct{}
+	object
 }
 
 func NewVisualShaderNodeTexture(obj Object) VisualShaderNodeTexture {
@@ -8816,8 +8816,8 @@ func NewVisualShaderNodeTexture(obj Object) VisualShaderNodeTexture {
 func GetVisualShaderNodeTexture(obj VisualShaderNodeTexture) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeTexture2DArray struct {
-	object
 	_VisualShaderNodeTexture2DArray struct{}
+	object
 }
 
 func NewVisualShaderNodeTexture2DArray(obj Object) VisualShaderNodeTexture2DArray {
@@ -8828,8 +8828,8 @@ func GetVisualShaderNodeTexture2DArray(obj VisualShaderNodeTexture2DArray) [1]Ob
 }
 
 type VisualShaderNodeTexture2DArrayParameter struct {
-	object
 	_VisualShaderNodeTexture2DArrayParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeTexture2DArrayParameter(obj Object) VisualShaderNodeTexture2DArrayParameter {
@@ -8840,8 +8840,8 @@ func GetVisualShaderNodeTexture2DArrayParameter(obj VisualShaderNodeTexture2DArr
 }
 
 type VisualShaderNodeTexture2DParameter struct {
-	object
 	_VisualShaderNodeTexture2DParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeTexture2DParameter(obj Object) VisualShaderNodeTexture2DParameter {
@@ -8852,8 +8852,8 @@ func GetVisualShaderNodeTexture2DParameter(obj VisualShaderNodeTexture2DParamete
 }
 
 type VisualShaderNodeTexture3D struct {
-	object
 	_VisualShaderNodeTexture3D struct{}
+	object
 }
 
 func NewVisualShaderNodeTexture3D(obj Object) VisualShaderNodeTexture3D {
@@ -8862,8 +8862,8 @@ func NewVisualShaderNodeTexture3D(obj Object) VisualShaderNodeTexture3D {
 func GetVisualShaderNodeTexture3D(obj VisualShaderNodeTexture3D) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeTexture3DParameter struct {
-	object
 	_VisualShaderNodeTexture3DParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeTexture3DParameter(obj Object) VisualShaderNodeTexture3DParameter {
@@ -8874,8 +8874,8 @@ func GetVisualShaderNodeTexture3DParameter(obj VisualShaderNodeTexture3DParamete
 }
 
 type VisualShaderNodeTextureParameter struct {
-	object
 	_VisualShaderNodeTextureParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeTextureParameter(obj Object) VisualShaderNodeTextureParameter {
@@ -8886,8 +8886,8 @@ func GetVisualShaderNodeTextureParameter(obj VisualShaderNodeTextureParameter) [
 }
 
 type VisualShaderNodeTextureParameterTriplanar struct {
-	object
 	_VisualShaderNodeTextureParameterTriplanar struct{}
+	object
 }
 
 func NewVisualShaderNodeTextureParameterTriplanar(obj Object) VisualShaderNodeTextureParameterTriplanar {
@@ -8898,8 +8898,8 @@ func GetVisualShaderNodeTextureParameterTriplanar(obj VisualShaderNodeTexturePar
 }
 
 type VisualShaderNodeTextureSDF struct {
-	object
 	_VisualShaderNodeTextureSDF struct{}
+	object
 }
 
 func NewVisualShaderNodeTextureSDF(obj Object) VisualShaderNodeTextureSDF {
@@ -8908,8 +8908,8 @@ func NewVisualShaderNodeTextureSDF(obj Object) VisualShaderNodeTextureSDF {
 func GetVisualShaderNodeTextureSDF(obj VisualShaderNodeTextureSDF) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeTextureSDFNormal struct {
-	object
 	_VisualShaderNodeTextureSDFNormal struct{}
+	object
 }
 
 func NewVisualShaderNodeTextureSDFNormal(obj Object) VisualShaderNodeTextureSDFNormal {
@@ -8920,8 +8920,8 @@ func GetVisualShaderNodeTextureSDFNormal(obj VisualShaderNodeTextureSDFNormal) [
 }
 
 type VisualShaderNodeTransformCompose struct {
-	object
 	_VisualShaderNodeTransformCompose struct{}
+	object
 }
 
 func NewVisualShaderNodeTransformCompose(obj Object) VisualShaderNodeTransformCompose {
@@ -8932,8 +8932,8 @@ func GetVisualShaderNodeTransformCompose(obj VisualShaderNodeTransformCompose) [
 }
 
 type VisualShaderNodeTransformConstant struct {
-	object
 	_VisualShaderNodeTransformConstant struct{}
+	object
 }
 
 func NewVisualShaderNodeTransformConstant(obj Object) VisualShaderNodeTransformConstant {
@@ -8944,8 +8944,8 @@ func GetVisualShaderNodeTransformConstant(obj VisualShaderNodeTransformConstant)
 }
 
 type VisualShaderNodeTransformDecompose struct {
-	object
 	_VisualShaderNodeTransformDecompose struct{}
+	object
 }
 
 func NewVisualShaderNodeTransformDecompose(obj Object) VisualShaderNodeTransformDecompose {
@@ -8956,8 +8956,8 @@ func GetVisualShaderNodeTransformDecompose(obj VisualShaderNodeTransformDecompos
 }
 
 type VisualShaderNodeTransformFunc struct {
-	object
 	_VisualShaderNodeTransformFunc struct{}
+	object
 }
 
 func NewVisualShaderNodeTransformFunc(obj Object) VisualShaderNodeTransformFunc {
@@ -8968,8 +8968,8 @@ func GetVisualShaderNodeTransformFunc(obj VisualShaderNodeTransformFunc) [1]Obje
 }
 
 type VisualShaderNodeTransformOp struct {
-	object
 	_VisualShaderNodeTransformOp struct{}
+	object
 }
 
 func NewVisualShaderNodeTransformOp(obj Object) VisualShaderNodeTransformOp {
@@ -8978,8 +8978,8 @@ func NewVisualShaderNodeTransformOp(obj Object) VisualShaderNodeTransformOp {
 func GetVisualShaderNodeTransformOp(obj VisualShaderNodeTransformOp) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeTransformParameter struct {
-	object
 	_VisualShaderNodeTransformParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeTransformParameter(obj Object) VisualShaderNodeTransformParameter {
@@ -8990,8 +8990,8 @@ func GetVisualShaderNodeTransformParameter(obj VisualShaderNodeTransformParamete
 }
 
 type VisualShaderNodeTransformVecMult struct {
-	object
 	_VisualShaderNodeTransformVecMult struct{}
+	object
 }
 
 func NewVisualShaderNodeTransformVecMult(obj Object) VisualShaderNodeTransformVecMult {
@@ -9002,8 +9002,8 @@ func GetVisualShaderNodeTransformVecMult(obj VisualShaderNodeTransformVecMult) [
 }
 
 type VisualShaderNodeUIntConstant struct {
-	object
 	_VisualShaderNodeUIntConstant struct{}
+	object
 }
 
 func NewVisualShaderNodeUIntConstant(obj Object) VisualShaderNodeUIntConstant {
@@ -9014,8 +9014,8 @@ func GetVisualShaderNodeUIntConstant(obj VisualShaderNodeUIntConstant) [1]Object
 }
 
 type VisualShaderNodeUIntFunc struct {
-	object
 	_VisualShaderNodeUIntFunc struct{}
+	object
 }
 
 func NewVisualShaderNodeUIntFunc(obj Object) VisualShaderNodeUIntFunc {
@@ -9024,8 +9024,8 @@ func NewVisualShaderNodeUIntFunc(obj Object) VisualShaderNodeUIntFunc {
 func GetVisualShaderNodeUIntFunc(obj VisualShaderNodeUIntFunc) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeUIntOp struct {
-	object
 	_VisualShaderNodeUIntOp struct{}
+	object
 }
 
 func NewVisualShaderNodeUIntOp(obj Object) VisualShaderNodeUIntOp {
@@ -9034,8 +9034,8 @@ func NewVisualShaderNodeUIntOp(obj Object) VisualShaderNodeUIntOp {
 func GetVisualShaderNodeUIntOp(obj VisualShaderNodeUIntOp) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeUIntParameter struct {
-	object
 	_VisualShaderNodeUIntParameter struct{}
+	object
 }
 
 func NewVisualShaderNodeUIntParameter(obj Object) VisualShaderNodeUIntParameter {
@@ -9046,8 +9046,8 @@ func GetVisualShaderNodeUIntParameter(obj VisualShaderNodeUIntParameter) [1]Obje
 }
 
 type VisualShaderNodeUVFunc struct {
-	object
 	_VisualShaderNodeUVFunc struct{}
+	object
 }
 
 func NewVisualShaderNodeUVFunc(obj Object) VisualShaderNodeUVFunc {
@@ -9056,8 +9056,8 @@ func NewVisualShaderNodeUVFunc(obj Object) VisualShaderNodeUVFunc {
 func GetVisualShaderNodeUVFunc(obj VisualShaderNodeUVFunc) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeUVPolarCoord struct {
-	object
 	_VisualShaderNodeUVPolarCoord struct{}
+	object
 }
 
 func NewVisualShaderNodeUVPolarCoord(obj Object) VisualShaderNodeUVPolarCoord {
@@ -9068,8 +9068,8 @@ func GetVisualShaderNodeUVPolarCoord(obj VisualShaderNodeUVPolarCoord) [1]Object
 }
 
 type VisualShaderNodeVarying struct {
-	object
 	_VisualShaderNodeVarying struct{}
+	object
 }
 
 func NewVisualShaderNodeVarying(obj Object) VisualShaderNodeVarying {
@@ -9078,8 +9078,8 @@ func NewVisualShaderNodeVarying(obj Object) VisualShaderNodeVarying {
 func GetVisualShaderNodeVarying(obj VisualShaderNodeVarying) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeVaryingGetter struct {
-	object
 	_VisualShaderNodeVaryingGetter struct{}
+	object
 }
 
 func NewVisualShaderNodeVaryingGetter(obj Object) VisualShaderNodeVaryingGetter {
@@ -9090,8 +9090,8 @@ func GetVisualShaderNodeVaryingGetter(obj VisualShaderNodeVaryingGetter) [1]Obje
 }
 
 type VisualShaderNodeVaryingSetter struct {
-	object
 	_VisualShaderNodeVaryingSetter struct{}
+	object
 }
 
 func NewVisualShaderNodeVaryingSetter(obj Object) VisualShaderNodeVaryingSetter {
@@ -9102,8 +9102,8 @@ func GetVisualShaderNodeVaryingSetter(obj VisualShaderNodeVaryingSetter) [1]Obje
 }
 
 type VisualShaderNodeVec2Constant struct {
-	object
 	_VisualShaderNodeVec2Constant struct{}
+	object
 }
 
 func NewVisualShaderNodeVec2Constant(obj Object) VisualShaderNodeVec2Constant {
@@ -9114,8 +9114,8 @@ func GetVisualShaderNodeVec2Constant(obj VisualShaderNodeVec2Constant) [1]Object
 }
 
 type VisualShaderNodeVec2Parameter struct {
-	object
 	_VisualShaderNodeVec2Parameter struct{}
+	object
 }
 
 func NewVisualShaderNodeVec2Parameter(obj Object) VisualShaderNodeVec2Parameter {
@@ -9126,8 +9126,8 @@ func GetVisualShaderNodeVec2Parameter(obj VisualShaderNodeVec2Parameter) [1]Obje
 }
 
 type VisualShaderNodeVec3Constant struct {
-	object
 	_VisualShaderNodeVec3Constant struct{}
+	object
 }
 
 func NewVisualShaderNodeVec3Constant(obj Object) VisualShaderNodeVec3Constant {
@@ -9138,8 +9138,8 @@ func GetVisualShaderNodeVec3Constant(obj VisualShaderNodeVec3Constant) [1]Object
 }
 
 type VisualShaderNodeVec3Parameter struct {
-	object
 	_VisualShaderNodeVec3Parameter struct{}
+	object
 }
 
 func NewVisualShaderNodeVec3Parameter(obj Object) VisualShaderNodeVec3Parameter {
@@ -9150,8 +9150,8 @@ func GetVisualShaderNodeVec3Parameter(obj VisualShaderNodeVec3Parameter) [1]Obje
 }
 
 type VisualShaderNodeVec4Constant struct {
-	object
 	_VisualShaderNodeVec4Constant struct{}
+	object
 }
 
 func NewVisualShaderNodeVec4Constant(obj Object) VisualShaderNodeVec4Constant {
@@ -9162,8 +9162,8 @@ func GetVisualShaderNodeVec4Constant(obj VisualShaderNodeVec4Constant) [1]Object
 }
 
 type VisualShaderNodeVec4Parameter struct {
-	object
 	_VisualShaderNodeVec4Parameter struct{}
+	object
 }
 
 func NewVisualShaderNodeVec4Parameter(obj Object) VisualShaderNodeVec4Parameter {
@@ -9174,8 +9174,8 @@ func GetVisualShaderNodeVec4Parameter(obj VisualShaderNodeVec4Parameter) [1]Obje
 }
 
 type VisualShaderNodeVectorBase struct {
-	object
 	_VisualShaderNodeVectorBase struct{}
+	object
 }
 
 func NewVisualShaderNodeVectorBase(obj Object) VisualShaderNodeVectorBase {
@@ -9184,8 +9184,8 @@ func NewVisualShaderNodeVectorBase(obj Object) VisualShaderNodeVectorBase {
 func GetVisualShaderNodeVectorBase(obj VisualShaderNodeVectorBase) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeVectorCompose struct {
-	object
 	_VisualShaderNodeVectorCompose struct{}
+	object
 }
 
 func NewVisualShaderNodeVectorCompose(obj Object) VisualShaderNodeVectorCompose {
@@ -9196,8 +9196,8 @@ func GetVisualShaderNodeVectorCompose(obj VisualShaderNodeVectorCompose) [1]Obje
 }
 
 type VisualShaderNodeVectorDecompose struct {
-	object
 	_VisualShaderNodeVectorDecompose struct{}
+	object
 }
 
 func NewVisualShaderNodeVectorDecompose(obj Object) VisualShaderNodeVectorDecompose {
@@ -9208,8 +9208,8 @@ func GetVisualShaderNodeVectorDecompose(obj VisualShaderNodeVectorDecompose) [1]
 }
 
 type VisualShaderNodeVectorDistance struct {
-	object
 	_VisualShaderNodeVectorDistance struct{}
+	object
 }
 
 func NewVisualShaderNodeVectorDistance(obj Object) VisualShaderNodeVectorDistance {
@@ -9220,8 +9220,8 @@ func GetVisualShaderNodeVectorDistance(obj VisualShaderNodeVectorDistance) [1]Ob
 }
 
 type VisualShaderNodeVectorFunc struct {
-	object
 	_VisualShaderNodeVectorFunc struct{}
+	object
 }
 
 func NewVisualShaderNodeVectorFunc(obj Object) VisualShaderNodeVectorFunc {
@@ -9230,8 +9230,8 @@ func NewVisualShaderNodeVectorFunc(obj Object) VisualShaderNodeVectorFunc {
 func GetVisualShaderNodeVectorFunc(obj VisualShaderNodeVectorFunc) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeVectorLen struct {
-	object
 	_VisualShaderNodeVectorLen struct{}
+	object
 }
 
 func NewVisualShaderNodeVectorLen(obj Object) VisualShaderNodeVectorLen {
@@ -9240,8 +9240,8 @@ func NewVisualShaderNodeVectorLen(obj Object) VisualShaderNodeVectorLen {
 func GetVisualShaderNodeVectorLen(obj VisualShaderNodeVectorLen) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeVectorOp struct {
-	object
 	_VisualShaderNodeVectorOp struct{}
+	object
 }
 
 func NewVisualShaderNodeVectorOp(obj Object) VisualShaderNodeVectorOp {
@@ -9250,8 +9250,8 @@ func NewVisualShaderNodeVectorOp(obj Object) VisualShaderNodeVectorOp {
 func GetVisualShaderNodeVectorOp(obj VisualShaderNodeVectorOp) [1]Object { return obj.AsObject() }
 
 type VisualShaderNodeVectorRefract struct {
-	object
 	_VisualShaderNodeVectorRefract struct{}
+	object
 }
 
 func NewVisualShaderNodeVectorRefract(obj Object) VisualShaderNodeVectorRefract {
@@ -9262,8 +9262,8 @@ func GetVisualShaderNodeVectorRefract(obj VisualShaderNodeVectorRefract) [1]Obje
 }
 
 type VisualShaderNodeWorldPositionFromDepth struct {
-	object
 	_VisualShaderNodeWorldPositionFromDepth struct{}
+	object
 }
 
 func NewVisualShaderNodeWorldPositionFromDepth(obj Object) VisualShaderNodeWorldPositionFromDepth {
@@ -9274,32 +9274,32 @@ func GetVisualShaderNodeWorldPositionFromDepth(obj VisualShaderNodeWorldPosition
 }
 
 type VoxelGI struct {
-	object
 	_VoxelGI struct{}
+	object
 }
 
 func NewVoxelGI(obj Object) VoxelGI    { return VoxelGI{object: object(obj)} }
 func GetVoxelGI(obj VoxelGI) [1]Object { return obj.AsObject() }
 
 type VoxelGIData struct {
-	object
 	_VoxelGIData struct{}
+	object
 }
 
 func NewVoxelGIData(obj Object) VoxelGIData    { return VoxelGIData{object: object(obj)} }
 func GetVoxelGIData(obj VoxelGIData) [1]Object { return obj.AsObject() }
 
 type WeakRef struct {
-	object
 	_WeakRef struct{}
+	object
 }
 
 func NewWeakRef(obj Object) WeakRef    { return WeakRef{object: object(obj)} }
 func GetWeakRef(obj WeakRef) [1]Object { return obj.AsObject() }
 
 type WebRTCDataChannel struct {
-	object
 	_WebRTCDataChannel struct{}
+	object
 }
 
 func NewWebRTCDataChannel(obj Object) WebRTCDataChannel {
@@ -9308,8 +9308,8 @@ func NewWebRTCDataChannel(obj Object) WebRTCDataChannel {
 func GetWebRTCDataChannel(obj WebRTCDataChannel) [1]Object { return obj.AsObject() }
 
 type WebRTCDataChannelExtension struct {
-	object
 	_WebRTCDataChannelExtension struct{}
+	object
 }
 
 func NewWebRTCDataChannelExtension(obj Object) WebRTCDataChannelExtension {
@@ -9318,8 +9318,8 @@ func NewWebRTCDataChannelExtension(obj Object) WebRTCDataChannelExtension {
 func GetWebRTCDataChannelExtension(obj WebRTCDataChannelExtension) [1]Object { return obj.AsObject() }
 
 type WebRTCMultiplayerPeer struct {
-	object
 	_WebRTCMultiplayerPeer struct{}
+	object
 }
 
 func NewWebRTCMultiplayerPeer(obj Object) WebRTCMultiplayerPeer {
@@ -9328,8 +9328,8 @@ func NewWebRTCMultiplayerPeer(obj Object) WebRTCMultiplayerPeer {
 func GetWebRTCMultiplayerPeer(obj WebRTCMultiplayerPeer) [1]Object { return obj.AsObject() }
 
 type WebRTCPeerConnection struct {
-	object
 	_WebRTCPeerConnection struct{}
+	object
 }
 
 func NewWebRTCPeerConnection(obj Object) WebRTCPeerConnection {
@@ -9338,8 +9338,8 @@ func NewWebRTCPeerConnection(obj Object) WebRTCPeerConnection {
 func GetWebRTCPeerConnection(obj WebRTCPeerConnection) [1]Object { return obj.AsObject() }
 
 type WebRTCPeerConnectionExtension struct {
-	object
 	_WebRTCPeerConnectionExtension struct{}
+	object
 }
 
 func NewWebRTCPeerConnectionExtension(obj Object) WebRTCPeerConnectionExtension {
@@ -9350,8 +9350,8 @@ func GetWebRTCPeerConnectionExtension(obj WebRTCPeerConnectionExtension) [1]Obje
 }
 
 type WebSocketMultiplayerPeer struct {
-	object
 	_WebSocketMultiplayerPeer struct{}
+	object
 }
 
 func NewWebSocketMultiplayerPeer(obj Object) WebSocketMultiplayerPeer {
@@ -9360,56 +9360,56 @@ func NewWebSocketMultiplayerPeer(obj Object) WebSocketMultiplayerPeer {
 func GetWebSocketMultiplayerPeer(obj WebSocketMultiplayerPeer) [1]Object { return obj.AsObject() }
 
 type WebSocketPeer struct {
-	object
 	_WebSocketPeer struct{}
+	object
 }
 
 func NewWebSocketPeer(obj Object) WebSocketPeer    { return WebSocketPeer{object: object(obj)} }
 func GetWebSocketPeer(obj WebSocketPeer) [1]Object { return obj.AsObject() }
 
 type WebXRInterface struct {
-	object
 	_WebXRInterface struct{}
+	object
 }
 
 func NewWebXRInterface(obj Object) WebXRInterface    { return WebXRInterface{object: object(obj)} }
 func GetWebXRInterface(obj WebXRInterface) [1]Object { return obj.AsObject() }
 
 type Window struct {
-	object
 	_Window struct{}
+	object
 }
 
 func NewWindow(obj Object) Window    { return Window{object: object(obj)} }
 func GetWindow(obj Window) [1]Object { return obj.AsObject() }
 
 type WorkerThreadPool struct {
-	object
 	_WorkerThreadPool struct{}
+	object
 }
 
 func NewWorkerThreadPool(obj Object) WorkerThreadPool    { return WorkerThreadPool{object: object(obj)} }
 func GetWorkerThreadPool(obj WorkerThreadPool) [1]Object { return obj.AsObject() }
 
 type World2D struct {
-	object
 	_World2D struct{}
+	object
 }
 
 func NewWorld2D(obj Object) World2D    { return World2D{object: object(obj)} }
 func GetWorld2D(obj World2D) [1]Object { return obj.AsObject() }
 
 type World3D struct {
-	object
 	_World3D struct{}
+	object
 }
 
 func NewWorld3D(obj Object) World3D    { return World3D{object: object(obj)} }
 func GetWorld3D(obj World3D) [1]Object { return obj.AsObject() }
 
 type WorldBoundaryShape2D struct {
-	object
 	_WorldBoundaryShape2D struct{}
+	object
 }
 
 func NewWorldBoundaryShape2D(obj Object) WorldBoundaryShape2D {
@@ -9418,8 +9418,8 @@ func NewWorldBoundaryShape2D(obj Object) WorldBoundaryShape2D {
 func GetWorldBoundaryShape2D(obj WorldBoundaryShape2D) [1]Object { return obj.AsObject() }
 
 type WorldBoundaryShape3D struct {
-	object
 	_WorldBoundaryShape3D struct{}
+	object
 }
 
 func NewWorldBoundaryShape3D(obj Object) WorldBoundaryShape3D {
@@ -9428,72 +9428,72 @@ func NewWorldBoundaryShape3D(obj Object) WorldBoundaryShape3D {
 func GetWorldBoundaryShape3D(obj WorldBoundaryShape3D) [1]Object { return obj.AsObject() }
 
 type WorldEnvironment struct {
-	object
 	_WorldEnvironment struct{}
+	object
 }
 
 func NewWorldEnvironment(obj Object) WorldEnvironment    { return WorldEnvironment{object: object(obj)} }
 func GetWorldEnvironment(obj WorldEnvironment) [1]Object { return obj.AsObject() }
 
 type X509Certificate struct {
-	object
 	_X509Certificate struct{}
+	object
 }
 
 func NewX509Certificate(obj Object) X509Certificate    { return X509Certificate{object: object(obj)} }
 func GetX509Certificate(obj X509Certificate) [1]Object { return obj.AsObject() }
 
 type XMLParser struct {
-	object
 	_XMLParser struct{}
+	object
 }
 
 func NewXMLParser(obj Object) XMLParser    { return XMLParser{object: object(obj)} }
 func GetXMLParser(obj XMLParser) [1]Object { return obj.AsObject() }
 
 type XRAnchor3D struct {
-	object
 	_XRAnchor3D struct{}
+	object
 }
 
 func NewXRAnchor3D(obj Object) XRAnchor3D    { return XRAnchor3D{object: object(obj)} }
 func GetXRAnchor3D(obj XRAnchor3D) [1]Object { return obj.AsObject() }
 
 type XRBodyModifier3D struct {
-	object
 	_XRBodyModifier3D struct{}
+	object
 }
 
 func NewXRBodyModifier3D(obj Object) XRBodyModifier3D    { return XRBodyModifier3D{object: object(obj)} }
 func GetXRBodyModifier3D(obj XRBodyModifier3D) [1]Object { return obj.AsObject() }
 
 type XRBodyTracker struct {
-	object
 	_XRBodyTracker struct{}
+	object
 }
 
 func NewXRBodyTracker(obj Object) XRBodyTracker    { return XRBodyTracker{object: object(obj)} }
 func GetXRBodyTracker(obj XRBodyTracker) [1]Object { return obj.AsObject() }
 
 type XRCamera3D struct {
-	object
 	_XRCamera3D struct{}
+	object
 }
 
 func NewXRCamera3D(obj Object) XRCamera3D    { return XRCamera3D{object: object(obj)} }
 func GetXRCamera3D(obj XRCamera3D) [1]Object { return obj.AsObject() }
 
 type XRController3D struct {
-	object
 	_XRController3D struct{}
+	object
 }
 
 func NewXRController3D(obj Object) XRController3D    { return XRController3D{object: object(obj)} }
 func GetXRController3D(obj XRController3D) [1]Object { return obj.AsObject() }
 
 type XRControllerTracker struct {
-	object
 	_XRControllerTracker struct{}
+	object
 }
 
 func NewXRControllerTracker(obj Object) XRControllerTracker {
@@ -9502,48 +9502,48 @@ func NewXRControllerTracker(obj Object) XRControllerTracker {
 func GetXRControllerTracker(obj XRControllerTracker) [1]Object { return obj.AsObject() }
 
 type XRFaceModifier3D struct {
-	object
 	_XRFaceModifier3D struct{}
+	object
 }
 
 func NewXRFaceModifier3D(obj Object) XRFaceModifier3D    { return XRFaceModifier3D{object: object(obj)} }
 func GetXRFaceModifier3D(obj XRFaceModifier3D) [1]Object { return obj.AsObject() }
 
 type XRFaceTracker struct {
-	object
 	_XRFaceTracker struct{}
+	object
 }
 
 func NewXRFaceTracker(obj Object) XRFaceTracker    { return XRFaceTracker{object: object(obj)} }
 func GetXRFaceTracker(obj XRFaceTracker) [1]Object { return obj.AsObject() }
 
 type XRHandModifier3D struct {
-	object
 	_XRHandModifier3D struct{}
+	object
 }
 
 func NewXRHandModifier3D(obj Object) XRHandModifier3D    { return XRHandModifier3D{object: object(obj)} }
 func GetXRHandModifier3D(obj XRHandModifier3D) [1]Object { return obj.AsObject() }
 
 type XRHandTracker struct {
-	object
 	_XRHandTracker struct{}
+	object
 }
 
 func NewXRHandTracker(obj Object) XRHandTracker    { return XRHandTracker{object: object(obj)} }
 func GetXRHandTracker(obj XRHandTracker) [1]Object { return obj.AsObject() }
 
 type XRInterface struct {
-	object
 	_XRInterface struct{}
+	object
 }
 
 func NewXRInterface(obj Object) XRInterface    { return XRInterface{object: object(obj)} }
 func GetXRInterface(obj XRInterface) [1]Object { return obj.AsObject() }
 
 type XRInterfaceExtension struct {
-	object
 	_XRInterfaceExtension struct{}
+	object
 }
 
 func NewXRInterfaceExtension(obj Object) XRInterfaceExtension {
@@ -9552,32 +9552,32 @@ func NewXRInterfaceExtension(obj Object) XRInterfaceExtension {
 func GetXRInterfaceExtension(obj XRInterfaceExtension) [1]Object { return obj.AsObject() }
 
 type XRNode3D struct {
-	object
 	_XRNode3D struct{}
+	object
 }
 
 func NewXRNode3D(obj Object) XRNode3D    { return XRNode3D{object: object(obj)} }
 func GetXRNode3D(obj XRNode3D) [1]Object { return obj.AsObject() }
 
 type XROrigin3D struct {
-	object
 	_XROrigin3D struct{}
+	object
 }
 
 func NewXROrigin3D(obj Object) XROrigin3D    { return XROrigin3D{object: object(obj)} }
 func GetXROrigin3D(obj XROrigin3D) [1]Object { return obj.AsObject() }
 
 type XRPose struct {
-	object
 	_XRPose struct{}
+	object
 }
 
 func NewXRPose(obj Object) XRPose    { return XRPose{object: object(obj)} }
 func GetXRPose(obj XRPose) [1]Object { return obj.AsObject() }
 
 type XRPositionalTracker struct {
-	object
 	_XRPositionalTracker struct{}
+	object
 }
 
 func NewXRPositionalTracker(obj Object) XRPositionalTracker {
@@ -9586,40 +9586,40 @@ func NewXRPositionalTracker(obj Object) XRPositionalTracker {
 func GetXRPositionalTracker(obj XRPositionalTracker) [1]Object { return obj.AsObject() }
 
 type XRServer struct {
-	object
 	_XRServer struct{}
+	object
 }
 
 func NewXRServer(obj Object) XRServer    { return XRServer{object: object(obj)} }
 func GetXRServer(obj XRServer) [1]Object { return obj.AsObject() }
 
 type XRTracker struct {
-	object
 	_XRTracker struct{}
+	object
 }
 
 func NewXRTracker(obj Object) XRTracker    { return XRTracker{object: object(obj)} }
 func GetXRTracker(obj XRTracker) [1]Object { return obj.AsObject() }
 
 type XRVRS struct {
-	object
 	_XRVRS struct{}
+	object
 }
 
 func NewXRVRS(obj Object) XRVRS    { return XRVRS{object: object(obj)} }
 func GetXRVRS(obj XRVRS) [1]Object { return obj.AsObject() }
 
 type ZIPPacker struct {
-	object
 	_ZIPPacker struct{}
+	object
 }
 
 func NewZIPPacker(obj Object) ZIPPacker    { return ZIPPacker{object: object(obj)} }
 func GetZIPPacker(obj ZIPPacker) [1]Object { return obj.AsObject() }
 
 type ZIPReader struct {
-	object
 	_ZIPReader struct{}
+	object
 }
 
 func NewZIPReader(obj Object) ZIPReader    { return ZIPReader{object: object(obj)} }

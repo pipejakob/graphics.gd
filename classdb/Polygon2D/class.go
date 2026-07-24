@@ -15,7 +15,6 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
-import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -230,7 +229,7 @@ func (self Instance) SetBoneWeights(index int, weights []float32) Instance { //g
 type Advanced = class
 type class [1]gdclass.Polygon2D
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPolygon2D(obj[0])
@@ -245,7 +244,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -651,15 +650,15 @@ func (self class) GetInternalVertexCount() int64 { //gd:Polygon2D.get_internal_v
 func (o class) AsPolygon2D() Advanced                     { return Advanced(o) }
 func (o Instance) AsPolygon2D() Instance                  { return o }
 func (o *Extension[T]) AsPolygon2D() Instance             { return o.Super() }
-func (o class) AsNode2D() Node2D.Advanced                 { return *(*Node2D.Advanced)(ie.As(&o)) }
+func (o class) AsNode2D() Node2D.Advanced                 { return Node2D.Advanced{gdclass.NewNode2D(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsNode2D() Node2D.Instance         { return o.Super().AsNode2D() }
-func (o Instance) AsNode2D() Node2D.Instance              { return *(*Node2D.Instance)(ie.As(&o)) }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
+func (o Instance) AsNode2D() Node2D.Instance              { return Node2D.Instance{gdclass.NewNode2D(o[0].AsObject()[0])} }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
-func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
+func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

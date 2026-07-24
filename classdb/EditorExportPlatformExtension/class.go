@@ -1003,7 +1003,7 @@ func (self Instance) GetConfigMissingTemplates() bool { //gd:EditorExportPlatfor
 type Advanced = class
 type class [1]gdclass.EditorExportPlatformExtension
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorExportPlatformExtension(obj[0])
@@ -1018,7 +1018,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1458,13 +1458,13 @@ func (o class) AsEditorExportPlatformExtension() Advanced         { return Advan
 func (o Instance) AsEditorExportPlatformExtension() Instance      { return o }
 func (o *Extension[T]) AsEditorExportPlatformExtension() Instance { return o.Super() }
 func (o class) AsEditorExportPlatform() EditorExportPlatform.Advanced {
-	return *(*EditorExportPlatform.Advanced)(ie.As(&o))
+	return EditorExportPlatform.Advanced{gdclass.NewEditorExportPlatform(o[0].AsObject()[0])}
 }
 func (o *Extension[T]) AsEditorExportPlatform() EditorExportPlatform.Instance {
 	return o.Super().AsEditorExportPlatform()
 }
 func (o Instance) AsEditorExportPlatform() EditorExportPlatform.Instance {
-	return *(*EditorExportPlatform.Instance)(ie.As(&o))
+	return EditorExportPlatform.Instance{gdclass.NewEditorExportPlatform(o[0].AsObject()[0])}
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

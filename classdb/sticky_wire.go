@@ -19,6 +19,11 @@ import (
 func init() {
 	sticky.Dispatch = func(instance, userdata, result, args uintptr) {
 		pv := (*pinnedVirtualFunc)(unsafe.Pointer(userdata))
+		if ptr, ok := fastInterface(pv.tab, gdextension.ExtensionInstanceID(instance)); ok {
+			pv.fn(ptr, gdextension.Pointer(args), gdextension.Pointer(result))
+			gdreference.Barrier()
+			return
+		}
 		receiver := instances.Get(gdextension.ExtensionInstanceID(instance))
 		if receiver == nil {
 			return

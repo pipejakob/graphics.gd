@@ -198,7 +198,7 @@ func (self Instance) SetInput(name string, value any) Instance { //gd:XRPosition
 type Advanced = class
 type class [1]gdclass.XRPositionalTracker
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewXRPositionalTracker(obj[0])
@@ -213,7 +213,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -427,9 +427,9 @@ func (self class) ProfileChanged() Signal.Any {
 func (o class) AsXRPositionalTracker() Advanced         { return Advanced(o) }
 func (o Instance) AsXRPositionalTracker() Instance      { return o }
 func (o *Extension[T]) AsXRPositionalTracker() Instance { return o.Super() }
-func (o class) AsXRTracker() XRTracker.Advanced         { return *(*XRTracker.Advanced)(ie.As(&o)) }
+func (o class) AsXRTracker() XRTracker.Advanced         { return XRTracker.Advanced{gdclass.NewXRTracker(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsXRTracker() XRTracker.Instance { return o.Super().AsXRTracker() }
-func (o Instance) AsXRTracker() XRTracker.Instance      { return *(*XRTracker.Instance)(ie.As(&o)) }
+func (o Instance) AsXRTracker() XRTracker.Instance      { return XRTracker.Instance{gdclass.NewXRTracker(o[0].AsObject()[0])} }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

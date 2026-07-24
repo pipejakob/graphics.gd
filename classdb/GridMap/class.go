@@ -27,7 +27,6 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
-import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -518,7 +517,7 @@ func (self MoreArgs) MakeBakedMeshes(gen_lightmap_uv bool, lightmap_uv_texel_siz
 type Advanced = class
 type class [1]gdclass.GridMap
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGridMap(obj[0])
@@ -533,7 +532,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1037,12 +1036,12 @@ func (self class) Changed() Signal.Any {
 func (o class) AsGridMap() Advanced               { return Advanced(o) }
 func (o Instance) AsGridMap() Instance            { return o }
 func (o *Extension[T]) AsGridMap() Instance       { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
+func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
-func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
+func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
+func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -140,7 +140,7 @@ func (self Instance) CreatePlaceholder() Resource.Instance { //gd:Texture2DArray
 type Advanced = class
 type class [1]gdclass.Texture2DArray
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTexture2DArray(obj[0])
@@ -155,7 +155,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -187,29 +187,29 @@ func (o class) AsTexture2DArray() Advanced         { return Advanced(o) }
 func (o Instance) AsTexture2DArray() Instance      { return o }
 func (o *Extension[T]) AsTexture2DArray() Instance { return o.Super() }
 func (o class) AsImageTextureLayered() ImageTextureLayered.Advanced {
-	return *(*ImageTextureLayered.Advanced)(ie.As(&o))
+	return ImageTextureLayered.Advanced{gdclass.NewImageTextureLayered(o[0].AsObject()[0])}
 }
 func (o *Extension[T]) AsImageTextureLayered() ImageTextureLayered.Instance {
 	return o.Super().AsImageTextureLayered()
 }
 func (o Instance) AsImageTextureLayered() ImageTextureLayered.Instance {
-	return *(*ImageTextureLayered.Instance)(ie.As(&o))
+	return ImageTextureLayered.Instance{gdclass.NewImageTextureLayered(o[0].AsObject()[0])}
 }
 func (o class) AsTextureLayered() TextureLayered.Advanced {
-	return *(*TextureLayered.Advanced)(ie.As(&o))
+	return TextureLayered.Advanced{gdclass.NewTextureLayered(o[0].AsObject()[0])}
 }
 func (o *Extension[T]) AsTextureLayered() TextureLayered.Instance {
 	return o.Super().AsTextureLayered()
 }
 func (o Instance) AsTextureLayered() TextureLayered.Instance {
-	return *(*TextureLayered.Instance)(ie.As(&o))
+	return TextureLayered.Instance{gdclass.NewTextureLayered(o[0].AsObject()[0])}
 }
-func (o class) AsTexture() Texture.Advanced           { return *(*Texture.Advanced)(ie.As(&o)) }
+func (o class) AsTexture() Texture.Advanced           { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsTexture() Texture.Instance   { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance        { return *(*Texture.Instance)(ie.As(&o)) }
-func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
+func (o Instance) AsTexture() Texture.Instance        { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
+func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

@@ -167,7 +167,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.TextMesh
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTextMesh(obj[0])
@@ -182,7 +182,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -612,17 +612,17 @@ func (self class) IsUppercase() bool { //gd:TextMesh.is_uppercase
 func (o class) AsTextMesh() Advanced                            { return Advanced(o) }
 func (o Instance) AsTextMesh() Instance                         { return o }
 func (o *Extension[T]) AsTextMesh() Instance                    { return o.Super() }
-func (o class) AsPrimitiveMesh() PrimitiveMesh.Advanced         { return *(*PrimitiveMesh.Advanced)(ie.As(&o)) }
+func (o class) AsPrimitiveMesh() PrimitiveMesh.Advanced         { return PrimitiveMesh.Advanced{gdclass.NewPrimitiveMesh(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsPrimitiveMesh() PrimitiveMesh.Instance { return o.Super().AsPrimitiveMesh() }
 func (o Instance) AsPrimitiveMesh() PrimitiveMesh.Instance {
-	return *(*PrimitiveMesh.Instance)(ie.As(&o))
+	return PrimitiveMesh.Instance{gdclass.NewPrimitiveMesh(o[0].AsObject()[0])}
 }
-func (o class) AsMesh() Mesh.Advanced                 { return *(*Mesh.Advanced)(ie.As(&o)) }
+func (o class) AsMesh() Mesh.Advanced                 { return Mesh.Advanced{gdclass.NewMesh(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsMesh() Mesh.Instance         { return o.Super().AsMesh() }
-func (o Instance) AsMesh() Mesh.Instance              { return *(*Mesh.Instance)(ie.As(&o)) }
-func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
+func (o Instance) AsMesh() Mesh.Instance              { return Mesh.Instance{gdclass.NewMesh(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
+func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

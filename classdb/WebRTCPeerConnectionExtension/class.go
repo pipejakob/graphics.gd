@@ -299,7 +299,7 @@ func (Instance) _close(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassCal
 type Advanced = class
 type class [1]gdclass.WebRTCPeerConnectionExtension
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewWebRTCPeerConnectionExtension(obj[0])
@@ -314,7 +314,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -471,13 +471,13 @@ func (o class) AsWebRTCPeerConnectionExtension() Advanced         { return Advan
 func (o Instance) AsWebRTCPeerConnectionExtension() Instance      { return o }
 func (o *Extension[T]) AsWebRTCPeerConnectionExtension() Instance { return o.Super() }
 func (o class) AsWebRTCPeerConnection() WebRTCPeerConnection.Advanced {
-	return *(*WebRTCPeerConnection.Advanced)(ie.As(&o))
+	return WebRTCPeerConnection.Advanced{gdclass.NewWebRTCPeerConnection(o[0].AsObject()[0])}
 }
 func (o *Extension[T]) AsWebRTCPeerConnection() WebRTCPeerConnection.Instance {
 	return o.Super().AsWebRTCPeerConnection()
 }
 func (o Instance) AsWebRTCPeerConnection() WebRTCPeerConnection.Instance {
-	return *(*WebRTCPeerConnection.Instance)(ie.As(&o))
+	return WebRTCPeerConnection.Instance{gdclass.NewWebRTCPeerConnection(o[0].AsObject()[0])}
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

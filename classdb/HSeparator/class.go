@@ -17,7 +17,6 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
-import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -123,7 +122,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.HSeparator
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewHSeparator(obj[0])
@@ -138,7 +137,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -164,18 +163,18 @@ func New() Instance {
 func (o class) AsHSeparator() Advanced                    { return Advanced(o) }
 func (o Instance) AsHSeparator() Instance                 { return o }
 func (o *Extension[T]) AsHSeparator() Instance            { return o.Super() }
-func (o class) AsSeparator() Separator.Advanced           { return *(*Separator.Advanced)(ie.As(&o)) }
+func (o class) AsSeparator() Separator.Advanced           { return Separator.Advanced{gdclass.NewSeparator(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsSeparator() Separator.Instance   { return o.Super().AsSeparator() }
-func (o Instance) AsSeparator() Separator.Instance        { return *(*Separator.Instance)(ie.As(&o)) }
-func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
+func (o Instance) AsSeparator() Separator.Instance        { return Separator.Instance{gdclass.NewSeparator(o[0].AsObject()[0])} }
+func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
+func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
-func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
+func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

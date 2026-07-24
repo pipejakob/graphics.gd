@@ -177,7 +177,7 @@ func (self Instance) ClearBuffer() { //gd:AudioStreamGeneratorPlayback.clear_buf
 type Advanced = class
 type class [1]gdclass.AudioStreamGeneratorPlayback
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioStreamGeneratorPlayback(obj[0])
@@ -192,7 +192,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -249,22 +249,22 @@ func (o class) AsAudioStreamGeneratorPlayback() Advanced         { return Advanc
 func (o Instance) AsAudioStreamGeneratorPlayback() Instance      { return o }
 func (o *Extension[T]) AsAudioStreamGeneratorPlayback() Instance { return o.Super() }
 func (o class) AsAudioStreamPlaybackResampled() AudioStreamPlaybackResampled.Advanced {
-	return *(*AudioStreamPlaybackResampled.Advanced)(ie.As(&o))
+	return AudioStreamPlaybackResampled.Advanced{gdclass.NewAudioStreamPlaybackResampled(o[0].AsObject()[0])}
 }
 func (o *Extension[T]) AsAudioStreamPlaybackResampled() AudioStreamPlaybackResampled.Instance {
 	return o.Super().AsAudioStreamPlaybackResampled()
 }
 func (o Instance) AsAudioStreamPlaybackResampled() AudioStreamPlaybackResampled.Instance {
-	return *(*AudioStreamPlaybackResampled.Instance)(ie.As(&o))
+	return AudioStreamPlaybackResampled.Instance{gdclass.NewAudioStreamPlaybackResampled(o[0].AsObject()[0])}
 }
 func (o class) AsAudioStreamPlayback() AudioStreamPlayback.Advanced {
-	return *(*AudioStreamPlayback.Advanced)(ie.As(&o))
+	return AudioStreamPlayback.Advanced{gdclass.NewAudioStreamPlayback(o[0].AsObject()[0])}
 }
 func (o *Extension[T]) AsAudioStreamPlayback() AudioStreamPlayback.Instance {
 	return o.Super().AsAudioStreamPlayback()
 }
 func (o Instance) AsAudioStreamPlayback() AudioStreamPlayback.Instance {
-	return *(*AudioStreamPlayback.Instance)(ie.As(&o))
+	return AudioStreamPlayback.Instance{gdclass.NewAudioStreamPlayback(o[0].AsObject()[0])}
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

@@ -122,7 +122,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.IntervalTweener
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewIntervalTweener(obj[0])
@@ -137,7 +137,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -163,9 +163,9 @@ func New() Instance {
 func (o class) AsIntervalTweener() Advanced         { return Advanced(o) }
 func (o Instance) AsIntervalTweener() Instance      { return o }
 func (o *Extension[T]) AsIntervalTweener() Instance { return o.Super() }
-func (o class) AsTweener() Tweener.Advanced         { return *(*Tweener.Advanced)(ie.As(&o)) }
+func (o class) AsTweener() Tweener.Advanced         { return Tweener.Advanced{gdclass.NewTweener(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsTweener() Tweener.Instance { return o.Super().AsTweener() }
-func (o Instance) AsTweener() Tweener.Instance      { return *(*Tweener.Instance)(ie.As(&o)) }
+func (o Instance) AsTweener() Tweener.Instance      { return Tweener.Instance{gdclass.NewTweener(o[0].AsObject()[0])} }
 func (o class) AsRefCounted() ie.RC                 { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC         { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC              { return *(*ie.RC)(ie.As(&o)) }

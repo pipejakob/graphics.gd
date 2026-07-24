@@ -147,7 +147,7 @@ func (self Instance) GetBandCount() int { //gd:AudioEffectEQ.get_band_count
 type Advanced = class
 type class [1]gdclass.AudioEffectEQ
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioEffectEQ(obj[0])
@@ -162,7 +162,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -204,12 +204,12 @@ func (self class) GetBandCount() int64 { //gd:AudioEffectEQ.get_band_count
 func (o class) AsAudioEffectEQ() Advanced                   { return Advanced(o) }
 func (o Instance) AsAudioEffectEQ() Instance                { return o }
 func (o *Extension[T]) AsAudioEffectEQ() Instance           { return o.Super() }
-func (o class) AsAudioEffect() AudioEffect.Advanced         { return *(*AudioEffect.Advanced)(ie.As(&o)) }
+func (o class) AsAudioEffect() AudioEffect.Advanced         { return AudioEffect.Advanced{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsAudioEffect() AudioEffect.Instance { return o.Super().AsAudioEffect() }
-func (o Instance) AsAudioEffect() AudioEffect.Instance      { return *(*AudioEffect.Instance)(ie.As(&o)) }
-func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
+func (o Instance) AsAudioEffect() AudioEffect.Instance      { return AudioEffect.Instance{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
+func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

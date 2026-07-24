@@ -836,7 +836,7 @@ func (self Instance) GetCharFromGlyphIndex(size int, glyph_index int) int { //gd
 type Advanced = class
 type class [1]gdclass.FontFile
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewFontFile(obj[0])
@@ -851,7 +851,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1759,12 +1759,12 @@ func (self class) GetCharFromGlyphIndex(size int64, glyph_index int64) int64 { /
 func (o class) AsFontFile() Advanced                  { return Advanced(o) }
 func (o Instance) AsFontFile() Instance               { return o }
 func (o *Extension[T]) AsFontFile() Instance          { return o.Super() }
-func (o class) AsFont() Font.Advanced                 { return *(*Font.Advanced)(ie.As(&o)) }
+func (o class) AsFont() Font.Advanced                 { return Font.Advanced{gdclass.NewFont(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsFont() Font.Instance         { return o.Super().AsFont() }
-func (o Instance) AsFont() Font.Instance              { return *(*Font.Instance)(ie.As(&o)) }
-func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
+func (o Instance) AsFont() Font.Instance              { return Font.Instance{gdclass.NewFont(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
+func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

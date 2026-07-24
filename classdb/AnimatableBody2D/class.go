@@ -22,7 +22,6 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
-import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -133,7 +132,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AnimatableBody2D
 
-func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimatableBody2D(obj[0])
@@ -148,7 +147,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
+func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -198,32 +197,32 @@ func (self class) IsSyncToPhysicsEnabled() bool { //gd:AnimatableBody2D.is_sync_
 func (o class) AsAnimatableBody2D() Advanced                    { return Advanced(o) }
 func (o Instance) AsAnimatableBody2D() Instance                 { return o }
 func (o *Extension[T]) AsAnimatableBody2D() Instance            { return o.Super() }
-func (o class) AsStaticBody2D() StaticBody2D.Advanced           { return *(*StaticBody2D.Advanced)(ie.As(&o)) }
+func (o class) AsStaticBody2D() StaticBody2D.Advanced           { return StaticBody2D.Advanced{gdclass.NewStaticBody2D(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsStaticBody2D() StaticBody2D.Instance   { return o.Super().AsStaticBody2D() }
-func (o Instance) AsStaticBody2D() StaticBody2D.Instance        { return *(*StaticBody2D.Instance)(ie.As(&o)) }
-func (o class) AsPhysicsBody2D() PhysicsBody2D.Advanced         { return *(*PhysicsBody2D.Advanced)(ie.As(&o)) }
+func (o Instance) AsStaticBody2D() StaticBody2D.Instance        { return StaticBody2D.Instance{gdclass.NewStaticBody2D(o[0].AsObject()[0])} }
+func (o class) AsPhysicsBody2D() PhysicsBody2D.Advanced         { return PhysicsBody2D.Advanced{gdclass.NewPhysicsBody2D(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsPhysicsBody2D() PhysicsBody2D.Instance { return o.Super().AsPhysicsBody2D() }
 func (o Instance) AsPhysicsBody2D() PhysicsBody2D.Instance {
-	return *(*PhysicsBody2D.Instance)(ie.As(&o))
+	return PhysicsBody2D.Instance{gdclass.NewPhysicsBody2D(o[0].AsObject()[0])}
 }
 func (o class) AsCollisionObject2D() CollisionObject2D.Advanced {
-	return *(*CollisionObject2D.Advanced)(ie.As(&o))
+	return CollisionObject2D.Advanced{gdclass.NewCollisionObject2D(o[0].AsObject()[0])}
 }
 func (o *Extension[T]) AsCollisionObject2D() CollisionObject2D.Instance {
 	return o.Super().AsCollisionObject2D()
 }
 func (o Instance) AsCollisionObject2D() CollisionObject2D.Instance {
-	return *(*CollisionObject2D.Instance)(ie.As(&o))
+	return CollisionObject2D.Instance{gdclass.NewCollisionObject2D(o[0].AsObject()[0])}
 }
-func (o class) AsNode2D() Node2D.Advanced                 { return *(*Node2D.Advanced)(ie.As(&o)) }
+func (o class) AsNode2D() Node2D.Advanced                 { return Node2D.Advanced{gdclass.NewNode2D(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsNode2D() Node2D.Instance         { return o.Super().AsNode2D() }
-func (o Instance) AsNode2D() Node2D.Instance              { return *(*Node2D.Instance)(ie.As(&o)) }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
+func (o Instance) AsNode2D() Node2D.Instance              { return Node2D.Instance{gdclass.NewNode2D(o[0].AsObject()[0])} }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
-func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
+func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {
