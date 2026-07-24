@@ -21,7 +21,6 @@ package noescape
 //
 import "C"
 import (
-	"reflect"
 	"sync/atomic"
 	"unsafe"
 
@@ -35,7 +34,7 @@ func Call[T any](object gdextension.Object, method gdextension.MethodForClass, s
 	var argptr unsafe.Pointer = nil
 	var result T
 	if args != nil {
-		argptr = reflect.ValueOf(args).UnsafePointer()
+		argptr = argPointer(args)
 	}
 	if unsafe.Sizeof(result) == 0 {
 		if threadcheck.Main() {
@@ -54,6 +53,13 @@ func Call[T any](object gdextension.Object, method gdextension.MethodForClass, s
 	if threadcheck.Main() {
 		if ring.Main.Pending() {
 			ring.Main.Flush()
+		}
+		// Resident fast path, inlined here rather than reached through
+		// direct[T]: this is the per-frame hot route for every
+		// result-bearing engine call, and direct would re-do the
+		// threadcheck.Main this branch has already established.
+		if n, ok := residentAvailable(shape); ok {
+			return residentCall[T](object, method, shape, n, argptr)
 		}
 	} else if !threadcheck.Engine() {
 		// user goroutine: queue the call and block until the main thread has
@@ -108,7 +114,7 @@ func CallThreadSafe[T any](object gdextension.Object, method gdextension.MethodF
 	}
 	var argptr unsafe.Pointer
 	if args != nil {
-		argptr = reflect.ValueOf(args).UnsafePointer()
+		argptr = argPointer(args)
 	}
 	return direct[T](object, method, shape, argptr)
 }
@@ -120,7 +126,7 @@ func CallThreadSafeIf[T any](safe *atomic.Bool, object gdextension.Object, metho
 	if safe.Load() && !threadcheck.Main() {
 		var argptr unsafe.Pointer
 		if args != nil {
-			argptr = reflect.ValueOf(args).UnsafePointer()
+			argptr = argPointer(args)
 		}
 		return direct[T](object, method, shape, argptr)
 	}

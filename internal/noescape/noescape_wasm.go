@@ -3,7 +3,6 @@
 package noescape
 
 import (
-	"reflect"
 	"sync/atomic"
 	"unsafe"
 
@@ -25,7 +24,7 @@ func Call[T any](object gdextension.Object, method gdextension.MethodForClass, s
 	var argptr unsafe.Pointer = nil
 	var result T
 	if args != nil {
-		argptr = reflect.ValueOf(args).UnsafePointer()
+		argptr = argPointer(args)
 	}
 	if unsafe.Sizeof(result) == 0 {
 		ring.Main.Buffer(uintptr(object), uintptr(method), uint64(shape), argptr, 0)
