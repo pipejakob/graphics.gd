@@ -1,4 +1,4 @@
-//go:build go1.26 && amd64 && cgo && !O0
+//go:build go1.26 && (amd64 || arm64) && cgo && !O0
 
 package gd
 

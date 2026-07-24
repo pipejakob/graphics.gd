@@ -34,6 +34,12 @@ var fastcb_callc_asm []byte
 //go:embed bundled/fastcb/fastcb_callc_amd64.go.overlay
 var fastcb_callc_decl []byte
 
+//go:embed bundled/fastcb/fastcb_callc_arm64.s.overlay
+var fastcb_callc_asm_arm64 []byte
+
+//go:embed bundled/fastcb/fastcb_callc_arm64.go.overlay
+var fastcb_callc_decl_arm64 []byte
+
 //go:embed bundled/fastcb/fastcb_callc_stub.go.overlay
 var fastcb_callc_stub []byte
 
@@ -165,6 +171,8 @@ func fastcbCallCFiles() (map[string]string, error) {
 	files := map[string][]byte{
 		"fastcb_callc_amd64.s":  fastcb_callc_asm,
 		"fastcb_callc_amd64.go": fastcb_callc_decl,
+		"fastcb_callc_arm64.s":  fastcb_callc_asm_arm64,
+		"fastcb_callc_arm64.go": fastcb_callc_decl_arm64,
 		"fastcb_callc_stub.go":  fastcb_callc_stub,
 	}
 	out := make(map[string]string, len(files))

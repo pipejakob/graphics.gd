@@ -55,19 +55,9 @@ func Calls() uint64 { return calls.Load() }
 // [[runtime-link-callback-bench]].
 var Enabled = false
 
-// Dispatch is the Go-side virtual-method dispatch, wired by classdb at init to
-// the body of On.Extension.Instance.Called. The thunk calls this once the Go
-// execution context (g, P, goroutine stack) is established. Kept as an
-// indirect func to avoid an import cycle (sticky must not import classdb).
-//
-//	instance  – ExtensionInstanceID
-//	userdata  – pinned virtual-call userdata (the *pinnedVirtualFunc)
-//	result    – r_ret   (GDExtensionTypePtr)
-//	args      – p_args  (const GDExtensionConstTypePtr*)
-//
-// All args are raw pointer values (gdextension.Pointer is uintptr); the thunk
-// passes the engine's System V argument registers through unchanged.
-var Dispatch func(instance, userdata, result, args uintptr)
+// Dispatch (the Go-side virtual-method dispatch) lives in dispatch.go, which
+// compiles on arm64 too — the runtime-carried fastcb entry thunk uses it on
+// both architectures.
 
 // ---- UNKNOWN #1: m.p field offset ---------------------------------------
 // Offset of m.p within runtime.m, for the Go toolchain this is built with.

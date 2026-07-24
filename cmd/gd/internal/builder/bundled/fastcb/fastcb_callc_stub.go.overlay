@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//go:build !amd64
+//go:build !amd64 && !arm64
 
 package runtime
 
 // The fused resident outbound crossing and the direct virtual-call entry
-// are amd64-only; other architectures keep the generic fastcbCallC path
-// and the stock cgocallback entry.
+// are amd64/arm64-only; other architectures keep the generic fastcbCallC
+// path and the stock cgocallback entry.
 func fastcbCallCFastPC() uintptr { return 0 }
 
 func fastcbEntryFastPC() uintptr { return 0 }
