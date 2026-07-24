@@ -66,6 +66,7 @@ func SetResident() bool {
 		return false
 	}
 	callPC(runtimePCs[0])
+	initCallC()
 	resident = true
 	return true
 }
@@ -89,6 +90,22 @@ func Yield() {
 	}
 }
 
+// ArmEntry registers dispatch as the resident virtual-call target and
+// delivers the C-callable PC of the runtime's direct C-ABI entry thunk to
+// install, for registration as the engine's call_virtual_with_data_func.
+// fallback must be the stock five-argument virtual entry
+// (gd_stock_virtual_entry); the thunk tail-jumps to it whenever the resident
+// fast path's preconditions do not hold, so installation is safe at any time
+// — including before residency engages (the engine consults the installed
+// pointer per call). install may run immediately (compiler.gd fork: the
+// thunk is reachable by linkname at init) or later from SetResident (stock:
+// the overlay publishes its hook PCs only at the first C->Go callback, after
+// package init). It is never called on toolchains and platforms without the
+// thunk.
+func ArmEntry(dispatch func(instance, userdata, result, args uintptr), fallback unsafe.Pointer, install func(pc uintptr)) {
+	armEntry(dispatch, fallback, install)
+}
+
 // CallC invokes the C function fn(arg) on the system stack via the patched
 // runtime's fastcbCallC: the goroutine stays _Grunning with its P wired, so
 // engine->Go callbacks nested inside fn take the resident fast path instead
@@ -101,9 +118,5 @@ func Yield() {
 // help pointers the C or engine code holds across the nested callback). Pass
 // globals or heap memory only.
 func CallC(fn, arg unsafe.Pointer) int32 {
-	fv := funcval{fn: runtimePCs[3]}
-	fp := unsafe.Pointer(&fv)
-	errno := (*(*func(fn, arg unsafe.Pointer) int32)(unsafe.Pointer(&fp)))(fn, arg)
-	runtime.KeepAlive(&fv)
-	return errno
+	return callC(fn, arg)
 }
