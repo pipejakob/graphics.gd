@@ -772,6 +772,11 @@ static void *extension_class_caller(void *user_data, GDExtensionConstStringNameP
 static void extension_instance_called(GDExtensionClassInstancePtr p_instance, GDExtensionConstStringNamePtr p_name, void *p_virtual_call_userdata, const GDExtensionConstTypePtr *p_args, GDExtensionTypePtr r_ret) {
     gd_on_extension_instance_called((uintptr_t)p_instance, (uintptr_t)p_virtual_call_userdata, r_ret, (void *)p_args);
 }
+// gd_stock_virtual_entry exposes the stock entry above so Go can register it
+// as the fallback target of a fast-path thunk (compiler.gd's runtime
+// fastcbentry tail-jumps to it, arguments untouched, whenever the resident
+// fast path's preconditions do not hold).
+void *gd_stock_virtual_entry(void) { return (void*)extension_instance_called; }
 // gd_ring_drain (defined with the ring machinery next to gd_ring_flush)
 // drains the main thread's call ring in C when an engine->Go callback returns,
 // so buffered outbound calls execute without a Go->C crossing to pay for the
@@ -1187,6 +1192,11 @@ void gd_ring_adopt(void *ring, uint32_t *crash_index, void *threads_shared, void
 static void gd_ring_drain_threads(void) {
     gd_mpsc_shared *s = gd_ring_threads;
     if (s == NULL || s->draining) return;
+    // Empty fast path: nothing published at the cursor. This runs after
+    // EVERY engine->Go callback (gd_ring_drain), so skip the draining-flag
+    // stores when there is no work; the acquire load is the same check the
+    // loop below would make first.
+    if (__atomic_load_n(&s->seq[s->cursor & 0xFF], __ATOMIC_ACQUIRE) != s->cursor + 1) return;
     // Hold the drain flag for the loop, exactly like the Go drain: an entry's
     // engine call can re-enter Go, and neither a nested Go flush nor a nested
     // C drain may execute later entries before this one completes (FIFO).

@@ -115,6 +115,9 @@ extern void gd_on_extension_instance_called(ExtensionInstanceID inst, FunctionID
 // Set by Go (internal/sticky.EntryAddr) to the sticky-P fast-path C-ABI thunk,
 // or left 0 to use the stock cgocallback dispatch. See gd.c.
 extern void *gd_sticky_call_virtual;
+// gd_stock_virtual_entry returns the stock (cgocallback-protocol) virtual-call
+// entry, for registration as the fallback target of a fast-path thunk. See gd.c.
+extern void *gd_stock_virtual_entry(void);
 // Flipped on by Go (classdb, via the root package init) when a registered class
 // implements a Notification handler; until then per-frame process-tick
 // notifications are dropped engine-side. See gd.c.
