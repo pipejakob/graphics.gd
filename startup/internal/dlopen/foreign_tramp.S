@@ -295,3 +295,10 @@ foreign_tramp:
 #endif
 
 #endif /* __GLIBC__ */
+
+/* Keep the stack non-executable: hand-written assembly gets no .note.GNU-stack
+   automatically, and one noteless object makes GNU ld mark the whole shared
+   object RWE, which glibc 2.41+ refuses to dlopen (issue #318). */
+#if defined(__ELF__)
+.section .note.GNU-stack,"",%progbits
+#endif

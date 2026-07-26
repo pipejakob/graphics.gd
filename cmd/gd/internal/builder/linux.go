@@ -63,7 +63,18 @@ func (Linux) Build(args ...string) error {
 		// The zig toolchain links its own unwinder in too, so there the flags are a harmless
 		// no-op — but it rejects -Wl,--push-state, so we use the as-needed pair, not push/pop.)
 		const forceUnwinder = "-Wl,--no-as-needed -lgcc_s -Wl,--as-needed"
-		ldflags := strings.TrimSpace(os.Getenv("CGO_LDFLAGS") + " " + forceUnwinder)
+		// Pin the stack non-executable regardless of the input objects. A single
+		// assembly object without a .note.GNU-stack section (an empty cgo .s
+		// file is enough — see issue #318 and discussion #310) makes GNU ld on
+		// distros without the non-exec default (openSUSE, Arch) mark the whole
+		// .so RWE, and glibc >= 2.41 then refuses to dlopen the extension:
+		// "cannot enable executable stack as shared object requires". The
+		// in-tree assembly carries the note now, but this keeps a stray
+		// noteless object in a user's own cgo code from re-breaking every
+		// build. lld (zig cross-compiles) already defaults to noexecstack, so
+		// there the flag is a no-op.
+		const noExecstack = "-Wl,-z,noexecstack"
+		ldflags := strings.TrimSpace(os.Getenv("CGO_LDFLAGS") + " " + forceUnwinder + " " + noExecstack)
 		if err := os.Setenv("CGO_LDFLAGS", ldflags); err != nil {
 			return xray.New(err)
 		}
