@@ -717,12 +717,29 @@ static void *gd_vkGetDeviceProcAddr(void *device, const char *name) {
   if (!vk_gdpa_real || !name) return NULL;
   if (!strcmp(name, "vkGetDeviceProcAddr"))
     return (void *)gd_vkGetDeviceProcAddr;
-  return foreign_wrap(vk_gdpa_real(device, name));
+  void *raw = vk_gdpa_real(device, name);
+  if (!raw) return NULL;
+  return foreign_wrap(raw);
 }
 
 static void *gd_glGetProcAddress(const char *name) {
   if (!gl_gpa_real || !name) return NULL;
-  return foreign_wrap(gl_gpa_real(name));
+  /* Asking the getter for a getter (glad reloads the whole GLX symbol set
+   * through it, glXGetProcAddressARB included) must hand the shims back:
+   * wrapping the raw getter with a plain trampoline would make its RETURNED
+   * pointers escape unwrapped, and the first GL call under the native TLS
+   * register faults in libGLdispatch's TLS access. */
+  if (!strcmp(name, "glXGetProcAddress") ||
+      !strcmp(name, "glXGetProcAddressARB") ||
+      !strcmp(name, "eglGetProcAddress") ||
+      !strcmp(name, "wlEglGetProcAddress") ||
+      !strcmp(name, "SDL_GL_GetProcAddress"))
+    return (void *)gd_glGetProcAddress;
+  if (!strcmp(name, "vkGetInstanceProcAddr") && vk_gipa_real)
+    return (void *)gd_vkGetInstanceProcAddr;
+  void *raw = gl_gpa_real(name);
+  if (!raw) return NULL;
+  return foreign_wrap(raw);
 }
 
 /* Called from dlsym with the requested symbol name and its already-wrapped
@@ -740,7 +757,9 @@ static void *interpose_proc_getter(const char *name, void *wrapped) {
   }
   if (!strcmp(name, "glXGetProcAddress") ||
       !strcmp(name, "glXGetProcAddressARB") ||
-      !strcmp(name, "eglGetProcAddress")) {
+      !strcmp(name, "eglGetProcAddress") ||
+      !strcmp(name, "wlEglGetProcAddress") ||
+      !strcmp(name, "SDL_GL_GetProcAddress")) {
     gl_gpa_real = (void *(*)(const char *))wrapped;
     return (void *)gd_glGetProcAddress;
   }
