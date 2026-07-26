@@ -22,6 +22,14 @@ type ExtensionClassCallVirtualFunc func(any, gdextension.Pointer, gdextension.Po
 var ExtensionInstanceLookup func(gdextension.Object) any
 var ExtensionInstanceGoOnly func(gdextension.Object, bool) (gdreference.Object, bool)
 
+// ExtensionInstanceAdopt wraps an existing engine object of the given
+// registered class in a fresh Go instance and rebinds the object's
+// extension instance to it. Installed by the classdb package; used by
+// the hot-reload runtime (graphics.gd/startup with -tags reloads) to
+// hand objects that outlived a swapped-out wasm module over to its
+// replacement.
+var ExtensionInstanceAdopt func(class gdextension.ExtensionClassID, obj gdextension.Object) gdextension.ExtensionInstanceID
+
 type NotificationType int32
 
 func PointerWithOwnershipTransferredToGo(ptr gdextension.Object) gdreference.Object {

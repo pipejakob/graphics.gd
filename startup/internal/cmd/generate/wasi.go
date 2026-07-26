@@ -154,9 +154,9 @@ func generate_startup_wasip1() error {
 			case reflect.String:
 				fmt.Fprintf(f, "string(p%d), int32(len(p%[1]d))", i)
 			case reflect.Slice:
-				fmt.Fprintf(f, "uintptr(buf%d), int32(len(p%d))", i, i)
+				fmt.Fprintf(f, "uint64(buf%d), int32(len(p%d))", i, i)
 			case reflect.UnsafePointer:
-				fmt.Fprintf(f, "uintptr(mem%d)", i)
+				fmt.Fprintf(f, "uint64(mem%d)", i)
 			default:
 				fmt.Fprint(f, toWasiValue(argName(arg, i), arg))
 			}
@@ -179,6 +179,130 @@ func generate_startup_wasip1() error {
 	return nil
 }
 
+// wasiWireTypes returns the wazero value-type list ("I32"/"I64") matching
+// how Go lowers the generated wasip1 import/export declaration for fn.
+// Must stay in lockstep with generate_startup_wasip1: each args_flat entry
+// becomes one declared parameter, and Go lowers uint64/int64 to i64,
+// string to an (i32 ptr, i32 len) pair, and everything else to i32.
+func wasiWireTypes(rtype reflect.Type) []string {
+	var wire []string
+	for _, arg := range args_flat(rtype, false) {
+		wire = append(wire, wasiWireType(arg)...)
+	}
+	return wire
+}
+
+func wasiWireType(arg reflect.Type) []string {
+	switch wasiTypeOf(arg) {
+	case "uint64", "int64":
+		return []string{"I64"}
+	case "float32":
+		return []string{"F32"}
+	case "float64":
+		return []string{"F64"}
+	case "string":
+		return []string{"I32", "I32"}
+	default:
+		return []string{"I32"}
+	}
+}
+
+// wasiHostDecode emits the Go expression that reconstructs the native
+// argument value for arg from the wazero stack starting at slot index,
+// returning the expression and the number of slots consumed.
+func wasiHostDecode(arg reflect.Type, index int) (string, int) {
+	named := func(inner string) string {
+		if arg.PkgPath() != "" {
+			return fmt.Sprintf("%s(%s)", goTypeOf(arg), inner)
+		}
+		return inner
+	}
+	switch arg.Kind() {
+	case reflect.Array:
+		var elems []string
+		for j := range arg.Len() {
+			switch arg.Elem().Kind() {
+			case reflect.Uintptr:
+				elems = append(elems, fmt.Sprintf("gdextension.Pointer(stack[%d])", index+j))
+			case reflect.Uint64:
+				elems = append(elems, fmt.Sprintf("stack[%d]", index+j))
+			default:
+				panic(fmt.Sprintf("unsupported array element %s in %s", arg.Elem(), arg))
+			}
+		}
+		return fmt.Sprintf("%s{%s}", goTypeOf(arg), strings.Join(elems, ", ")), arg.Len()
+	case reflect.String:
+		// A string original argument occupies three wire slots: the
+		// (ptr,len) pair Go lowers the string to, plus the explicit
+		// int32 length parameter the guest wrapper passes alongside.
+		return fmt.Sprintf("reloadsGoString(m, stack[%d], stack[%d])", index, index+1), 3
+	case reflect.Slice:
+		return fmt.Sprintf("unsafe.Slice((*byte)(unsafe.Pointer(uintptr(stack[%d]))), int(api.DecodeI32(stack[%d])))", index, index+1), 2
+	case reflect.UnsafePointer:
+		return fmt.Sprintf("%s(unsafe.Pointer(uintptr(stack[%d])))", goTypeOf(arg), index), 1
+	case reflect.Uintptr:
+		return named(fmt.Sprintf("gdextension.Pointer(stack[%d])", index)), 1
+	case reflect.Uint64:
+		return named(fmt.Sprintf("stack[%d]", index)), 1
+	case reflect.Int64:
+		return named(fmt.Sprintf("int64(stack[%d])", index)), 1
+	case reflect.Uint32, reflect.Uint16, reflect.Uint8:
+		return named(fmt.Sprintf("%s(api.DecodeU32(stack[%d]))", arg.Kind(), index)), 1
+	case reflect.Int32:
+		return named(fmt.Sprintf("api.DecodeI32(stack[%d])", index)), 1
+	case reflect.Int:
+		return named(fmt.Sprintf("int(api.DecodeI32(stack[%d]))", index)), 1
+	case reflect.Float32:
+		return named(fmt.Sprintf("api.DecodeF32(stack[%d])", index)), 1
+	case reflect.Float64:
+		return named(fmt.Sprintf("api.DecodeF64(stack[%d])", index)), 1
+	case reflect.Bool:
+		// NOTE: wazero does not guarantee zero high bits for i32-typed
+		// stack values, so bools must truncate before testing.
+		return named(fmt.Sprintf("api.DecodeU32(stack[%d]) != 0", index)), 1
+	default:
+		panic(fmt.Sprintf("unsupported host argument kind %s", arg))
+	}
+}
+
+// wasiGuestEncode emits the Go expressions that encode the native value
+// named value (of type arg) into wire slots for a call into the guest.
+func wasiGuestEncode(arg reflect.Type, value string) []string {
+	switch arg.Kind() {
+	case reflect.Array:
+		var slots []string
+		for j := range arg.Len() {
+			switch arg.Elem().Kind() {
+			case reflect.Uintptr:
+				slots = append(slots, fmt.Sprintf("uint64(%s[%d])", value, j))
+			case reflect.Uint64:
+				slots = append(slots, fmt.Sprintf("%s[%d]", value, j))
+			default:
+				panic(fmt.Sprintf("unsupported array element %s in %s", arg.Elem(), arg))
+			}
+		}
+		return slots
+	case reflect.UnsafePointer:
+		return []string{fmt.Sprintf("uint64(uintptr(unsafe.Pointer(%s)))", value)}
+	case reflect.Uintptr, reflect.Uint64:
+		return []string{fmt.Sprintf("uint64(%s)", value)}
+	case reflect.Uint32, reflect.Uint16, reflect.Uint8:
+		return []string{fmt.Sprintf("uint64(%s)", value)}
+	case reflect.Int, reflect.Int32:
+		return []string{fmt.Sprintf("api.EncodeI32(int32(%s))", value)}
+	case reflect.Int64:
+		return []string{fmt.Sprintf("uint64(%s)", value)}
+	case reflect.Float32:
+		return []string{fmt.Sprintf("api.EncodeF32(float32(%s))", value)}
+	case reflect.Float64:
+		return []string{fmt.Sprintf("api.EncodeF64(float64(%s))", value)}
+	case reflect.Bool:
+		return []string{fmt.Sprintf("reloadsBool(%s)", value)}
+	default:
+		panic(fmt.Sprintf("unsupported guest argument kind %s", arg))
+	}
+}
+
 func generate_reloads_go() error {
 	f, err := os.Create("reloads_wazero.go")
 	if err != nil {
@@ -187,217 +311,172 @@ func generate_reloads_go() error {
 	defer f.Close()
 
 	fmt.Fprint(f, "// Code generated by graphics.gd/startup/internal/cmd/generate; DO NOT EDIT.\n")
-	fmt.Fprint(f, "//go:build reloads\n\n")
+	fmt.Fprint(f, "//go:build reloads && !wasip1\n\n")
 	fmt.Fprint(f, "package startup\n\n")
 	fmt.Fprint(f, "import (\n")
 	fmt.Fprint(f, "\t\"context\"\n")
 	fmt.Fprint(f, "\t\"os\"\n")
-	fmt.Fprint(f, "\t\"os/exec\"\n")
-	fmt.Fprint(f, "\t\"strings\"\n")
+	fmt.Fprint(f, "\t\"sync/atomic\"\n")
 	fmt.Fprint(f, "\t\"unsafe\"\n")
 	fmt.Fprint(f, "\n")
 	fmt.Fprint(f, "\t\"github.com/tetratelabs/wazero\"\n")
 	fmt.Fprint(f, "\t\"github.com/tetratelabs/wazero/api\"\n")
-	fmt.Fprint(f, "\t\"github.com/tetratelabs/wazero/imports/wasi_snapshot_preview1\"\n")
-	fmt.Fprint(f, "\tgd \"graphics.gd/internal\"\n")
-	fmt.Fprint(f, "\t\"graphics.gd/internal/callframe\"\n")
-	fmt.Fprint(f, "\t\"graphics.gd/internal/pointers\"\n")
+	fmt.Fprint(f, "\t\"graphics.gd/internal/gdextension\"\n")
 	fmt.Fprint(f, ")\n\n")
-	fmt.Fprint(f, "func init() {\n")
-	fmt.Fprint(f, "\tctx := context.Background()\n")
-	fmt.Fprint(f, "\tWazero := wazero.NewRuntime(ctx)\n")
-	fmt.Fprint(f, "\twasi_snapshot_preview1.Instantiate(ctx, Wazero)\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "\twd, err := os.Getwd()\n")
-	fmt.Fprint(f, "\tif err != nil {\n")
-	fmt.Fprint(f, "\t\tos.Stderr.WriteString(err.Error())\n")
-	fmt.Fprint(f, "\t\treturn\n")
-	fmt.Fprint(f, "\t}\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "\tcmd := exec.Command(\"go\", \"build\", \"-o\", \"./graphics/library.wasm\")\n")
-	fmt.Fprint(f, "\tcmd.Env = append(os.Environ(), \"GOOS=wasip1\", \"GOARCH=wasm\")\n")
-	fmt.Fprint(f, "\tcmd.Stdout = os.Stdout\n")
-	fmt.Fprint(f, "\tcmd.Stderr = os.Stderr\n")
-	fmt.Fprint(f, "\tcmd.Dir = strings.TrimSuffix(wd, \"/graphics\")\n")
-	fmt.Fprint(f, "\tif err := cmd.Run(); err != nil {\n")
-	fmt.Fprint(f, "\t\tos.Stderr.WriteString(err.Error())\n")
-	fmt.Fprint(f, "\t}\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "\twasm, err := os.ReadFile(\"./library.wasm\")\n")
-	fmt.Fprint(f, "\tif err != nil {\n")
-	fmt.Fprint(f, "\t\tos.Stderr.WriteString(err.Error())\n")
-	fmt.Fprint(f, "\t\treturn\n")
-	fmt.Fprint(f, "\t}\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "\ttype (\n")
-	fmt.Fprint(f, "\t\tFUN = api.GoModuleFunc\n")
-	fmt.Fprint(f, "\t\tARG = []api.ValueType\n")
-	fmt.Fprint(f, "\t\tRET = []api.ValueType\n")
-	fmt.Fprint(f, "\t)\n")
-	fmt.Fprint(f, "\tconst (\n")
-	fmt.Fprint(f, "\t\tI32 = api.ValueTypeI32\n")
-	fmt.Fprint(f, "\t\tI64 = api.ValueTypeI64\n")
-	fmt.Fprint(f, "\t)\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "\tvar fn = newWasmRuntime()\n")
-	fmt.Fprint(f, "\tWazero.NewHostModuleBuilder(\"gdextension\").\n")
-	for fn := range api.StructureOf(&gdextension.Host).Iter() {
-		name := fn.Tags.Get("gd")
-		if name == "" {
-			continue
-		}
-		fmt.Fprintf(f, "\t\tNewFunctionBuilder().WithGoModuleFunction(FUN(fn.%s), ", name)
-		args := []string{}
-		for _, arg := range args_flat(fn.Type, false) {
-			switch arg.Kind() {
-			case reflect.Uint32, reflect.Int32:
-				args = append(args, "I32")
-			case reflect.Uint64, reflect.Int64:
-				args = append(args, "I64")
-			default:
-				args = append(args, "I32") // default
-			}
-		}
-		fmt.Fprintf(f, "ARG{%s}, ", strings.Join(args, ", "))
-		rets := []string{}
-		if result := getReturn(fn.Type); result != nil {
-			switch result.Kind() {
-			case reflect.Uint32, reflect.Int32:
-				rets = append(rets, "I32")
-			case reflect.Uint64, reflect.Int64:
-				rets = append(rets, "I64")
-			default:
-				rets = append(rets, "I32")
-			}
-		}
-		fmt.Fprintf(f, "RET{%s}).Export(\"%s\").\n", strings.Join(rets, ", "), name)
-	}
-	fmt.Fprint(f, "\t\tInstantiate(ctx)\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "\tgd.StartupFunctions = append(gd.StartupFunctions, func() {\n")
-	fmt.Fprint(f, "\t\tprogram, err := Wazero.InstantiateWithConfig(ctx, wasm,\n")
-	fmt.Fprint(f, "\t\t\twazero.NewModuleConfig().WithStderr(os.Stderr).WithStdout(os.Stdout),\n")
-	fmt.Fprint(f, "\t\t)\n")
-	fmt.Fprint(f, "\t\tif err != nil {\n")
-	fmt.Fprint(f, "\t\t\tos.Stderr.WriteString(err.Error())\n")
-	fmt.Fprint(f, "\t\t\treturn\n")
-	fmt.Fprint(f, "\t\t}\n")
-	fmt.Fprint(f, "\t\tprogram.ExportedFunction(\"go\")\n")
-	fmt.Fprint(f, "\t})\n")
-	fmt.Fprint(f, "}\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "type wasmRuntime struct {\n")
-	fmt.Fprint(f, "\tengine gd.API\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "\tresult *callframe.Frame\n")
-	fmt.Fprint(f, "\tframes [3]*callframe.Frame\n")
-	fmt.Fprint(f, "\terror  gd.CallError\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "\tmalloc api.Function\n")
-	fmt.Fprint(f, "\tstack  [1]uint64\n")
-	fmt.Fprint(f, "\tfree   api.Function\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "\tvariant_from_type_constructors [gd.TypeMax]func(ret callframe.Ptr[gd.VariantPointers], arg callframe.Addr)\n")
-	fmt.Fprint(f, "}\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "func newWasmRuntime() *wasmRuntime {\n")
-	fmt.Fprint(f, "\tvar wasm wasmRuntime\n")
-	fmt.Fprint(f, "\tfor i := range wasm.frames {\n")
-	fmt.Fprint(f, "\t\twasm.result = callframe.New()\n")
-	fmt.Fprint(f, "\t\twasm.frames[i] = callframe.New()\n")
-	fmt.Fprint(f, "\t}\n")
-	fmt.Fprint(f, "\treturn &wasm\n")
-	fmt.Fprint(f, "}\n")
-	fmt.Fprint(f, "\n")
-	fmt.Fprint(f, "func (wasm *wasmRuntime) u32(v uint64) uint32 { return api.DecodeU32(v) }\n")
-	fmt.Fprint(f, "func (wasm *wasmRuntime) i64(v uint64) gd.Int { return *(*gd.Int)(unsafe.Pointer(&v)) }\n")
-	fmt.Fprint(f, "func (wasm *wasmRuntime) i32(v uint64) int32  { return api.DecodeI32(v) }\n")
-	fmt.Fprint(f, "func (wasm *wasmRuntime) bool(v uint64) bool  { return v != 0 }\n")
-	fmt.Fprint(f, "func (wasm *wasmRuntime) str(m api.Module, stack []uint64) string {\n")
-	fmt.Fprint(f, "\tbuf, _ := m.Memory().Read(wasm.u32(stack[0]), wasm.u32(stack[1]))\n")
+	fmt.Fprint(f, "var reloadsCtx = context.Background()\n\n")
+	fmt.Fprint(f, "func reloadsGoString(m api.Module, ptr, length uint64) string {\n")
+	fmt.Fprint(f, "\tbuf, _ := m.Memory().Read(uint32(ptr), uint32(length))\n")
 	fmt.Fprint(f, "\treturn string(buf)\n")
-	fmt.Fprint(f, "}\n")
-	fmt.Fprint(f, "func (wasm *wasmRuntime) variant(stack []uint64) gd.Variant {\n")
-	fmt.Fprint(f, "\treturn pointers.Raw[gd.Variant]([3]uint64{stack[0], stack[1], stack[2]})\n")
-	fmt.Fprint(f, "}\n")
-	fmt.Fprint(f, "func (wasm *wasmRuntime) name(v uint64) gd.StringName {\n")
-	fmt.Fprint(f, "\treturn pointers.Raw[gd.StringName]([1]gd.EnginePointer{gd.EnginePointer(v)})\n")
-	fmt.Fprint(f, "}\n")
-	fmt.Fprint(f, "func (wasm *wasmRuntime) returns(v []uint64) {\n")
-	fmt.Fprint(f, "\tfor i := range v {\n")
-	fmt.Fprint(f, "\t\tcallframe.Set64(wasm.result, 0, i, v[i])\n")
-	fmt.Fprint(f, "\t}\n")
-	fmt.Fprint(f, "}\n")
+	fmt.Fprint(f, "}\n\n")
+	fmt.Fprint(f, "func reloadsBool(v bool) uint64 {\n")
+	fmt.Fprint(f, "\tif v {\n\t\treturn 1\n\t}\n\treturn 0\n")
+	fmt.Fprint(f, "}\n\n")
+
+	// Host side of every gdextension.Host function: decode the guest's
+	// wire arguments (pointers are native host addresses, i64 clean)
+	// and forward to the native implementation.
 	for fn := range api.StructureOf(&gdextension.Host).Iter() {
 		name := fn.Tags.Get("gd")
 		if name == "" {
 			continue
 		}
-		fmt.Fprintf(f, "\nfunc (wasm *wasmRuntime) %s(ctx context.Context, m api.Module, stack []uint64) {\n", name)
-		path := strings.TrimPrefix(strings.Join(append(fn.Path, fn.Name), "."), "Host.")
-		fmt.Fprintf(f, "\t// Call gdextension.Host.%s\n", "Host."+path)
-		var argNames []string
+		path := strings.Join(append(fn.Path, fn.Name), ".")
+		fmt.Fprintf(f, "func gdapi_%s(_ context.Context, m api.Module, stack []uint64) {\n", name)
+		fmt.Fprint(f, "\t_ = m\n")
+		var argExprs []string
 		index := 0
 		for i := 0; i < fn.NumIn(); i++ {
-			arg := fn.Type.In(i)
-			argName := fmt.Sprintf("arg%d", i)
-			argNames = append(argNames, argName)
-			if arg == reflect.TypeFor[gdextension.Variant]() {
-				fmt.Fprintf(f, "\t%s := wasm.variant(stack[%d:%d])\n", argName, index, index+3)
-				index += 3
-			} else if arg == reflect.TypeFor[gdextension.StringName]() {
-				fmt.Fprintf(f, "\t%s := wasm.name(stack[%d])\n", argName, index)
-				index += 1
-			} else if arg.Kind() == reflect.String {
-				fmt.Fprintf(f, "\t%s := wasm.str(m, stack[%d:%d])\n", argName, index, index+2)
-				index += 2
-			} else if arg.Kind() == reflect.Uint32 {
-				fmt.Fprintf(f, "\t%s := wasm.u32(stack[%d])\n", argName, index)
-				index += 1
-			} else if arg.Kind() == reflect.Int32 {
-				fmt.Fprintf(f, "\t%s := wasm.i32(stack[%d])\n", argName, index)
-				index += 1
-			} else if arg.Kind() == reflect.Uint64 {
-				fmt.Fprintf(f, "\t%s := stack[%d]\n", argName, index)
-				index += 1
-			} else if arg.Kind() == reflect.Int64 {
-				fmt.Fprintf(f, "\t%s := wasm.i64(stack[%d])\n", argName, index)
-				index += 1
-			} else if arg.Kind() == reflect.Bool {
-				fmt.Fprintf(f, "\t%s := wasm.bool(stack[%d])\n", argName, index)
-				index += 1
-			} else {
-				fmt.Fprintf(f, "\t// TODO: handle arg type %s\n", arg)
-			}
+			expr, slots := wasiHostDecode(fn.Type.In(i), index)
+			argExprs = append(argExprs, expr)
+			index += slots
 		}
-		fmt.Fprintf(f, "\tresult := wasm.engine.%s(%s)\n", path, strings.Join(argNames, ", "))
+		call := fmt.Sprintf("gdextension.Host.%s(%s)", path, strings.Join(argExprs, ", "))
 		if result := getReturn(fn.Type); result != nil {
-			if result == reflect.TypeFor[gdextension.Variant]() {
-				fmt.Fprint(f, "\traw, _ := pointers.End(result)\n")
-				fmt.Fprint(f, "\twasm.returns(raw[:])\n")
-			} else if result.Kind() == reflect.Uint32 {
-				fmt.Fprint(f, "\tstack[0] = api.EncodeU32(result)\n")
-			} else if result.Kind() == reflect.Int32 {
-				fmt.Fprint(f, "\tstack[0] = api.EncodeI32(result)\n")
-			} else if result.Kind() == reflect.Uint64 {
-				fmt.Fprint(f, "\tstack[0] = result\n")
-			} else if result.Kind() == reflect.Int64 {
-				fmt.Fprint(f, "\tstack[0] = *(*uint64)(unsafe.Pointer(&result))\n")
-			} else if result.Kind() == reflect.Bool {
-				fmt.Fprint(f, "\tif result {\n")
-				fmt.Fprint(f, "\t\tstack[0] = 1\n")
-				fmt.Fprint(f, "\t} else {\n")
-				fmt.Fprint(f, "\t\tstack[0] = 0\n")
-				fmt.Fprint(f, "\t}\n")
-			} else {
-				fmt.Fprintf(f, "\t// TODO: handle result type %s\n", result)
+			fmt.Fprintf(f, "\tresult := %s\n", call)
+			switch result.Kind() {
+			case reflect.Array:
+				fmt.Fprint(f, "\tstack[0] = uint64(result[0])\n")
+			case reflect.Uintptr, reflect.Uint64, reflect.Uint32, reflect.Uint16, reflect.Uint8:
+				fmt.Fprint(f, "\tstack[0] = uint64(result)\n")
+			case reflect.Int, reflect.Int32:
+				fmt.Fprint(f, "\tstack[0] = api.EncodeI32(int32(result))\n")
+			case reflect.Int64:
+				fmt.Fprint(f, "\tstack[0] = uint64(result)\n")
+			case reflect.Float32:
+				fmt.Fprint(f, "\tstack[0] = api.EncodeF32(float32(result))\n")
+			case reflect.Float64:
+				fmt.Fprint(f, "\tstack[0] = api.EncodeF64(float64(result))\n")
+			case reflect.Bool:
+				fmt.Fprint(f, "\tstack[0] = reloadsBool(result)\n")
+			default:
+				panic(fmt.Sprintf("unsupported host result kind %s for %s", result, name))
+			}
+		} else {
+			fmt.Fprintf(f, "\t%s\n", call)
+		}
+		fmt.Fprint(f, "}\n\n")
+	}
+
+	fmt.Fprint(f, "func reloadsInstantiateHostModule(ctx context.Context, rt wazero.Runtime) error {\n")
+	fmt.Fprint(f, "\ttype (\n\t\tFUN = api.GoModuleFunc\n\t\tARG = []api.ValueType\n\t\tRET = []api.ValueType\n\t)\n")
+	fmt.Fprint(f, "\tconst (\n\t\tI32 = api.ValueTypeI32\n\t\tI64 = api.ValueTypeI64\n\t\tF32 = api.ValueTypeF32\n\t\tF64 = api.ValueTypeF64\n\t)\n")
+	fmt.Fprint(f, "\t_, err := rt.NewHostModuleBuilder(\"gd\").\n")
+	for fn := range api.StructureOf(&gdextension.Host).Iter() {
+		name := fn.Tags.Get("gd")
+		if name == "" {
+			continue
+		}
+		var rets []string
+		if result := getReturn(fn.Type); result != nil {
+			rets = wasiWireType(result)
+		}
+		fmt.Fprintf(f, "\t\tNewFunctionBuilder().WithGoModuleFunction(FUN(gdapi_%s), ARG{%s}, RET{%s}).Export(%q).\n",
+			name, strings.Join(wasiWireTypes(fn.Type), ", "), strings.Join(rets, ", "), name)
+	}
+	fmt.Fprint(f, "\t\tInstantiate(ctx)\n")
+	fmt.Fprint(f, "\treturn err\n")
+	fmt.Fprint(f, "}\n\n")
+
+	// Guest export bindings: one api.Function per On callback, resolved
+	// once per instantiated module.
+	fmt.Fprint(f, "type reloadsGuestExports struct {\n")
+	fmt.Fprint(f, "\tmodule api.Module\n")
+	for fn := range api.StructureOf(&gdextension.On).Iter() {
+		name := fn.Tags.Get("gd")
+		if name == "" {
+			continue
+		}
+		fmt.Fprintf(f, "\t%s api.Function\n", name)
+	}
+	fmt.Fprint(f, "}\n\n")
+	fmt.Fprint(f, "func reloadsBindGuest(mod api.Module) *reloadsGuestExports {\n")
+	fmt.Fprint(f, "\treturn &reloadsGuestExports{\n")
+	fmt.Fprint(f, "\t\tmodule: mod,\n")
+	for fn := range api.StructureOf(&gdextension.On).Iter() {
+		name := fn.Tags.Get("gd")
+		if name == "" {
+			continue
+		}
+		fmt.Fprintf(f, "\t\t%s: mod.ExportedFunction(%q),\n", name, name)
+	}
+	fmt.Fprint(f, "\t}\n")
+	fmt.Fprint(f, "}\n\n")
+	fmt.Fprint(f, "var reloadsGuest atomic.Pointer[reloadsGuestExports]\n\n")
+	fmt.Fprint(f, "func reloadsCall(fn api.Function, stack []uint64) {\n")
+	fmt.Fprint(f, "\tif err := fn.CallWithStack(reloadsCtx, stack); err != nil {\n")
+	fmt.Fprint(f, "\t\tos.Stderr.WriteString(\"graphics.gd/startup: reloads guest call failed: \" + err.Error() + \"\\n\")\n")
+	fmt.Fprint(f, "\t}\n")
+	fmt.Fprint(f, "}\n\n")
+
+	// Callback forwarders: extension-instance, callable and editor
+	// callbacks belong entirely to the guest in reloads mode (the host
+	// registers no extension classes). Engine, MainLoop and Threading
+	// callbacks are wired by hand in reloads.go.
+	fmt.Fprint(f, "func reloadsInstallGuestCallbacks() {\n")
+	for fn := range api.StructureOf(&gdextension.On).Iter() {
+		name := fn.Tags.Get("gd")
+		if name == "" || len(fn.Path) == 0 {
+			continue
+		}
+		switch fn.Path[0] {
+		case "Extension", "Callables", "Editor":
+		default:
+			continue
+		}
+		fmt.Fprintf(f, "\tgdextension.On.%s = func", strings.Join(append(fn.Path, fn.Name), "."))
+		writeGoFunctionArguments(f, fn, false, goTypeOf)
+		writeGoFunctionResults(f, fn, false, goTypeOf)
+		fmt.Fprint(f, " {\n")
+		fmt.Fprint(f, "\t\tg := reloadsGuest.Load()\n")
+		fmt.Fprint(f, "\t\tif g == nil {\n\t\t\treturn\n\t\t}\n")
+		var slots []string
+		for i := 0; i < fn.NumIn(); i++ {
+			slots = append(slots, wasiGuestEncode(fn.Type.In(i), argName(fn.Type.In(i), i))...)
+		}
+		fmt.Fprintf(f, "\t\tstack := []uint64{%s}\n", strings.Join(slots, ", "))
+		fmt.Fprintf(f, "\t\treloadsCall(g.%s, stack)\n", name)
+		if result := getReturn(fn.Type); result != nil {
+			switch result.Kind() {
+			case reflect.Array:
+				fmt.Fprintf(f, "\t\tresult = %s{gdextension.Pointer(stack[0])}\n", goTypeOf(result))
+			case reflect.Uintptr, reflect.Uint64:
+				fmt.Fprintf(f, "\t\tresult = %s(stack[0])\n", goTypeOf(result))
+			case reflect.Uint32, reflect.Uint16, reflect.Uint8:
+				fmt.Fprintf(f, "\t\tresult = %s(api.DecodeU32(stack[0]))\n", goTypeOf(result))
+			case reflect.Int, reflect.Int32, reflect.Int64:
+				fmt.Fprintf(f, "\t\tresult = %s(api.DecodeI32(stack[0]))\n", goTypeOf(result))
+			case reflect.Bool:
+				fmt.Fprint(f, "\t\tresult = api.DecodeU32(stack[0]) != 0\n")
+			default:
+				panic(fmt.Sprintf("unsupported guest result kind %s for %s", result, name))
 			}
 		}
-		fmt.Fprint(f, "}\n")
+		fmt.Fprint(f, "\t\treturn\n")
+		fmt.Fprint(f, "\t}\n")
 	}
+	fmt.Fprint(f, "}\n")
 	return nil
 }
-
 func toWasiValue(value string, rtype reflect.Type) string {
 	switch rtype.Kind() {
 	case reflect.Array:
@@ -411,12 +490,19 @@ func toWasiValue(value string, rtype reflect.Type) string {
 }
 
 func wasiTypeOf(rtype reflect.Type) string {
+	// Pointers cross the wasip1 boundary as uint64 (i64), NOT uintptr:
+	// Go lowers uintptr wasmimport parameters to i32, which would
+	// truncate native host addresses. The wasip1 guest only ever talks
+	// to the native reloads host (the web build has its own js ABI), so
+	// the wire format is 64-bit clean: engine pointers, gdmemory
+	// buffers (allocated host-side via the bridged memory_malloc) and
+	// callback IDs all round-trip as i64.
 	if rtype == reflect.TypeFor[[]byte]() {
-		return "uintptr"
+		return "uint64"
 	}
 	switch rtype.Kind() {
 	case reflect.Uintptr, reflect.UnsafePointer, reflect.Pointer:
-		return "uintptr"
+		return "uint64"
 	case reflect.Uint32, reflect.Uint8, reflect.Uint16:
 		return "uint32"
 	case reflect.Uint64:

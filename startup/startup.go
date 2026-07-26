@@ -26,8 +26,17 @@ func MainLoop(loop MainLoopClass.Interface) {
 	Scene()
 }
 
+// reloadsSession replaces the Scene flow when the reloads host is
+// compiled in (-tags reloads): the host owns the engine and hands all
+// class registration to a hot-reloadable wasm build of the project.
+var reloadsSession func()
+
 // Scene starts up the SceneTree and blocks until the engine shuts down.
 func Scene() {
+	if reloadsSession != nil {
+		reloadsSession()
+		return
+	}
 	if !loadingSceneWasCalled {
 		LoadingScene()
 	}

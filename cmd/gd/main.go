@@ -194,6 +194,26 @@ func gd(args ...string) error {
 	if GOARCH != "amd64" && GOARCH != "arm64" && GOARCH != "wasm" {
 		return errors.New("gd requires an amd64, wasm, or arm64 GOARCH")
 	}
+	// Hot reloading is the default development experience: the editor
+	// flow (plain `gd`, no arguments) builds the project with the
+	// reloads tag, so code changes swap in live. This covers the
+	// engine-as-library startup path (musl hosts run the
+	// statically-linked editor binary directly) and the c-shared path
+	// (the extension loaded into a godot editor process). Set
+	// GD_NO_RELOAD=1 to opt out. Cross-compile targets keep their
+	// native builds (mergeTags ignores GD_EXTRA_TAGS off the allowed
+	// list, and the env is only set for the local development flow).
+	reloadMode := len(args) == 0 && os.Getenv("GD_NO_RELOAD") == "" && os.Getenv("GOOS") == ""
+	if reloadMode {
+		// The reloads host is the project built with the reloads tag; on
+		// musl hosts the build happens inside project.Setup via the musl
+		// builder, which merges GD_EXTRA_TAGS into its tag set.
+		if extra := os.Getenv("GD_EXTRA_TAGS"); extra != "" {
+			os.Setenv("GD_EXTRA_TAGS", extra+",reloads")
+		} else {
+			os.Setenv("GD_EXTRA_TAGS", "reloads")
+		}
+	}
 	var build_godot = func() error { return nil }
 	if runtime.GOOS == "linux" {
 		version, err := tooling.ListDynamicDependencies.CombinedOutput("--version")
@@ -277,7 +297,16 @@ func gd(args ...string) error {
 		}
 	}
 	if err := project.Setup(build_godot); err != nil {
-		return err
+		// In reload mode a compile error must not stop the session: fall
+		// back to the previous host build if one exists — its file
+		// watcher rebuilds the wasm guest as soon as the source
+		// compiles again, so fixes hot-swap in as usual.
+		stale := filepath.Join(project.GraphicsDirectory, "musl_"+GOARCH+".editor")
+		if _, statErr := os.Stat(stale); !reloadMode || statErr != nil {
+			return err
+		}
+		fmt.Fprintln(os.Stderr, "gd: build failed, launching the previous build — hot reload picks up fixes:", err)
+		tooling.Godot.Path = stale
 	}
 	if project.IncludesGo {
 		if err := docgen.Process(project.Directory); err != nil {
@@ -295,7 +324,13 @@ func gd(args ...string) error {
 			return xray.New(err)
 		}
 		if err := platform.Build("-gcflags=graphics.gd/classdb/...=-N -l"); err != nil {
-			return xray.New(err)
+			if !reloadMode {
+				return xray.New(err)
+			}
+			// A previously built extension (if any) still loads, and
+			// once the source compiles again its watcher swaps the
+			// fixed code in.
+			fmt.Fprintln(os.Stderr, "gd: build failed, launching with the previous build — hot reload picks up fixes:", err)
 		}
 		if err := os.Chdir(project.GraphicsDirectory); err != nil {
 			return xray.New(err)

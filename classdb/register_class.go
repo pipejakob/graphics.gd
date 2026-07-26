@@ -139,6 +139,9 @@ If the Struct extends [EditorPlugin] then it will be added
 to the editor as a plugin.
 */
 func Register[T Class](exports ...any) {
+	if registrationDisabled {
+		return
+	}
 	var superType = gdclass.SuperType(([1]T{})[0])
 	var super = reflect.New(superType).Elem().Interface()
 	var classType = reflect.TypeFor[T]()
