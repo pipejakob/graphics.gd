@@ -20,6 +20,7 @@ import (
 	"graphics.gd/classdb/SceneTree"
 	gd "graphics.gd/internal"
 	"graphics.gd/internal/gdclass"
+	"graphics.gd/internal/gdreference"
 	"graphics.gd/variant"
 	"graphics.gd/variant/Array"
 	"graphics.gd/variant/Object"
@@ -269,11 +270,22 @@ func waitFrames(frames int) {
 // before running the call that uses it. On Android, where the whole suite runs
 // off the main thread, that surfaced as an "invalid reference" panic under GC
 // pressure.
+//
+// Only objects that gdreference.OwnObject built off the main thread carry a
+// cleanup at all. On wasm threadcheck.Main is unconditionally true (one OS
+// thread means thread identity cannot tell the frame-driving code from a free
+// goroutine), so every object there is a pooled frame temporary whose lifetime
+// the anchor does not govern, and there is nothing for this test to assert.
 func TestGoroutineObjectAnchor(t *testing.T) {
 	finished := make(chan struct{})
+	var owned bool
 	go func() {
 		defer close(finished)
 		node := Node.New()
+		if _, kind := gdreference.AskObject(node.AsObject()[0]); kind != gdreference.TypeThread {
+			return // frame temporary, not GC-anchored — skipped below
+		}
+		owned = true
 		id := Object.Instance(node.AsObject()).ID()
 		anchor := node.AsObject()[0].Anchor()
 		if anchor == nil {
@@ -310,6 +322,11 @@ func TestGoroutineObjectAnchor(t *testing.T) {
 		}
 	}()
 	<-finished
+	if !owned {
+		// Skipped from the test goroutine: t.Skip may not be called from any
+		// other one.
+		t.Skip("objects here are pooled frame temporaries, their lifetime is not anchored")
+	}
 }
 
 // TestGoroutineReferenceLifetimes holds one of each engine-backed reference

@@ -82,6 +82,16 @@ func PinObject(obj *Object, raw gdextension.Object) {
 }
 
 // OwnObject creates a Go-owned [Object] reference.
+//
+// The choice between the two lifetime models is [threadcheck.FrameTemporaries],
+// not [threadcheck.Main]: Main governs dispatch (on wasm it is unconditionally
+// true, because a single-threaded runtime must never queue to a ring nobody
+// else drains), while this is a question about lifetimes, and pooled objects
+// are swept by the per-frame [GC]. Frame-alignment is what makes that sweep
+// safe, and on wasm only goroutine identity can establish it — see
+// threadcheck_wasm.go. Without this, a goroutine on web that held an object
+// across a frame had it freed underneath it; this is the object-side match of
+// the same gate on gd.Wrap*, which anchors reference types.
 func OwnObject(obj gdextension.Object, free func(gdextension.Object)) Object {
 	if obj == 0 {
 		return Object{}
@@ -91,7 +101,7 @@ func OwnObject(obj gdextension.Object, free func(gdextension.Object)) Object {
 	var sentinel *object
 	var revision uint64
 	var result Object
-	if threadcheck.Main() {
+	if threadcheck.FrameTemporaries() {
 		if len(pool_free) > 0 {
 			sentinel = pool_free[len(pool_free)-1]
 			pool_free = pool_free[: len(pool_free)-1 : cap(pool_free)]
