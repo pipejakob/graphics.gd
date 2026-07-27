@@ -69,6 +69,7 @@ Note: The maximum texture size is 16384×16384 pixels due to graphics hardware l
 package ImageTexture
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -107,6 +108,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -240,7 +244,7 @@ func (self Instance) SetSizeOverride(size Vector2i.XY) Instance { //gd:ImageText
 type Advanced = class
 type class [1]gdclass.ImageTexture
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewImageTexture(obj[0])
@@ -255,7 +259,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -280,30 +284,36 @@ func New() Instance {
 
 func (self class) CreateFromImage(image [1]gdclass.Image) [1]gdclass.ImageTexture { //gd:ImageTexture.create_from_image
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.create_from_image, gdextension.SizeObject|(gdextension.SizeObject<<4), &struct{ image gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0]))})
+	runtime.KeepAlive(image[0].Anchor())
 	var ret = [1]gdclass.ImageTexture{gdclass.NewImageTexture(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetImage(image [1]gdclass.Image) { //gd:ImageTexture.set_image
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_image, 0|(gdextension.SizeObject<<4), &struct{ image gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (self class) Update(image [1]gdclass.Image) { //gd:ImageTexture.update
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update, 0|(gdextension.SizeObject<<4), &struct{ image gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (self class) SetSizeOverride(size Vector2i.XY) { //gd:ImageTexture.set_size_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size_override, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsImageTexture() Advanced                { return Advanced(o) }
 func (o Instance) AsImageTexture() Instance             { return o }
 func (o *Extension[T]) AsImageTexture() Instance        { return o.Super() }
-func (o class) AsTexture2D() Texture2D.Advanced         { return Texture2D.Advanced{gdclass.NewTexture2D(o[0].AsObject()[0])} }
+func (o class) AsTexture2D() Texture2D.Advanced         { return *(*Texture2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture2D() Texture2D.Instance { return o.Super().AsTexture2D() }
-func (o Instance) AsTexture2D() Texture2D.Instance      { return Texture2D.Instance{gdclass.NewTexture2D(o[0].AsObject()[0])} }
-func (o class) AsTexture() Texture.Advanced             { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o Instance) AsTexture2D() Texture2D.Instance      { return *(*Texture2D.Instance)(ie.As(&o)) }
+func (o class) AsTexture() Texture.Advanced             { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance     { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance          { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced           { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance          { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced           { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance   { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance        { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance        { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

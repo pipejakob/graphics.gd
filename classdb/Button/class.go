@@ -36,6 +36,7 @@ Note: Buttons support multitouch via touch input, allowing multiple buttons to b
 package Button
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -75,6 +77,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -180,7 +185,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.Button
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewButton(obj[0])
@@ -195,7 +200,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -393,123 +398,152 @@ func (self Instance) SetLanguage(value string) Instance { //gd:Button.language
 
 func (self class) SetText(text String.Readable) { //gd:Button.set_text
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_text, 0|(gdextension.SizeString<<4), &struct{ text gdextension.String }{pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
 }
 func (self class) GetText() String.Readable { //gd:Button.get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTextOverrunBehavior(overrun_behavior TextServer.OverrunBehavior) { //gd:Button.set_text_overrun_behavior
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_text_overrun_behavior, 0|(gdextension.SizeInt<<4), &struct{ overrun_behavior TextServer.OverrunBehavior }{overrun_behavior})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextOverrunBehavior() TextServer.OverrunBehavior { //gd:Button.get_text_overrun_behavior
 	var r_ret = jumponly.Call[TextServer.OverrunBehavior](gd.ObjectChecked(self.AsObject()), methods.get_text_overrun_behavior, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutowrapMode(autowrap_mode TextServer.AutowrapMode) { //gd:Button.set_autowrap_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autowrap_mode, 0|(gdextension.SizeInt<<4), &struct{ autowrap_mode TextServer.AutowrapMode }{autowrap_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAutowrapMode() TextServer.AutowrapMode { //gd:Button.get_autowrap_mode
 	var r_ret = jumponly.Call[TextServer.AutowrapMode](gd.ObjectChecked(self.AsObject()), methods.get_autowrap_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutowrapTrimFlags(autowrap_trim_flags TextServer.LineBreakFlag) { //gd:Button.set_autowrap_trim_flags
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autowrap_trim_flags, 0|(gdextension.SizeInt<<4), &struct{ autowrap_trim_flags TextServer.LineBreakFlag }{autowrap_trim_flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAutowrapTrimFlags() TextServer.LineBreakFlag { //gd:Button.get_autowrap_trim_flags
 	var r_ret = jumponly.Call[TextServer.LineBreakFlag](gd.ObjectChecked(self.AsObject()), methods.get_autowrap_trim_flags, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextDirection(direction Control.TextDirection) { //gd:Button.set_text_direction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_text_direction, 0|(gdextension.SizeInt<<4), &struct{ direction Control.TextDirection }{direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextDirection() Control.TextDirection { //gd:Button.get_text_direction
 	var r_ret = jumponly.Call[Control.TextDirection](gd.ObjectChecked(self.AsObject()), methods.get_text_direction, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLanguage(language String.Readable) { //gd:Button.set_language
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_language, 0|(gdextension.SizeString<<4), &struct{ language gdextension.String }{pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(language)
 }
 func (self class) GetLanguage() String.Readable { //gd:Button.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetButtonIcon(texture [1]gdclass.Texture2D) { //gd:Button.set_button_icon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_button_icon, 0|(gdextension.SizeObject<<4), &struct{ texture gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetButtonIcon() [1]gdclass.Texture2D { //gd:Button.get_button_icon
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_button_icon, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetFlat(enabled bool) { //gd:Button.set_flat
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flat, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFlat() bool { //gd:Button.is_flat
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_flat, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetClipText(enabled bool) { //gd:Button.set_clip_text
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_clip_text, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetClipText() bool { //gd:Button.get_clip_text
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_clip_text, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextAlignment(alignment GUI.HorizontalAlignment) { //gd:Button.set_text_alignment
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_text_alignment, 0|(gdextension.SizeInt<<4), &struct{ alignment GUI.HorizontalAlignment }{alignment})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextAlignment() GUI.HorizontalAlignment { //gd:Button.get_text_alignment
 	var r_ret = jumponly.Call[GUI.HorizontalAlignment](gd.ObjectChecked(self.AsObject()), methods.get_text_alignment, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIconAlignment(icon_alignment GUI.HorizontalAlignment) { //gd:Button.set_icon_alignment
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_icon_alignment, 0|(gdextension.SizeInt<<4), &struct{ icon_alignment GUI.HorizontalAlignment }{icon_alignment})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIconAlignment() GUI.HorizontalAlignment { //gd:Button.get_icon_alignment
 	var r_ret = jumponly.Call[GUI.HorizontalAlignment](gd.ObjectChecked(self.AsObject()), methods.get_icon_alignment, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVerticalIconAlignment(vertical_icon_alignment GUI.VerticalAlignment) { //gd:Button.set_vertical_icon_alignment
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertical_icon_alignment, 0|(gdextension.SizeInt<<4), &struct{ vertical_icon_alignment GUI.VerticalAlignment }{vertical_icon_alignment})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVerticalIconAlignment() GUI.VerticalAlignment { //gd:Button.get_vertical_icon_alignment
 	var r_ret = jumponly.Call[GUI.VerticalAlignment](gd.ObjectChecked(self.AsObject()), methods.get_vertical_icon_alignment, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetExpandIcon(enabled bool) { //gd:Button.set_expand_icon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_expand_icon, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsExpandIcon() bool { //gd:Button.is_expand_icon
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_expand_icon, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsButton() Advanced                        { return Advanced(o) }
 func (o Instance) AsButton() Instance                     { return o }
 func (o *Extension[T]) AsButton() Instance                { return o.Super() }
-func (o class) AsBaseButton() BaseButton.Advanced         { return BaseButton.Advanced{gdclass.NewBaseButton(o[0].AsObject()[0])} }
+func (o class) AsBaseButton() BaseButton.Advanced         { return *(*BaseButton.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsBaseButton() BaseButton.Instance { return o.Super().AsBaseButton() }
-func (o Instance) AsBaseButton() BaseButton.Instance      { return BaseButton.Instance{gdclass.NewBaseButton(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsBaseButton() BaseButton.Instance      { return *(*BaseButton.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

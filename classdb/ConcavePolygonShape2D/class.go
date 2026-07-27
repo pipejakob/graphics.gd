@@ -22,6 +22,7 @@ Performance: Due to its complexity, [ConcavePolygonShape2D] is the slowest 2D co
 package ConcavePolygonShape2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -57,6 +58,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -137,7 +141,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.ConcavePolygonShape2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewConcavePolygonShape2D(obj[0])
@@ -152,7 +156,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -194,21 +198,24 @@ func (self class) SetSegments(segments Packed.Array[Vector2.XY]) { //gd:ConcaveP
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_segments, 0|(gdextension.SizePackedArray<<4), &struct {
 		segments gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](segments))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(segments)
 }
 func (self class) GetSegments() Packed.Array[Vector2.XY] { //gd:ConcavePolygonShape2D.get_segments
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_segments, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (o class) AsConcavePolygonShape2D() Advanced         { return Advanced(o) }
 func (o Instance) AsConcavePolygonShape2D() Instance      { return o }
 func (o *Extension[T]) AsConcavePolygonShape2D() Instance { return o.Super() }
-func (o class) AsShape2D() Shape2D.Advanced               { return Shape2D.Advanced{gdclass.NewShape2D(o[0].AsObject()[0])} }
+func (o class) AsShape2D() Shape2D.Advanced               { return *(*Shape2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsShape2D() Shape2D.Instance       { return o.Super().AsShape2D() }
-func (o Instance) AsShape2D() Shape2D.Instance            { return Shape2D.Instance{gdclass.NewShape2D(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced             { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsShape2D() Shape2D.Instance            { return *(*Shape2D.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced             { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance     { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance          { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance          { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

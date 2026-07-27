@@ -36,6 +36,7 @@ Prints:
 package PackedDataContainerRef
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -68,6 +69,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -157,7 +161,7 @@ func (self Instance) Size() int { //gd:PackedDataContainerRef.size
 type Advanced = class
 type class [1]gdclass.PackedDataContainerRef
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPackedDataContainerRef(obj[0])
@@ -172,7 +176,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -197,6 +201,7 @@ func New() Instance {
 
 func (self class) Size() int64 { //gd:PackedDataContainerRef.size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

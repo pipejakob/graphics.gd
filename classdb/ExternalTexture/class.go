@@ -13,6 +13,7 @@ Note: This is currently only supported in Android builds.
 package ExternalTexture
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -151,7 +155,7 @@ func (self Instance) SetExternalBufferId(external_buffer_id int) Instance { //gd
 type Advanced = class
 type class [1]gdclass.ExternalTexture
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewExternalTexture(obj[0])
@@ -166,7 +170,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -200,27 +204,30 @@ func (self Instance) SetSize(value Vector2.XY) Instance { //gd:ExternalTexture.s
 
 func (self class) SetSize(size Vector2.XY) { //gd:ExternalTexture.set_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size, 0|(gdextension.SizeVector2<<4), &struct{ size Vector2.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetExternalTextureId() int64 { //gd:ExternalTexture.get_external_texture_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_external_texture_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetExternalBufferId(external_buffer_id int64) { //gd:ExternalTexture.set_external_buffer_id
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_external_buffer_id, 0|(gdextension.SizeInt<<4), &struct{ external_buffer_id int64 }{external_buffer_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsExternalTexture() Advanced             { return Advanced(o) }
 func (o Instance) AsExternalTexture() Instance          { return o }
 func (o *Extension[T]) AsExternalTexture() Instance     { return o.Super() }
-func (o class) AsTexture2D() Texture2D.Advanced         { return Texture2D.Advanced{gdclass.NewTexture2D(o[0].AsObject()[0])} }
+func (o class) AsTexture2D() Texture2D.Advanced         { return *(*Texture2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture2D() Texture2D.Instance { return o.Super().AsTexture2D() }
-func (o Instance) AsTexture2D() Texture2D.Instance      { return Texture2D.Instance{gdclass.NewTexture2D(o[0].AsObject()[0])} }
-func (o class) AsTexture() Texture.Advanced             { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o Instance) AsTexture2D() Texture2D.Instance      { return *(*Texture2D.Instance)(ie.As(&o)) }
+func (o class) AsTexture() Texture.Advanced             { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance     { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance          { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced           { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance          { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced           { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance   { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance        { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance        { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

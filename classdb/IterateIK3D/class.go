@@ -12,6 +12,7 @@ Note: All the methods in this class take an index parameter. This parameter spec
 package IterateIK3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -21,6 +22,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -52,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -312,7 +317,7 @@ func (self Instance) GetJointLimitationRotationOffset(index int, joint int) Quat
 type Advanced = class
 type class [1]gdclass.IterateIK3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewIterateIK3D(obj[0])
@@ -327,7 +332,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -415,33 +420,41 @@ func (self Instance) SetDeterministic(value bool) Instance { //gd:IterateIK3D.de
 
 func (self class) SetMaxIterations(max_iterations int64) { //gd:IterateIK3D.set_max_iterations
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_iterations, 0|(gdextension.SizeInt<<4), &struct{ max_iterations int64 }{max_iterations})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxIterations() int64 { //gd:IterateIK3D.get_max_iterations
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_iterations, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinDistance(min_distance float64) { //gd:IterateIK3D.set_min_distance
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min_distance, 0|(gdextension.SizeFloat<<4), &struct{ min_distance float64 }{min_distance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMinDistance() float64 { //gd:IterateIK3D.get_min_distance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_min_distance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAngularDeltaLimit(angular_delta_limit float64) { //gd:IterateIK3D.set_angular_delta_limit
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_angular_delta_limit, 0|(gdextension.SizeFloat<<4), &struct{ angular_delta_limit float64 }{angular_delta_limit})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAngularDeltaLimit() float64 { //gd:IterateIK3D.get_angular_delta_limit
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_angular_delta_limit, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDeterministic(deterministic bool) { //gd:IterateIK3D.set_deterministic
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_deterministic, 0|(gdextension.SizeBool<<4), &struct{ deterministic bool }{deterministic})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDeterministic() bool { //gd:IterateIK3D.is_deterministic
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_deterministic, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -450,9 +463,12 @@ func (self class) SetTargetNode(index int64, target_node Path.ToNode) { //gd:Ite
 		index       int64
 		target_node gdextension.NodePath
 	}{index, pointers.Get(gd.InternalNodePath(target_node))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(target_node)
 }
 func (self class) GetTargetNode(index int64) Path.ToNode { //gd:IterateIK3D.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
@@ -462,12 +478,14 @@ func (self class) SetJointRotationAxis(index int64, joint int64, axis SkeletonMo
 		joint int64
 		axis  SkeletonModifier3D.RotationAxis
 	}{index, joint, axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointRotationAxis(index int64, joint int64) SkeletonModifier3D.RotationAxis { //gd:IterateIK3D.get_joint_rotation_axis
 	var r_ret = noescape.Call[SkeletonModifier3D.RotationAxis](gd.ObjectChecked(self.AsObject()), methods.get_joint_rotation_axis, gdextension.SizeInt|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -477,12 +495,14 @@ func (self class) SetJointRotationAxisVector(index int64, joint int64, axis_vect
 		joint       int64
 		axis_vector Vector3.XYZ
 	}{index, joint, axis_vector})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointRotationAxisVector(index int64, joint int64) Vector3.XYZ { //gd:IterateIK3D.get_joint_rotation_axis_vector
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_joint_rotation_axis_vector, gdextension.SizeVector3|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -492,12 +512,15 @@ func (self class) SetJointLimitation(index int64, joint int64, limitation [1]gdc
 		joint      int64
 		limitation gdextension.Object
 	}{index, joint, gdextension.Object(gdreference.GetObject(gdclass.GetJointLimitation3D(limitation[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(limitation[0].Anchor())
 }
 func (self class) GetJointLimitation(index int64, joint int64) [1]gdclass.JointLimitation3D { //gd:IterateIK3D.get_joint_limitation
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_joint_limitation, gdextension.SizeObject|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.JointLimitation3D{gdclass.NewJointLimitation3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -507,12 +530,14 @@ func (self class) SetJointLimitationRightAxis(index int64, joint int64, directio
 		joint     int64
 		direction SkeletonModifier3D.SecondaryDirection
 	}{index, joint, direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointLimitationRightAxis(index int64, joint int64) SkeletonModifier3D.SecondaryDirection { //gd:IterateIK3D.get_joint_limitation_right_axis
 	var r_ret = noescape.Call[SkeletonModifier3D.SecondaryDirection](gd.ObjectChecked(self.AsObject()), methods.get_joint_limitation_right_axis, gdextension.SizeInt|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -522,12 +547,14 @@ func (self class) SetJointLimitationRightAxisVector(index int64, joint int64, ve
 		joint  int64
 		vector Vector3.XYZ
 	}{index, joint, vector})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointLimitationRightAxisVector(index int64, joint int64) Vector3.XYZ { //gd:IterateIK3D.get_joint_limitation_right_axis_vector
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_joint_limitation_right_axis_vector, gdextension.SizeVector3|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -537,39 +564,41 @@ func (self class) SetJointLimitationRotationOffset(index int64, joint int64, off
 		joint  int64
 		offset Quaternion.IJKX
 	}{index, joint, offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointLimitationRotationOffset(index int64, joint int64) Quaternion.IJKX { //gd:IterateIK3D.get_joint_limitation_rotation_offset
 	var r_ret = noescape.Call[Quaternion.IJKX](gd.ObjectChecked(self.AsObject()), methods.get_joint_limitation_rotation_offset, gdextension.SizeQuaternion|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsIterateIK3D() Advanced                       { return Advanced(o) }
 func (o Instance) AsIterateIK3D() Instance                    { return o }
 func (o *Extension[T]) AsIterateIK3D() Instance               { return o.Super() }
-func (o class) AsChainIK3D() ChainIK3D.Advanced               { return ChainIK3D.Advanced{gdclass.NewChainIK3D(o[0].AsObject()[0])} }
+func (o class) AsChainIK3D() ChainIK3D.Advanced               { return *(*ChainIK3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsChainIK3D() ChainIK3D.Instance       { return o.Super().AsChainIK3D() }
-func (o Instance) AsChainIK3D() ChainIK3D.Instance            { return ChainIK3D.Instance{gdclass.NewChainIK3D(o[0].AsObject()[0])} }
-func (o class) AsIKModifier3D() IKModifier3D.Advanced         { return IKModifier3D.Advanced{gdclass.NewIKModifier3D(o[0].AsObject()[0])} }
+func (o Instance) AsChainIK3D() ChainIK3D.Instance            { return *(*ChainIK3D.Instance)(ie.As(&o)) }
+func (o class) AsIKModifier3D() IKModifier3D.Advanced         { return *(*IKModifier3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsIKModifier3D() IKModifier3D.Instance { return o.Super().AsIKModifier3D() }
-func (o Instance) AsIKModifier3D() IKModifier3D.Instance      { return IKModifier3D.Instance{gdclass.NewIKModifier3D(o[0].AsObject()[0])} }
+func (o Instance) AsIKModifier3D() IKModifier3D.Instance      { return *(*IKModifier3D.Instance)(ie.As(&o)) }
 func (o class) AsSkeletonModifier3D() SkeletonModifier3D.Advanced {
-	return SkeletonModifier3D.Advanced{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
 	return o.Super().AsSkeletonModifier3D()
 }
 func (o Instance) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
-	return SkeletonModifier3D.Instance{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

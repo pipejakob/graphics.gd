@@ -12,6 +12,7 @@ Use [XRHandModifier3D] to animate a hand mesh using hand tracking data.
 package XRHandTracker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -227,7 +231,7 @@ func (self Instance) GetHandJointAngularVelocity(joint HandJoint) Vector3.XYZ { 
 type Advanced = class
 type class [1]gdclass.XRHandTracker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewXRHandTracker(obj[0])
@@ -242,7 +246,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -293,17 +297,21 @@ func (self Instance) SetHandTrackingSource(value HandTrackingSource) Instance { 
 
 func (self class) SetHasTrackingData(has_data bool) { //gd:XRHandTracker.set_has_tracking_data
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_has_tracking_data, 0|(gdextension.SizeBool<<4), &struct{ has_data bool }{has_data})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHasTrackingData() bool { //gd:XRHandTracker.get_has_tracking_data
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_has_tracking_data, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHandTrackingSource(source HandTrackingSource) { //gd:XRHandTracker.set_hand_tracking_source
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hand_tracking_source, 0|(gdextension.SizeInt<<4), &struct{ source HandTrackingSource }{source})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHandTrackingSource() HandTrackingSource { //gd:XRHandTracker.get_hand_tracking_source
 	var r_ret = jumponly.Call[HandTrackingSource](gd.ObjectChecked(self.AsObject()), methods.get_hand_tracking_source, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -312,9 +320,11 @@ func (self class) SetHandJointFlags(joint HandJoint, flags HandJointFlags) { //g
 		joint HandJoint
 		flags HandJointFlags
 	}{joint, flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHandJointFlags(joint HandJoint) HandJointFlags { //gd:XRHandTracker.get_hand_joint_flags
 	var r_ret = noescape.Call[HandJointFlags](gd.ObjectChecked(self.AsObject()), methods.get_hand_joint_flags, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ joint HandJoint }{joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -323,9 +333,11 @@ func (self class) SetHandJointTransform(joint HandJoint, transform Transform3D.B
 		joint     HandJoint
 		transform Transform3D.BasisOrigin
 	}{joint, gd.Transposed(transform)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHandJointTransform(joint HandJoint) Transform3D.BasisOrigin { //gd:XRHandTracker.get_hand_joint_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_hand_joint_transform, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ joint HandJoint }{joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
@@ -334,9 +346,11 @@ func (self class) SetHandJointRadius(joint HandJoint, radius float64) { //gd:XRH
 		joint  HandJoint
 		radius float64
 	}{joint, radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHandJointRadius(joint HandJoint) float64 { //gd:XRHandTracker.get_hand_joint_radius
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_hand_joint_radius, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ joint HandJoint }{joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -345,9 +359,11 @@ func (self class) SetHandJointLinearVelocity(joint HandJoint, linear_velocity Ve
 		joint           HandJoint
 		linear_velocity Vector3.XYZ
 	}{joint, linear_velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHandJointLinearVelocity(joint HandJoint) Vector3.XYZ { //gd:XRHandTracker.get_hand_joint_linear_velocity
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_hand_joint_linear_velocity, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ joint HandJoint }{joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -356,9 +372,11 @@ func (self class) SetHandJointAngularVelocity(joint HandJoint, angular_velocity 
 		joint            HandJoint
 		angular_velocity Vector3.XYZ
 	}{joint, angular_velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHandJointAngularVelocity(joint HandJoint) Vector3.XYZ { //gd:XRHandTracker.get_hand_joint_angular_velocity
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_hand_joint_angular_velocity, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ joint HandJoint }{joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -366,17 +384,17 @@ func (o class) AsXRHandTracker() Advanced         { return Advanced(o) }
 func (o Instance) AsXRHandTracker() Instance      { return o }
 func (o *Extension[T]) AsXRHandTracker() Instance { return o.Super() }
 func (o class) AsXRPositionalTracker() XRPositionalTracker.Advanced {
-	return XRPositionalTracker.Advanced{gdclass.NewXRPositionalTracker(o[0].AsObject()[0])}
+	return *(*XRPositionalTracker.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsXRPositionalTracker() XRPositionalTracker.Instance {
 	return o.Super().AsXRPositionalTracker()
 }
 func (o Instance) AsXRPositionalTracker() XRPositionalTracker.Instance {
-	return XRPositionalTracker.Instance{gdclass.NewXRPositionalTracker(o[0].AsObject()[0])}
+	return *(*XRPositionalTracker.Instance)(ie.As(&o))
 }
-func (o class) AsXRTracker() XRTracker.Advanced         { return XRTracker.Advanced{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o class) AsXRTracker() XRTracker.Advanced         { return *(*XRTracker.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRTracker() XRTracker.Instance { return o.Super().AsXRTracker() }
-func (o Instance) AsXRTracker() XRTracker.Instance      { return XRTracker.Instance{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o Instance) AsXRTracker() XRTracker.Instance      { return *(*XRTracker.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

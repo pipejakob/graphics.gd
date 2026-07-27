@@ -11,6 +11,7 @@ Importantly, you can inherit from [Material] to create your own custom material 
 package Material
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -46,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -238,7 +242,7 @@ func (self Instance) CreatePlaceholder() Resource.Instance { //gd:Material.creat
 type Advanced = class
 type class [1]gdclass.Material
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMaterial(obj[0])
@@ -253,7 +257,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -350,34 +354,41 @@ func (class) _can_use_render_priority(impl func(ptr gdclass.Receiver) bool) (cb 
 
 func (self class) SetNextPass(next_pass [1]gdclass.Material) { //gd:Material.set_next_pass
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_next_pass, 0|(gdextension.SizeObject<<4), &struct{ next_pass gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(next_pass[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(next_pass[0].Anchor())
 }
 func (self class) GetNextPass() [1]gdclass.Material { //gd:Material.get_next_pass
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_next_pass, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Material{gdclass.NewMaterial(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetRenderPriority(priority int64) { //gd:Material.set_render_priority
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_render_priority, 0|(gdextension.SizeInt<<4), &struct{ priority int64 }{priority})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRenderPriority() int64 { //gd:Material.get_render_priority
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_render_priority, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) InspectNativeShaderCode() { //gd:Material.inspect_native_shader_code
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.inspect_native_shader_code, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CreatePlaceholder() [1]gdclass.Resource { //gd:Material.create_placeholder
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.create_placeholder, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Resource{gdclass.NewResource(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsMaterial() Advanced                  { return Advanced(o) }
 func (o Instance) AsMaterial() Instance               { return o }
 func (o *Extension[T]) AsMaterial() Instance          { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

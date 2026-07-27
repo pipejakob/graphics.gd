@@ -13,6 +13,7 @@ Note: On the Linux/BSD platform, Godot complies with the [XDG Base Directory Spe
 package EditorPaths
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -22,6 +23,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -45,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -191,7 +196,7 @@ func (self Instance) GetProjectSettingsDir() string { //gd:EditorPaths.get_proje
 type Advanced = class
 type class [1]gdclass.EditorPaths
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorPaths(obj[0])
@@ -206,7 +211,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -231,31 +236,37 @@ func New() Instance {
 
 func (self class) GetDataDir() String.Readable { //gd:EditorPaths.get_data_dir
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_data_dir, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetConfigDir() String.Readable { //gd:EditorPaths.get_config_dir
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_config_dir, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCacheDir() String.Readable { //gd:EditorPaths.get_cache_dir
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_cache_dir, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsSelfContained() bool { //gd:EditorPaths.is_self_contained
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_self_contained, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSelfContainedFile() String.Readable { //gd:EditorPaths.get_self_contained_file
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_self_contained_file, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetProjectSettingsDir() String.Readable { //gd:EditorPaths.get_project_settings_dir
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_project_settings_dir, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }

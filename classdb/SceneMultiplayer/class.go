@@ -24,6 +24,7 @@ Note: When exporting to Android, make sure to enable the INTERNET permission in 
 package SceneMultiplayer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -59,6 +60,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -232,7 +236,7 @@ func (self MoreArgs) SendBytes(bytes []byte, id int, mode MultiplayerPeer.Transf
 type Advanced = class
 type class [1]gdclass.SceneMultiplayer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSceneMultiplayer(obj[0])
@@ -247,7 +251,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -398,20 +402,26 @@ func (self Instance) SetMaxDeltaPacketSize(value int) Instance { //gd:SceneMulti
 
 func (self class) SetRootPath(path Path.ToNode) { //gd:SceneMultiplayer.set_root_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_root_path, 0|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetRootPath() Path.ToNode { //gd:SceneMultiplayer.get_root_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_root_path, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) Clear() { //gd:SceneMultiplayer.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DisconnectPeer(id int64) { //gd:SceneMultiplayer.disconnect_peer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.disconnect_peer, 0|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAuthenticatingPeers() Packed.Array[int32] { //gd:SceneMultiplayer.get_authenticating_peers
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_authenticating_peers, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -420,51 +430,65 @@ func (self class) SendAuth(id int64, data Packed.Bytes) Error.Code { //gd:SceneM
 		id   int64
 		data gdextension.PackedArray[byte]
 	}{id, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) CompleteAuth(id int64) Error.Code { //gd:SceneMultiplayer.complete_auth
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.complete_auth, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) SetAuthCallback(callback Callable.Function) { //gd:SceneMultiplayer.set_auth_callback
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auth_callback, 0|(gdextension.SizeCallable<<4), &struct{ callback gdextension.Callable }{pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(callback)
 }
 func (self class) GetAuthCallback() Callable.Function { //gd:SceneMultiplayer.get_auth_callback
 	var r_ret = jumponly.Call[gdextension.Callable](gd.ObjectChecked(self.AsObject()), methods.get_auth_callback, gdextension.SizeCallable, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
 func (self class) SetAuthTimeout(timeout float64) { //gd:SceneMultiplayer.set_auth_timeout
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auth_timeout, 0|(gdextension.SizeFloat<<4), &struct{ timeout float64 }{timeout})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAuthTimeout() float64 { //gd:SceneMultiplayer.get_auth_timeout
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_auth_timeout, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRefuseNewConnections(refuse bool) { //gd:SceneMultiplayer.set_refuse_new_connections
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_refuse_new_connections, 0|(gdextension.SizeBool<<4), &struct{ refuse bool }{refuse})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRefusingNewConnections() bool { //gd:SceneMultiplayer.is_refusing_new_connections
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_refusing_new_connections, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAllowObjectDecoding(enable bool) { //gd:SceneMultiplayer.set_allow_object_decoding
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_allow_object_decoding, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsObjectDecodingAllowed() bool { //gd:SceneMultiplayer.is_object_decoding_allowed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_object_decoding_allowed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetServerRelayEnabled(enabled bool) { //gd:SceneMultiplayer.set_server_relay_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_server_relay_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsServerRelayEnabled() bool { //gd:SceneMultiplayer.is_server_relay_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_server_relay_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -475,24 +499,30 @@ func (self class) SendBytes(bytes Packed.Bytes, id int64, mode MultiplayerPeer.T
 		mode    MultiplayerPeer.TransferMode
 		channel int64
 	}{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](bytes.Array))), id, mode, channel})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bytes)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetMaxSyncPacketSize() int64 { //gd:SceneMultiplayer.get_max_sync_packet_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_sync_packet_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxSyncPacketSize(size int64) { //gd:SceneMultiplayer.set_max_sync_packet_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_sync_packet_size, 0|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxDeltaPacketSize() int64 { //gd:SceneMultiplayer.get_max_delta_packet_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_delta_packet_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxDeltaPacketSize(size int64) { //gd:SceneMultiplayer.set_max_delta_packet_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_delta_packet_size, 0|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -561,13 +591,13 @@ func (o class) AsSceneMultiplayer() Advanced         { return Advanced(o) }
 func (o Instance) AsSceneMultiplayer() Instance      { return o }
 func (o *Extension[T]) AsSceneMultiplayer() Instance { return o.Super() }
 func (o class) AsMultiplayerAPI() MultiplayerAPI.Advanced {
-	return MultiplayerAPI.Advanced{gdclass.NewMultiplayerAPI(o[0].AsObject()[0])}
+	return *(*MultiplayerAPI.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsMultiplayerAPI() MultiplayerAPI.Instance {
 	return o.Super().AsMultiplayerAPI()
 }
 func (o Instance) AsMultiplayerAPI() MultiplayerAPI.Instance {
-	return MultiplayerAPI.Instance{gdclass.NewMultiplayerAPI(o[0].AsObject()[0])}
+	return *(*MultiplayerAPI.Instance)(ie.As(&o))
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

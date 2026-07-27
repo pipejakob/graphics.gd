@@ -16,6 +16,7 @@ Updating the target properties of animations occurs at the process frame.
 package AnimationPlayer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -25,6 +26,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -51,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -671,7 +676,7 @@ func (self Instance) GetRoot() string { //gd:AnimationPlayer.get_root
 type Advanced = class
 type class [1]gdclass.AnimationPlayer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimationPlayer(obj[0])
@@ -686,7 +691,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -886,9 +891,14 @@ func (self class) AnimationSetNext(animation_from String.Name, animation_to Stri
 		animation_from gdextension.StringName
 		animation_to   gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(animation_from)), pointers.Get(gd.InternalStringName(animation_to))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(animation_from)
+	runtime.KeepAlive(animation_to)
 }
 func (self class) AnimationGetNext(animation_from String.Name) String.Name { //gd:AnimationPlayer.animation_get_next
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.animation_get_next, gdextension.SizeStringName|(gdextension.SizeStringName<<4), &struct{ animation_from gdextension.StringName }{pointers.Get(gd.InternalStringName(animation_from))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(animation_from)
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -898,52 +908,68 @@ func (self class) SetBlendTime(animation_from String.Name, animation_to String.N
 		animation_to   gdextension.StringName
 		sec            float64
 	}{pointers.Get(gd.InternalStringName(animation_from)), pointers.Get(gd.InternalStringName(animation_to)), sec})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(animation_from)
+	runtime.KeepAlive(animation_to)
 }
 func (self class) GetBlendTime(animation_from String.Name, animation_to String.Name) float64 { //gd:AnimationPlayer.get_blend_time
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_blend_time, gdextension.SizeFloat|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		animation_from gdextension.StringName
 		animation_to   gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(animation_from)), pointers.Get(gd.InternalStringName(animation_to))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(animation_from)
+	runtime.KeepAlive(animation_to)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDefaultBlendTime(sec float64) { //gd:AnimationPlayer.set_default_blend_time
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_blend_time, 0|(gdextension.SizeFloat<<4), &struct{ sec float64 }{sec})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDefaultBlendTime() float64 { //gd:AnimationPlayer.get_default_blend_time
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_default_blend_time, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoCapture(auto_capture bool) { //gd:AnimationPlayer.set_auto_capture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_capture, 0|(gdextension.SizeBool<<4), &struct{ auto_capture bool }{auto_capture})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAutoCapture() bool { //gd:AnimationPlayer.is_auto_capture
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_auto_capture, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoCaptureDuration(auto_capture_duration float64) { //gd:AnimationPlayer.set_auto_capture_duration
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_capture_duration, 0|(gdextension.SizeFloat<<4), &struct{ auto_capture_duration float64 }{auto_capture_duration})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAutoCaptureDuration() float64 { //gd:AnimationPlayer.get_auto_capture_duration
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_auto_capture_duration, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoCaptureTransitionType(auto_capture_transition_type Tween.TransitionType) { //gd:AnimationPlayer.set_auto_capture_transition_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_capture_transition_type, 0|(gdextension.SizeInt<<4), &struct{ auto_capture_transition_type Tween.TransitionType }{auto_capture_transition_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAutoCaptureTransitionType() Tween.TransitionType { //gd:AnimationPlayer.get_auto_capture_transition_type
 	var r_ret = jumponly.Call[Tween.TransitionType](gd.ObjectChecked(self.AsObject()), methods.get_auto_capture_transition_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoCaptureEaseType(auto_capture_ease_type Tween.EaseType) { //gd:AnimationPlayer.set_auto_capture_ease_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_capture_ease_type, 0|(gdextension.SizeInt<<4), &struct{ auto_capture_ease_type Tween.EaseType }{auto_capture_ease_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAutoCaptureEaseType() Tween.EaseType { //gd:AnimationPlayer.get_auto_capture_ease_type
 	var r_ret = jumponly.Call[Tween.EaseType](gd.ObjectChecked(self.AsObject()), methods.get_auto_capture_ease_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -954,6 +980,8 @@ func (self class) Play(name String.Name, custom_blend float64, custom_speed floa
 		custom_speed float64
 		from_end     bool
 	}{pointers.Get(gd.InternalStringName(name)), custom_blend, custom_speed, from_end})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) PlaySectionWithMarkers(name String.Name, start_marker String.Name, end_marker String.Name, custom_blend float64, custom_speed float64, from_end bool) { //gd:AnimationPlayer.play_section_with_markers
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.play_section_with_markers, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8)|(gdextension.SizeStringName<<12)|(gdextension.SizeFloat<<16)|(gdextension.SizeFloat<<20)|(gdextension.SizeBool<<24), &struct {
@@ -964,6 +992,10 @@ func (self class) PlaySectionWithMarkers(name String.Name, start_marker String.N
 		custom_speed float64
 		from_end     bool
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(start_marker)), pointers.Get(gd.InternalStringName(end_marker)), custom_blend, custom_speed, from_end})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(start_marker)
+	runtime.KeepAlive(end_marker)
 }
 func (self class) PlaySection(name String.Name, start_time float64, end_time float64, custom_blend float64, custom_speed float64, from_end bool) { //gd:AnimationPlayer.play_section
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.play_section, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeFloat<<12)|(gdextension.SizeFloat<<16)|(gdextension.SizeFloat<<20)|(gdextension.SizeBool<<24), &struct {
@@ -974,12 +1006,16 @@ func (self class) PlaySection(name String.Name, start_time float64, end_time flo
 		custom_speed float64
 		from_end     bool
 	}{pointers.Get(gd.InternalStringName(name)), start_time, end_time, custom_blend, custom_speed, from_end})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) PlayBackwards(name String.Name, custom_blend float64) { //gd:AnimationPlayer.play_backwards
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.play_backwards, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeFloat<<8), &struct {
 		name         gdextension.StringName
 		custom_blend float64
 	}{pointers.Get(gd.InternalStringName(name)), custom_blend})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) PlaySectionWithMarkersBackwards(name String.Name, start_marker String.Name, end_marker String.Name, custom_blend float64) { //gd:AnimationPlayer.play_section_with_markers_backwards
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.play_section_with_markers_backwards, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8)|(gdextension.SizeStringName<<12)|(gdextension.SizeFloat<<16), &struct {
@@ -988,6 +1024,10 @@ func (self class) PlaySectionWithMarkersBackwards(name String.Name, start_marker
 		end_marker   gdextension.StringName
 		custom_blend float64
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(start_marker)), pointers.Get(gd.InternalStringName(end_marker)), custom_blend})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(start_marker)
+	runtime.KeepAlive(end_marker)
 }
 func (self class) PlaySectionBackwards(name String.Name, start_time float64, end_time float64, custom_blend float64) { //gd:AnimationPlayer.play_section_backwards
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.play_section_backwards, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeFloat<<12)|(gdextension.SizeFloat<<16), &struct {
@@ -996,6 +1036,8 @@ func (self class) PlaySectionBackwards(name String.Name, start_time float64, end
 		end_time     float64
 		custom_blend float64
 	}{pointers.Get(gd.InternalStringName(name)), start_time, end_time, custom_blend})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) PlayWithCapture(name String.Name, duration float64, custom_blend float64, custom_speed float64, from_end bool, trans_type Tween.TransitionType, ease_type Tween.EaseType) { //gd:AnimationPlayer.play_with_capture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.play_with_capture, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeFloat<<12)|(gdextension.SizeFloat<<16)|(gdextension.SizeBool<<20)|(gdextension.SizeInt<<24)|(gdextension.SizeInt<<28), &struct {
@@ -1007,86 +1049,112 @@ func (self class) PlayWithCapture(name String.Name, duration float64, custom_ble
 		trans_type   Tween.TransitionType
 		ease_type    Tween.EaseType
 	}{pointers.Get(gd.InternalStringName(name)), duration, custom_blend, custom_speed, from_end, trans_type, ease_type})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) Pause() { //gd:AnimationPlayer.pause
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.pause, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Stop(keep_state bool) { //gd:AnimationPlayer.stop
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.stop, 0|(gdextension.SizeBool<<4), &struct{ keep_state bool }{keep_state})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPlaying() bool { //gd:AnimationPlayer.is_playing
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_playing, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsAnimationActive() bool { //gd:AnimationPlayer.is_animation_active
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_animation_active, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCurrentAnimation(animation String.Name) { //gd:AnimationPlayer.set_current_animation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_current_animation, 0|(gdextension.SizeStringName<<4), &struct{ animation gdextension.StringName }{pointers.Get(gd.InternalStringName(animation))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(animation)
 }
 func (self class) GetCurrentAnimation() String.Name { //gd:AnimationPlayer.get_current_animation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_current_animation, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetAssignedAnimation(animation String.Name) { //gd:AnimationPlayer.set_assigned_animation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_assigned_animation, 0|(gdextension.SizeStringName<<4), &struct{ animation gdextension.StringName }{pointers.Get(gd.InternalStringName(animation))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(animation)
 }
 func (self class) GetAssignedAnimation() String.Name { //gd:AnimationPlayer.get_assigned_animation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_assigned_animation, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) Queue(name String.Name) { //gd:AnimationPlayer.queue
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.queue, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetQueue() Array.Contains[String.Name] { //gd:AnimationPlayer.get_queue
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_queue, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClearQueue() { //gd:AnimationPlayer.clear_queue
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_queue, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSpeedScale(speed float64) { //gd:AnimationPlayer.set_speed_scale
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_speed_scale, 0|(gdextension.SizeFloat<<4), &struct{ speed float64 }{speed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpeedScale() float64 { //gd:AnimationPlayer.get_speed_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_speed_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPlayingSpeed() float64 { //gd:AnimationPlayer.get_playing_speed
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_playing_speed, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoplay(name String.Name) { //gd:AnimationPlayer.set_autoplay
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autoplay, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetAutoplay() String.Name { //gd:AnimationPlayer.get_autoplay
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_autoplay, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetMovieQuitOnFinishEnabled(enabled bool) { //gd:AnimationPlayer.set_movie_quit_on_finish_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_movie_quit_on_finish_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsMovieQuitOnFinishEnabled() bool { //gd:AnimationPlayer.is_movie_quit_on_finish_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_movie_quit_on_finish_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCurrentAnimationPosition() float64 { //gd:AnimationPlayer.get_current_animation_position
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_current_animation_position, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCurrentAnimationLength() float64 { //gd:AnimationPlayer.get_current_animation_length
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_current_animation_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1095,28 +1163,36 @@ func (self class) SetSectionWithMarkers(start_marker String.Name, end_marker Str
 		start_marker gdextension.StringName
 		end_marker   gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(start_marker)), pointers.Get(gd.InternalStringName(end_marker))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_marker)
+	runtime.KeepAlive(end_marker)
 }
 func (self class) SetSection(start_time float64, end_time float64) { //gd:AnimationPlayer.set_section
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_section, 0|(gdextension.SizeFloat<<4)|(gdextension.SizeFloat<<8), &struct {
 		start_time float64
 		end_time   float64
 	}{start_time, end_time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ResetSection() { //gd:AnimationPlayer.reset_section
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset_section, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSectionStartTime() float64 { //gd:AnimationPlayer.get_section_start_time
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_section_start_time, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSectionEndTime() float64 { //gd:AnimationPlayer.get_section_end_time
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_section_end_time, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasSection() bool { //gd:AnimationPlayer.has_section
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_section, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1126,28 +1202,36 @@ func (self class) SeekTo(seconds float64, update bool, update_only bool) { //gd:
 		update      bool
 		update_only bool
 	}{seconds, update, update_only})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetProcessCallback(mode AnimationProcessCallback) { //gd:AnimationPlayer.set_process_callback
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_process_callback, 0|(gdextension.SizeInt<<4), &struct{ mode AnimationProcessCallback }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetProcessCallback() AnimationProcessCallback { //gd:AnimationPlayer.get_process_callback
 	var r_ret = noescape.Call[AnimationProcessCallback](gd.ObjectChecked(self.AsObject()), methods.get_process_callback, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMethodCallMode(mode AnimationMethodCallMode) { //gd:AnimationPlayer.set_method_call_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_method_call_mode, 0|(gdextension.SizeInt<<4), &struct{ mode AnimationMethodCallMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMethodCallMode() AnimationMethodCallMode { //gd:AnimationPlayer.get_method_call_mode
 	var r_ret = noescape.Call[AnimationMethodCallMode](gd.ObjectChecked(self.AsObject()), methods.get_method_call_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRoot(path Path.ToNode) { //gd:AnimationPlayer.set_root
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_root, 0|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetRoot() Path.ToNode { //gd:AnimationPlayer.get_root
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_root, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
@@ -1196,17 +1280,17 @@ func (o class) AsAnimationPlayer() Advanced         { return Advanced(o) }
 func (o Instance) AsAnimationPlayer() Instance      { return o }
 func (o *Extension[T]) AsAnimationPlayer() Instance { return o.Super() }
 func (o class) AsAnimationMixer() AnimationMixer.Advanced {
-	return AnimationMixer.Advanced{gdclass.NewAnimationMixer(o[0].AsObject()[0])}
+	return *(*AnimationMixer.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsAnimationMixer() AnimationMixer.Instance {
 	return o.Super().AsAnimationMixer()
 }
 func (o Instance) AsAnimationMixer() AnimationMixer.Instance {
-	return AnimationMixer.Instance{gdclass.NewAnimationMixer(o[0].AsObject()[0])}
+	return *(*AnimationMixer.Instance)(ie.As(&o))
 }
-func (o class) AsNode() Node.Advanced         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced         { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance      { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -9,6 +9,7 @@ Sprite frame library for an [AnimatedSprite2D] or [AnimatedSprite3D] node. Conta
 package SpriteFrames
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -334,7 +338,7 @@ func (self Instance) ClearAll() { //gd:SpriteFrames.clear_all
 type Advanced = class
 type class [1]gdclass.SpriteFrames
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSpriteFrames(obj[0])
@@ -349,7 +353,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -374,9 +378,13 @@ func New() Instance {
 
 func (self class) AddAnimation(anim String.Name) { //gd:SpriteFrames.add_animation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_animation, 0|(gdextension.SizeStringName<<4), &struct{ anim gdextension.StringName }{pointers.Get(gd.InternalStringName(anim))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 }
 func (self class) HasAnimation(anim String.Name) bool { //gd:SpriteFrames.has_animation
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_animation, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ anim gdextension.StringName }{pointers.Get(gd.InternalStringName(anim))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 	var ret = r_ret
 	return ret
 }
@@ -385,18 +393,27 @@ func (self class) DuplicateAnimation(anim_from String.Name, anim_to String.Name)
 		anim_from gdextension.StringName
 		anim_to   gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(anim_from)), pointers.Get(gd.InternalStringName(anim_to))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim_from)
+	runtime.KeepAlive(anim_to)
 }
 func (self class) RemoveAnimation(anim String.Name) { //gd:SpriteFrames.remove_animation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_animation, 0|(gdextension.SizeStringName<<4), &struct{ anim gdextension.StringName }{pointers.Get(gd.InternalStringName(anim))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 }
 func (self class) RenameAnimation(anim String.Name, newname String.Name) { //gd:SpriteFrames.rename_animation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.rename_animation, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		anim    gdextension.StringName
 		newname gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(anim)), pointers.Get(gd.InternalStringName(newname))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
+	runtime.KeepAlive(newname)
 }
 func (self class) GetAnimationNames() Packed.Strings { //gd:SpriteFrames.get_animation_names
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_animation_names, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -405,9 +422,13 @@ func (self class) SetAnimationSpeed(anim String.Name, fps float64) { //gd:Sprite
 		anim gdextension.StringName
 		fps  float64
 	}{pointers.Get(gd.InternalStringName(anim)), fps})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 }
 func (self class) GetAnimationSpeed(anim String.Name) float64 { //gd:SpriteFrames.get_animation_speed
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_animation_speed, gdextension.SizeFloat|(gdextension.SizeStringName<<4), &struct{ anim gdextension.StringName }{pointers.Get(gd.InternalStringName(anim))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 	var ret = r_ret
 	return ret
 }
@@ -416,9 +437,13 @@ func (self class) SetAnimationLoop(anim String.Name, loop bool) { //gd:SpriteFra
 		anim gdextension.StringName
 		loop bool
 	}{pointers.Get(gd.InternalStringName(anim)), loop})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 }
 func (self class) GetAnimationLoop(anim String.Name) bool { //gd:SpriteFrames.get_animation_loop
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_animation_loop, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ anim gdextension.StringName }{pointers.Get(gd.InternalStringName(anim))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 	var ret = r_ret
 	return ret
 }
@@ -427,9 +452,13 @@ func (self class) SetAnimationLoopMode(anim String.Name, loop_mode LoopMode) { /
 		anim      gdextension.StringName
 		loop_mode LoopMode
 	}{pointers.Get(gd.InternalStringName(anim)), loop_mode})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 }
 func (self class) GetAnimationLoopMode(anim String.Name) LoopMode { //gd:SpriteFrames.get_animation_loop_mode
 	var r_ret = noescape.Call[LoopMode](gd.ObjectChecked(self.AsObject()), methods.get_animation_loop_mode, gdextension.SizeInt|(gdextension.SizeStringName<<4), &struct{ anim gdextension.StringName }{pointers.Get(gd.InternalStringName(anim))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 	var ret = r_ret
 	return ret
 }
@@ -440,6 +469,9 @@ func (self class) AddFrame(anim String.Name, texture [1]gdclass.Texture2D, durat
 		duration    float64
 		at_position int64
 	}{pointers.Get(gd.InternalStringName(anim)), gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), duration, at_position})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) SetFrame(anim String.Name, idx int64, texture [1]gdclass.Texture2D, duration float64) { //gd:SpriteFrames.set_frame
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_frame, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeObject<<12)|(gdextension.SizeFloat<<16), &struct {
@@ -448,15 +480,22 @@ func (self class) SetFrame(anim String.Name, idx int64, texture [1]gdclass.Textu
 		texture  gdextension.Object
 		duration float64
 	}{pointers.Get(gd.InternalStringName(anim)), idx, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), duration})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) RemoveFrame(anim String.Name, idx int64) { //gd:SpriteFrames.remove_frame
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_frame, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeInt<<8), &struct {
 		anim gdextension.StringName
 		idx  int64
 	}{pointers.Get(gd.InternalStringName(anim)), idx})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 }
 func (self class) GetFrameCount(anim String.Name) int64 { //gd:SpriteFrames.get_frame_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_frame_count, gdextension.SizeInt|(gdextension.SizeStringName<<4), &struct{ anim gdextension.StringName }{pointers.Get(gd.InternalStringName(anim))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 	var ret = r_ret
 	return ret
 }
@@ -465,6 +504,8 @@ func (self class) GetFrameTexture(anim String.Name, idx int64) [1]gdclass.Textur
 		anim gdextension.StringName
 		idx  int64
 	}{pointers.Get(gd.InternalStringName(anim)), idx})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -473,21 +514,26 @@ func (self class) GetFrameDuration(anim String.Name, idx int64) float64 { //gd:S
 		anim gdextension.StringName
 		idx  int64
 	}{pointers.Get(gd.InternalStringName(anim)), idx})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 	var ret = r_ret
 	return ret
 }
 func (self class) Clear(anim String.Name) { //gd:SpriteFrames.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0|(gdextension.SizeStringName<<4), &struct{ anim gdextension.StringName }{pointers.Get(gd.InternalStringName(anim))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anim)
 }
 func (self class) ClearAll() { //gd:SpriteFrames.clear_all
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_all, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsSpriteFrames() Advanced              { return Advanced(o) }
 func (o Instance) AsSpriteFrames() Instance           { return o }
 func (o *Extension[T]) AsSpriteFrames() Instance      { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

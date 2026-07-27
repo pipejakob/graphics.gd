@@ -15,6 +15,7 @@ The glTF property is identified by JSON pointer(s) stored in [JsonPointers], whi
 package GLTFObjectModelProperty
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -50,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -212,7 +216,7 @@ func (self Instance) SetTypes(variant_type variant.Type, obj_model_type GLTFObje
 type Advanced = class
 type class [1]gdclass.GLTFObjectModelProperty
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGLTFObjectModelProperty(obj[0])
@@ -227,7 +231,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -345,81 +349,106 @@ func (self Instance) SetVariantType(value variant.Type) Instance { //gd:GLTFObje
 
 func (self class) AppendNodePath(node_path Path.ToNode) { //gd:GLTFObjectModelProperty.append_node_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.append_node_path, 0|(gdextension.SizeNodePath<<4), &struct{ node_path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(node_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node_path)
 }
 func (self class) AppendPathToProperty(node_path Path.ToNode, prop_name String.Name) { //gd:GLTFObjectModelProperty.append_path_to_property
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.append_path_to_property, 0|(gdextension.SizeNodePath<<4)|(gdextension.SizeStringName<<8), &struct {
 		node_path gdextension.NodePath
 		prop_name gdextension.StringName
 	}{pointers.Get(gd.InternalNodePath(node_path)), pointers.Get(gd.InternalStringName(prop_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node_path)
+	runtime.KeepAlive(prop_name)
 }
 func (self class) GetAccessorType() GLTFAccessor.GLTFAccessorType { //gd:GLTFObjectModelProperty.get_accessor_type
 	var r_ret = jumponly.Call[GLTFAccessor.GLTFAccessorType](gd.ObjectChecked(self.AsObject()), methods.get_accessor_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetGltfToGodotExpression() [1]gdclass.Expression { //gd:GLTFObjectModelProperty.get_gltf_to_godot_expression
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_gltf_to_godot_expression, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Expression{gdclass.NewExpression(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetGltfToGodotExpression(gltf_to_godot_expr [1]gdclass.Expression) { //gd:GLTFObjectModelProperty.set_gltf_to_godot_expression
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_gltf_to_godot_expression, 0|(gdextension.SizeObject<<4), &struct{ gltf_to_godot_expr gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetExpression(gltf_to_godot_expr[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(gltf_to_godot_expr[0].Anchor())
 }
 func (self class) GetGodotToGltfExpression() [1]gdclass.Expression { //gd:GLTFObjectModelProperty.get_godot_to_gltf_expression
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_godot_to_gltf_expression, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Expression{gdclass.NewExpression(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetGodotToGltfExpression(godot_to_gltf_expr [1]gdclass.Expression) { //gd:GLTFObjectModelProperty.set_godot_to_gltf_expression
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_godot_to_gltf_expression, 0|(gdextension.SizeObject<<4), &struct{ godot_to_gltf_expr gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetExpression(godot_to_gltf_expr[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(godot_to_gltf_expr[0].Anchor())
 }
 func (self class) GetNodePaths() Array.Contains[Path.ToNode] { //gd:GLTFObjectModelProperty.get_node_paths
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_node_paths, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) HasNodePaths() bool { //gd:GLTFObjectModelProperty.has_node_paths
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_node_paths, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNodePaths(node_paths Array.Contains[Path.ToNode]) { //gd:GLTFObjectModelProperty.set_node_paths
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_node_paths, 0|(gdextension.SizeArray<<4), &struct{ node_paths gdextension.Array }{pointers.Get(gd.InternalArray(node_paths))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node_paths)
 }
 func (self class) GetObjectModelType() GLTFObjectModelType { //gd:GLTFObjectModelProperty.get_object_model_type
 	var r_ret = jumponly.Call[GLTFObjectModelType](gd.ObjectChecked(self.AsObject()), methods.get_object_model_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetObjectModelType(atype GLTFObjectModelType) { //gd:GLTFObjectModelProperty.set_object_model_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_object_model_type, 0|(gdextension.SizeInt<<4), &struct{ atype GLTFObjectModelType }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJsonPointers() Array.Contains[Packed.Strings] { //gd:GLTFObjectModelProperty.get_json_pointers
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_json_pointers, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Packed.Strings](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) HasJsonPointers() bool { //gd:GLTFObjectModelProperty.has_json_pointers
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_json_pointers, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetJsonPointers(json_pointers Array.Contains[Packed.Strings]) { //gd:GLTFObjectModelProperty.set_json_pointers
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_json_pointers, 0|(gdextension.SizeArray<<4), &struct{ json_pointers gdextension.Array }{pointers.Get(gd.InternalArray(json_pointers))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(json_pointers)
 }
 func (self class) GetVariantType() variant.Type { //gd:GLTFObjectModelProperty.get_variant_type
 	var r_ret = jumponly.Call[variant.Type](gd.ObjectChecked(self.AsObject()), methods.get_variant_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVariantType(variant_type variant.Type) { //gd:GLTFObjectModelProperty.set_variant_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_variant_type, 0|(gdextension.SizeInt<<4), &struct{ variant_type variant.Type }{variant_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTypes(variant_type variant.Type, obj_model_type GLTFObjectModelType) { //gd:GLTFObjectModelProperty.set_types
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_types, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		variant_type   variant.Type
 		obj_model_type GLTFObjectModelType
 	}{variant_type, obj_model_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsGLTFObjectModelProperty() Advanced         { return Advanced(o) }
 func (o Instance) AsGLTFObjectModelProperty() Instance      { return o }

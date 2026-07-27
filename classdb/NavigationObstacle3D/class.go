@@ -15,6 +15,7 @@ With [AvoidanceEnabled] the obstacle can constrain the avoidance velocities of a
 package NavigationObstacle3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -24,6 +25,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -50,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -205,7 +210,7 @@ func (self Instance) GetAvoidanceLayerValue(layer_number int) bool { //gd:Naviga
 type Advanced = class
 type class [1]gdclass.NavigationObstacle3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNavigationObstacle3D(obj[0])
@@ -220,7 +225,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -378,46 +383,57 @@ func (self Instance) SetUse3dAvoidance(value bool) Instance { //gd:NavigationObs
 
 func (self class) GetRid() RID.Any { //gd:NavigationObstacle3D.get_rid
 	var r_ret = jumponly.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_rid, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAvoidanceEnabled(enabled bool) { //gd:NavigationObstacle3D.set_avoidance_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_avoidance_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAvoidanceEnabled() bool { //gd:NavigationObstacle3D.get_avoidance_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_avoidance_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNavigationMap(navigation_map RID.Any) { //gd:NavigationObstacle3D.set_navigation_map
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_navigation_map, 0|(gdextension.SizeRID<<4), &struct{ navigation_map RID.Any }{navigation_map})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNavigationMap() RID.Any { //gd:NavigationObstacle3D.get_navigation_map
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_navigation_map, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRadius(radius float64) { //gd:NavigationObstacle3D.set_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadius() float64 { //gd:NavigationObstacle3D.get_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHeight(height float64) { //gd:NavigationObstacle3D.set_height
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_height, 0|(gdextension.SizeFloat<<4), &struct{ height float64 }{height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHeight() float64 { //gd:NavigationObstacle3D.get_height
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_height, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVelocity(velocity Vector3.XYZ) { //gd:NavigationObstacle3D.set_velocity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_velocity, 0|(gdextension.SizeVector3<<4), &struct{ velocity Vector3.XYZ }{velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVelocity() Vector3.XYZ { //gd:NavigationObstacle3D.get_velocity
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_velocity, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -425,17 +441,22 @@ func (self class) SetVertices(vertices Packed.Array[Vector3.XYZ]) { //gd:Navigat
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertices, 0|(gdextension.SizePackedArray<<4), &struct {
 		vertices gdextension.PackedArray[Vector3.XYZ]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](vertices))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertices)
 }
 func (self class) GetVertices() Packed.Array[Vector3.XYZ] { //gd:NavigationObstacle3D.get_vertices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertices, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) SetAvoidanceLayers(layers int64) { //gd:NavigationObstacle3D.set_avoidance_layers
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_avoidance_layers, 0|(gdextension.SizeInt<<4), &struct{ layers int64 }{layers})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAvoidanceLayers() int64 { //gd:NavigationObstacle3D.get_avoidance_layers
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_avoidance_layers, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -444,45 +465,53 @@ func (self class) SetAvoidanceLayerValue(layer_number int64, value bool) { //gd:
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAvoidanceLayerValue(layer_number int64) bool { //gd:NavigationObstacle3D.get_avoidance_layer_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_avoidance_layer_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUse3dAvoidance(enabled bool) { //gd:NavigationObstacle3D.set_use_3d_avoidance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_3d_avoidance, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUse3dAvoidance() bool { //gd:NavigationObstacle3D.get_use_3d_avoidance
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_3d_avoidance, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAffectNavigationMesh(enabled bool) { //gd:NavigationObstacle3D.set_affect_navigation_mesh
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_affect_navigation_mesh, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAffectNavigationMesh() bool { //gd:NavigationObstacle3D.get_affect_navigation_mesh
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_affect_navigation_mesh, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCarveNavigationMesh(enabled bool) { //gd:NavigationObstacle3D.set_carve_navigation_mesh
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_carve_navigation_mesh, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCarveNavigationMesh() bool { //gd:NavigationObstacle3D.get_carve_navigation_mesh
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_carve_navigation_mesh, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsNavigationObstacle3D() Advanced         { return Advanced(o) }
 func (o Instance) AsNavigationObstacle3D() Instance      { return o }
 func (o *Extension[T]) AsNavigationObstacle3D() Instance { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced                { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced                { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance        { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance             { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                    { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance             { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                    { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance            { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                 { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                 { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

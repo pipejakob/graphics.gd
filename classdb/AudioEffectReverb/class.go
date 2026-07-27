@@ -10,6 +10,7 @@ See also [AudioEffectDelay] for a non-blurry type of echo.
 package AudioEffectReverb
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -140,7 +144,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AudioEffectReverb
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioEffectReverb(obj[0])
@@ -155,7 +159,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -284,77 +288,93 @@ func (self Instance) SetWet(value Float.X) Instance { //gd:AudioEffectReverb.wet
 
 func (self class) SetPredelayMsec(msec float64) { //gd:AudioEffectReverb.set_predelay_msec
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_predelay_msec, 0|(gdextension.SizeFloat<<4), &struct{ msec float64 }{msec})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPredelayMsec() float64 { //gd:AudioEffectReverb.get_predelay_msec
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_predelay_msec, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPredelayFeedback(feedback float64) { //gd:AudioEffectReverb.set_predelay_feedback
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_predelay_feedback, 0|(gdextension.SizeFloat<<4), &struct{ feedback float64 }{feedback})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPredelayFeedback() float64 { //gd:AudioEffectReverb.get_predelay_feedback
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_predelay_feedback, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRoomSize(size float64) { //gd:AudioEffectReverb.set_room_size
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_room_size, 0|(gdextension.SizeFloat<<4), &struct{ size float64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRoomSize() float64 { //gd:AudioEffectReverb.get_room_size
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_room_size, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDamping(amount float64) { //gd:AudioEffectReverb.set_damping
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_damping, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDamping() float64 { //gd:AudioEffectReverb.get_damping
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_damping, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSpread(amount float64) { //gd:AudioEffectReverb.set_spread
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_spread, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpread() float64 { //gd:AudioEffectReverb.get_spread
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_spread, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDry(amount float64) { //gd:AudioEffectReverb.set_dry
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_dry, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDry() float64 { //gd:AudioEffectReverb.get_dry
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_dry, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWet(amount float64) { //gd:AudioEffectReverb.set_wet
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_wet, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWet() float64 { //gd:AudioEffectReverb.get_wet
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_wet, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHpf(amount float64) { //gd:AudioEffectReverb.set_hpf
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hpf, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHpf() float64 { //gd:AudioEffectReverb.get_hpf
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_hpf, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAudioEffectReverb() Advanced               { return Advanced(o) }
 func (o Instance) AsAudioEffectReverb() Instance            { return o }
 func (o *Extension[T]) AsAudioEffectReverb() Instance       { return o.Super() }
-func (o class) AsAudioEffect() AudioEffect.Advanced         { return AudioEffect.Advanced{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
+func (o class) AsAudioEffect() AudioEffect.Advanced         { return *(*AudioEffect.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAudioEffect() AudioEffect.Instance { return o.Super().AsAudioEffect() }
-func (o Instance) AsAudioEffect() AudioEffect.Instance      { return AudioEffect.Instance{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsAudioEffect() AudioEffect.Instance      { return *(*AudioEffect.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

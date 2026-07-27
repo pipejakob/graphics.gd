@@ -48,6 +48,7 @@ If the default [EstimateCost] and [ComputeCost] methods are used, or if the supp
 package AStar3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -82,6 +83,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -626,7 +630,7 @@ func (self MoreArgs) GetIdPath(from_id Point, to_id Point, allow_partial_path bo
 type Advanced = class
 type class [1]gdclass.AStar3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAStar3D(obj[0])
@@ -641,7 +645,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -708,6 +712,7 @@ func (class) _compute_cost(impl func(ptr gdclass.Receiver, from_id int64, to_id 
 
 func (self class) GetAvailablePointId() int64 { //gd:AStar3D.get_available_point_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_available_point_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -717,9 +722,11 @@ func (self class) AddPoint(id int64, position Vector3.XYZ, weight_scale float64)
 		position     Vector3.XYZ
 		weight_scale float64
 	}{id, position, weight_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPointPosition(id int64) Vector3.XYZ { //gd:AStar3D.get_point_position
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_point_position, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -728,9 +735,11 @@ func (self class) SetPointPosition(id int64, position Vector3.XYZ) { //gd:AStar3
 		id       int64
 		position Vector3.XYZ
 	}{id, position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPointWeightScale(id int64) float64 { //gd:AStar3D.get_point_weight_scale
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_point_weight_scale, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -739,22 +748,27 @@ func (self class) SetPointWeightScale(id int64, weight_scale float64) { //gd:ASt
 		id           int64
 		weight_scale float64
 	}{id, weight_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemovePoint(id int64) { //gd:AStar3D.remove_point
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_point, 0|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasPoint(id int64) bool { //gd:AStar3D.has_point
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_point, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPointConnections(id int64) Packed.Array[int64] { //gd:AStar3D.get_point_connections
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_point_connections, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) GetPointIds() Packed.Array[int64] { //gd:AStar3D.get_point_ids
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_point_ids, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
@@ -763,17 +777,21 @@ func (self class) SetPointDisabled(id int64, disabled bool) { //gd:AStar3D.set_p
 		id       int64
 		disabled bool
 	}{id, disabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPointDisabled(id int64) bool { //gd:AStar3D.is_point_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_point_disabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNeighborFilterEnabled(enabled bool) { //gd:AStar3D.set_neighbor_filter_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_neighbor_filter_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsNeighborFilterEnabled() bool { //gd:AStar3D.is_neighbor_filter_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_neighbor_filter_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -783,6 +801,7 @@ func (self class) ConnectPoints(id int64, to_id int64, bidirectional bool) { //g
 		to_id         int64
 		bidirectional bool
 	}{id, to_id, bidirectional})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DisconnectPoints(id int64, to_id int64, bidirectional bool) { //gd:AStar3D.disconnect_points
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.disconnect_points, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeBool<<12), &struct {
@@ -790,6 +809,7 @@ func (self class) DisconnectPoints(id int64, to_id int64, bidirectional bool) { 
 		to_id         int64
 		bidirectional bool
 	}{id, to_id, bidirectional})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ArePointsConnected(id int64, to_id int64, bidirectional bool) bool { //gd:AStar3D.are_points_connected
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.are_points_connected, gdextension.SizeBool|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeBool<<12), &struct {
@@ -797,35 +817,42 @@ func (self class) ArePointsConnected(id int64, to_id int64, bidirectional bool) 
 		to_id         int64
 		bidirectional bool
 	}{id, to_id, bidirectional})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPointCount() int64 { //gd:AStar3D.get_point_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_point_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPointCapacity() int64 { //gd:AStar3D.get_point_capacity
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_point_capacity, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ReserveSpace(num_nodes int64) { //gd:AStar3D.reserve_space
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reserve_space, 0|(gdextension.SizeInt<<4), &struct{ num_nodes int64 }{num_nodes})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Clear() { //gd:AStar3D.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetClosestPoint(to_position Vector3.XYZ, include_disabled bool) int64 { //gd:AStar3D.get_closest_point
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_closest_point, gdextension.SizeInt|(gdextension.SizeVector3<<4)|(gdextension.SizeBool<<8), &struct {
 		to_position      Vector3.XYZ
 		include_disabled bool
 	}{to_position, include_disabled})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetClosestPositionInSegment(to_position Vector3.XYZ) Vector3.XYZ { //gd:AStar3D.get_closest_position_in_segment
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_closest_position_in_segment, gdextension.SizeVector3|(gdextension.SizeVector3<<4), &struct{ to_position Vector3.XYZ }{to_position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -835,6 +862,7 @@ func (self class) GetPointPath(from_id int64, to_id int64, allow_partial_path bo
 		to_id              int64
 		allow_partial_path bool
 	}{from_id, to_id, allow_partial_path})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
@@ -844,6 +872,7 @@ func (self class) GetIdPath(from_id int64, to_id int64, allow_partial_path bool)
 		to_id              int64
 		allow_partial_path bool
 	}{from_id, to_id, allow_partial_path})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }

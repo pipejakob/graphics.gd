@@ -6,6 +6,7 @@ A node that displays a 2D texture. The texture displayed can be a region from a 
 package Sprite2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -15,6 +16,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -45,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -178,7 +183,7 @@ func (self Instance) GetRect() Rect2.PositionSize { //gd:Sprite2D.get_rect
 type Advanced = class
 type class [1]gdclass.Sprite2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSprite2D(obj[0])
@@ -193,7 +198,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -407,107 +412,134 @@ func (self Instance) SetRegionFilterClipEnabled(value bool) Instance { //gd:Spri
 
 func (self class) SetTexture(texture [1]gdclass.Texture2D) { //gd:Sprite2D.set_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture, 0|(gdextension.SizeObject<<4), &struct{ texture gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetTexture() [1]gdclass.Texture2D { //gd:Sprite2D.get_texture
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetCentered(centered bool) { //gd:Sprite2D.set_centered
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_centered, 0|(gdextension.SizeBool<<4), &struct{ centered bool }{centered})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCentered() bool { //gd:Sprite2D.is_centered
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_centered, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffset(offset Vector2.XY) { //gd:Sprite2D.set_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffset() Vector2.XY { //gd:Sprite2D.get_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFlipH(flip_h bool) { //gd:Sprite2D.set_flip_h
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flip_h, 0|(gdextension.SizeBool<<4), &struct{ flip_h bool }{flip_h})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFlippedH() bool { //gd:Sprite2D.is_flipped_h
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_flipped_h, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFlipV(flip_v bool) { //gd:Sprite2D.set_flip_v
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flip_v, 0|(gdextension.SizeBool<<4), &struct{ flip_v bool }{flip_v})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFlippedV() bool { //gd:Sprite2D.is_flipped_v
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_flipped_v, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRegionEnabled(enabled bool) { //gd:Sprite2D.set_region_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_region_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRegionEnabled() bool { //gd:Sprite2D.is_region_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_region_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsPixelOpaque(pos Vector2.XY) bool { //gd:Sprite2D.is_pixel_opaque
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_pixel_opaque, gdextension.SizeBool|(gdextension.SizeVector2<<4), &struct{ pos Vector2.XY }{pos})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRegionRect(rect Rect2.PositionSize) { //gd:Sprite2D.set_region_rect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_region_rect, 0|(gdextension.SizeRect2<<4), &struct{ rect Rect2.PositionSize }{rect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRegionRect() Rect2.PositionSize { //gd:Sprite2D.get_region_rect
 	var r_ret = jumponly.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_region_rect, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRegionFilterClipEnabled(enabled bool) { //gd:Sprite2D.set_region_filter_clip_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_region_filter_clip_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRegionFilterClipEnabled() bool { //gd:Sprite2D.is_region_filter_clip_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_region_filter_clip_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrame(frame_ int64) { //gd:Sprite2D.set_frame
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_frame, 0|(gdextension.SizeInt<<4), &struct{ frame_ int64 }{frame_})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrame() int64 { //gd:Sprite2D.get_frame
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_frame, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrameCoords(coords Vector2i.XY) { //gd:Sprite2D.set_frame_coords
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_frame_coords, 0|(gdextension.SizeVector2i<<4), &struct{ coords Vector2i.XY }{coords})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrameCoords() Vector2i.XY { //gd:Sprite2D.get_frame_coords
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_frame_coords, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVframes(vframes int64) { //gd:Sprite2D.set_vframes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vframes, 0|(gdextension.SizeInt<<4), &struct{ vframes int64 }{vframes})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVframes() int64 { //gd:Sprite2D.get_vframes
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_vframes, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHframes(hframes int64) { //gd:Sprite2D.set_hframes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hframes, 0|(gdextension.SizeInt<<4), &struct{ hframes int64 }{hframes})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHframes() int64 { //gd:Sprite2D.get_hframes
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_hframes, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRect() Rect2.PositionSize { //gd:Sprite2D.get_rect
 	var r_ret = noescape.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_rect, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -551,15 +583,15 @@ func (self class) TextureChanged() Signal.Any {
 func (o class) AsSprite2D() Advanced                      { return Advanced(o) }
 func (o Instance) AsSprite2D() Instance                   { return o }
 func (o *Extension[T]) AsSprite2D() Instance              { return o.Super() }
-func (o class) AsNode2D() Node2D.Advanced                 { return Node2D.Advanced{gdclass.NewNode2D(o[0].AsObject()[0])} }
+func (o class) AsNode2D() Node2D.Advanced                 { return *(*Node2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode2D() Node2D.Instance         { return o.Super().AsNode2D() }
-func (o Instance) AsNode2D() Node2D.Instance              { return Node2D.Instance{gdclass.NewNode2D(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsNode2D() Node2D.Instance              { return *(*Node2D.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -11,6 +11,7 @@ An automatically scalable [Texture2D] based on an SVG image. [DPITexture]s are u
 package DPITexture
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -218,7 +222,7 @@ func (self Instance) GetScaledRid() RID.Texture { //gd:DPITexture.get_scaled_rid
 type Advanced = class
 type class [1]gdclass.DPITexture
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewDPITexture(obj[0])
@@ -233,7 +237,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -379,77 +383,95 @@ func (self class) CreateFromString(source String.Readable, scale float64, satura
 		saturation float64
 		color_map  gdextension.Dictionary
 	}{pointers.Get(gd.InternalString(source)), scale, saturation, pointers.Get(gd.InternalDictionary(color_map))})
+	runtime.KeepAlive(source)
+	runtime.KeepAlive(color_map)
 	var ret = [1]gdclass.DPITexture{gdclass.NewDPITexture(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetSource(source String.Readable) { //gd:DPITexture.set_source
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_source, 0|(gdextension.SizeString<<4), &struct{ source gdextension.String }{pointers.Get(gd.InternalString(source))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(source)
 }
 func (self class) GetSource() String.Readable { //gd:DPITexture.get_source
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_source, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetFixAlphaBorder(fix_alpha_border bool) { //gd:DPITexture.set_fix_alpha_border
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fix_alpha_border, 0|(gdextension.SizeBool<<4), &struct{ fix_alpha_border bool }{fix_alpha_border})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFixAlphaBorder() bool { //gd:DPITexture.get_fix_alpha_border
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_fix_alpha_border, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPremultAlpha(premult_alpha bool) { //gd:DPITexture.set_premult_alpha
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_premult_alpha, 0|(gdextension.SizeBool<<4), &struct{ premult_alpha bool }{premult_alpha})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPremultAlpha() bool { //gd:DPITexture.get_premult_alpha
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_premult_alpha, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBaseScale(base_scale float64) { //gd:DPITexture.set_base_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_base_scale, 0|(gdextension.SizeFloat<<4), &struct{ base_scale float64 }{base_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBaseScale() float64 { //gd:DPITexture.get_base_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_base_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSaturation(saturation float64) { //gd:DPITexture.set_saturation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_saturation, 0|(gdextension.SizeFloat<<4), &struct{ saturation float64 }{saturation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSaturation() float64 { //gd:DPITexture.get_saturation
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_saturation, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetColorMap(color_map Dictionary.Any) { //gd:DPITexture.set_color_map
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color_map, 0|(gdextension.SizeDictionary<<4), &struct{ color_map gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(color_map))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(color_map)
 }
 func (self class) GetColorMap() Dictionary.Any { //gd:DPITexture.get_color_map
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_color_map, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetSizeOverride(size Vector2i.XY) { //gd:DPITexture.set_size_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size_override, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScaledRid() RID.Any { //gd:DPITexture.get_scaled_rid
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_scaled_rid, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsDPITexture() Advanced                  { return Advanced(o) }
 func (o Instance) AsDPITexture() Instance               { return o }
 func (o *Extension[T]) AsDPITexture() Instance          { return o.Super() }
-func (o class) AsTexture2D() Texture2D.Advanced         { return Texture2D.Advanced{gdclass.NewTexture2D(o[0].AsObject()[0])} }
+func (o class) AsTexture2D() Texture2D.Advanced         { return *(*Texture2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture2D() Texture2D.Instance { return o.Super().AsTexture2D() }
-func (o Instance) AsTexture2D() Texture2D.Instance      { return Texture2D.Instance{gdclass.NewTexture2D(o[0].AsObject()[0])} }
-func (o class) AsTexture() Texture.Advanced             { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o Instance) AsTexture2D() Texture2D.Instance      { return *(*Texture2D.Instance)(ie.As(&o)) }
+func (o class) AsTexture() Texture.Advanced             { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance     { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance          { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced           { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance          { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced           { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance   { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance        { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance        { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

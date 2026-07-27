@@ -32,6 +32,7 @@ Warning: TLS certificate revocation and certificate pinning are currently not su
 package HTTPClient
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -66,6 +67,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -391,7 +395,7 @@ func (self Instance) QueryStringFromDict(fields map[string]string) string { //gd
 type Advanced = class
 type class [1]gdclass.HTTPClient
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewHTTPClient(obj[0])
@@ -406,7 +410,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -476,14 +480,20 @@ func (self class) ConnectToHost(host String.Readable, port int64, tls_options [1
 		port        int64
 		tls_options gdextension.Object
 	}{pointers.Get(gd.InternalString(host)), port, gdextension.Object(gdreference.GetObject(gdclass.GetTLSOptions(tls_options[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
+	runtime.KeepAlive(tls_options[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) SetConnection(connection [1]gdclass.StreamPeer) { //gd:HTTPClient.set_connection
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_connection, 0|(gdextension.SizeObject<<4), &struct{ connection gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetStreamPeer(connection[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(connection[0].Anchor())
 }
 func (self class) GetConnection() [1]gdclass.StreamPeer { //gd:HTTPClient.get_connection
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_connection, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.StreamPeer{gdclass.NewStreamPeer(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -494,6 +504,10 @@ func (self class) RequestRaw(method Method, url String.Readable, headers Packed.
 		headers gdextension.PackedArray[gdextension.String]
 		body    gdextension.PackedArray[byte]
 	}{method, pointers.Get(gd.InternalString(url)), pointers.Get(gd.InternalPackedStrings(headers)), pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](body.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(url)
+	runtime.KeepAlive(headers)
+	runtime.KeepAlive(body)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -504,70 +518,88 @@ func (self class) Request(method Method, url String.Readable, headers Packed.Str
 		headers gdextension.PackedArray[gdextension.String]
 		body    gdextension.String
 	}{method, pointers.Get(gd.InternalString(url)), pointers.Get(gd.InternalPackedStrings(headers)), pointers.Get(gd.InternalString(body))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(url)
+	runtime.KeepAlive(headers)
+	runtime.KeepAlive(body)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Close() { //gd:HTTPClient.close
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.close, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasResponse() bool { //gd:HTTPClient.has_response
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_response, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsResponseChunked() bool { //gd:HTTPClient.is_response_chunked
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_response_chunked, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetResponseCode() int64 { //gd:HTTPClient.get_response_code
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_response_code, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetResponseHeaders() Packed.Strings { //gd:HTTPClient.get_response_headers
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_response_headers, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetResponseHeadersAsDictionary() Dictionary.Any { //gd:HTTPClient.get_response_headers_as_dictionary
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_response_headers_as_dictionary, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetResponseBodyLength() int64 { //gd:HTTPClient.get_response_body_length
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_response_body_length, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ReadResponseBodyChunk() Packed.Bytes { //gd:HTTPClient.read_response_body_chunk
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.read_response_body_chunk, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SetReadChunkSize(bytes int64) { //gd:HTTPClient.set_read_chunk_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_read_chunk_size, 0|(gdextension.SizeInt<<4), &struct{ bytes int64 }{bytes})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetReadChunkSize() int64 { //gd:HTTPClient.get_read_chunk_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_read_chunk_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBlockingMode(enabled bool) { //gd:HTTPClient.set_blocking_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_blocking_mode, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsBlockingModeEnabled() bool { //gd:HTTPClient.is_blocking_mode_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_blocking_mode_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetStatus() Status { //gd:HTTPClient.get_status
 	var r_ret = noescape.Call[Status](gd.ObjectChecked(self.AsObject()), methods.get_status, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Poll() Error.Code { //gd:HTTPClient.poll
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.poll, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -576,15 +608,21 @@ func (self class) SetHttpProxy(host String.Readable, port int64) { //gd:HTTPClie
 		host gdextension.String
 		port int64
 	}{pointers.Get(gd.InternalString(host)), port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
 }
 func (self class) SetHttpsProxy(host String.Readable, port int64) { //gd:HTTPClient.set_https_proxy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_https_proxy, 0|(gdextension.SizeString<<4)|(gdextension.SizeInt<<8), &struct {
 		host gdextension.String
 		port int64
 	}{pointers.Get(gd.InternalString(host)), port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
 }
 func (self class) QueryStringFromDict(fields Dictionary.Any) String.Readable { //gd:HTTPClient.query_string_from_dict
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.query_string_from_dict, gdextension.SizeString|(gdextension.SizeDictionary<<4), &struct{ fields gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(fields))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(fields)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }

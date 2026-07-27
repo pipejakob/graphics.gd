@@ -9,6 +9,7 @@
 package RDAccelerationStructureInstance
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -133,7 +137,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.RDAccelerationStructureInstance
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDAccelerationStructureInstance(obj[0])
@@ -148,7 +152,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -253,33 +257,41 @@ func (self Instance) SetBlas(value RID.Any) Instance { //gd:RDAccelerationStruct
 
 func (self class) SetTransform(p_member Transform3D.BasisOrigin) { //gd:RDAccelerationStructureInstance.set_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transform, 0|(gdextension.SizeTransform3D<<4), &struct{ p_member Transform3D.BasisOrigin }{gd.Transposed(p_member)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTransform() Transform3D.BasisOrigin { //gd:RDAccelerationStructureInstance.get_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_transform, gdextension.SizeTransform3D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) SetId(p_member int64) { //gd:RDAccelerationStructureInstance.set_id
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_id, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetId() int64 { //gd:RDAccelerationStructureInstance.get_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMask(p_member int64) { //gd:RDAccelerationStructureInstance.set_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mask, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMask() int64 { //gd:RDAccelerationStructureInstance.get_mask
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHitSbtRange(p_member int64) { //gd:RDAccelerationStructureInstance.set_hit_sbt_range
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hit_sbt_range, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHitSbtRange() int64 { //gd:RDAccelerationStructureInstance.get_hit_sbt_range
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_hit_sbt_range, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -287,17 +299,21 @@ func (self class) SetFlags(p_member Rendering.AccelerationStructureInstanceFlagB
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flags, 0|(gdextension.SizeInt<<4), &struct {
 		p_member Rendering.AccelerationStructureInstanceFlagBits
 	}{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFlags() Rendering.AccelerationStructureInstanceFlagBits { //gd:RDAccelerationStructureInstance.get_flags
 	var r_ret = noescape.Call[Rendering.AccelerationStructureInstanceFlagBits](gd.ObjectChecked(self.AsObject()), methods.get_flags, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBlas(p_member RID.Any) { //gd:RDAccelerationStructureInstance.set_blas
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_blas, 0|(gdextension.SizeRID<<4), &struct{ p_member RID.Any }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBlas() RID.Any { //gd:RDAccelerationStructureInstance.get_blas
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_blas, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

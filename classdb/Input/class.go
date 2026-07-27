@@ -15,6 +15,7 @@ package Input
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -24,6 +25,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -52,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1247,7 +1252,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.Input
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInput(obj[0])
@@ -1262,7 +1267,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 /*
@@ -1388,6 +1393,7 @@ func (self class) IsActionPressed(action String.Name, exact_match bool) bool { /
 		action      gdextension.StringName
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), exact_match})
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
@@ -1397,6 +1403,7 @@ func (self class) IsActionJustPressed(action String.Name, exact_match bool) bool
 		action      gdextension.StringName
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), exact_match})
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
@@ -1406,6 +1413,7 @@ func (self class) IsActionJustReleased(action String.Name, exact_match bool) boo
 		action      gdextension.StringName
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), exact_match})
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
@@ -1416,6 +1424,8 @@ func (self class) IsActionJustPressedByEvent(action String.Name, event [1]gdclas
 		event       gdextension.Object
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0])), exact_match})
+	runtime.KeepAlive(action)
+	runtime.KeepAlive(event[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1426,6 +1436,8 @@ func (self class) IsActionJustReleasedByEvent(action String.Name, event [1]gdcla
 		event       gdextension.Object
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0])), exact_match})
+	runtime.KeepAlive(action)
+	runtime.KeepAlive(event[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1435,6 +1447,7 @@ func (self class) GetActionStrength(action String.Name, exact_match bool) float6
 		action      gdextension.StringName
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), exact_match})
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
@@ -1444,6 +1457,7 @@ func (self class) GetActionRawStrength(action String.Name, exact_match bool) flo
 		action      gdextension.StringName
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), exact_match})
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
@@ -1453,6 +1467,8 @@ func (self class) GetAxis(negative_action String.Name, positive_action String.Na
 		negative_action gdextension.StringName
 		positive_action gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(negative_action)), pointers.Get(gd.InternalStringName(positive_action))})
+	runtime.KeepAlive(negative_action)
+	runtime.KeepAlive(positive_action)
 	var ret = r_ret
 	return ret
 }
@@ -1465,6 +1481,10 @@ func (self class) GetVector(negative_x String.Name, positive_x String.Name, nega
 		positive_y gdextension.StringName
 		deadzone   float64
 	}{pointers.Get(gd.InternalStringName(negative_x)), pointers.Get(gd.InternalStringName(positive_x)), pointers.Get(gd.InternalStringName(negative_y)), pointers.Get(gd.InternalStringName(positive_y)), deadzone})
+	runtime.KeepAlive(negative_x)
+	runtime.KeepAlive(positive_x)
+	runtime.KeepAlive(negative_y)
+	runtime.KeepAlive(positive_y)
 	var ret = r_ret
 	return ret
 }
@@ -1474,10 +1494,12 @@ func (self class) AddJoyMapping(mapping String.Readable, update_existing bool) {
 		mapping         gdextension.String
 		update_existing bool
 	}{pointers.Get(gd.InternalString(mapping)), update_existing})
+	runtime.KeepAlive(mapping)
 }
 func (self class) RemoveJoyMapping(guid String.Readable) { //gd:Input.remove_joy_mapping
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.remove_joy_mapping, 0|(gdextension.SizeString<<4), &struct{ guid gdextension.String }{pointers.Get(gd.InternalString(guid))})
+	runtime.KeepAlive(guid)
 }
 func (self class) IsJoyKnown(device int64) bool { //gd:Input.is_joy_known
 	once.Do(singleton)
@@ -1678,6 +1700,7 @@ func (self class) SetJoyMotionSensorsCalibration(device int64, calibration_info 
 		device           int64
 		calibration_info gdextension.Dictionary
 	}{device, pointers.Get(gd.InternalDictionary(calibration_info))})
+	runtime.KeepAlive(calibration_info)
 }
 func (self class) IsJoyMotionSensorsCalibrated(device int64) bool { //gd:Input.is_joy_motion_sensors_calibrated
 	once.Do(singleton)
@@ -1758,10 +1781,12 @@ func (self class) ActionPress(action String.Name, strength float64) { //gd:Input
 		action   gdextension.StringName
 		strength float64
 	}{pointers.Get(gd.InternalStringName(action)), strength})
+	runtime.KeepAlive(action)
 }
 func (self class) ActionRelease(action String.Name) { //gd:Input.action_release
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.action_release, 0|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(action)
 }
 func (self class) SetDefaultCursorShape(shape CursorShape) { //gd:Input.set_default_cursor_shape
 	once.Do(singleton)
@@ -1780,10 +1805,12 @@ func (self class) SetCustomMouseCursor(image [1]gdclass.Resource, shape CursorSh
 		shape   CursorShape
 		hotspot Vector2.XY
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetResource(image[0])[0])), shape, hotspot})
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (self class) ParseInputEvent(event [1]gdclass.InputEvent) { //gd:Input.parse_input_event
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.parse_input_event, 0|(gdextension.SizeObject<<4), &struct{ event gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0]))})
+	runtime.KeepAlive(event[0].Anchor())
 }
 func (self class) SetUseAccumulatedInput(enable bool) { //gd:Input.set_use_accumulated_input
 	once.Do(singleton)

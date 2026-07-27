@@ -32,6 +32,7 @@ Note: Relative option is available only in the case [BoneConstraint3D.GetReferen
 package CopyTransformModifier3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -40,6 +41,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -67,6 +69,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -446,7 +451,7 @@ func (self Instance) IsAdditive(index int) bool { //gd:CopyTransformModifier3D.i
 type Advanced = class
 type class [1]gdclass.CopyTransformModifier3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCopyTransformModifier3D(obj[0])
@@ -461,7 +466,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -489,9 +494,11 @@ func (self class) SetCopyFlags(index int64, copy_flags TransformFlag) { //gd:Cop
 		index      int64
 		copy_flags TransformFlag
 	}{index, copy_flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCopyFlags(index int64) TransformFlag { //gd:CopyTransformModifier3D.get_copy_flags
 	var r_ret = noescape.Call[TransformFlag](gd.ObjectChecked(self.AsObject()), methods.get_copy_flags, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -500,9 +507,11 @@ func (self class) SetAxisFlags(index int64, axis_flags AxisFlag) { //gd:CopyTran
 		index      int64
 		axis_flags AxisFlag
 	}{index, axis_flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAxisFlags(index int64) AxisFlag { //gd:CopyTransformModifier3D.get_axis_flags
 	var r_ret = noescape.Call[AxisFlag](gd.ObjectChecked(self.AsObject()), methods.get_axis_flags, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -511,9 +520,11 @@ func (self class) SetInvertFlags(index int64, axis_flags AxisFlag) { //gd:CopyTr
 		index      int64
 		axis_flags AxisFlag
 	}{index, axis_flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInvertFlags(index int64) AxisFlag { //gd:CopyTransformModifier3D.get_invert_flags
 	var r_ret = noescape.Call[AxisFlag](gd.ObjectChecked(self.AsObject()), methods.get_invert_flags, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -522,9 +533,11 @@ func (self class) SetCopyPosition(index int64, enabled bool) { //gd:CopyTransfor
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPositionCopying(index int64) bool { //gd:CopyTransformModifier3D.is_position_copying
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_position_copying, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -533,9 +546,11 @@ func (self class) SetCopyRotation(index int64, enabled bool) { //gd:CopyTransfor
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRotationCopying(index int64) bool { //gd:CopyTransformModifier3D.is_rotation_copying
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_rotation_copying, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -544,9 +559,11 @@ func (self class) SetCopyScale(index int64, enabled bool) { //gd:CopyTransformMo
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsScaleCopying(index int64) bool { //gd:CopyTransformModifier3D.is_scale_copying
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_scale_copying, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -555,9 +572,11 @@ func (self class) SetAxisXEnabled(index int64, enabled bool) { //gd:CopyTransfor
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAxisXEnabled(index int64) bool { //gd:CopyTransformModifier3D.is_axis_x_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_axis_x_enabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -566,9 +585,11 @@ func (self class) SetAxisYEnabled(index int64, enabled bool) { //gd:CopyTransfor
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAxisYEnabled(index int64) bool { //gd:CopyTransformModifier3D.is_axis_y_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_axis_y_enabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -577,9 +598,11 @@ func (self class) SetAxisZEnabled(index int64, enabled bool) { //gd:CopyTransfor
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAxisZEnabled(index int64) bool { //gd:CopyTransformModifier3D.is_axis_z_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_axis_z_enabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -588,9 +611,11 @@ func (self class) SetAxisXInverted(index int64, enabled bool) { //gd:CopyTransfo
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAxisXInverted(index int64) bool { //gd:CopyTransformModifier3D.is_axis_x_inverted
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_axis_x_inverted, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -599,9 +624,11 @@ func (self class) SetAxisYInverted(index int64, enabled bool) { //gd:CopyTransfo
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAxisYInverted(index int64) bool { //gd:CopyTransformModifier3D.is_axis_y_inverted
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_axis_y_inverted, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -610,9 +637,11 @@ func (self class) SetAxisZInverted(index int64, enabled bool) { //gd:CopyTransfo
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAxisZInverted(index int64) bool { //gd:CopyTransformModifier3D.is_axis_z_inverted
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_axis_z_inverted, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -621,9 +650,11 @@ func (self class) SetRelative(index int64, enabled bool) { //gd:CopyTransformMod
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRelative(index int64) bool { //gd:CopyTransformModifier3D.is_relative
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_relative, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -632,9 +663,11 @@ func (self class) SetAdditive(index int64, enabled bool) { //gd:CopyTransformMod
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAdditive(index int64) bool { //gd:CopyTransformModifier3D.is_additive
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_additive, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -642,29 +675,29 @@ func (o class) AsCopyTransformModifier3D() Advanced         { return Advanced(o)
 func (o Instance) AsCopyTransformModifier3D() Instance      { return o }
 func (o *Extension[T]) AsCopyTransformModifier3D() Instance { return o.Super() }
 func (o class) AsBoneConstraint3D() BoneConstraint3D.Advanced {
-	return BoneConstraint3D.Advanced{gdclass.NewBoneConstraint3D(o[0].AsObject()[0])}
+	return *(*BoneConstraint3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsBoneConstraint3D() BoneConstraint3D.Instance {
 	return o.Super().AsBoneConstraint3D()
 }
 func (o Instance) AsBoneConstraint3D() BoneConstraint3D.Instance {
-	return BoneConstraint3D.Instance{gdclass.NewBoneConstraint3D(o[0].AsObject()[0])}
+	return *(*BoneConstraint3D.Instance)(ie.As(&o))
 }
 func (o class) AsSkeletonModifier3D() SkeletonModifier3D.Advanced {
-	return SkeletonModifier3D.Advanced{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
 	return o.Super().AsSkeletonModifier3D()
 }
 func (o Instance) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
-	return SkeletonModifier3D.Instance{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -19,6 +19,7 @@ Note: [AtlasTexture] cannot be used in an [AnimatedTexture], and will not tile p
 package AtlasTexture
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -56,6 +57,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -143,7 +147,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AtlasTexture
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAtlasTexture(obj[0])
@@ -158,7 +162,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -247,48 +251,57 @@ func (self Instance) SetFilterClip(value bool) Instance { //gd:AtlasTexture.filt
 
 func (self class) SetAtlas(atlas [1]gdclass.Texture2D) { //gd:AtlasTexture.set_atlas
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_atlas, 0|(gdextension.SizeObject<<4), &struct{ atlas gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(atlas[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(atlas[0].Anchor())
 }
 func (self class) GetAtlas() [1]gdclass.Texture2D { //gd:AtlasTexture.get_atlas
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_atlas, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetRegion(region Rect2.PositionSize) { //gd:AtlasTexture.set_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_region, 0|(gdextension.SizeRect2<<4), &struct{ region Rect2.PositionSize }{region})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRegion() Rect2.PositionSize { //gd:AtlasTexture.get_region
 	var r_ret = jumponly.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_region, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMargin(margin Rect2.PositionSize) { //gd:AtlasTexture.set_margin
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_margin, 0|(gdextension.SizeRect2<<4), &struct{ margin Rect2.PositionSize }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMargin() Rect2.PositionSize { //gd:AtlasTexture.get_margin
 	var r_ret = jumponly.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_margin, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFilterClip(enable bool) { //gd:AtlasTexture.set_filter_clip
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_filter_clip, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasFilterClip() bool { //gd:AtlasTexture.has_filter_clip
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_filter_clip, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAtlasTexture() Advanced                { return Advanced(o) }
 func (o Instance) AsAtlasTexture() Instance             { return o }
 func (o *Extension[T]) AsAtlasTexture() Instance        { return o.Super() }
-func (o class) AsTexture2D() Texture2D.Advanced         { return Texture2D.Advanced{gdclass.NewTexture2D(o[0].AsObject()[0])} }
+func (o class) AsTexture2D() Texture2D.Advanced         { return *(*Texture2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture2D() Texture2D.Instance { return o.Super().AsTexture2D() }
-func (o Instance) AsTexture2D() Texture2D.Instance      { return Texture2D.Instance{gdclass.NewTexture2D(o[0].AsObject()[0])} }
-func (o class) AsTexture() Texture.Advanced             { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o Instance) AsTexture2D() Texture2D.Instance      { return *(*Texture2D.Instance)(ie.As(&o)) }
+func (o class) AsTexture() Texture.Advanced             { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance     { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance          { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced           { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance          { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced           { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance   { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance        { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance        { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

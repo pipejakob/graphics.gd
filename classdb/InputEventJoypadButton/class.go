@@ -8,6 +8,7 @@ Input event type for gamepad buttons. For gamepad analog sticks and joysticks, s
 package InputEventJoypadButton
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -128,7 +132,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.InputEventJoypadButton
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputEventJoypadButton(obj[0])
@@ -143,7 +147,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -200,32 +204,37 @@ func (self Instance) SetPressed(value bool) Instance { //gd:InputEventJoypadButt
 
 func (self class) SetButtonIndex(button_index Input.JoyButton) { //gd:InputEventJoypadButton.set_button_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_button_index, 0|(gdextension.SizeInt<<4), &struct{ button_index Input.JoyButton }{button_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetButtonIndex() Input.JoyButton { //gd:InputEventJoypadButton.get_button_index
 	var r_ret = jumponly.Call[Input.JoyButton](gd.ObjectChecked(self.AsObject()), methods.get_button_index, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPressure(pressure float64) { //gd:InputEventJoypadButton.set_pressure
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pressure, 0|(gdextension.SizeFloat<<4), &struct{ pressure float64 }{pressure})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPressure() float64 { //gd:InputEventJoypadButton.get_pressure
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_pressure, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPressed(pressed bool) { //gd:InputEventJoypadButton.set_pressed
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pressed, 0|(gdextension.SizeBool<<4), &struct{ pressed bool }{pressed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsInputEventJoypadButton() Advanced         { return Advanced(o) }
 func (o Instance) AsInputEventJoypadButton() Instance      { return o }
 func (o *Extension[T]) AsInputEventJoypadButton() Instance { return o.Super() }
-func (o class) AsInputEvent() InputEvent.Advanced          { return InputEvent.Advanced{gdclass.NewInputEvent(o[0].AsObject()[0])} }
+func (o class) AsInputEvent() InputEvent.Advanced          { return *(*InputEvent.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsInputEvent() InputEvent.Instance  { return o.Super().AsInputEvent() }
-func (o Instance) AsInputEvent() InputEvent.Instance       { return InputEvent.Instance{gdclass.NewInputEvent(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced              { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsInputEvent() InputEvent.Instance       { return *(*InputEvent.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced              { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance      { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance           { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance           { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                        { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }

@@ -12,6 +12,7 @@ A FoldableContainer can be grouped with other FoldableContainers so that only on
 package FoldableContainer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -21,6 +22,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -50,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -190,7 +195,7 @@ func (self Instance) RemoveTitleBarControl(control Control.Instance) { //gd:Fold
 type Advanced = class
 type class [1]gdclass.FoldableContainer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewFoldableContainer(obj[0])
@@ -205,7 +210,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -321,79 +326,104 @@ func (self Instance) SetLanguage(value string) Instance { //gd:FoldableContainer
 
 func (self class) Fold() { //gd:FoldableContainer.fold
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.fold, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Expand() { //gd:FoldableContainer.expand
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.expand, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFolded(folded bool) { //gd:FoldableContainer.set_folded
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_folded, 0|(gdextension.SizeBool<<4), &struct{ folded bool }{folded})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFolded() bool { //gd:FoldableContainer.is_folded
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_folded, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFoldableGroup(button_group [1]gdclass.FoldableGroup) { //gd:FoldableContainer.set_foldable_group
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_foldable_group, 0|(gdextension.SizeObject<<4), &struct{ button_group gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetFoldableGroup(button_group[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(button_group[0].Anchor())
 }
 func (self class) GetFoldableGroup() [1]gdclass.FoldableGroup { //gd:FoldableContainer.get_foldable_group
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_foldable_group, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.FoldableGroup{gdclass.NewFoldableGroup(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetTitle(text String.Readable) { //gd:FoldableContainer.set_title
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_title, 0|(gdextension.SizeString<<4), &struct{ text gdextension.String }{pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
 }
 func (self class) GetTitle() String.Readable { //gd:FoldableContainer.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTitleAlignment(alignment GUI.HorizontalAlignment) { //gd:FoldableContainer.set_title_alignment
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_title_alignment, 0|(gdextension.SizeInt<<4), &struct{ alignment GUI.HorizontalAlignment }{alignment})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTitleAlignment() GUI.HorizontalAlignment { //gd:FoldableContainer.get_title_alignment
 	var r_ret = jumponly.Call[GUI.HorizontalAlignment](gd.ObjectChecked(self.AsObject()), methods.get_title_alignment, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLanguage(language String.Readable) { //gd:FoldableContainer.set_language
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_language, 0|(gdextension.SizeString<<4), &struct{ language gdextension.String }{pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(language)
 }
 func (self class) GetLanguage() String.Readable { //gd:FoldableContainer.get_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTitleTextDirection(text_direction Control.TextDirection) { //gd:FoldableContainer.set_title_text_direction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_title_text_direction, 0|(gdextension.SizeInt<<4), &struct{ text_direction Control.TextDirection }{text_direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTitleTextDirection() Control.TextDirection { //gd:FoldableContainer.get_title_text_direction
 	var r_ret = jumponly.Call[Control.TextDirection](gd.ObjectChecked(self.AsObject()), methods.get_title_text_direction, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTitleTextOverrunBehavior(overrun_behavior TextServer.OverrunBehavior) { //gd:FoldableContainer.set_title_text_overrun_behavior
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_title_text_overrun_behavior, 0|(gdextension.SizeInt<<4), &struct{ overrun_behavior TextServer.OverrunBehavior }{overrun_behavior})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTitleTextOverrunBehavior() TextServer.OverrunBehavior { //gd:FoldableContainer.get_title_text_overrun_behavior
 	var r_ret = jumponly.Call[TextServer.OverrunBehavior](gd.ObjectChecked(self.AsObject()), methods.get_title_text_overrun_behavior, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTitlePosition(title_position TitlePosition) { //gd:FoldableContainer.set_title_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_title_position, 0|(gdextension.SizeInt<<4), &struct{ title_position TitlePosition }{title_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTitlePosition() TitlePosition { //gd:FoldableContainer.get_title_position
 	var r_ret = jumponly.Call[TitlePosition](gd.ObjectChecked(self.AsObject()), methods.get_title_position, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddTitleBarControl(control [1]gdclass.Control) { //gd:FoldableContainer.add_title_bar_control
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_title_bar_control, 0|(gdextension.SizeObject<<4), &struct{ control gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetControl(control[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(control[0].Anchor())
 }
 func (self class) RemoveTitleBarControl(control [1]gdclass.Control) { //gd:FoldableContainer.remove_title_bar_control
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_title_bar_control, 0|(gdextension.SizeObject<<4), &struct{ control gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetControl(control[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(control[0].Anchor())
 }
 
 /*
@@ -415,18 +445,18 @@ func (self class) FoldingChanged() Signal.Any {
 func (o class) AsFoldableContainer() Advanced             { return Advanced(o) }
 func (o Instance) AsFoldableContainer() Instance          { return o }
 func (o *Extension[T]) AsFoldableContainer() Instance     { return o.Super() }
-func (o class) AsContainer() Container.Advanced           { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o class) AsContainer() Container.Advanced           { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance   { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance        { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance        { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

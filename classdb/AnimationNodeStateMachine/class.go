@@ -23,6 +23,7 @@ Contains multiple [AnimationRootNode]s representing animation states, connected 
 package AnimationNodeStateMachine
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -61,6 +62,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -326,7 +330,7 @@ func (self Instance) GetGraphOffset() Vector2.XY { //gd:AnimationNodeStateMachin
 type Advanced = class
 type class [1]gdclass.AnimationNodeStateMachine
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimationNodeStateMachine(obj[0])
@@ -341,7 +345,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -415,39 +419,57 @@ func (self class) AddNode(name String.Name, node [1]gdclass.AnimationNode, posit
 		node     gdextension.Object
 		position Vector2.XY
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetAnimationNode(node[0])[0])), position})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(node[0].Anchor())
 }
 func (self class) ReplaceNode(name String.Name, node [1]gdclass.AnimationNode) { //gd:AnimationNodeStateMachine.replace_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.replace_node, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeObject<<8), &struct {
 		name gdextension.StringName
 		node gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetAnimationNode(node[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(node[0].Anchor())
 }
 func (self class) GetNode(name String.Name) [1]gdclass.AnimationNode { //gd:AnimationNodeStateMachine.get_node
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_node, gdextension.SizeObject|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = [1]gdclass.AnimationNode{gdclass.NewAnimationNode(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) RemoveNode(name String.Name) { //gd:AnimationNodeStateMachine.remove_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_node, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RenameNode(name String.Name, new_name String.Name) { //gd:AnimationNodeStateMachine.rename_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.rename_node, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name     gdextension.StringName
 		new_name gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(new_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(new_name)
 }
 func (self class) HasNode(name String.Name) bool { //gd:AnimationNodeStateMachine.has_node
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_node, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetNodeName(node [1]gdclass.AnimationNode) String.Name { //gd:AnimationNodeStateMachine.get_node_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_node_name, gdextension.SizeStringName|(gdextension.SizeObject<<4), &struct{ node gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetAnimationNode(node[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetNodeList() Array.Contains[String.Name] { //gd:AnimationNodeStateMachine.get_node_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_node_list, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -456,9 +478,13 @@ func (self class) SetNodePosition(name String.Name, position Vector2.XY) { //gd:
 		name     gdextension.StringName
 		position Vector2.XY
 	}{pointers.Get(gd.InternalStringName(name)), position})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetNodePosition(name String.Name) Vector2.XY { //gd:AnimationNodeStateMachine.get_node_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_node_position, gdextension.SizeVector2|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -467,6 +493,9 @@ func (self class) HasTransition(from String.Name, to String.Name) bool { //gd:An
 		from gdextension.StringName
 		to   gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(from)), pointers.Get(gd.InternalStringName(to))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from)
+	runtime.KeepAlive(to)
 	var ret = r_ret
 	return ret
 }
@@ -476,65 +505,85 @@ func (self class) AddTransition(from String.Name, to String.Name, transition [1]
 		to         gdextension.StringName
 		transition gdextension.Object
 	}{pointers.Get(gd.InternalStringName(from)), pointers.Get(gd.InternalStringName(to)), gdextension.Object(gdreference.GetObject(gdclass.GetAnimationNodeStateMachineTransition(transition[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from)
+	runtime.KeepAlive(to)
+	runtime.KeepAlive(transition[0].Anchor())
 }
 func (self class) GetTransition(idx int64) [1]gdclass.AnimationNodeStateMachineTransition { //gd:AnimationNodeStateMachine.get_transition
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_transition, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.AnimationNodeStateMachineTransition{gdclass.NewAnimationNodeStateMachineTransition(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetTransitionFrom(idx int64) String.Name { //gd:AnimationNodeStateMachine.get_transition_from
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_transition_from, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetTransitionTo(idx int64) String.Name { //gd:AnimationNodeStateMachine.get_transition_to
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_transition_to, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetTransitionCount() int64 { //gd:AnimationNodeStateMachine.get_transition_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_transition_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RemoveTransitionByIndex(idx int64) { //gd:AnimationNodeStateMachine.remove_transition_by_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_transition_by_index, 0|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveTransition(from String.Name, to String.Name) { //gd:AnimationNodeStateMachine.remove_transition
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_transition, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		from gdextension.StringName
 		to   gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(from)), pointers.Get(gd.InternalStringName(to))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from)
+	runtime.KeepAlive(to)
 }
 func (self class) SetGraphOffset(offset Vector2.XY) { //gd:AnimationNodeStateMachine.set_graph_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_graph_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGraphOffset() Vector2.XY { //gd:AnimationNodeStateMachine.get_graph_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_graph_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStateMachineType(state_machine_type StateMachineType) { //gd:AnimationNodeStateMachine.set_state_machine_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_state_machine_type, 0|(gdextension.SizeInt<<4), &struct{ state_machine_type StateMachineType }{state_machine_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStateMachineType() StateMachineType { //gd:AnimationNodeStateMachine.get_state_machine_type
 	var r_ret = jumponly.Call[StateMachineType](gd.ObjectChecked(self.AsObject()), methods.get_state_machine_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAllowTransitionToSelf(enable bool) { //gd:AnimationNodeStateMachine.set_allow_transition_to_self
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_allow_transition_to_self, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAllowTransitionToSelf() bool { //gd:AnimationNodeStateMachine.is_allow_transition_to_self
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_allow_transition_to_self, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetResetEnds(enable bool) { //gd:AnimationNodeStateMachine.set_reset_ends
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_reset_ends, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AreEndsReset() bool { //gd:AnimationNodeStateMachine.are_ends_reset
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.are_ends_reset, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -542,22 +591,22 @@ func (o class) AsAnimationNodeStateMachine() Advanced         { return Advanced(
 func (o Instance) AsAnimationNodeStateMachine() Instance      { return o }
 func (o *Extension[T]) AsAnimationNodeStateMachine() Instance { return o.Super() }
 func (o class) AsAnimationRootNode() AnimationRootNode.Advanced {
-	return AnimationRootNode.Advanced{gdclass.NewAnimationRootNode(o[0].AsObject()[0])}
+	return *(*AnimationRootNode.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsAnimationRootNode() AnimationRootNode.Instance {
 	return o.Super().AsAnimationRootNode()
 }
 func (o Instance) AsAnimationRootNode() AnimationRootNode.Instance {
-	return AnimationRootNode.Instance{gdclass.NewAnimationRootNode(o[0].AsObject()[0])}
+	return *(*AnimationRootNode.Instance)(ie.As(&o))
 }
-func (o class) AsAnimationNode() AnimationNode.Advanced         { return AnimationNode.Advanced{gdclass.NewAnimationNode(o[0].AsObject()[0])} }
+func (o class) AsAnimationNode() AnimationNode.Advanced         { return *(*AnimationNode.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAnimationNode() AnimationNode.Instance { return o.Super().AsAnimationNode() }
 func (o Instance) AsAnimationNode() AnimationNode.Instance {
-	return AnimationNode.Instance{gdclass.NewAnimationNode(o[0].AsObject()[0])}
+	return *(*AnimationNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

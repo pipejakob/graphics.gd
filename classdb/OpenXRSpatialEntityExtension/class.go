@@ -8,6 +8,7 @@ OpenXR extension that handles spatial entities and, when enabled, allows queryin
 package OpenXRSpatialEntityExtension
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -16,6 +17,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -46,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -433,7 +438,7 @@ func (self Instance) FreeSpatialEntity(entity RID.SpatialEntity) { //gd:OpenXRSp
 type Advanced = class
 type class [1]gdclass.OpenXRSpatialEntityExtension
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRSpatialEntityExtension(obj[0])
@@ -448,7 +453,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -473,6 +478,7 @@ func New() Instance {
 
 func (self class) SupportsCapability(capability Capability) bool { //gd:OpenXRSpatialEntityExtension.supports_capability
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.supports_capability, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ capability Capability }{capability})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -481,6 +487,7 @@ func (self class) SupportsComponentType(capability Capability, component_type Co
 		capability     Capability
 		component_type ComponentType
 	}{capability, component_type})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -490,19 +497,26 @@ func (self class) CreateSpatialContext(capability_configurations Array.Contains[
 		next                      gdextension.Object
 		user_callback             gdextension.Callable
 	}{pointers.Get(gd.InternalArray(capability_configurations)), gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next[0])[0])), pointers.Get(gd.InternalCallable(user_callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(capability_configurations)
+	runtime.KeepAlive(next[0].Anchor())
+	runtime.KeepAlive(user_callback)
 	var ret = [1]gdclass.OpenXRFutureResult{gdclass.NewOpenXRFutureResult(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetSpatialContextReady(spatial_context RID.Any) bool { //gd:OpenXRSpatialEntityExtension.get_spatial_context_ready
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_spatial_context_ready, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ spatial_context RID.Any }{spatial_context})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FreeSpatialContext(spatial_context RID.Any) { //gd:OpenXRSpatialEntityExtension.free_spatial_context
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.free_spatial_context, 0|(gdextension.SizeRID<<4), &struct{ spatial_context RID.Any }{spatial_context})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpatialContextHandle(spatial_context RID.Any) int64 { //gd:OpenXRSpatialEntityExtension.get_spatial_context_handle
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_spatial_context_handle, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ spatial_context RID.Any }{spatial_context})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -513,6 +527,10 @@ func (self class) DiscoverSpatialEntitiesWithComponentData(spatial_context RID.A
 		next            gdextension.Object
 		user_callback   gdextension.Callable
 	}{spatial_context, pointers.Get(gd.InternalArray(component_data)), gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next[0])[0])), pointers.Get(gd.InternalCallable(user_callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(component_data)
+	runtime.KeepAlive(next[0].Anchor())
+	runtime.KeepAlive(user_callback)
 	var ret = [1]gdclass.OpenXRFutureResult{gdclass.NewOpenXRFutureResult(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -523,6 +541,10 @@ func (self class) DiscoverSpatialEntities(spatial_context RID.Any, component_typ
 		next            gdextension.Object
 		user_callback   gdextension.Callable
 	}{spatial_context, pointers.Get(gd.InternalPacked[gd.PackedInt64Array, int64](component_types)), gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next[0])[0])), pointers.Get(gd.InternalCallable(user_callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(component_types)
+	runtime.KeepAlive(next[0].Anchor())
+	runtime.KeepAlive(user_callback)
 	var ret = [1]gdclass.OpenXRFutureResult{gdclass.NewOpenXRFutureResult(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -533,19 +555,26 @@ func (self class) UpdateSpatialEntities(spatial_context RID.Any, entities Array.
 		component_types gdextension.PackedArray[int64]
 		next            gdextension.Object
 	}{spatial_context, pointers.Get(gd.InternalArray(entities)), pointers.Get(gd.InternalPacked[gd.PackedInt64Array, int64](component_types)), gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(entities)
+	runtime.KeepAlive(component_types)
+	runtime.KeepAlive(next[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FreeSpatialSnapshot(spatial_snapshot RID.Any) { //gd:OpenXRSpatialEntityExtension.free_spatial_snapshot
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.free_spatial_snapshot, 0|(gdextension.SizeRID<<4), &struct{ spatial_snapshot RID.Any }{spatial_snapshot})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpatialSnapshotHandle(spatial_snapshot RID.Any) int64 { //gd:OpenXRSpatialEntityExtension.get_spatial_snapshot_handle
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_spatial_snapshot_handle, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ spatial_snapshot RID.Any }{spatial_snapshot})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSpatialSnapshotContext(spatial_snapshot RID.Any) RID.Any { //gd:OpenXRSpatialEntityExtension.get_spatial_snapshot_context
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_spatial_snapshot_context, gdextension.SizeRID|(gdextension.SizeRID<<4), &struct{ spatial_snapshot RID.Any }{spatial_snapshot})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -555,6 +584,9 @@ func (self class) QuerySnapshot(spatial_snapshot RID.Any, component_data Array.C
 		component_data   gdextension.Array
 		next             gdextension.Object
 	}{spatial_snapshot, pointers.Get(gd.InternalArray(component_data)), gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(component_data)
+	runtime.KeepAlive(next[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -563,6 +595,7 @@ func (self class) GetString(spatial_snapshot RID.Any, buffer_id int64) String.Re
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -571,6 +604,7 @@ func (self class) GetUint8Buffer(spatial_snapshot RID.Any, buffer_id int64) Pack
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
@@ -579,6 +613,7 @@ func (self class) GetUint16Buffer(spatial_snapshot RID.Any, buffer_id int64) Pac
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -587,6 +622,7 @@ func (self class) GetUint32Buffer(spatial_snapshot RID.Any, buffer_id int64) Pac
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -595,6 +631,7 @@ func (self class) GetFloatBuffer(spatial_snapshot RID.Any, buffer_id int64) Pack
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
@@ -603,6 +640,7 @@ func (self class) GetVector2Buffer(spatial_snapshot RID.Any, buffer_id int64) Pa
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -611,11 +649,13 @@ func (self class) GetVector3Buffer(spatial_snapshot RID.Any, buffer_id int64) Pa
 		spatial_snapshot RID.Any
 		buffer_id        int64
 	}{spatial_snapshot, buffer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) FindSpatialEntity(entity_id int64) RID.Any { //gd:OpenXRSpatialEntityExtension.find_spatial_entity
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.find_spatial_entity, gdextension.SizeRID|(gdextension.SizeInt<<4), &struct{ entity_id int64 }{entity_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -625,6 +665,7 @@ func (self class) AddSpatialEntity(spatial_context RID.Any, entity_id int64, ent
 		entity_id       int64
 		entity          int64
 	}{spatial_context, entity_id, entity})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -633,21 +674,25 @@ func (self class) MakeSpatialEntity(spatial_context RID.Any, entity_id int64) RI
 		spatial_context RID.Any
 		entity_id       int64
 	}{spatial_context, entity_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSpatialEntityId(entity RID.Any) int64 { //gd:OpenXRSpatialEntityExtension.get_spatial_entity_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_spatial_entity_id, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ entity RID.Any }{entity})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSpatialEntityContext(entity RID.Any) RID.Any { //gd:OpenXRSpatialEntityExtension.get_spatial_entity_context
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_spatial_entity_context, gdextension.SizeRID|(gdextension.SizeRID<<4), &struct{ entity RID.Any }{entity})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FreeSpatialEntity(entity RID.Any) { //gd:OpenXRSpatialEntityExtension.free_spatial_entity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.free_spatial_entity, 0|(gdextension.SizeRID<<4), &struct{ entity RID.Any }{entity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -670,13 +715,13 @@ func (o class) AsOpenXRSpatialEntityExtension() Advanced         { return Advanc
 func (o Instance) AsOpenXRSpatialEntityExtension() Instance      { return o }
 func (o *Extension[T]) AsOpenXRSpatialEntityExtension() Instance { return o.Super() }
 func (o class) AsOpenXRExtensionWrapper() OpenXRExtensionWrapper.Advanced {
-	return OpenXRExtensionWrapper.Advanced{gdclass.NewOpenXRExtensionWrapper(o[0].AsObject()[0])}
+	return *(*OpenXRExtensionWrapper.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRExtensionWrapper() OpenXRExtensionWrapper.Instance {
 	return o.Super().AsOpenXRExtensionWrapper()
 }
 func (o Instance) AsOpenXRExtensionWrapper() OpenXRExtensionWrapper.Instance {
-	return OpenXRExtensionWrapper.Instance{gdclass.NewOpenXRExtensionWrapper(o[0].AsObject()[0])}
+	return *(*OpenXRExtensionWrapper.Instance)(ie.As(&o))
 }
 
 func (self class) Virtual(name string) reflect.Value {

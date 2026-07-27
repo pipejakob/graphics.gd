@@ -12,6 +12,7 @@ If you need more advanced effects, use a custom [fog shader].
 package FogMaterial
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -140,7 +144,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.FogMaterial
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewFogMaterial(obj[0])
@@ -155,7 +159,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -280,61 +284,74 @@ func (self Instance) SetDensityTexture(value Texture3D.Instance) Instance { //gd
 
 func (self class) SetDensity(density float64) { //gd:FogMaterial.set_density
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_density, 0|(gdextension.SizeFloat<<4), &struct{ density float64 }{density})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDensity() float64 { //gd:FogMaterial.get_density
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_density, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAlbedo(albedo Color.RGBA) { //gd:FogMaterial.set_albedo
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_albedo, 0|(gdextension.SizeColor<<4), &struct{ albedo Color.RGBA }{albedo})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAlbedo() Color.RGBA { //gd:FogMaterial.get_albedo
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_albedo, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEmission(emission Color.RGBA) { //gd:FogMaterial.set_emission
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission, 0|(gdextension.SizeColor<<4), &struct{ emission Color.RGBA }{emission})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEmission() Color.RGBA { //gd:FogMaterial.get_emission
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_emission, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHeightFalloff(height_falloff float64) { //gd:FogMaterial.set_height_falloff
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_height_falloff, 0|(gdextension.SizeFloat<<4), &struct{ height_falloff float64 }{height_falloff})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHeightFalloff() float64 { //gd:FogMaterial.get_height_falloff
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_height_falloff, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEdgeFade(edge_fade float64) { //gd:FogMaterial.set_edge_fade
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_edge_fade, 0|(gdextension.SizeFloat<<4), &struct{ edge_fade float64 }{edge_fade})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEdgeFade() float64 { //gd:FogMaterial.get_edge_fade
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_edge_fade, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDensityTexture(density_texture [1]gdclass.Texture3D) { //gd:FogMaterial.set_density_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_density_texture, 0|(gdextension.SizeObject<<4), &struct{ density_texture gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture3D(density_texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(density_texture[0].Anchor())
 }
 func (self class) GetDensityTexture() [1]gdclass.Texture3D { //gd:FogMaterial.get_density_texture
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_density_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture3D{gdclass.NewTexture3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsFogMaterial() Advanced               { return Advanced(o) }
 func (o Instance) AsFogMaterial() Instance            { return o }
 func (o *Extension[T]) AsFogMaterial() Instance       { return o.Super() }
-func (o class) AsMaterial() Material.Advanced         { return Material.Advanced{gdclass.NewMaterial(o[0].AsObject()[0])} }
+func (o class) AsMaterial() Material.Advanced         { return *(*Material.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsMaterial() Material.Instance { return o.Super().AsMaterial() }
-func (o Instance) AsMaterial() Material.Instance      { return Material.Instance{gdclass.NewMaterial(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsMaterial() Material.Instance      { return *(*Material.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

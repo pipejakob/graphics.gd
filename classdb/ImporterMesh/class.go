@@ -14,6 +14,7 @@ Unlike its runtime counterpart, [ImporterMesh] contains mesh data before various
 package ImporterMesh
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -53,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -486,7 +490,7 @@ func (self Instance) GetLightmapSizeHint() Vector2i.XY { //gd:ImporterMesh.get_l
 type Advanced = class
 type class [1]gdclass.ImporterMesh
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewImporterMesh(obj[0])
@@ -501,7 +505,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -530,27 +534,35 @@ func (self class) MergeImporterMeshes(importer_meshes Array.Contains[[1]gdclass.
 		relative_transforms  gdextension.Array
 		deduplicate_surfaces bool
 	}{pointers.Get(gd.InternalArray(importer_meshes)), pointers.Get(gd.InternalArray(relative_transforms)), deduplicate_surfaces})
+	runtime.KeepAlive(importer_meshes)
+	runtime.KeepAlive(relative_transforms)
 	var ret = [1]gdclass.ImporterMesh{gdclass.NewImporterMesh(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) AddBlendShape(name String.Readable) { //gd:ImporterMesh.add_blend_shape
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_blend_shape, 0|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetBlendShapeCount() int64 { //gd:ImporterMesh.get_blend_shape_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_blend_shape_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBlendShapeName(blend_shape_idx int64) String.Readable { //gd:ImporterMesh.get_blend_shape_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_blend_shape_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ blend_shape_idx int64 }{blend_shape_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBlendShapeMode(mode Mesh.BlendShapeMode) { //gd:ImporterMesh.set_blend_shape_mode
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_blend_shape_mode, 0|(gdextension.SizeInt<<4), &struct{ mode Mesh.BlendShapeMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBlendShapeMode() Mesh.BlendShapeMode { //gd:ImporterMesh.get_blend_shape_mode
 	var r_ret = jumponly.Call[Mesh.BlendShapeMode](gd.ObjectChecked(self.AsObject()), methods.get_blend_shape_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -564,24 +576,34 @@ func (self class) AddSurface(primitive Mesh.PrimitiveType, arrays Array.Any, ble
 		name         gdextension.String
 		flags        int64
 	}{primitive, pointers.Get(gd.InternalArray(arrays)), pointers.Get(gd.InternalArray(blend_shapes)), pointers.Get(gd.InternalDictionary(lods)), gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0])), pointers.Get(gd.InternalString(name)), flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(arrays)
+	runtime.KeepAlive(blend_shapes)
+	runtime.KeepAlive(lods)
+	runtime.KeepAlive(material[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetSurfaceCount() int64 { //gd:ImporterMesh.get_surface_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_surface_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSurfacePrimitiveType(surface_idx int64) Mesh.PrimitiveType { //gd:ImporterMesh.get_surface_primitive_type
 	var r_ret = noescape.Call[Mesh.PrimitiveType](gd.ObjectChecked(self.AsObject()), methods.get_surface_primitive_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ surface_idx int64 }{surface_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSurfaceName(surface_idx int64) String.Readable { //gd:ImporterMesh.get_surface_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_surface_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ surface_idx int64 }{surface_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSurfaceArrays(surface_idx int64) Array.Any { //gd:ImporterMesh.get_surface_arrays
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_surface_arrays, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ surface_idx int64 }{surface_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -590,11 +612,13 @@ func (self class) GetSurfaceBlendShapeArrays(surface_idx int64, blend_shape_idx 
 		surface_idx     int64
 		blend_shape_idx int64
 	}{surface_idx, blend_shape_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetSurfaceLodCount(surface_idx int64) int64 { //gd:ImporterMesh.get_surface_lod_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_surface_lod_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ surface_idx int64 }{surface_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -603,6 +627,7 @@ func (self class) GetSurfaceLodSize(surface_idx int64, lod_idx int64) float64 { 
 		surface_idx int64
 		lod_idx     int64
 	}{surface_idx, lod_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -611,16 +636,19 @@ func (self class) GetSurfaceLodIndices(surface_idx int64, lod_idx int64) Packed.
 		surface_idx int64
 		lod_idx     int64
 	}{surface_idx, lod_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetSurfaceMaterial(surface_idx int64) [1]gdclass.Material { //gd:ImporterMesh.get_surface_material
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_surface_material, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ surface_idx int64 }{surface_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Material{gdclass.NewMaterial(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetSurfaceFormat(surface_idx int64) int64 { //gd:ImporterMesh.get_surface_format
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_surface_format, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ surface_idx int64 }{surface_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -629,12 +657,16 @@ func (self class) SetSurfaceName(surface_idx int64, name String.Readable) { //gd
 		surface_idx int64
 		name        gdextension.String
 	}{surface_idx, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) SetSurfaceMaterial(surface_idx int64, material [1]gdclass.Material) { //gd:ImporterMesh.set_surface_material
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_surface_material, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8), &struct {
 		surface_idx int64
 		material    gdextension.Object
 	}{surface_idx, gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) GenerateLods(normal_merge_angle float64, normal_split_angle float64, bone_transform_array Array.Any) { //gd:ImporterMesh.generate_lods
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.generate_lods, 0|(gdextension.SizeFloat<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeArray<<12), &struct {
@@ -642,34 +674,42 @@ func (self class) GenerateLods(normal_merge_angle float64, normal_split_angle fl
 		normal_split_angle   float64
 		bone_transform_array gdextension.Array
 	}{normal_merge_angle, normal_split_angle, pointers.Get(gd.InternalArray(bone_transform_array))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_transform_array)
 }
 func (self class) GetMesh(base_mesh [1]gdclass.ArrayMesh) [1]gdclass.ArrayMesh { //gd:ImporterMesh.get_mesh
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_mesh, gdextension.SizeObject|(gdextension.SizeObject<<4), &struct{ base_mesh gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetArrayMesh(base_mesh[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(base_mesh[0].Anchor())
 	var ret = [1]gdclass.ArrayMesh{gdclass.NewArrayMesh(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) FromMesh(mesh [1]gdclass.Mesh) [1]gdclass.ImporterMesh { //gd:ImporterMesh.from_mesh
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.from_mesh, gdextension.SizeObject|(gdextension.SizeObject<<4), &struct{ mesh gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMesh(mesh[0])[0]))})
+	runtime.KeepAlive(mesh[0].Anchor())
 	var ret = [1]gdclass.ImporterMesh{gdclass.NewImporterMesh(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) Clear() { //gd:ImporterMesh.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetLightmapSizeHint(size Vector2i.XY) { //gd:ImporterMesh.set_lightmap_size_hint
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_lightmap_size_hint, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLightmapSizeHint() Vector2i.XY { //gd:ImporterMesh.get_lightmap_size_hint
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_lightmap_size_hint, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsImporterMesh() Advanced              { return Advanced(o) }
 func (o Instance) AsImporterMesh() Instance           { return o }
 func (o *Extension[T]) AsImporterMesh() Instance      { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

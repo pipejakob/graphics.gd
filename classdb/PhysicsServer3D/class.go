@@ -23,6 +23,7 @@ package PhysicsServer3D
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -31,6 +32,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -62,6 +64,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1699,7 +1704,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.PhysicsServer3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPhysicsServer3D(obj[0])
@@ -1714,7 +1719,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) WorldBoundaryShapeCreate() RID.Any { //gd:PhysicsServer3D.world_boundary_shape_create
@@ -1783,6 +1788,7 @@ func (self class) ShapeSetData(shape RID.Any, data variant.Any) { //gd:PhysicsSe
 		shape RID.Any
 		data  gdextension.Variant
 	}{shape, gdextension.Variant(pointers.Get(gd.InternalVariant(data)))})
+	runtime.KeepAlive(data)
 }
 func (self class) ShapeSetMargin(shape RID.Any, margin float64) { //gd:PhysicsServer3D.shape_set_margin
 	once.Do(singleton)
@@ -1971,6 +1977,7 @@ func (self class) AreaSetParam(area RID.Any, param AreaParameter, value variant.
 		param AreaParameter
 		value gdextension.Variant
 	}{area, param, gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(value)
 }
 func (self class) AreaSetTransform(area RID.Any, transform Transform3D.BasisOrigin) { //gd:PhysicsServer3D.area_set_transform
 	once.Do(singleton)
@@ -2013,6 +2020,7 @@ func (self class) AreaSetMonitorCallback(area RID.Any, callback Callable.Functio
 		area     RID.Any
 		callback gdextension.Callable
 	}{area, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) AreaSetAreaMonitorCallback(area RID.Any, callback Callable.Function) { //gd:PhysicsServer3D.area_set_area_monitor_callback
 	once.Do(singleton)
@@ -2020,6 +2028,7 @@ func (self class) AreaSetAreaMonitorCallback(area RID.Any, callback Callable.Fun
 		area     RID.Any
 		callback gdextension.Callable
 	}{area, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) AreaSetMonitorable(area RID.Any, monitorable bool) { //gd:PhysicsServer3D.area_set_monitorable
 	once.Do(singleton)
@@ -2207,6 +2216,7 @@ func (self class) BodySetParam(body RID.Any, param BodyParameter, value variant.
 		param BodyParameter
 		value gdextension.Variant
 	}{body, param, gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(value)
 }
 func (self class) BodyGetParam(body RID.Any, param BodyParameter) variant.Any { //gd:PhysicsServer3D.body_get_param
 	once.Do(singleton)
@@ -2228,6 +2238,7 @@ func (self class) BodySetState(body RID.Any, state BodyState, value variant.Any)
 		state BodyState
 		value gdextension.Variant
 	}{body, state, gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(value)
 }
 func (self class) BodyGetState(body RID.Any, state BodyState) variant.Any { //gd:PhysicsServer3D.body_get_state
 	once.Do(singleton)
@@ -2400,6 +2411,7 @@ func (self class) BodySetStateSyncCallback(body RID.Any, callable Callable.Funct
 		body     RID.Any
 		callable gdextension.Callable
 	}{body, pointers.Get(gd.InternalCallable(callable))})
+	runtime.KeepAlive(callable)
 }
 func (self class) BodySetForceIntegrationCallback(body RID.Any, callable Callable.Function, userdata variant.Any) { //gd:PhysicsServer3D.body_set_force_integration_callback
 	once.Do(singleton)
@@ -2408,6 +2420,8 @@ func (self class) BodySetForceIntegrationCallback(body RID.Any, callable Callabl
 		callable gdextension.Callable
 		userdata gdextension.Variant
 	}{body, pointers.Get(gd.InternalCallable(callable)), gdextension.Variant(pointers.Get(gd.InternalVariant(userdata)))})
+	runtime.KeepAlive(callable)
+	runtime.KeepAlive(userdata)
 }
 func (self class) BodySetRayPickable(body RID.Any, enable bool) { //gd:PhysicsServer3D.body_set_ray_pickable
 	once.Do(singleton)
@@ -2423,6 +2437,8 @@ func (self class) BodyTestMotion(body RID.Any, parameters [1]gdclass.PhysicsTest
 		parameters gdextension.Object
 		result     gdextension.Object
 	}{body, gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsTestMotionParameters3D(parameters[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsTestMotionResult3D(result[0])[0]))})
+	runtime.KeepAlive(parameters[0].Anchor())
+	runtime.KeepAlive(result[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2444,6 +2460,7 @@ func (self class) SoftBodyUpdateRenderingServer(body RID.Any, rendering_server_h
 		body                     RID.Any
 		rendering_server_handler gdextension.Object
 	}{body, gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsServer3DRenderingServerHandler(rendering_server_handler[0])[0]))})
+	runtime.KeepAlive(rendering_server_handler[0].Anchor())
 }
 func (self class) SoftBodySetSpace(body RID.Any, space RID.Any) { //gd:PhysicsServer3D.soft_body_set_space
 	once.Do(singleton)
@@ -2518,6 +2535,7 @@ func (self class) SoftBodySetState(body RID.Any, state BodyState, v variant.Any)
 		state BodyState
 		v     gdextension.Variant
 	}{body, state, gdextension.Variant(pointers.Get(gd.InternalVariant(v)))})
+	runtime.KeepAlive(v)
 }
 func (self class) SoftBodyGetState(body RID.Any, state BodyState) variant.Any { //gd:PhysicsServer3D.soft_body_get_state
 	once.Do(singleton)

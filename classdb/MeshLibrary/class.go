@@ -9,6 +9,7 @@ A library of meshes. Contains a list of [Mesh] resources, each with a name and I
 package MeshLibrary
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -374,7 +378,7 @@ func (self Instance) GetLastUnusedItemId() int { //gd:MeshLibrary.get_last_unuse
 type Advanced = class
 type class [1]gdclass.MeshLibrary
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMeshLibrary(obj[0])
@@ -389,7 +393,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -414,138 +418,169 @@ func New() Instance {
 
 func (self class) CreateItem(id int64) { //gd:MeshLibrary.create_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.create_item, 0|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemName(id int64, name String.Readable) { //gd:MeshLibrary.set_item_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_name, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8), &struct {
 		id   int64
 		name gdextension.String
 	}{id, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) SetItemMesh(id int64, mesh [1]gdclass.Mesh) { //gd:MeshLibrary.set_item_mesh
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_mesh, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8), &struct {
 		id   int64
 		mesh gdextension.Object
 	}{id, gdextension.Object(gdreference.GetObject(gdclass.GetMesh(mesh[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(mesh[0].Anchor())
 }
 func (self class) SetItemMeshTransform(id int64, mesh_transform Transform3D.BasisOrigin) { //gd:MeshLibrary.set_item_mesh_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_mesh_transform, 0|(gdextension.SizeInt<<4)|(gdextension.SizeTransform3D<<8), &struct {
 		id             int64
 		mesh_transform Transform3D.BasisOrigin
 	}{id, gd.Transposed(mesh_transform)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemMeshCastShadow(id int64, shadow_casting_setting RenderingServer.ShadowCastingSetting) { //gd:MeshLibrary.set_item_mesh_cast_shadow
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_mesh_cast_shadow, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		id                     int64
 		shadow_casting_setting RenderingServer.ShadowCastingSetting
 	}{id, shadow_casting_setting})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemNavigationMesh(id int64, navigation_mesh [1]gdclass.NavigationMesh) { //gd:MeshLibrary.set_item_navigation_mesh
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_navigation_mesh, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8), &struct {
 		id              int64
 		navigation_mesh gdextension.Object
 	}{id, gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
 }
 func (self class) SetItemNavigationMeshTransform(id int64, navigation_mesh Transform3D.BasisOrigin) { //gd:MeshLibrary.set_item_navigation_mesh_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_navigation_mesh_transform, 0|(gdextension.SizeInt<<4)|(gdextension.SizeTransform3D<<8), &struct {
 		id              int64
 		navigation_mesh Transform3D.BasisOrigin
 	}{id, gd.Transposed(navigation_mesh)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemNavigationLayers(id int64, navigation_layers int64) { //gd:MeshLibrary.set_item_navigation_layers
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_navigation_layers, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		id                int64
 		navigation_layers int64
 	}{id, navigation_layers})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemShapes(id int64, shapes Array.Any) { //gd:MeshLibrary.set_item_shapes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_shapes, 0|(gdextension.SizeInt<<4)|(gdextension.SizeArray<<8), &struct {
 		id     int64
 		shapes gdextension.Array
 	}{id, pointers.Get(gd.InternalArray(shapes))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shapes)
 }
 func (self class) SetItemPreview(id int64, texture [1]gdclass.Texture2D) { //gd:MeshLibrary.set_item_preview
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_preview, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8), &struct {
 		id      int64
 		texture gdextension.Object
 	}{id, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetItemName(id int64) String.Readable { //gd:MeshLibrary.get_item_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemMesh(id int64) [1]gdclass.Mesh { //gd:MeshLibrary.get_item_mesh
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_item_mesh, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Mesh{gdclass.NewMesh(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetItemMeshTransform(id int64) Transform3D.BasisOrigin { //gd:MeshLibrary.get_item_mesh_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_item_mesh_transform, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) GetItemMeshCastShadow(id int64) RenderingServer.ShadowCastingSetting { //gd:MeshLibrary.get_item_mesh_cast_shadow
 	var r_ret = noescape.Call[RenderingServer.ShadowCastingSetting](gd.ObjectChecked(self.AsObject()), methods.get_item_mesh_cast_shadow, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemNavigationMesh(id int64) [1]gdclass.NavigationMesh { //gd:MeshLibrary.get_item_navigation_mesh
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_item_navigation_mesh, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.NavigationMesh{gdclass.NewNavigationMesh(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetItemNavigationMeshTransform(id int64) Transform3D.BasisOrigin { //gd:MeshLibrary.get_item_navigation_mesh_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_item_navigation_mesh_transform, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) GetItemNavigationLayers(id int64) int64 { //gd:MeshLibrary.get_item_navigation_layers
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_navigation_layers, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemShapes(id int64) Array.Any { //gd:MeshLibrary.get_item_shapes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_item_shapes, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetItemPreview(id int64) [1]gdclass.Texture2D { //gd:MeshLibrary.get_item_preview
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_item_preview, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) RemoveItem(id int64) { //gd:MeshLibrary.remove_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_item, 0|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FindItemByName(name String.Readable) int64 { //gd:MeshLibrary.find_item_by_name
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.find_item_by_name, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) Clear() { //gd:MeshLibrary.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemList() Packed.Array[int32] { //gd:MeshLibrary.get_item_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_item_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetItemCount() int64 { //gd:MeshLibrary.get_item_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLastUnusedItemId() int64 { //gd:MeshLibrary.get_last_unused_item_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_last_unused_item_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsMeshLibrary() Advanced               { return Advanced(o) }
 func (o Instance) AsMeshLibrary() Instance            { return o }
 func (o *Extension[T]) AsMeshLibrary() Instance       { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

@@ -8,6 +8,7 @@ A control that displays a texture, for example an icon inside a GUI. The texture
 package TextureRect
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -17,6 +18,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -44,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -133,7 +138,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.TextureRect
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTextureRect(obj[0])
@@ -148,7 +153,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -240,56 +245,67 @@ func (self Instance) SetFlipV(value bool) Instance { //gd:TextureRect.flip_v
 
 func (self class) SetTexture(texture [1]gdclass.Texture2D) { //gd:TextureRect.set_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture, 0|(gdextension.SizeObject<<4), &struct{ texture gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetTexture() [1]gdclass.Texture2D { //gd:TextureRect.get_texture
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetExpandMode(expand_mode ExpandMode) { //gd:TextureRect.set_expand_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_expand_mode, 0|(gdextension.SizeInt<<4), &struct{ expand_mode ExpandMode }{expand_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetExpandMode() ExpandMode { //gd:TextureRect.get_expand_mode
 	var r_ret = jumponly.Call[ExpandMode](gd.ObjectChecked(self.AsObject()), methods.get_expand_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFlipH(enable bool) { //gd:TextureRect.set_flip_h
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flip_h, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFlippedH() bool { //gd:TextureRect.is_flipped_h
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_flipped_h, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFlipV(enable bool) { //gd:TextureRect.set_flip_v
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flip_v, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFlippedV() bool { //gd:TextureRect.is_flipped_v
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_flipped_v, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStretchMode(stretch_mode StretchMode) { //gd:TextureRect.set_stretch_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stretch_mode, 0|(gdextension.SizeInt<<4), &struct{ stretch_mode StretchMode }{stretch_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStretchMode() StretchMode { //gd:TextureRect.get_stretch_mode
 	var r_ret = jumponly.Call[StretchMode](gd.ObjectChecked(self.AsObject()), methods.get_stretch_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsTextureRect() Advanced                   { return Advanced(o) }
 func (o Instance) AsTextureRect() Instance                { return o }
 func (o *Extension[T]) AsTextureRect() Instance           { return o.Super() }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

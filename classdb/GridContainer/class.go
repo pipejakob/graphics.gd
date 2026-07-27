@@ -13,6 +13,7 @@ Note: [GridContainer] only works with child nodes inheriting from [Control]. It 
 package GridContainer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -22,6 +23,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -49,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -130,7 +135,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.GridContainer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGridContainer(obj[0])
@@ -145,7 +150,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -185,27 +190,29 @@ func (self Instance) SetColumns(value int) Instance { //gd:GridContainer.columns
 
 func (self class) SetColumns(columns int64) { //gd:GridContainer.set_columns
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_columns, 0|(gdextension.SizeInt<<4), &struct{ columns int64 }{columns})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetColumns() int64 { //gd:GridContainer.get_columns
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_columns, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsGridContainer() Advanced                 { return Advanced(o) }
 func (o Instance) AsGridContainer() Instance              { return o }
 func (o *Extension[T]) AsGridContainer() Instance         { return o.Super() }
-func (o class) AsContainer() Container.Advanced           { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o class) AsContainer() Container.Advanced           { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance   { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance        { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance        { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

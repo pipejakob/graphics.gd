@@ -8,6 +8,7 @@ Configuration header for plane tracking. Pass this to [OpenXRSpatialEntityExtens
 package OpenXRSpatialCapabilityConfigurationPlaneTracking
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -161,7 +165,7 @@ func (self Instance) GetEnabledComponents() []int64 { //gd:OpenXRSpatialCapabili
 type Advanced = class
 type class [1]gdclass.OpenXRSpatialCapabilityConfigurationPlaneTracking
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRSpatialCapabilityConfigurationPlaneTracking(obj[0])
@@ -176,7 +180,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -201,21 +205,25 @@ func New() Instance {
 
 func (self class) SupportsMesh2d() bool { //gd:OpenXRSpatialCapabilityConfigurationPlaneTracking.supports_mesh_2d
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.supports_mesh_2d, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SupportsPolygons() bool { //gd:OpenXRSpatialCapabilityConfigurationPlaneTracking.supports_polygons
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.supports_polygons, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SupportsLabels() bool { //gd:OpenXRSpatialCapabilityConfigurationPlaneTracking.supports_labels
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.supports_labels, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetEnabledComponents() Packed.Array[int64] { //gd:OpenXRSpatialCapabilityConfigurationPlaneTracking.get_enabled_components
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_enabled_components, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
@@ -225,13 +233,13 @@ func (o *Extension[T]) AsOpenXRSpatialCapabilityConfigurationPlaneTracking() Ins
 	return o.Super()
 }
 func (o class) AsOpenXRSpatialCapabilityConfigurationBaseHeader() OpenXRSpatialCapabilityConfigurationBaseHeader.Advanced {
-	return OpenXRSpatialCapabilityConfigurationBaseHeader.Advanced{gdclass.NewOpenXRSpatialCapabilityConfigurationBaseHeader(o[0].AsObject()[0])}
+	return *(*OpenXRSpatialCapabilityConfigurationBaseHeader.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRSpatialCapabilityConfigurationBaseHeader() OpenXRSpatialCapabilityConfigurationBaseHeader.Instance {
 	return o.Super().AsOpenXRSpatialCapabilityConfigurationBaseHeader()
 }
 func (o Instance) AsOpenXRSpatialCapabilityConfigurationBaseHeader() OpenXRSpatialCapabilityConfigurationBaseHeader.Instance {
-	return OpenXRSpatialCapabilityConfigurationBaseHeader.Instance{gdclass.NewOpenXRSpatialCapabilityConfigurationBaseHeader(o[0].AsObject()[0])}
+	return *(*OpenXRSpatialCapabilityConfigurationBaseHeader.Instance)(ie.As(&o))
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

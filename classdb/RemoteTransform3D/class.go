@@ -11,6 +11,7 @@ It can be set to update another Node's position, rotation and/or scale. It can u
 package RemoteTransform3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -45,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -145,7 +150,7 @@ func (self Instance) ForceUpdateCache() { //gd:RemoteTransform3D.force_update_ca
 type Advanced = class
 type class [1]gdclass.RemoteTransform3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRemoteTransform3D(obj[0])
@@ -160,7 +165,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -250,56 +255,68 @@ func (self Instance) SetUpdateScale(value bool) Instance { //gd:RemoteTransform3
 
 func (self class) SetRemoteNode(path Path.ToNode) { //gd:RemoteTransform3D.set_remote_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_remote_node, 0|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetRemoteNode() Path.ToNode { //gd:RemoteTransform3D.get_remote_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_remote_node, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) ForceUpdateCache() { //gd:RemoteTransform3D.force_update_cache
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.force_update_cache, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetUseGlobalCoordinates(use_global_coordinates bool) { //gd:RemoteTransform3D.set_use_global_coordinates
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_global_coordinates, 0|(gdextension.SizeBool<<4), &struct{ use_global_coordinates bool }{use_global_coordinates})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseGlobalCoordinates() bool { //gd:RemoteTransform3D.get_use_global_coordinates
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_global_coordinates, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUpdatePosition(update_remote_position bool) { //gd:RemoteTransform3D.set_update_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_update_position, 0|(gdextension.SizeBool<<4), &struct{ update_remote_position bool }{update_remote_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUpdatePosition() bool { //gd:RemoteTransform3D.get_update_position
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_update_position, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUpdateRotation(update_remote_rotation bool) { //gd:RemoteTransform3D.set_update_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_update_rotation, 0|(gdextension.SizeBool<<4), &struct{ update_remote_rotation bool }{update_remote_rotation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUpdateRotation() bool { //gd:RemoteTransform3D.get_update_rotation
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_update_rotation, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUpdateScale(update_remote_scale bool) { //gd:RemoteTransform3D.set_update_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_update_scale, 0|(gdextension.SizeBool<<4), &struct{ update_remote_scale bool }{update_remote_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUpdateScale() bool { //gd:RemoteTransform3D.get_update_scale
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_update_scale, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsRemoteTransform3D() Advanced         { return Advanced(o) }
 func (o Instance) AsRemoteTransform3D() Instance      { return o }
 func (o *Extension[T]) AsRemoteTransform3D() Instance { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced             { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced             { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance     { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance          { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                 { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance          { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                 { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance         { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance              { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance              { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

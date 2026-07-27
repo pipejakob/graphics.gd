@@ -14,6 +14,7 @@ Note: [FileDialog] is invisible by default. To make it visible, call one of the 
 package FileDialog
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -23,6 +24,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -54,6 +56,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -466,7 +471,7 @@ func (self Instance) Invalidate() { //gd:FileDialog.invalidate
 type Advanced = class
 type class [1]gdclass.FileDialog
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewFileDialog(obj[0])
@@ -481,7 +486,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -832,6 +837,7 @@ func (self Instance) SetCurrentPath(value string) Instance { //gd:FileDialog.cur
 
 func (self class) ClearFilters() { //gd:FileDialog.clear_filters
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_filters, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddFilter(filter String.Readable, description String.Readable, mime_type String.Readable) { //gd:FileDialog.add_filter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_filter, 0|(gdextension.SizeString<<4)|(gdextension.SizeString<<8)|(gdextension.SizeString<<12), &struct {
@@ -839,40 +845,54 @@ func (self class) AddFilter(filter String.Readable, description String.Readable,
 		description gdextension.String
 		mime_type   gdextension.String
 	}{pointers.Get(gd.InternalString(filter)), pointers.Get(gd.InternalString(description)), pointers.Get(gd.InternalString(mime_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(filter)
+	runtime.KeepAlive(description)
+	runtime.KeepAlive(mime_type)
 }
 func (self class) SetFilters(filters Packed.Strings) { //gd:FileDialog.set_filters
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_filters, 0|(gdextension.SizePackedArray<<4), &struct {
 		filters gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(filters))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(filters)
 }
 func (self class) GetFilters() Packed.Strings { //gd:FileDialog.get_filters
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_filters, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) ClearFilenameFilter() { //gd:FileDialog.clear_filename_filter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_filename_filter, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFilenameFilter(filter String.Readable) { //gd:FileDialog.set_filename_filter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_filename_filter, 0|(gdextension.SizeString<<4), &struct{ filter gdextension.String }{pointers.Get(gd.InternalString(filter))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(filter)
 }
 func (self class) GetFilenameFilter() String.Readable { //gd:FileDialog.get_filename_filter
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_filename_filter, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetOptionName(option int64) String.Readable { //gd:FileDialog.get_option_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_option_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ option int64 }{option})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetOptionValues(option int64) Packed.Strings { //gd:FileDialog.get_option_values
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_option_values, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ option int64 }{option})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetOptionDefault(option int64) int64 { //gd:FileDialog.get_option_default
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_option_default, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ option int64 }{option})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -881,24 +901,31 @@ func (self class) SetOptionName(option int64, name String.Readable) { //gd:FileD
 		option int64
 		name   gdextension.String
 	}{option, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) SetOptionValues(option int64, values Packed.Strings) { //gd:FileDialog.set_option_values
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_option_values, 0|(gdextension.SizeInt<<4)|(gdextension.SizePackedArray<<8), &struct {
 		option int64
 		values gdextension.PackedArray[gdextension.String]
 	}{option, pointers.Get(gd.InternalPackedStrings(values))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(values)
 }
 func (self class) SetOptionDefault(option int64, default_value_index int64) { //gd:FileDialog.set_option_default
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_option_default, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		option              int64
 		default_value_index int64
 	}{option, default_value_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetOptionCount(count int64) { //gd:FileDialog.set_option_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_option_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOptionCount() int64 { //gd:FileDialog.get_option_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_option_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -908,99 +935,129 @@ func (self class) AddOption(name String.Readable, values Packed.Strings, default
 		values              gdextension.PackedArray[gdextension.String]
 		default_value_index int64
 	}{pointers.Get(gd.InternalString(name)), pointers.Get(gd.InternalPackedStrings(values)), default_value_index})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(values)
 }
 func (self class) GetSelectedOptions() Dictionary.Any { //gd:FileDialog.get_selected_options
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_selected_options, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetCurrentDir() String.Readable { //gd:FileDialog.get_current_dir
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_current_dir, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCurrentFile() String.Readable { //gd:FileDialog.get_current_file
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_current_file, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCurrentPath() String.Readable { //gd:FileDialog.get_current_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_current_path, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetCurrentDir(dir String.Readable) { //gd:FileDialog.set_current_dir
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_current_dir, 0|(gdextension.SizeString<<4), &struct{ dir gdextension.String }{pointers.Get(gd.InternalString(dir))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(dir)
 }
 func (self class) SetCurrentFile(file String.Readable) { //gd:FileDialog.set_current_file
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_current_file, 0|(gdextension.SizeString<<4), &struct{ file gdextension.String }{pointers.Get(gd.InternalString(file))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(file)
 }
 func (self class) SetCurrentPath(path String.Readable) { //gd:FileDialog.set_current_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_current_path, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) SetModeOverridesTitle(override bool) { //gd:FileDialog.set_mode_overrides_title
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mode_overrides_title, 0|(gdextension.SizeBool<<4), &struct{ override bool }{override})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsModeOverridingTitle() bool { //gd:FileDialog.is_mode_overriding_title
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_mode_overriding_title, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFileMode(mode FileMode) { //gd:FileDialog.set_file_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_file_mode, 0|(gdextension.SizeInt<<4), &struct{ mode FileMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFileMode() FileMode { //gd:FileDialog.get_file_mode
 	var r_ret = jumponly.Call[FileMode](gd.ObjectChecked(self.AsObject()), methods.get_file_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDisplayMode(mode DisplayMode) { //gd:FileDialog.set_display_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_display_mode, 0|(gdextension.SizeInt<<4), &struct{ mode DisplayMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDisplayMode() DisplayMode { //gd:FileDialog.get_display_mode
 	var r_ret = jumponly.Call[DisplayMode](gd.ObjectChecked(self.AsObject()), methods.get_display_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVbox() [1]gdclass.VBoxContainer { //gd:FileDialog.get_vbox
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_vbox, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.VBoxContainer{gdclass.NewVBoxContainer(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) GetLineEdit() [1]gdclass.LineEdit { //gd:FileDialog.get_line_edit
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_line_edit, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.LineEdit{gdclass.NewLineEdit(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) SetAccess(access Access) { //gd:FileDialog.set_access
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_access, 0|(gdextension.SizeInt<<4), &struct{ access Access }{access})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAccess() Access { //gd:FileDialog.get_access
 	var r_ret = jumponly.Call[Access](gd.ObjectChecked(self.AsObject()), methods.get_access, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRootSubfolder(dir String.Readable) { //gd:FileDialog.set_root_subfolder
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_root_subfolder, 0|(gdextension.SizeString<<4), &struct{ dir gdextension.String }{pointers.Get(gd.InternalString(dir))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(dir)
 }
 func (self class) GetRootSubfolder() String.Readable { //gd:FileDialog.get_root_subfolder
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_root_subfolder, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetShowHiddenFiles(show bool) { //gd:FileDialog.set_show_hidden_files
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_hidden_files, 0|(gdextension.SizeBool<<4), &struct{ show bool }{show})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShowingHiddenFiles() bool { //gd:FileDialog.is_showing_hidden_files
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_showing_hidden_files, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseNativeDialog(native bool) { //gd:FileDialog.set_use_native_dialog
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_native_dialog, 0|(gdextension.SizeBool<<4), &struct{ native bool }{native})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseNativeDialog() bool { //gd:FileDialog.get_use_native_dialog
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_native_dialog, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1009,19 +1066,23 @@ func (self class) SetCustomizationFlagEnabled(flag Customization, enabled bool) 
 		flag    Customization
 		enabled bool
 	}{flag, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCustomizationFlagEnabled(flag Customization) bool { //gd:FileDialog.is_customization_flag_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_customization_flag_enabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ flag Customization }{flag})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) DeselectAll() { //gd:FileDialog.deselect_all
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.deselect_all, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFavoriteList(favorites Packed.Strings) { //gd:FileDialog.set_favorite_list
 	noescape.CallStatic[struct{}](methods.set_favorite_list, 0|(gdextension.SizePackedArray<<4), &struct {
 		favorites gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(favorites))})
+	runtime.KeepAlive(favorites)
 }
 func (self class) GetFavoriteList() Packed.Strings { //gd:FileDialog.get_favorite_list
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.get_favorite_list, gdextension.SizePackedArray, &struct{}{})
@@ -1032,6 +1093,7 @@ func (self class) SetRecentList(recents Packed.Strings) { //gd:FileDialog.set_re
 	noescape.CallStatic[struct{}](methods.set_recent_list, 0|(gdextension.SizePackedArray<<4), &struct {
 		recents gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(recents))})
+	runtime.KeepAlive(recents)
 }
 func (self class) GetRecentList() Packed.Strings { //gd:FileDialog.get_recent_list
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.get_recent_list, gdextension.SizePackedArray, &struct{}{})
@@ -1040,15 +1102,19 @@ func (self class) GetRecentList() Packed.Strings { //gd:FileDialog.get_recent_li
 }
 func (self class) SetGetIconCallback(callback Callable.Function) { //gd:FileDialog.set_get_icon_callback
 	noescape.CallStatic[struct{}](methods.set_get_icon_callback, 0|(gdextension.SizeCallable<<4), &struct{ callback gdextension.Callable }{pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) SetGetThumbnailCallback(callback Callable.Function) { //gd:FileDialog.set_get_thumbnail_callback
 	noescape.CallStatic[struct{}](methods.set_get_thumbnail_callback, 0|(gdextension.SizeCallable<<4), &struct{ callback gdextension.Callable }{pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) PopupFileDialog() { //gd:FileDialog.popup_file_dialog
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_file_dialog, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Invalidate() { //gd:FileDialog.invalidate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.invalidate, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -1119,26 +1185,26 @@ func (o class) AsFileDialog() Advanced         { return Advanced(o) }
 func (o Instance) AsFileDialog() Instance      { return o }
 func (o *Extension[T]) AsFileDialog() Instance { return o.Super() }
 func (o class) AsConfirmationDialog() ConfirmationDialog.Advanced {
-	return ConfirmationDialog.Advanced{gdclass.NewConfirmationDialog(o[0].AsObject()[0])}
+	return *(*ConfirmationDialog.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsConfirmationDialog() ConfirmationDialog.Instance {
 	return o.Super().AsConfirmationDialog()
 }
 func (o Instance) AsConfirmationDialog() ConfirmationDialog.Instance {
-	return ConfirmationDialog.Instance{gdclass.NewConfirmationDialog(o[0].AsObject()[0])}
+	return *(*ConfirmationDialog.Instance)(ie.As(&o))
 }
-func (o class) AsAcceptDialog() AcceptDialog.Advanced         { return AcceptDialog.Advanced{gdclass.NewAcceptDialog(o[0].AsObject()[0])} }
+func (o class) AsAcceptDialog() AcceptDialog.Advanced         { return *(*AcceptDialog.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAcceptDialog() AcceptDialog.Instance { return o.Super().AsAcceptDialog() }
-func (o Instance) AsAcceptDialog() AcceptDialog.Instance      { return AcceptDialog.Instance{gdclass.NewAcceptDialog(o[0].AsObject()[0])} }
-func (o class) AsWindow() Window.Advanced                     { return Window.Advanced{gdclass.NewWindow(o[0].AsObject()[0])} }
+func (o Instance) AsAcceptDialog() AcceptDialog.Instance      { return *(*AcceptDialog.Instance)(ie.As(&o)) }
+func (o class) AsWindow() Window.Advanced                     { return *(*Window.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsWindow() Window.Instance             { return o.Super().AsWindow() }
-func (o Instance) AsWindow() Window.Instance                  { return Window.Instance{gdclass.NewWindow(o[0].AsObject()[0])} }
-func (o class) AsViewport() Viewport.Advanced                 { return Viewport.Advanced{gdclass.NewViewport(o[0].AsObject()[0])} }
+func (o Instance) AsWindow() Window.Instance                  { return *(*Window.Instance)(ie.As(&o)) }
+func (o class) AsViewport() Viewport.Advanced                 { return *(*Viewport.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsViewport() Viewport.Instance         { return o.Super().AsViewport() }
-func (o Instance) AsViewport() Viewport.Instance              { return Viewport.Instance{gdclass.NewViewport(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsViewport() Viewport.Instance              { return *(*Viewport.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                         { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance                 { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                      { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

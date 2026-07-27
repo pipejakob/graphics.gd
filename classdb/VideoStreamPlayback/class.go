@@ -8,6 +8,7 @@ This class is intended to be overridden by video decoder extensions with custom 
 package VideoStreamPlayback
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -418,7 +422,7 @@ func (self MoreArgs) MixAudio(num_frames int, buffer []float32, offset int) int 
 type Advanced = class
 type class [1]gdclass.VideoStreamPlayback
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVideoStreamPlayback(obj[0])
@@ -433,7 +437,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -556,15 +560,17 @@ func (self class) MixAudio(num_frames int64, buffer Packed.Array[float32], offse
 		buffer     gdextension.PackedArray[float32]
 		offset     int64
 	}{num_frames, pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](buffer)), offset})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = r_ret
 	return ret
 }
 func (o class) AsVideoStreamPlayback() Advanced         { return Advanced(o) }
 func (o Instance) AsVideoStreamPlayback() Instance      { return o }
 func (o *Extension[T]) AsVideoStreamPlayback() Instance { return o.Super() }
-func (o class) AsResource() Resource.Advanced           { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced           { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance   { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance        { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance        { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

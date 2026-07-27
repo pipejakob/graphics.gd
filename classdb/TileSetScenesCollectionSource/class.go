@@ -38,6 +38,7 @@ Use this code if you want to find the scene path at a given tile in [TileMapLaye
 package TileSetScenesCollectionSource
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -74,6 +75,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -276,7 +280,7 @@ func (self Instance) GetNextSceneTileId() int { //gd:TileSetScenesCollectionSour
 type Advanced = class
 type class [1]gdclass.TileSetScenesCollectionSource
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTileSetScenesCollectionSource(obj[0])
@@ -291,7 +295,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -316,16 +320,19 @@ func New() Instance {
 
 func (self class) GetSceneTilesCount() int64 { //gd:TileSetScenesCollectionSource.get_scene_tiles_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_scene_tiles_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSceneTileId(index int64) int64 { //gd:TileSetScenesCollectionSource.get_scene_tile_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_scene_tile_id, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasSceneTileId(id int64) bool { //gd:TileSetScenesCollectionSource.has_scene_tile_id
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_scene_tile_id, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -334,6 +341,8 @@ func (self class) CreateSceneTile(packed_scene [1]gdclass.PackedScene, id_overri
 		packed_scene gdextension.Object
 		id_override  int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetPackedScene(packed_scene[0])[0])), id_override})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(packed_scene[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -342,15 +351,19 @@ func (self class) SetSceneTileId(id int64, new_id int64) { //gd:TileSetScenesCol
 		id     int64
 		new_id int64
 	}{id, new_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSceneTileScene(id int64, packed_scene [1]gdclass.PackedScene) { //gd:TileSetScenesCollectionSource.set_scene_tile_scene
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scene_tile_scene, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8), &struct {
 		id           int64
 		packed_scene gdextension.Object
 	}{id, gdextension.Object(gdreference.GetObject(gdclass.GetPackedScene(packed_scene[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(packed_scene[0].Anchor())
 }
 func (self class) GetSceneTileScene(id int64) [1]gdclass.PackedScene { //gd:TileSetScenesCollectionSource.get_scene_tile_scene
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_scene_tile_scene, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.PackedScene{gdclass.NewPackedScene(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -359,31 +372,35 @@ func (self class) SetSceneTileDisplayPlaceholder(id int64, display_placeholder b
 		id                  int64
 		display_placeholder bool
 	}{id, display_placeholder})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSceneTileDisplayPlaceholder(id int64) bool { //gd:TileSetScenesCollectionSource.get_scene_tile_display_placeholder
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_scene_tile_display_placeholder, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RemoveSceneTile(id int64) { //gd:TileSetScenesCollectionSource.remove_scene_tile
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_scene_tile, 0|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNextSceneTileId() int64 { //gd:TileSetScenesCollectionSource.get_next_scene_tile_id
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_next_scene_tile_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsTileSetScenesCollectionSource() Advanced         { return Advanced(o) }
 func (o Instance) AsTileSetScenesCollectionSource() Instance      { return o }
 func (o *Extension[T]) AsTileSetScenesCollectionSource() Instance { return o.Super() }
-func (o class) AsTileSetSource() TileSetSource.Advanced           { return TileSetSource.Advanced{gdclass.NewTileSetSource(o[0].AsObject()[0])} }
+func (o class) AsTileSetSource() TileSetSource.Advanced           { return *(*TileSetSource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTileSetSource() TileSetSource.Instance   { return o.Super().AsTileSetSource() }
 func (o Instance) AsTileSetSource() TileSetSource.Instance {
-	return TileSetSource.Instance{gdclass.NewTileSetSource(o[0].AsObject()[0])}
+	return *(*TileSetSource.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

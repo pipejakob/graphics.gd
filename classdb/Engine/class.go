@@ -9,6 +9,7 @@ package Engine
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -18,6 +19,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -44,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -512,7 +517,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.Engine
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEngine(obj[0])
@@ -527,7 +532,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 /*
@@ -823,12 +828,14 @@ func (self class) IsInPhysicsFrame() bool { //gd:Engine.is_in_physics_frame
 func (self class) HasSingleton(name String.Name) bool { //gd:Engine.has_singleton
 	once.Do(singleton)
 	var r_ret = noescape.Call[bool](gdreference.GetObject(self.AsObject()[0]), methods.has_singleton, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSingleton(name String.Name) [1]gdreference.Object { //gd:Engine.get_singleton
 	once.Do(singleton)
 	var r_ret = jumponly.Call[gdextension.Object](gdreference.GetObject(self.AsObject()[0]), methods.get_singleton, gdextension.SizeObject|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 	var ret = [1]gdreference.Object{gdreference.LetObject(r_ret)}
 	return ret
 }
@@ -838,10 +845,13 @@ func (self class) RegisterSingleton(name String.Name, instance [1]gdreference.Ob
 		name     gdextension.StringName
 		instance gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetObject(instance[0])[0]))})
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(instance[0].Anchor())
 }
 func (self class) UnregisterSingleton(name String.Name) { //gd:Engine.unregister_singleton
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.unregister_singleton, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) GetSingletonList() Packed.Strings { //gd:Engine.get_singleton_list
 	once.Do(singleton)
@@ -852,12 +862,14 @@ func (self class) GetSingletonList() Packed.Strings { //gd:Engine.get_singleton_
 func (self class) RegisterScriptLanguage(language [1]gdclass.ScriptLanguage) Error.Code { //gd:Engine.register_script_language
 	once.Do(singleton)
 	var r_ret = noescape.Call[int64](gdreference.GetObject(self.AsObject()[0]), methods.register_script_language, gdextension.SizeInt|(gdextension.SizeObject<<4), &struct{ language gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetScriptLanguage(language[0])[0]))})
+	runtime.KeepAlive(language[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) UnregisterScriptLanguage(language [1]gdclass.ScriptLanguage) Error.Code { //gd:Engine.unregister_script_language
 	once.Do(singleton)
 	var r_ret = noescape.Call[int64](gdreference.GetObject(self.AsObject()[0]), methods.unregister_script_language, gdextension.SizeInt|(gdextension.SizeObject<<4), &struct{ language gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetScriptLanguage(language[0])[0]))})
+	runtime.KeepAlive(language[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }

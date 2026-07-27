@@ -14,6 +14,7 @@ A plugin must be first registered with [FileSystemDock.AddResourceTooltipPlugin]
 package EditorResourceTooltipPlugin
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -249,7 +253,7 @@ func (self Instance) RequestThumbnail(path string, control TextureRect.Instance)
 type Advanced = class
 type class [1]gdclass.EditorResourceTooltipPlugin
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorResourceTooltipPlugin(obj[0])
@@ -264,7 +268,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -320,6 +324,9 @@ func (self class) RequestThumbnail(path String.Readable, control [1]gdclass.Text
 		path    gdextension.String
 		control gdextension.Object
 	}{pointers.Get(gd.InternalString(path)), gdextension.Object(gdreference.GetObject(gdclass.GetTextureRect(control[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(control[0].Anchor())
 }
 func (o class) AsEditorResourceTooltipPlugin() Advanced         { return Advanced(o) }
 func (o Instance) AsEditorResourceTooltipPlugin() Instance      { return o }

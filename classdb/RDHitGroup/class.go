@@ -13,6 +13,7 @@ Hit groups are referenced by index when populating hit shader binding tables usi
 package RDHitGroup
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -46,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -130,7 +134,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.RDHitGroup
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDHitGroup(obj[0])
@@ -145,7 +149,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -209,25 +213,34 @@ func (self Instance) SetIntersectionShader(value RDPipelineShader.Instance) Inst
 
 func (self class) SetClosestHitShader(p_member [1]gdclass.RDPipelineShader) { //gd:RDHitGroup.set_closest_hit_shader
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_closest_hit_shader, 0|(gdextension.SizeObject<<4), &struct{ p_member gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetRDPipelineShader(p_member[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(p_member[0].Anchor())
 }
 func (self class) GetClosestHitShader() [1]gdclass.RDPipelineShader { //gd:RDHitGroup.get_closest_hit_shader
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_closest_hit_shader, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.RDPipelineShader{gdclass.NewRDPipelineShader(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetAnyHitShader(p_member [1]gdclass.RDPipelineShader) { //gd:RDHitGroup.set_any_hit_shader
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_any_hit_shader, 0|(gdextension.SizeObject<<4), &struct{ p_member gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetRDPipelineShader(p_member[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(p_member[0].Anchor())
 }
 func (self class) GetAnyHitShader() [1]gdclass.RDPipelineShader { //gd:RDHitGroup.get_any_hit_shader
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_any_hit_shader, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.RDPipelineShader{gdclass.NewRDPipelineShader(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetIntersectionShader(p_member [1]gdclass.RDPipelineShader) { //gd:RDHitGroup.set_intersection_shader
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_intersection_shader, 0|(gdextension.SizeObject<<4), &struct{ p_member gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetRDPipelineShader(p_member[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(p_member[0].Anchor())
 }
 func (self class) GetIntersectionShader() [1]gdclass.RDPipelineShader { //gd:RDHitGroup.get_intersection_shader
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_intersection_shader, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.RDPipelineShader{gdclass.NewRDPipelineShader(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }

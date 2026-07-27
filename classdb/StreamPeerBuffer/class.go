@@ -11,6 +11,7 @@ A [StreamPeerBuffer] object keeps an internal cursor which is the offset in byte
 package StreamPeerBuffer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -185,7 +189,7 @@ func (self Instance) Duplicate() Instance { //gd:StreamPeerBuffer.duplicate
 type Advanced = class
 type class [1]gdclass.StreamPeerBuffer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewStreamPeerBuffer(obj[0])
@@ -200,7 +204,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -238,42 +242,51 @@ func (self Instance) SetDataArray(value []byte) Instance { //gd:StreamPeerBuffer
 
 func (self class) SeekTo(position int64) { //gd:StreamPeerBuffer.seek
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.seek, 0|(gdextension.SizeInt<<4), &struct{ position int64 }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSize() int64 { //gd:StreamPeerBuffer.get_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPosition() int64 { //gd:StreamPeerBuffer.get_position
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_position, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Resize(size int64) { //gd:StreamPeerBuffer.resize
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.resize, 0|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetDataArray(data Packed.Bytes) { //gd:StreamPeerBuffer.set_data_array
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_data_array, 0|(gdextension.SizePackedArray<<4), &struct{ data gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 }
 func (self class) GetDataArray() Packed.Bytes { //gd:StreamPeerBuffer.get_data_array
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_data_array, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) Clear() { //gd:StreamPeerBuffer.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Duplicate() [1]gdclass.StreamPeerBuffer { //gd:StreamPeerBuffer.duplicate
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.duplicate, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.StreamPeerBuffer{gdclass.NewStreamPeerBuffer(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsStreamPeerBuffer() Advanced              { return Advanced(o) }
 func (o Instance) AsStreamPeerBuffer() Instance           { return o }
 func (o *Extension[T]) AsStreamPeerBuffer() Instance      { return o.Super() }
-func (o class) AsStreamPeer() StreamPeer.Advanced         { return StreamPeer.Advanced{gdclass.NewStreamPeer(o[0].AsObject()[0])} }
+func (o class) AsStreamPeer() StreamPeer.Advanced         { return *(*StreamPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsStreamPeer() StreamPeer.Instance { return o.Super().AsStreamPeer() }
-func (o Instance) AsStreamPeer() StreamPeer.Instance      { return StreamPeer.Instance{gdclass.NewStreamPeer(o[0].AsObject()[0])} }
+func (o Instance) AsStreamPeer() StreamPeer.Instance      { return *(*StreamPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

@@ -63,6 +63,7 @@ Note: Both parse methods do not fully comply with the JSON specification:
 package JSON
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -97,6 +98,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -348,7 +352,7 @@ func ToNative(json any, allow_objects bool) any { //gd:JSON.to_native
 type Advanced = class
 type class [1]gdclass.JSON
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewJSON(obj[0])
@@ -363,7 +367,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -406,11 +410,14 @@ func (self class) Stringify(data variant.Any, indent String.Readable, sort_keys 
 		sort_keys      bool
 		full_precision bool
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(data))), pointers.Get(gd.InternalString(indent)), sort_keys, full_precision})
+	runtime.KeepAlive(data)
+	runtime.KeepAlive(indent)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ParseString(json_string String.Readable) variant.Any { //gd:JSON.parse_string
 	var r_ret = noescape.CallStatic[gdextension.Variant](methods.parse_string, gdextension.SizeVariant|(gdextension.SizeString<<4), &struct{ json_string gdextension.String }{pointers.Get(gd.InternalString(json_string))})
+	runtime.KeepAlive(json_string)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -419,29 +426,37 @@ func (self class) Parse(json_text String.Readable, keep_text bool) Error.Code { 
 		json_text gdextension.String
 		keep_text bool
 	}{pointers.Get(gd.InternalString(json_text)), keep_text})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(json_text)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetData() variant.Any { //gd:JSON.get_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_data, gdextension.SizeVariant, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetData(data variant.Any) { //gd:JSON.set_data
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_data, 0|(gdextension.SizeVariant<<4), &struct{ data gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(data)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 }
 func (self class) GetParsedText() String.Readable { //gd:JSON.get_parsed_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_parsed_text, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetErrorLine() int64 { //gd:JSON.get_error_line
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_error_line, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetErrorMessage() String.Readable { //gd:JSON.get_error_message
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_error_message, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -450,6 +465,7 @@ func (self class) FromNative(v variant.Any, full_objects bool) variant.Any { //g
 		v            gdextension.Variant
 		full_objects bool
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(v))), full_objects})
+	runtime.KeepAlive(v)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -458,15 +474,16 @@ func (self class) ToNative(json variant.Any, allow_objects bool) variant.Any { /
 		json          gdextension.Variant
 		allow_objects bool
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(json))), allow_objects})
+	runtime.KeepAlive(json)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (o class) AsJSON() Advanced                      { return Advanced(o) }
 func (o Instance) AsJSON() Instance                   { return o }
 func (o *Extension[T]) AsJSON() Instance              { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

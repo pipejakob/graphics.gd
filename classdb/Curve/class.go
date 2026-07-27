@@ -11,6 +11,7 @@ Please note that many resources and nodes assume they are given unit curves. A u
 package Curve
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -46,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -332,7 +336,7 @@ func (self Instance) Bake() { //gd:Curve.bake
 type Advanced = class
 type class [1]gdclass.Curve
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCurve(obj[0])
@@ -347,7 +351,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -450,11 +454,13 @@ func (self Instance) SetPointCount(value int) Instance { //gd:Curve.point_count
 
 func (self class) GetPointCount() int64 { //gd:Curve.get_point_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_point_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPointCount(count int64) { //gd:Curve.set_point_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_point_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddPoint(position Vector2.XY, left_tangent float64, right_tangent float64, left_mode TangentMode, right_mode TangentMode) int64 { //gd:Curve.add_point
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.add_point, gdextension.SizeInt|(gdextension.SizeVector2<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeFloat<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeInt<<20), &struct {
@@ -464,17 +470,21 @@ func (self class) AddPoint(position Vector2.XY, left_tangent float64, right_tang
 		left_mode     TangentMode
 		right_mode    TangentMode
 	}{position, left_tangent, right_tangent, left_mode, right_mode})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RemovePoint(index int64) { //gd:Curve.remove_point
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_point, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearPoints() { //gd:Curve.clear_points
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_points, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPointPosition(index int64) Vector2.XY { //gd:Curve.get_point_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_point_position, gdextension.SizeVector2|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -483,42 +493,50 @@ func (self class) SetPointValue(index int64, y float64) { //gd:Curve.set_point_v
 		index int64
 		y     float64
 	}{index, y})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPointOffset(index int64, offset float64) int64 { //gd:Curve.set_point_offset
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.set_point_offset, gdextension.SizeInt|(gdextension.SizeInt<<4)|(gdextension.SizeFloat<<8), &struct {
 		index  int64
 		offset float64
 	}{index, offset})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Sample(offset float64) float64 { //gd:Curve.sample
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.sample, gdextension.SizeFloat|(gdextension.SizeFloat<<4), &struct{ offset float64 }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SampleBaked(offset float64) float64 { //gd:Curve.sample_baked
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.sample_baked, gdextension.SizeFloat|(gdextension.SizeFloat<<4), &struct{ offset float64 }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPointLeftTangent(index int64) float64 { //gd:Curve.get_point_left_tangent
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_point_left_tangent, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPointRightTangent(index int64) float64 { //gd:Curve.get_point_right_tangent
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_point_right_tangent, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPointLeftMode(index int64) TangentMode { //gd:Curve.get_point_left_mode
 	var r_ret = noescape.Call[TangentMode](gd.ObjectChecked(self.AsObject()), methods.get_point_left_mode, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPointRightMode(index int64) TangentMode { //gd:Curve.get_point_right_mode
 	var r_ret = noescape.Call[TangentMode](gd.ObjectChecked(self.AsObject()), methods.get_point_right_mode, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -527,80 +545,98 @@ func (self class) SetPointLeftTangent(index int64, tangent float64) { //gd:Curve
 		index   int64
 		tangent float64
 	}{index, tangent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPointRightTangent(index int64, tangent float64) { //gd:Curve.set_point_right_tangent
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_point_right_tangent, 0|(gdextension.SizeInt<<4)|(gdextension.SizeFloat<<8), &struct {
 		index   int64
 		tangent float64
 	}{index, tangent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPointLeftMode(index int64, mode TangentMode) { //gd:Curve.set_point_left_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_point_left_mode, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		mode  TangentMode
 	}{index, mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPointRightMode(index int64, mode TangentMode) { //gd:Curve.set_point_right_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_point_right_mode, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		mode  TangentMode
 	}{index, mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMinValue() float64 { //gd:Curve.get_min_value
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_min_value, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinValue(min float64) { //gd:Curve.set_min_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min_value, 0|(gdextension.SizeFloat<<4), &struct{ min float64 }{min})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxValue() float64 { //gd:Curve.get_max_value
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_max_value, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxValue(max float64) { //gd:Curve.set_max_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_value, 0|(gdextension.SizeFloat<<4), &struct{ max float64 }{max})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetValueRange() float64 { //gd:Curve.get_value_range
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_value_range, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMinDomain() float64 { //gd:Curve.get_min_domain
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_min_domain, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinDomain(min float64) { //gd:Curve.set_min_domain
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min_domain, 0|(gdextension.SizeFloat<<4), &struct{ min float64 }{min})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxDomain() float64 { //gd:Curve.get_max_domain
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_max_domain, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxDomain(max float64) { //gd:Curve.set_max_domain
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_domain, 0|(gdextension.SizeFloat<<4), &struct{ max float64 }{max})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDomainRange() float64 { //gd:Curve.get_domain_range
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_domain_range, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) CleanDupes() { //gd:Curve.clean_dupes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clean_dupes, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Bake() { //gd:Curve.bake
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.bake, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBakeResolution() int64 { //gd:Curve.get_bake_resolution
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_bake_resolution, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBakeResolution(resolution int64) { //gd:Curve.set_bake_resolution
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bake_resolution, 0|(gdextension.SizeInt<<4), &struct{ resolution int64 }{resolution})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -644,9 +680,9 @@ func (self class) DomainChanged() Signal.Any {
 func (o class) AsCurve() Advanced                     { return Advanced(o) }
 func (o Instance) AsCurve() Instance                  { return o }
 func (o *Extension[T]) AsCurve() Instance             { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

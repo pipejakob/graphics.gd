@@ -10,6 +10,7 @@ Note: When exporting to Android, make sure to enable the INTERNET permission in 
 package TCPServer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -172,7 +176,7 @@ func (self Instance) TakeConnection() StreamPeerTCP.Instance { //gd:TCPServer.ta
 type Advanced = class
 type class [1]gdclass.TCPServer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTCPServer(obj[0])
@@ -187,7 +191,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -215,25 +219,29 @@ func (self class) Listen(port int64, bind_address String.Readable) Error.Code { 
 		port         int64
 		bind_address gdextension.String
 	}{port, pointers.Get(gd.InternalString(bind_address))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bind_address)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetLocalPort() int64 { //gd:TCPServer.get_local_port
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_local_port, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) TakeConnection() [1]gdclass.StreamPeerTCP { //gd:TCPServer.take_connection
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.take_connection, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.StreamPeerTCP{gdclass.NewStreamPeerTCP(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsTCPServer() Advanced                         { return Advanced(o) }
 func (o Instance) AsTCPServer() Instance                      { return o }
 func (o *Extension[T]) AsTCPServer() Instance                 { return o.Super() }
-func (o class) AsSocketServer() SocketServer.Advanced         { return SocketServer.Advanced{gdclass.NewSocketServer(o[0].AsObject()[0])} }
+func (o class) AsSocketServer() SocketServer.Advanced         { return *(*SocketServer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsSocketServer() SocketServer.Instance { return o.Super().AsSocketServer() }
-func (o Instance) AsSocketServer() SocketServer.Instance      { return SocketServer.Instance{gdclass.NewSocketServer(o[0].AsObject()[0])} }
+func (o Instance) AsSocketServer() SocketServer.Instance      { return *(*SocketServer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                           { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                   { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                        { return *(*ie.RC)(ie.As(&o)) }

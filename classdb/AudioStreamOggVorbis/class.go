@@ -13,6 +13,7 @@ This class is part of the audio stream system, which also supports WAV files thr
 package AudioStreamOggVorbis
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -164,7 +168,7 @@ func LoadFromFile(path string) Instance { //gd:AudioStreamOggVorbis.load_from_fi
 type Advanced = class
 type class [1]gdclass.AudioStreamOggVorbis
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioStreamOggVorbis(obj[0])
@@ -179,7 +183,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -305,79 +309,97 @@ func (self Instance) SetLoopOffset(value Float.X) Instance { //gd:AudioStreamOgg
 
 func (self class) LoadFromBuffer(stream_data Packed.Bytes) [1]gdclass.AudioStreamOggVorbis { //gd:AudioStreamOggVorbis.load_from_buffer
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.load_from_buffer, gdextension.SizeObject|(gdextension.SizePackedArray<<4), &struct{ stream_data gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](stream_data.Array)))})
+	runtime.KeepAlive(stream_data)
 	var ret = [1]gdclass.AudioStreamOggVorbis{gdclass.NewAudioStreamOggVorbis(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) LoadFromFile(path String.Readable) [1]gdclass.AudioStreamOggVorbis { //gd:AudioStreamOggVorbis.load_from_file
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.load_from_file, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(path)
 	var ret = [1]gdclass.AudioStreamOggVorbis{gdclass.NewAudioStreamOggVorbis(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetPacketSequence(packet_sequence [1]gdclass.OggPacketSequence) { //gd:AudioStreamOggVorbis.set_packet_sequence
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_packet_sequence, 0|(gdextension.SizeObject<<4), &struct{ packet_sequence gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOggPacketSequence(packet_sequence[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(packet_sequence[0].Anchor())
 }
 func (self class) GetPacketSequence() [1]gdclass.OggPacketSequence { //gd:AudioStreamOggVorbis.get_packet_sequence
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_packet_sequence, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OggPacketSequence{gdclass.NewOggPacketSequence(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetLoop(enable bool) { //gd:AudioStreamOggVorbis.set_loop
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_loop, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasLoop() bool { //gd:AudioStreamOggVorbis.has_loop
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_loop, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLoopOffset(seconds float64) { //gd:AudioStreamOggVorbis.set_loop_offset
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_loop_offset, 0|(gdextension.SizeFloat<<4), &struct{ seconds float64 }{seconds})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLoopOffset() float64 { //gd:AudioStreamOggVorbis.get_loop_offset
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_loop_offset, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBpm(bpm float64) { //gd:AudioStreamOggVorbis.set_bpm
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bpm, 0|(gdextension.SizeFloat<<4), &struct{ bpm float64 }{bpm})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBpm() float64 { //gd:AudioStreamOggVorbis.get_bpm
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_bpm, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBeatCount(count int64) { //gd:AudioStreamOggVorbis.set_beat_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_beat_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBeatCount() int64 { //gd:AudioStreamOggVorbis.get_beat_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_beat_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBarBeats(count int64) { //gd:AudioStreamOggVorbis.set_bar_beats
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bar_beats, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBarBeats() int64 { //gd:AudioStreamOggVorbis.get_bar_beats
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_bar_beats, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTags(tags Dictionary.Any) { //gd:AudioStreamOggVorbis.set_tags
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tags, 0|(gdextension.SizeDictionary<<4), &struct{ tags gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(tags))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tags)
 }
 func (self class) GetTags() Dictionary.Any { //gd:AudioStreamOggVorbis.get_tags
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_tags, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (o class) AsAudioStreamOggVorbis() Advanced            { return Advanced(o) }
 func (o Instance) AsAudioStreamOggVorbis() Instance         { return o }
 func (o *Extension[T]) AsAudioStreamOggVorbis() Instance    { return o.Super() }
-func (o class) AsAudioStream() AudioStream.Advanced         { return AudioStream.Advanced{gdclass.NewAudioStream(o[0].AsObject()[0])} }
+func (o class) AsAudioStream() AudioStream.Advanced         { return *(*AudioStream.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAudioStream() AudioStream.Instance { return o.Super().AsAudioStream() }
-func (o Instance) AsAudioStream() AudioStream.Instance      { return AudioStream.Instance{gdclass.NewAudioStream(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsAudioStream() AudioStream.Instance      { return *(*AudioStream.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

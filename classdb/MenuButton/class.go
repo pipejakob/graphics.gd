@@ -11,6 +11,7 @@ See also [BaseButton] which contains common properties and methods associated wi
 package MenuButton
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -49,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -167,7 +172,7 @@ func (self Instance) SetDisableShortcuts(disabled bool) Instance { //gd:MenuButt
 type Advanced = class
 type class [1]gdclass.MenuButton
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMenuButton(obj[0])
@@ -182,7 +187,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -236,28 +241,35 @@ func (self Instance) SetItemCount(value int) Instance { //gd:MenuButton.item_cou
 
 func (self class) GetPopup() [1]gdclass.PopupMenu { //gd:MenuButton.get_popup
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_popup, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.PopupMenu{gdclass.NewPopupMenu(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) ShowPopup() { //gd:MenuButton.show_popup
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.show_popup, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSwitchOnHover(enable bool) { //gd:MenuButton.set_switch_on_hover
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_switch_on_hover, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSwitchOnHover() bool { //gd:MenuButton.is_switch_on_hover
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_switch_on_hover, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDisableShortcuts(disabled bool) { //gd:MenuButton.set_disable_shortcuts
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_disable_shortcuts, 0|(gdextension.SizeBool<<4), &struct{ disabled bool }{disabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemCount(count int64) { //gd:MenuButton.set_item_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemCount() int64 { //gd:MenuButton.get_item_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -283,21 +295,21 @@ func (self class) AboutToPopup() Signal.Any {
 func (o class) AsMenuButton() Advanced                    { return Advanced(o) }
 func (o Instance) AsMenuButton() Instance                 { return o }
 func (o *Extension[T]) AsMenuButton() Instance            { return o.Super() }
-func (o class) AsButton() Button.Advanced                 { return Button.Advanced{gdclass.NewButton(o[0].AsObject()[0])} }
+func (o class) AsButton() Button.Advanced                 { return *(*Button.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsButton() Button.Instance         { return o.Super().AsButton() }
-func (o Instance) AsButton() Button.Instance              { return Button.Instance{gdclass.NewButton(o[0].AsObject()[0])} }
-func (o class) AsBaseButton() BaseButton.Advanced         { return BaseButton.Advanced{gdclass.NewBaseButton(o[0].AsObject()[0])} }
+func (o Instance) AsButton() Button.Instance              { return *(*Button.Instance)(ie.As(&o)) }
+func (o class) AsBaseButton() BaseButton.Advanced         { return *(*BaseButton.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsBaseButton() BaseButton.Instance { return o.Super().AsBaseButton() }
-func (o Instance) AsBaseButton() BaseButton.Instance      { return BaseButton.Instance{gdclass.NewBaseButton(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsBaseButton() BaseButton.Instance      { return *(*BaseButton.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

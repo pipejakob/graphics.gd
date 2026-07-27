@@ -10,6 +10,7 @@
 package AnimatedSprite3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -19,6 +20,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -48,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -262,7 +267,7 @@ func (self Instance) GetPlayingSpeed() Float.X { //gd:AnimatedSprite3D.get_playi
 type Advanced = class
 type class [1]gdclass.AnimatedSprite3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimatedSprite3D(obj[0])
@@ -277,7 +282,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -391,30 +396,40 @@ func (self Instance) SetSpeedScale(value Float.X) Instance { //gd:AnimatedSprite
 
 func (self class) SetSpriteFrames(sprite_frames [1]gdclass.SpriteFrames) { //gd:AnimatedSprite3D.set_sprite_frames
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sprite_frames, 0|(gdextension.SizeObject<<4), &struct{ sprite_frames gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetSpriteFrames(sprite_frames[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(sprite_frames[0].Anchor())
 }
 func (self class) GetSpriteFrames() [1]gdclass.SpriteFrames { //gd:AnimatedSprite3D.get_sprite_frames
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_sprite_frames, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.SpriteFrames{gdclass.NewSpriteFrames(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetAnimation(name String.Name) { //gd:AnimatedSprite3D.set_animation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_animation, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetAnimation() String.Name { //gd:AnimatedSprite3D.get_animation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_animation, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetAutoplay(name String.Readable) { //gd:AnimatedSprite3D.set_autoplay
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autoplay, 0|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetAutoplay() String.Readable { //gd:AnimatedSprite3D.get_autoplay
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_autoplay, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsPlaying() bool { //gd:AnimatedSprite3D.is_playing
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_playing, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -424,29 +439,39 @@ func (self class) Play(name String.Name, custom_speed float64, from_end bool) { 
 		custom_speed float64
 		from_end     bool
 	}{pointers.Get(gd.InternalStringName(name)), custom_speed, from_end})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) PlayBackwards(name String.Name) { //gd:AnimatedSprite3D.play_backwards
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.play_backwards, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) Pause() { //gd:AnimatedSprite3D.pause
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.pause, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Stop() { //gd:AnimatedSprite3D.stop
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.stop, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFrame(frame_ int64) { //gd:AnimatedSprite3D.set_frame
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_frame, 0|(gdextension.SizeInt<<4), &struct{ frame_ int64 }{frame_})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrame() int64 { //gd:AnimatedSprite3D.get_frame
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_frame, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrameProgress(progress float64) { //gd:AnimatedSprite3D.set_frame_progress
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_frame_progress, 0|(gdextension.SizeFloat<<4), &struct{ progress float64 }{progress})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrameProgress() float64 { //gd:AnimatedSprite3D.get_frame_progress
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_frame_progress, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -455,17 +480,21 @@ func (self class) SetFrameAndProgress(frame_ int64, progress float64) { //gd:Ani
 		frame_   int64
 		progress float64
 	}{frame_, progress})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSpeedScale(speed_scale float64) { //gd:AnimatedSprite3D.set_speed_scale
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_speed_scale, 0|(gdextension.SizeFloat<<4), &struct{ speed_scale float64 }{speed_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpeedScale() float64 { //gd:AnimatedSprite3D.get_speed_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_speed_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPlayingSpeed() float64 { //gd:AnimatedSprite3D.get_playing_speed
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_playing_speed, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -561,33 +590,33 @@ func (self class) AnimationFinished() Signal.Any {
 func (o class) AsAnimatedSprite3D() Advanced                  { return Advanced(o) }
 func (o Instance) AsAnimatedSprite3D() Instance               { return o }
 func (o *Extension[T]) AsAnimatedSprite3D() Instance          { return o.Super() }
-func (o class) AsSpriteBase3D() SpriteBase3D.Advanced         { return SpriteBase3D.Advanced{gdclass.NewSpriteBase3D(o[0].AsObject()[0])} }
+func (o class) AsSpriteBase3D() SpriteBase3D.Advanced         { return *(*SpriteBase3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsSpriteBase3D() SpriteBase3D.Instance { return o.Super().AsSpriteBase3D() }
-func (o Instance) AsSpriteBase3D() SpriteBase3D.Instance      { return SpriteBase3D.Instance{gdclass.NewSpriteBase3D(o[0].AsObject()[0])} }
+func (o Instance) AsSpriteBase3D() SpriteBase3D.Instance      { return *(*SpriteBase3D.Instance)(ie.As(&o)) }
 func (o class) AsGeometryInstance3D() GeometryInstance3D.Advanced {
-	return GeometryInstance3D.Advanced{gdclass.NewGeometryInstance3D(o[0].AsObject()[0])}
+	return *(*GeometryInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsGeometryInstance3D() GeometryInstance3D.Instance {
 	return o.Super().AsGeometryInstance3D()
 }
 func (o Instance) AsGeometryInstance3D() GeometryInstance3D.Instance {
-	return GeometryInstance3D.Instance{gdclass.NewGeometryInstance3D(o[0].AsObject()[0])}
+	return *(*GeometryInstance3D.Instance)(ie.As(&o))
 }
 func (o class) AsVisualInstance3D() VisualInstance3D.Advanced {
-	return VisualInstance3D.Advanced{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualInstance3D() VisualInstance3D.Instance {
 	return o.Super().AsVisualInstance3D()
 }
 func (o Instance) AsVisualInstance3D() VisualInstance3D.Instance {
-	return VisualInstance3D.Instance{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

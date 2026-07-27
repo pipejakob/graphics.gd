@@ -3,6 +3,7 @@
 package PhysicsServer3DRenderingServerHandler
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -11,6 +12,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -36,6 +38,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -237,7 +242,7 @@ func (self Instance) SetAabb(aabb AABB.PositionSize) Instance { //gd:PhysicsServ
 type Advanced = class
 type class [1]gdclass.PhysicsServer3DRenderingServerHandler
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPhysicsServer3DRenderingServerHandler(obj[0])
@@ -252,7 +257,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -303,15 +308,18 @@ func (self class) SetVertex(vertex_id int64, vertex Vector3.XYZ) { //gd:PhysicsS
 		vertex_id int64
 		vertex    Vector3.XYZ
 	}{vertex_id, vertex})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetNormal(vertex_id int64, normal Vector3.XYZ) { //gd:PhysicsServer3DRenderingServerHandler.set_normal
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_normal, 0|(gdextension.SizeInt<<4)|(gdextension.SizeVector3<<8), &struct {
 		vertex_id int64
 		normal    Vector3.XYZ
 	}{vertex_id, normal})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAabb(aabb AABB.PositionSize) { //gd:PhysicsServer3DRenderingServerHandler.set_aabb
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_aabb, 0|(gdextension.SizeAABB<<4), &struct{ aabb AABB.PositionSize }{aabb})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsPhysicsServer3DRenderingServerHandler() Advanced         { return Advanced(o) }
 func (o Instance) AsPhysicsServer3DRenderingServerHandler() Instance      { return o }

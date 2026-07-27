@@ -8,6 +8,7 @@
 package BaseButton
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -17,6 +18,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -45,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -228,7 +233,7 @@ func (self Instance) GetDrawMode() DrawMode { //gd:BaseButton.get_draw_mode
 type Advanced = class
 type class [1]gdclass.BaseButton
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewBaseButton(obj[0])
@@ -243,7 +248,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -422,94 +427,119 @@ func (class) _toggled(impl func(ptr gdclass.Receiver, toggled_on bool)) (cb gd.E
 
 func (self class) SetPressed(pressed bool) { //gd:BaseButton.set_pressed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pressed, 0|(gdextension.SizeBool<<4), &struct{ pressed bool }{pressed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPressed() bool { //gd:BaseButton.is_pressed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_pressed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPressedNoSignal(pressed bool) { //gd:BaseButton.set_pressed_no_signal
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pressed_no_signal, 0|(gdextension.SizeBool<<4), &struct{ pressed bool }{pressed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHovered() bool { //gd:BaseButton.is_hovered
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hovered, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetToggleMode(enabled bool) { //gd:BaseButton.set_toggle_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_toggle_mode, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsToggleMode() bool { //gd:BaseButton.is_toggle_mode
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_toggle_mode, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShortcutInTooltip(enabled bool) { //gd:BaseButton.set_shortcut_in_tooltip
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shortcut_in_tooltip, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShortcutInTooltipEnabled() bool { //gd:BaseButton.is_shortcut_in_tooltip_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_shortcut_in_tooltip_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDisabled(disabled bool) { //gd:BaseButton.set_disabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_disabled, 0|(gdextension.SizeBool<<4), &struct{ disabled bool }{disabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDisabled() bool { //gd:BaseButton.is_disabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_disabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetActionMode(mode ActionMode) { //gd:BaseButton.set_action_mode
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_action_mode, 0|(gdextension.SizeInt<<4), &struct{ mode ActionMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetActionMode() ActionMode { //gd:BaseButton.get_action_mode
 	var r_ret = jumponly.Call[ActionMode](gd.ObjectChecked(self.AsObject()), methods.get_action_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetButtonMask(mask Input.MouseButtonMask) { //gd:BaseButton.set_button_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_button_mask, 0|(gdextension.SizeInt<<4), &struct{ mask Input.MouseButtonMask }{mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetButtonMask() Input.MouseButtonMask { //gd:BaseButton.get_button_mask
 	var r_ret = jumponly.Call[Input.MouseButtonMask](gd.ObjectChecked(self.AsObject()), methods.get_button_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDrawMode() DrawMode { //gd:BaseButton.get_draw_mode
 	var r_ret = jumponly.Call[DrawMode](gd.ObjectChecked(self.AsObject()), methods.get_draw_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetKeepPressedOutside(enabled bool) { //gd:BaseButton.set_keep_pressed_outside
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_keep_pressed_outside, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsKeepPressedOutside() bool { //gd:BaseButton.is_keep_pressed_outside
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_keep_pressed_outside, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShortcutFeedback(enabled bool) { //gd:BaseButton.set_shortcut_feedback
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shortcut_feedback, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShortcutFeedback() bool { //gd:BaseButton.is_shortcut_feedback
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_shortcut_feedback, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShortcut(shortcut [1]gdclass.Shortcut) { //gd:BaseButton.set_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shortcut, 0|(gdextension.SizeObject<<4), &struct{ shortcut gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetShortcut(shortcut[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shortcut[0].Anchor())
 }
 func (self class) GetShortcut() [1]gdclass.Shortcut { //gd:BaseButton.get_shortcut
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_shortcut, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Shortcut{gdclass.NewShortcut(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetButtonGroup(button_group [1]gdclass.ButtonGroup) { //gd:BaseButton.set_button_group
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_button_group, 0|(gdextension.SizeObject<<4), &struct{ button_group gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetButtonGroup(button_group[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(button_group[0].Anchor())
 }
 func (self class) GetButtonGroup() [1]gdclass.ButtonGroup { //gd:BaseButton.get_button_group
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_button_group, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.ButtonGroup{gdclass.NewButtonGroup(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -591,15 +621,15 @@ func (self class) Toggled() Signal.Any {
 func (o class) AsBaseButton() Advanced                    { return Advanced(o) }
 func (o Instance) AsBaseButton() Instance                 { return o }
 func (o *Extension[T]) AsBaseButton() Instance            { return o.Super() }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

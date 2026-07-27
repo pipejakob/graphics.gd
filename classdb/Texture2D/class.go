@@ -17,6 +17,7 @@ Note: The maximum texture size is 16384×16384 pixels due to graphics hardware l
 package Texture2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -55,6 +56,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -552,7 +556,7 @@ func (self Instance) CreatePlaceholder() Resource.Instance { //gd:Texture2D.crea
 type Advanced = class
 type class [1]gdclass.Texture2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTexture2D(obj[0])
@@ -567,7 +571,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -688,36 +692,43 @@ func (class) _draw_rect_region(impl func(ptr gdclass.Receiver, to_canvas_item RI
 
 func (self class) GetFormat() Image.Format { //gd:Texture2D.get_format
 	var r_ret = noescape.Call[Image.Format](gd.ObjectChecked(self.AsObject()), methods.get_format, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMipmapCount() int64 { //gd:Texture2D.get_mipmap_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_mipmap_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetWidth() int64 { //gd:Texture2D.get_width
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_width, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetHeight() int64 { //gd:Texture2D.get_height
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_height, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSize() Vector2.XY { //gd:Texture2D.get_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasAlpha() bool { //gd:Texture2D.has_alpha
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_alpha, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasMipmaps() bool { //gd:Texture2D.has_mipmaps
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_mipmaps, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -728,6 +739,7 @@ func (self class) Draw(canvas_item RID.Any, position Vector2.XY, modulate Color.
 		modulate    Color.RGBA
 		transpose   bool
 	}{canvas_item, position, modulate, transpose})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawRect(canvas_item RID.Any, rect Rect2.PositionSize, tile bool, modulate Color.RGBA, transpose bool) { //gd:Texture2D.draw_rect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_rect, 0|(gdextension.SizeRID<<4)|(gdextension.SizeRect2<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeColor<<16)|(gdextension.SizeBool<<20), &struct {
@@ -737,6 +749,7 @@ func (self class) DrawRect(canvas_item RID.Any, rect Rect2.PositionSize, tile bo
 		modulate    Color.RGBA
 		transpose   bool
 	}{canvas_item, rect, tile, modulate, transpose})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawRectRegion(canvas_item RID.Any, rect Rect2.PositionSize, src_rect Rect2.PositionSize, modulate Color.RGBA, transpose bool, clip_uv bool) { //gd:Texture2D.draw_rect_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_rect_region, 0|(gdextension.SizeRID<<4)|(gdextension.SizeRect2<<8)|(gdextension.SizeRect2<<12)|(gdextension.SizeColor<<16)|(gdextension.SizeBool<<20)|(gdextension.SizeBool<<24), &struct {
@@ -747,26 +760,29 @@ func (self class) DrawRectRegion(canvas_item RID.Any, rect Rect2.PositionSize, s
 		transpose   bool
 		clip_uv     bool
 	}{canvas_item, rect, src_rect, modulate, transpose, clip_uv})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetImage() [1]gdclass.Image { //gd:Texture2D.get_image
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_image, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Image{gdclass.NewImage(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) CreatePlaceholder() [1]gdclass.Resource { //gd:Texture2D.create_placeholder
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.create_placeholder, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Resource{gdclass.NewResource(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsTexture2D() Advanced                 { return Advanced(o) }
 func (o Instance) AsTexture2D() Instance              { return o }
 func (o *Extension[T]) AsTexture2D() Instance         { return o.Super() }
-func (o class) AsTexture() Texture.Advanced           { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o class) AsTexture() Texture.Advanced           { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance   { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance        { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance        { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

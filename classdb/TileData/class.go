@@ -10,6 +10,7 @@
 package TileData
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -19,6 +20,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -49,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -491,7 +496,7 @@ func (self Instance) GetCustomDataByLayerId(layer_id int) any { //gd:TileData.ge
 type Advanced = class
 type class [1]gdclass.TileData
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTileData(obj[0])
@@ -506,7 +511,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -681,65 +686,82 @@ func (self Instance) SetProbability(value Float.X) Instance { //gd:TileData.prob
 
 func (self class) SetFlipH(flip_h bool) { //gd:TileData.set_flip_h
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flip_h, 0|(gdextension.SizeBool<<4), &struct{ flip_h bool }{flip_h})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFlipH() bool { //gd:TileData.get_flip_h
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_flip_h, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFlipV(flip_v bool) { //gd:TileData.set_flip_v
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flip_v, 0|(gdextension.SizeBool<<4), &struct{ flip_v bool }{flip_v})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFlipV() bool { //gd:TileData.get_flip_v
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_flip_v, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTranspose(transpose bool) { //gd:TileData.set_transpose
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transpose, 0|(gdextension.SizeBool<<4), &struct{ transpose bool }{transpose})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTranspose() bool { //gd:TileData.get_transpose
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_transpose, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaterial(material [1]gdclass.Material) { //gd:TileData.set_material
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_material, 0|(gdextension.SizeObject<<4), &struct{ material gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) GetMaterial() [1]gdclass.Material { //gd:TileData.get_material
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_material, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Material{gdclass.NewMaterial(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetTextureOrigin(texture_origin Vector2i.XY) { //gd:TileData.set_texture_origin
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_origin, 0|(gdextension.SizeVector2i<<4), &struct{ texture_origin Vector2i.XY }{texture_origin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureOrigin() Vector2i.XY { //gd:TileData.get_texture_origin
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_texture_origin, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetModulate(modulate Color.RGBA) { //gd:TileData.set_modulate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_modulate, 0|(gdextension.SizeColor<<4), &struct{ modulate Color.RGBA }{modulate})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetModulate() Color.RGBA { //gd:TileData.get_modulate
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_modulate, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetZIndex(z_index int64) { //gd:TileData.set_z_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_z_index, 0|(gdextension.SizeInt<<4), &struct{ z_index int64 }{z_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetZIndex() int64 { //gd:TileData.get_z_index
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_z_index, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetYSortOrigin(y_sort_origin int64) { //gd:TileData.set_y_sort_origin
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_y_sort_origin, 0|(gdextension.SizeInt<<4), &struct{ y_sort_origin int64 }{y_sort_origin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetYSortOrigin() int64 { //gd:TileData.get_y_sort_origin
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_y_sort_origin, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -748,20 +770,24 @@ func (self class) SetOccluderPolygonsCount(layer_id int64, polygons_count int64)
 		layer_id       int64
 		polygons_count int64
 	}{layer_id, polygons_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOccluderPolygonsCount(layer_id int64) int64 { //gd:TileData.get_occluder_polygons_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_occluder_polygons_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ layer_id int64 }{layer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddOccluderPolygon(layer_id int64) { //gd:TileData.add_occluder_polygon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_occluder_polygon, 0|(gdextension.SizeInt<<4), &struct{ layer_id int64 }{layer_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveOccluderPolygon(layer_id int64, polygon_index int64) { //gd:TileData.remove_occluder_polygon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_occluder_polygon, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_id      int64
 		polygon_index int64
 	}{layer_id, polygon_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetOccluderPolygon(layer_id int64, polygon_index int64, polygon [1]gdclass.OccluderPolygon2D) { //gd:TileData.set_occluder_polygon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_occluder_polygon, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeObject<<12), &struct {
@@ -769,6 +795,8 @@ func (self class) SetOccluderPolygon(layer_id int64, polygon_index int64, polygo
 		polygon_index int64
 		polygon       gdextension.Object
 	}{layer_id, polygon_index, gdextension.Object(gdreference.GetObject(gdclass.GetOccluderPolygon2D(polygon[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(polygon[0].Anchor())
 }
 func (self class) GetOccluderPolygon(layer_id int64, polygon_index int64, flip_h bool, flip_v bool, transpose bool) [1]gdclass.OccluderPolygon2D { //gd:TileData.get_occluder_polygon
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_occluder_polygon, gdextension.SizeObject|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeBool<<16)|(gdextension.SizeBool<<20), &struct {
@@ -778,6 +806,7 @@ func (self class) GetOccluderPolygon(layer_id int64, polygon_index int64, flip_h
 		flip_v        bool
 		transpose     bool
 	}{layer_id, polygon_index, flip_h, flip_v, transpose})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OccluderPolygon2D{gdclass.NewOccluderPolygon2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -786,6 +815,8 @@ func (self class) SetOccluder(layer_id int64, occluder_polygon [1]gdclass.Occlud
 		layer_id         int64
 		occluder_polygon gdextension.Object
 	}{layer_id, gdextension.Object(gdreference.GetObject(gdclass.GetOccluderPolygon2D(occluder_polygon[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(occluder_polygon[0].Anchor())
 }
 func (self class) GetOccluder(layer_id int64, flip_h bool, flip_v bool, transpose bool) [1]gdclass.OccluderPolygon2D { //gd:TileData.get_occluder
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_occluder, gdextension.SizeObject|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeBool<<16), &struct {
@@ -794,6 +825,7 @@ func (self class) GetOccluder(layer_id int64, flip_h bool, flip_v bool, transpos
 		flip_v    bool
 		transpose bool
 	}{layer_id, flip_h, flip_v, transpose})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OccluderPolygon2D{gdclass.NewOccluderPolygon2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -802,9 +834,11 @@ func (self class) SetConstantLinearVelocity(layer_id int64, velocity Vector2.XY)
 		layer_id int64
 		velocity Vector2.XY
 	}{layer_id, velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConstantLinearVelocity(layer_id int64) Vector2.XY { //gd:TileData.get_constant_linear_velocity
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_constant_linear_velocity, gdextension.SizeVector2|(gdextension.SizeInt<<4), &struct{ layer_id int64 }{layer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -813,9 +847,11 @@ func (self class) SetConstantAngularVelocity(layer_id int64, velocity float64) {
 		layer_id int64
 		velocity float64
 	}{layer_id, velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConstantAngularVelocity(layer_id int64) float64 { //gd:TileData.get_constant_angular_velocity
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_constant_angular_velocity, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ layer_id int64 }{layer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -824,20 +860,24 @@ func (self class) SetCollisionPolygonsCount(layer_id int64, polygons_count int64
 		layer_id       int64
 		polygons_count int64
 	}{layer_id, polygons_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionPolygonsCount(layer_id int64) int64 { //gd:TileData.get_collision_polygons_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_polygons_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ layer_id int64 }{layer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddCollisionPolygon(layer_id int64) { //gd:TileData.add_collision_polygon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_collision_polygon, 0|(gdextension.SizeInt<<4), &struct{ layer_id int64 }{layer_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveCollisionPolygon(layer_id int64, polygon_index int64) { //gd:TileData.remove_collision_polygon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_collision_polygon, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_id      int64
 		polygon_index int64
 	}{layer_id, polygon_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCollisionPolygonPoints(layer_id int64, polygon_index int64, polygon Packed.Array[Vector2.XY]) { //gd:TileData.set_collision_polygon_points
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_polygon_points, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizePackedArray<<12), &struct {
@@ -845,12 +885,15 @@ func (self class) SetCollisionPolygonPoints(layer_id int64, polygon_index int64,
 		polygon_index int64
 		polygon       gdextension.PackedArray[Vector2.XY]
 	}{layer_id, polygon_index, pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(polygon)
 }
 func (self class) GetCollisionPolygonPoints(layer_id int64, polygon_index int64) Packed.Array[Vector2.XY] { //gd:TileData.get_collision_polygon_points
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_collision_polygon_points, gdextension.SizePackedArray|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_id      int64
 		polygon_index int64
 	}{layer_id, polygon_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -860,12 +903,14 @@ func (self class) SetCollisionPolygonOneWay(layer_id int64, polygon_index int64,
 		polygon_index int64
 		one_way       bool
 	}{layer_id, polygon_index, one_way})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCollisionPolygonOneWay(layer_id int64, polygon_index int64) bool { //gd:TileData.is_collision_polygon_one_way
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_collision_polygon_one_way, gdextension.SizeBool|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_id      int64
 		polygon_index int64
 	}{layer_id, polygon_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -875,28 +920,34 @@ func (self class) SetCollisionPolygonOneWayMargin(layer_id int64, polygon_index 
 		polygon_index  int64
 		one_way_margin float64
 	}{layer_id, polygon_index, one_way_margin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionPolygonOneWayMargin(layer_id int64, polygon_index int64) float64 { //gd:TileData.get_collision_polygon_one_way_margin
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_collision_polygon_one_way_margin, gdextension.SizeFloat|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_id      int64
 		polygon_index int64
 	}{layer_id, polygon_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTerrainSet(terrain_set int64) { //gd:TileData.set_terrain_set
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_terrain_set, 0|(gdextension.SizeInt<<4), &struct{ terrain_set int64 }{terrain_set})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTerrainSet() int64 { //gd:TileData.get_terrain_set
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_terrain_set, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTerrain(terrain int64) { //gd:TileData.set_terrain
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_terrain, 0|(gdextension.SizeInt<<4), &struct{ terrain int64 }{terrain})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTerrain() int64 { //gd:TileData.get_terrain
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_terrain, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -905,14 +956,17 @@ func (self class) SetTerrainPeeringBit(peering_bit TileSet.CellNeighbor, terrain
 		peering_bit TileSet.CellNeighbor
 		terrain     int64
 	}{peering_bit, terrain})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTerrainPeeringBit(peering_bit TileSet.CellNeighbor) int64 { //gd:TileData.get_terrain_peering_bit
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_terrain_peering_bit, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ peering_bit TileSet.CellNeighbor }{peering_bit})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsValidTerrainPeeringBit(peering_bit TileSet.CellNeighbor) bool { //gd:TileData.is_valid_terrain_peering_bit
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_valid_terrain_peering_bit, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ peering_bit TileSet.CellNeighbor }{peering_bit})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -921,6 +975,8 @@ func (self class) SetNavigationPolygon(layer_id int64, navigation_polygon [1]gdc
 		layer_id           int64
 		navigation_polygon gdextension.Object
 	}{layer_id, gdextension.Object(gdreference.GetObject(gdclass.GetNavigationPolygon(navigation_polygon[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(navigation_polygon[0].Anchor())
 }
 func (self class) GetNavigationPolygon(layer_id int64, flip_h bool, flip_v bool, transpose bool) [1]gdclass.NavigationPolygon { //gd:TileData.get_navigation_polygon
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_navigation_polygon, gdextension.SizeObject|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeBool<<16), &struct {
@@ -929,14 +985,17 @@ func (self class) GetNavigationPolygon(layer_id int64, flip_h bool, flip_v bool,
 		flip_v    bool
 		transpose bool
 	}{layer_id, flip_h, flip_v, transpose})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.NavigationPolygon{gdclass.NewNavigationPolygon(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetProbability(probability float64) { //gd:TileData.set_probability
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_probability, 0|(gdextension.SizeFloat<<4), &struct{ probability float64 }{probability})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetProbability() float64 { //gd:TileData.get_probability
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_probability, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -945,14 +1004,21 @@ func (self class) SetCustomData(layer_name String.Readable, value variant.Any) {
 		layer_name gdextension.String
 		value      gdextension.Variant
 	}{pointers.Get(gd.InternalString(layer_name)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(layer_name)
+	runtime.KeepAlive(value)
 }
 func (self class) GetCustomData(layer_name String.Readable) variant.Any { //gd:TileData.get_custom_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_custom_data, gdextension.SizeVariant|(gdextension.SizeString<<4), &struct{ layer_name gdextension.String }{pointers.Get(gd.InternalString(layer_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(layer_name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) HasCustomData(layer_name String.Readable) bool { //gd:TileData.has_custom_data
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_custom_data, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ layer_name gdextension.String }{pointers.Get(gd.InternalString(layer_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(layer_name)
 	var ret = r_ret
 	return ret
 }
@@ -961,9 +1027,12 @@ func (self class) SetCustomDataByLayerId(layer_id int64, value variant.Any) { //
 		layer_id int64
 		value    gdextension.Variant
 	}{layer_id, gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(value)
 }
 func (self class) GetCustomDataByLayerId(layer_id int64) variant.Any { //gd:TileData.get_custom_data_by_layer_id
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_custom_data_by_layer_id, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ layer_id int64 }{layer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }

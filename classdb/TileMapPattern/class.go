@@ -10,6 +10,7 @@ A pattern always starts at the (0, 0) coordinates and cannot have cells with neg
 package TileMapPattern
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -231,7 +235,7 @@ func (self Instance) IsEmpty() bool { //gd:TileMapPattern.is_empty
 type Advanced = class
 type class [1]gdclass.TileMapPattern
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTileMapPattern(obj[0])
@@ -246,7 +250,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -276,9 +280,11 @@ func (self class) SetCell(coords Vector2i.XY, source_id int64, atlas_coords Vect
 		atlas_coords     Vector2i.XY
 		alternative_tile int64
 	}{coords, source_id, atlas_coords, alternative_tile})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasCell(coords Vector2i.XY) bool { //gd:TileMapPattern.has_cell
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_cell, gdextension.SizeBool|(gdextension.SizeVector2i<<4), &struct{ coords Vector2i.XY }{coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -287,46 +293,54 @@ func (self class) RemoveCell(coords Vector2i.XY, update_size bool) { //gd:TileMa
 		coords      Vector2i.XY
 		update_size bool
 	}{coords, update_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCellSourceId(coords Vector2i.XY) int64 { //gd:TileMapPattern.get_cell_source_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_cell_source_id, gdextension.SizeInt|(gdextension.SizeVector2i<<4), &struct{ coords Vector2i.XY }{coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCellAtlasCoords(coords Vector2i.XY) Vector2i.XY { //gd:TileMapPattern.get_cell_atlas_coords
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_cell_atlas_coords, gdextension.SizeVector2i|(gdextension.SizeVector2i<<4), &struct{ coords Vector2i.XY }{coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCellAlternativeTile(coords Vector2i.XY) int64 { //gd:TileMapPattern.get_cell_alternative_tile
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_cell_alternative_tile, gdextension.SizeInt|(gdextension.SizeVector2i<<4), &struct{ coords Vector2i.XY }{coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetUsedCells() Array.Contains[Vector2i.XY] { //gd:TileMapPattern.get_used_cells
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_cells, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetSize() Vector2i.XY { //gd:TileMapPattern.get_size
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSize(size Vector2i.XY) { //gd:TileMapPattern.set_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEmpty() bool { //gd:TileMapPattern.is_empty
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_empty, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsTileMapPattern() Advanced            { return Advanced(o) }
 func (o Instance) AsTileMapPattern() Instance         { return o }
 func (o *Extension[T]) AsTileMapPattern() Instance    { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

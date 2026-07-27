@@ -9,6 +9,7 @@ Can play, loop, pause a scroll through audio. See [AudioStream] and [AudioStream
 package AudioStreamPlayback
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -437,7 +441,7 @@ func (self Instance) IsPlaying() bool { //gd:AudioStreamPlayback.is_playing
 type Advanced = class
 type class [1]gdclass.AudioStreamPlayback
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioStreamPlayback(obj[0])
@@ -452,7 +456,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -559,9 +563,12 @@ func (class) _get_parameter(impl func(ptr gdclass.Receiver, name String.Name) va
 
 func (self class) SetSamplePlayback(playback_sample [1]gdclass.AudioSamplePlayback) { //gd:AudioStreamPlayback.set_sample_playback
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sample_playback, 0|(gdextension.SizeObject<<4), &struct{ playback_sample gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetAudioSamplePlayback(playback_sample[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(playback_sample[0].Anchor())
 }
 func (self class) GetSamplePlayback() [1]gdclass.AudioSamplePlayback { //gd:AudioStreamPlayback.get_sample_playback
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_sample_playback, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.AudioSamplePlayback{gdclass.NewAudioSamplePlayback(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -570,30 +577,37 @@ func (self class) MixAudio(rate_scale float64, frames int64) Packed.Array[Vector
 		rate_scale float64
 		frames     int64
 	}{rate_scale, frames})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) Start(from_pos float64) { //gd:AudioStreamPlayback.start
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.start, 0|(gdextension.SizeFloat<<4), &struct{ from_pos float64 }{from_pos})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SeekTo(time float64) { //gd:AudioStreamPlayback.seek
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.seek, 0|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Stop() { //gd:AudioStreamPlayback.stop
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.stop, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLoopCount() int64 { //gd:AudioStreamPlayback.get_loop_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_loop_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPlaybackPosition() float64 { //gd:AudioStreamPlayback.get_playback_position
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_playback_position, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsPlaying() bool { //gd:AudioStreamPlayback.is_playing
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_playing, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

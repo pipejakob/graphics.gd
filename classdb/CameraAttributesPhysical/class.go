@@ -25,6 +25,7 @@ Note: Auto-exposure is only supported in the Forward+ rendering method, not Mobi
 package CameraAttributesPhysical
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -60,6 +61,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -165,7 +169,7 @@ func (self Instance) GetFov() Float.X { //gd:CameraAttributesPhysical.get_fov
 type Advanced = class
 type class [1]gdclass.CameraAttributesPhysical
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCameraAttributesPhysical(obj[0])
@@ -180,7 +184,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -333,70 +337,87 @@ func (self Instance) SetAutoExposureMaxExposureValue(value Float.X) Instance { /
 
 func (self class) SetAperture(aperture float64) { //gd:CameraAttributesPhysical.set_aperture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_aperture, 0|(gdextension.SizeFloat<<4), &struct{ aperture float64 }{aperture})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAperture() float64 { //gd:CameraAttributesPhysical.get_aperture
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_aperture, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShutterSpeed(shutter_speed float64) { //gd:CameraAttributesPhysical.set_shutter_speed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shutter_speed, 0|(gdextension.SizeFloat<<4), &struct{ shutter_speed float64 }{shutter_speed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShutterSpeed() float64 { //gd:CameraAttributesPhysical.get_shutter_speed
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_shutter_speed, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFocalLength(focal_length float64) { //gd:CameraAttributesPhysical.set_focal_length
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_focal_length, 0|(gdextension.SizeFloat<<4), &struct{ focal_length float64 }{focal_length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFocalLength() float64 { //gd:CameraAttributesPhysical.get_focal_length
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_focal_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFocusDistance(focus_distance float64) { //gd:CameraAttributesPhysical.set_focus_distance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_focus_distance, 0|(gdextension.SizeFloat<<4), &struct{ focus_distance float64 }{focus_distance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFocusDistance() float64 { //gd:CameraAttributesPhysical.get_focus_distance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_focus_distance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNear(near float64) { //gd:CameraAttributesPhysical.set_near
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_near, 0|(gdextension.SizeFloat<<4), &struct{ near float64 }{near})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNear() float64 { //gd:CameraAttributesPhysical.get_near
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_near, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFar(far float64) { //gd:CameraAttributesPhysical.set_far
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_far, 0|(gdextension.SizeFloat<<4), &struct{ far float64 }{far})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFar() float64 { //gd:CameraAttributesPhysical.get_far
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_far, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFov() float64 { //gd:CameraAttributesPhysical.get_fov
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fov, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoExposureMaxExposureValue(exposure_value_max float64) { //gd:CameraAttributesPhysical.set_auto_exposure_max_exposure_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_exposure_max_exposure_value, 0|(gdextension.SizeFloat<<4), &struct{ exposure_value_max float64 }{exposure_value_max})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAutoExposureMaxExposureValue() float64 { //gd:CameraAttributesPhysical.get_auto_exposure_max_exposure_value
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_auto_exposure_max_exposure_value, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoExposureMinExposureValue(exposure_value_min float64) { //gd:CameraAttributesPhysical.set_auto_exposure_min_exposure_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_exposure_min_exposure_value, 0|(gdextension.SizeFloat<<4), &struct{ exposure_value_min float64 }{exposure_value_min})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAutoExposureMinExposureValue() float64 { //gd:CameraAttributesPhysical.get_auto_exposure_min_exposure_value
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_auto_exposure_min_exposure_value, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -404,17 +425,17 @@ func (o class) AsCameraAttributesPhysical() Advanced         { return Advanced(o
 func (o Instance) AsCameraAttributesPhysical() Instance      { return o }
 func (o *Extension[T]) AsCameraAttributesPhysical() Instance { return o.Super() }
 func (o class) AsCameraAttributes() CameraAttributes.Advanced {
-	return CameraAttributes.Advanced{gdclass.NewCameraAttributes(o[0].AsObject()[0])}
+	return *(*CameraAttributes.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsCameraAttributes() CameraAttributes.Instance {
 	return o.Super().AsCameraAttributes()
 }
 func (o Instance) AsCameraAttributes() CameraAttributes.Instance {
-	return CameraAttributes.Instance{gdclass.NewCameraAttributes(o[0].AsObject()[0])}
+	return *(*CameraAttributes.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

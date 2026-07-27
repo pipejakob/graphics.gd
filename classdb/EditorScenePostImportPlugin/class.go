@@ -6,6 +6,7 @@ This plugin type exists to modify the process of importing scenes, allowing to c
 package EditorScenePostImportPlugin
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -41,6 +42,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -357,7 +361,7 @@ func (self MoreArgs) AddImportOptionAdvanced(atype variant.Type, name string, de
 type Advanced = class
 type class [1]gdclass.EditorScenePostImportPlugin
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorScenePostImportPlugin(obj[0])
@@ -372,7 +376,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -494,6 +498,8 @@ func (class) _post_process(impl func(ptr gdclass.Receiver, scene [1]gdclass.Node
 
 func (self class) GetOptionValue(name String.Name) variant.Any { //gd:EditorScenePostImportPlugin.get_option_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_option_value, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -502,6 +508,9 @@ func (self class) AddImportOption(name String.Readable, value variant.Any) { //g
 		name  gdextension.String
 		value gdextension.Variant
 	}{pointers.Get(gd.InternalString(name)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(value)
 }
 func (self class) AddImportOptionAdvanced(atype variant.Type, name String.Readable, default_value variant.Any, hint ClassDB.PropertyHint, hint_string String.Readable, usage_flags int64) { //gd:EditorScenePostImportPlugin.add_import_option_advanced
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_import_option_advanced, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8)|(gdextension.SizeVariant<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeString<<20)|(gdextension.SizeInt<<24), &struct {
@@ -512,6 +521,10 @@ func (self class) AddImportOptionAdvanced(atype variant.Type, name String.Readab
 		hint_string   gdextension.String
 		usage_flags   int64
 	}{atype, pointers.Get(gd.InternalString(name)), gdextension.Variant(pointers.Get(gd.InternalVariant(default_value))), hint, pointers.Get(gd.InternalString(hint_string)), usage_flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(default_value)
+	runtime.KeepAlive(hint_string)
 }
 func (o class) AsEditorScenePostImportPlugin() Advanced         { return Advanced(o) }
 func (o Instance) AsEditorScenePostImportPlugin() Instance      { return o }

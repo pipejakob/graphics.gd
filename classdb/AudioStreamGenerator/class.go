@@ -59,6 +59,7 @@ Note: Due to performance constraints, this class is best used from C# or from a 
 package AudioStreamGenerator
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -94,6 +95,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -179,7 +183,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AudioStreamGenerator
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioStreamGenerator(obj[0])
@@ -194,7 +198,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -275,37 +279,43 @@ func (self Instance) SetBufferLength(value Float.X) Instance { //gd:AudioStreamG
 
 func (self class) SetMixRate(hz float64) { //gd:AudioStreamGenerator.set_mix_rate
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mix_rate, 0|(gdextension.SizeFloat<<4), &struct{ hz float64 }{hz})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMixRate() float64 { //gd:AudioStreamGenerator.get_mix_rate
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_mix_rate, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMixRateMode(mode AudioStreamGeneratorMixRate) { //gd:AudioStreamGenerator.set_mix_rate_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mix_rate_mode, 0|(gdextension.SizeInt<<4), &struct{ mode AudioStreamGeneratorMixRate }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMixRateMode() AudioStreamGeneratorMixRate { //gd:AudioStreamGenerator.get_mix_rate_mode
 	var r_ret = jumponly.Call[AudioStreamGeneratorMixRate](gd.ObjectChecked(self.AsObject()), methods.get_mix_rate_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBufferLength(seconds float64) { //gd:AudioStreamGenerator.set_buffer_length
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_buffer_length, 0|(gdextension.SizeFloat<<4), &struct{ seconds float64 }{seconds})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBufferLength() float64 { //gd:AudioStreamGenerator.get_buffer_length
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_buffer_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAudioStreamGenerator() Advanced            { return Advanced(o) }
 func (o Instance) AsAudioStreamGenerator() Instance         { return o }
 func (o *Extension[T]) AsAudioStreamGenerator() Instance    { return o.Super() }
-func (o class) AsAudioStream() AudioStream.Advanced         { return AudioStream.Advanced{gdclass.NewAudioStream(o[0].AsObject()[0])} }
+func (o class) AsAudioStream() AudioStream.Advanced         { return *(*AudioStream.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAudioStream() AudioStream.Instance { return o.Super().AsAudioStream() }
-func (o Instance) AsAudioStream() AudioStream.Instance      { return AudioStream.Instance{gdclass.NewAudioStream(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsAudioStream() AudioStream.Instance      { return *(*AudioStream.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

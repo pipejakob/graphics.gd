@@ -34,6 +34,7 @@ Note: If multiple inputs exist in the [AnimationNode], which time information ta
 package AnimationNode
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -69,6 +70,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -555,7 +559,7 @@ func (self Instance) GetParameter(name string) any { //gd:AnimationNode.get_para
 type Advanced = class
 type class [1]gdclass.AnimationNode
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimationNode(obj[0])
@@ -570,7 +574,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -699,32 +703,41 @@ func (class) _has_filter(impl func(ptr gdclass.Receiver) bool) (cb gd.ExtensionC
 
 func (self class) AddInput(name String.Readable) bool { //gd:AnimationNode.add_input
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.add_input, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) RemoveInput(index int64) { //gd:AnimationNode.remove_input
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_input, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetInputName(input int64, name String.Readable) bool { //gd:AnimationNode.set_input_name
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.set_input_name, gdextension.SizeBool|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8), &struct {
 		input int64
 		name  gdextension.String
 	}{input, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInputName(input int64) String.Readable { //gd:AnimationNode.get_input_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_input_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ input int64 }{input})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetInputCount() int64 { //gd:AnimationNode.get_input_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_input_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FindInput(name String.Readable) int64 { //gd:AnimationNode.find_input
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.find_input, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -733,27 +746,35 @@ func (self class) SetFilterPath(path Path.ToNode, enable bool) { //gd:AnimationN
 		path   gdextension.NodePath
 		enable bool
 	}{pointers.Get(gd.InternalNodePath(path)), enable})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) IsPathFiltered(path Path.ToNode) bool { //gd:AnimationNode.is_path_filtered
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_path_filtered, gdextension.SizeBool|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFilterEnabled(enable bool) { //gd:AnimationNode.set_filter_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_filter_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFilterEnabled() bool { //gd:AnimationNode.is_filter_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_filter_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetProcessingAnimationTreeInstanceId() int64 { //gd:AnimationNode.get_processing_animation_tree_instance_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_processing_animation_tree_instance_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsProcessTesting() bool { //gd:AnimationNode.is_process_testing
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_process_testing, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -767,6 +788,8 @@ func (self class) BlendAnimation(animation String.Name, time float64, delta floa
 		blend               float64
 		looped_flag         Animation.LoopedFlag
 	}{pointers.Get(gd.InternalStringName(animation)), time, delta, seeked, is_external_seeking, blend, looped_flag})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(animation)
 }
 func (self class) BlendNode(name String.Name, node [1]gdclass.AnimationNode, time float64, seek bool, is_external_seeking bool, blend float64, filter FilterAction, sync bool, test_only bool) float64 { //gd:AnimationNode.blend_node
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.blend_node, gdextension.SizeFloat|(gdextension.SizeStringName<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeFloat<<12)|(gdextension.SizeBool<<16)|(gdextension.SizeBool<<20)|(gdextension.SizeFloat<<24)|(gdextension.SizeInt<<28)|(gdextension.SizeBool<<32)|(gdextension.SizeBool<<36), &struct {
@@ -780,6 +803,9 @@ func (self class) BlendNode(name String.Name, node [1]gdclass.AnimationNode, tim
 		sync                bool
 		test_only           bool
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetAnimationNode(node[0])[0])), time, seek, is_external_seeking, blend, filter, sync, test_only})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(node[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -794,6 +820,7 @@ func (self class) BlendInput(input_index int64, time float64, seek bool, is_exte
 		sync                bool
 		test_only           bool
 	}{input_index, time, seek, is_external_seeking, blend, filter, sync, test_only})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -802,9 +829,14 @@ func (self class) SetParameter(name String.Name, value variant.Any) { //gd:Anima
 		name  gdextension.StringName
 		value gdextension.Variant
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(value)
 }
 func (self class) GetParameter(name String.Name) variant.Any { //gd:AnimationNode.get_parameter
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_parameter, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -896,9 +928,9 @@ func (self class) AnimationNodeRemoved() Signal.Any {
 func (o class) AsAnimationNode() Advanced             { return Advanced(o) }
 func (o Instance) AsAnimationNode() Instance          { return o }
 func (o *Extension[T]) AsAnimationNode() Instance     { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

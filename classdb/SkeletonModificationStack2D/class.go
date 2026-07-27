@@ -13,6 +13,7 @@ This resource also controls how strongly all of the modifications are applied to
 package SkeletonModificationStack2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -187,7 +191,7 @@ func (self Instance) GetIsSetup() bool { //gd:SkeletonModificationStack2D.get_is
 type Advanced = class
 type class [1]gdclass.SkeletonModificationStack2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSkeletonModificationStack2D(obj[0])
@@ -202,7 +206,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -271,73 +275,90 @@ func (self Instance) SetModificationCount(value int) Instance { //gd:SkeletonMod
 
 func (self class) Setup() { //gd:SkeletonModificationStack2D.setup
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.setup, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Execute(delta float64, execution_mode int64) { //gd:SkeletonModificationStack2D.execute
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.execute, 0|(gdextension.SizeFloat<<4)|(gdextension.SizeInt<<8), &struct {
 		delta          float64
 		execution_mode int64
 	}{delta, execution_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) EnableAllModifications(enabled bool) { //gd:SkeletonModificationStack2D.enable_all_modifications
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.enable_all_modifications, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetModification(mod_idx int64) [1]gdclass.SkeletonModification2D { //gd:SkeletonModificationStack2D.get_modification
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_modification, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ mod_idx int64 }{mod_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.SkeletonModification2D{gdclass.NewSkeletonModification2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) AddModification(modification [1]gdclass.SkeletonModification2D) { //gd:SkeletonModificationStack2D.add_modification
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_modification, 0|(gdextension.SizeObject<<4), &struct{ modification gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetSkeletonModification2D(modification[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(modification[0].Anchor())
 }
 func (self class) DeleteModification(mod_idx int64) { //gd:SkeletonModificationStack2D.delete_modification
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.delete_modification, 0|(gdextension.SizeInt<<4), &struct{ mod_idx int64 }{mod_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetModification(mod_idx int64, modification [1]gdclass.SkeletonModification2D) { //gd:SkeletonModificationStack2D.set_modification
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_modification, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8), &struct {
 		mod_idx      int64
 		modification gdextension.Object
 	}{mod_idx, gdextension.Object(gdreference.GetObject(gdclass.GetSkeletonModification2D(modification[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(modification[0].Anchor())
 }
 func (self class) SetModificationCount(count int64) { //gd:SkeletonModificationStack2D.set_modification_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_modification_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetModificationCount() int64 { //gd:SkeletonModificationStack2D.get_modification_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_modification_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetIsSetup() bool { //gd:SkeletonModificationStack2D.get_is_setup
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_is_setup, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnabled(enabled bool) { //gd:SkeletonModificationStack2D.set_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnabled() bool { //gd:SkeletonModificationStack2D.get_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStrength(strength float64) { //gd:SkeletonModificationStack2D.set_strength
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_strength, 0|(gdextension.SizeFloat<<4), &struct{ strength float64 }{strength})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStrength() float64 { //gd:SkeletonModificationStack2D.get_strength
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_strength, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSkeleton() [1]gdclass.Skeleton2D { //gd:SkeletonModificationStack2D.get_skeleton
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_skeleton, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Skeleton2D{gdclass.NewSkeleton2D(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (o class) AsSkeletonModificationStack2D() Advanced         { return Advanced(o) }
 func (o Instance) AsSkeletonModificationStack2D() Instance      { return o }
 func (o *Extension[T]) AsSkeletonModificationStack2D() Instance { return o.Super() }
-func (o class) AsResource() Resource.Advanced                   { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced                   { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance           { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance                { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance                { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                             { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                     { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                          { return *(*ie.RC)(ie.As(&o)) }

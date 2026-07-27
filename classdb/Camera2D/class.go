@@ -23,6 +23,7 @@ Note that the [Camera2D] node's [Node2D.GlobalPosition] doesn't represent the ac
 package Camera2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -32,6 +33,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -60,6 +62,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -276,7 +281,7 @@ func (self Instance) Align() { //gd:Camera2D.align
 type Advanced = class
 type class [1]gdclass.Camera2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCamera2D(obj[0])
@@ -291,7 +296,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -739,57 +744,71 @@ func (self Instance) SetEditorDrawDragMargin(value bool) Instance { //gd:Camera2
 
 func (self class) SetOffset(offset Vector2.XY) { //gd:Camera2D.set_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffset() Vector2.XY { //gd:Camera2D.get_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAnchorMode(anchor_mode AnchorMode) { //gd:Camera2D.set_anchor_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_anchor_mode, 0|(gdextension.SizeInt<<4), &struct{ anchor_mode AnchorMode }{anchor_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAnchorMode() AnchorMode { //gd:Camera2D.get_anchor_mode
 	var r_ret = jumponly.Call[AnchorMode](gd.ObjectChecked(self.AsObject()), methods.get_anchor_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIgnoreRotation(ignore bool) { //gd:Camera2D.set_ignore_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ignore_rotation, 0|(gdextension.SizeBool<<4), &struct{ ignore bool }{ignore})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsIgnoringRotation() bool { //gd:Camera2D.is_ignoring_rotation
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_ignoring_rotation, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetProcessCallback(mode Camera2DProcessCallback) { //gd:Camera2D.set_process_callback
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_process_callback, 0|(gdextension.SizeInt<<4), &struct{ mode Camera2DProcessCallback }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetProcessCallback() Camera2DProcessCallback { //gd:Camera2D.get_process_callback
 	var r_ret = jumponly.Call[Camera2DProcessCallback](gd.ObjectChecked(self.AsObject()), methods.get_process_callback, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnabled(enabled bool) { //gd:Camera2D.set_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEnabled() bool { //gd:Camera2D.is_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) MakeCurrent() { //gd:Camera2D.make_current
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.make_current, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCurrent() bool { //gd:Camera2D.is_current
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_current, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLimitEnabled(limit_enabled bool) { //gd:Camera2D.set_limit_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_limit_enabled, 0|(gdextension.SizeBool<<4), &struct{ limit_enabled bool }{limit_enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLimitEnabled() bool { //gd:Camera2D.is_limit_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_limit_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -798,49 +817,61 @@ func (self class) SetLimit(margin Rect2.Side, limit int64) { //gd:Camera2D.set_l
 		margin Rect2.Side
 		limit  int64
 	}{margin, limit})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLimit(margin Rect2.Side) int64 { //gd:Camera2D.get_limit
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_limit, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ margin Rect2.Side }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLimitSmoothingEnabled(limit_smoothing_enabled bool) { //gd:Camera2D.set_limit_smoothing_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_limit_smoothing_enabled, 0|(gdextension.SizeBool<<4), &struct{ limit_smoothing_enabled bool }{limit_smoothing_enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLimitSmoothingEnabled() bool { //gd:Camera2D.is_limit_smoothing_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_limit_smoothing_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragVerticalEnabled(enabled bool) { //gd:Camera2D.set_drag_vertical_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_vertical_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDragVerticalEnabled() bool { //gd:Camera2D.is_drag_vertical_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_drag_vertical_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragHorizontalEnabled(enabled bool) { //gd:Camera2D.set_drag_horizontal_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_horizontal_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDragHorizontalEnabled() bool { //gd:Camera2D.is_drag_horizontal_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_drag_horizontal_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragVerticalOffset(offset float64) { //gd:Camera2D.set_drag_vertical_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_vertical_offset, 0|(gdextension.SizeFloat<<4), &struct{ offset float64 }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDragVerticalOffset() float64 { //gd:Camera2D.get_drag_vertical_offset
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_drag_vertical_offset, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragHorizontalOffset(offset float64) { //gd:Camera2D.set_drag_horizontal_offset
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_horizontal_offset, 0|(gdextension.SizeFloat<<4), &struct{ offset float64 }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDragHorizontalOffset() float64 { //gd:Camera2D.get_drag_horizontal_offset
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_drag_horizontal_offset, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -849,120 +880,147 @@ func (self class) SetDragMargin(margin Rect2.Side, drag_margin float64) { //gd:C
 		margin      Rect2.Side
 		drag_margin float64
 	}{margin, drag_margin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDragMargin(margin Rect2.Side) float64 { //gd:Camera2D.get_drag_margin
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_drag_margin, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ margin Rect2.Side }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetTargetPosition() Vector2.XY { //gd:Camera2D.get_target_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_target_position, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetScreenCenterPosition() Vector2.XY { //gd:Camera2D.get_screen_center_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_screen_center_position, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetScreenRotation() float64 { //gd:Camera2D.get_screen_rotation
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_screen_rotation, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetZoom(zoom Vector2.XY) { //gd:Camera2D.set_zoom
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_zoom, 0|(gdextension.SizeVector2<<4), &struct{ zoom Vector2.XY }{zoom})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetZoom() Vector2.XY { //gd:Camera2D.get_zoom
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_zoom, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCustomViewport(viewport [1]gdclass.Node) { //gd:Camera2D.set_custom_viewport
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_custom_viewport, 0|(gdextension.SizeObject<<4), &struct{ viewport gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode(viewport[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(viewport[0].Anchor())
 }
 func (self class) GetCustomViewport() [1]gdclass.Node { //gd:Camera2D.get_custom_viewport
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_custom_viewport, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Node{gdclass.NewNode(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetPositionSmoothingSpeed(position_smoothing_speed float64) { //gd:Camera2D.set_position_smoothing_speed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_position_smoothing_speed, 0|(gdextension.SizeFloat<<4), &struct{ position_smoothing_speed float64 }{position_smoothing_speed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPositionSmoothingSpeed() float64 { //gd:Camera2D.get_position_smoothing_speed
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_position_smoothing_speed, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPositionSmoothingEnabled(enabled bool) { //gd:Camera2D.set_position_smoothing_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_position_smoothing_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPositionSmoothingEnabled() bool { //gd:Camera2D.is_position_smoothing_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_position_smoothing_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRotationSmoothingEnabled(enabled bool) { //gd:Camera2D.set_rotation_smoothing_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rotation_smoothing_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRotationSmoothingEnabled() bool { //gd:Camera2D.is_rotation_smoothing_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_rotation_smoothing_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRotationSmoothingSpeed(speed float64) { //gd:Camera2D.set_rotation_smoothing_speed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rotation_smoothing_speed, 0|(gdextension.SizeFloat<<4), &struct{ speed float64 }{speed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRotationSmoothingSpeed() float64 { //gd:Camera2D.get_rotation_smoothing_speed
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_rotation_smoothing_speed, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ForceUpdateScroll() { //gd:Camera2D.force_update_scroll
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.force_update_scroll, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ResetSmoothing() { //gd:Camera2D.reset_smoothing
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset_smoothing, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Align() { //gd:Camera2D.align
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.align, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetScreenDrawingEnabled(screen_drawing_enabled bool) { //gd:Camera2D.set_screen_drawing_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_screen_drawing_enabled, 0|(gdextension.SizeBool<<4), &struct{ screen_drawing_enabled bool }{screen_drawing_enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsScreenDrawingEnabled() bool { //gd:Camera2D.is_screen_drawing_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_screen_drawing_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLimitDrawingEnabled(limit_drawing_enabled bool) { //gd:Camera2D.set_limit_drawing_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_limit_drawing_enabled, 0|(gdextension.SizeBool<<4), &struct{ limit_drawing_enabled bool }{limit_drawing_enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLimitDrawingEnabled() bool { //gd:Camera2D.is_limit_drawing_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_limit_drawing_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMarginDrawingEnabled(margin_drawing_enabled bool) { //gd:Camera2D.set_margin_drawing_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_margin_drawing_enabled, 0|(gdextension.SizeBool<<4), &struct{ margin_drawing_enabled bool }{margin_drawing_enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsMarginDrawingEnabled() bool { //gd:Camera2D.is_margin_drawing_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_margin_drawing_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsCamera2D() Advanced                      { return Advanced(o) }
 func (o Instance) AsCamera2D() Instance                   { return o }
 func (o *Extension[T]) AsCamera2D() Instance              { return o.Super() }
-func (o class) AsNode2D() Node2D.Advanced                 { return Node2D.Advanced{gdclass.NewNode2D(o[0].AsObject()[0])} }
+func (o class) AsNode2D() Node2D.Advanced                 { return *(*Node2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode2D() Node2D.Instance         { return o.Super().AsNode2D() }
-func (o Instance) AsNode2D() Node2D.Instance              { return Node2D.Instance{gdclass.NewNode2D(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsNode2D() Node2D.Instance              { return *(*Node2D.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

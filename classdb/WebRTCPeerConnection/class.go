@@ -16,6 +16,7 @@ After these steps, the connection should be established. Refer to the linked tut
 package WebRTCPeerConnection
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -344,7 +348,7 @@ func (self Instance) GetSignalingState() SignalingState { //gd:WebRTCPeerConnect
 type Advanced = class
 type class [1]gdclass.WebRTCPeerConnection
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewWebRTCPeerConnection(obj[0])
@@ -359,7 +363,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -384,9 +388,12 @@ func New() Instance {
 
 func (self class) SetDefaultExtension(extension_class String.Name) { //gd:WebRTCPeerConnection.set_default_extension
 	noescape.CallStatic[struct{}](methods.set_default_extension, 0|(gdextension.SizeStringName<<4), &struct{ extension_class gdextension.StringName }{pointers.Get(gd.InternalStringName(extension_class))})
+	runtime.KeepAlive(extension_class)
 }
 func (self class) Initialize(configuration Dictionary.Any) Error.Code { //gd:WebRTCPeerConnection.initialize
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.initialize, gdextension.SizeInt|(gdextension.SizeDictionary<<4), &struct{ configuration gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(configuration))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(configuration)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -395,11 +402,15 @@ func (self class) CreateDataChannel(label String.Readable, options Dictionary.An
 		label   gdextension.String
 		options gdextension.Dictionary
 	}{pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalDictionary(options))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(options)
 	var ret = [1]gdclass.WebRTCDataChannel{gdclass.NewWebRTCDataChannel(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) CreateOffer() Error.Code { //gd:WebRTCPeerConnection.create_offer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.create_offer, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -408,6 +419,9 @@ func (self class) SetLocalDescription(atype String.Readable, sdp String.Readable
 		atype gdextension.String
 		sdp   gdextension.String
 	}{pointers.Get(gd.InternalString(atype)), pointers.Get(gd.InternalString(sdp))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(atype)
+	runtime.KeepAlive(sdp)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -416,6 +430,9 @@ func (self class) SetRemoteDescription(atype String.Readable, sdp String.Readabl
 		atype gdextension.String
 		sdp   gdextension.String
 	}{pointers.Get(gd.InternalString(atype)), pointers.Get(gd.InternalString(sdp))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(atype)
+	runtime.KeepAlive(sdp)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -425,29 +442,37 @@ func (self class) AddIceCandidate(media String.Readable, index int64, name Strin
 		index int64
 		name  gdextension.String
 	}{pointers.Get(gd.InternalString(media)), index, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(media)
+	runtime.KeepAlive(name)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Poll() Error.Code { //gd:WebRTCPeerConnection.poll
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.poll, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Close() { //gd:WebRTCPeerConnection.close
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.close, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConnectionState() ConnectionState { //gd:WebRTCPeerConnection.get_connection_state
 	var r_ret = noescape.Call[ConnectionState](gd.ObjectChecked(self.AsObject()), methods.get_connection_state, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetGatheringState() GatheringState { //gd:WebRTCPeerConnection.get_gathering_state
 	var r_ret = noescape.Call[GatheringState](gd.ObjectChecked(self.AsObject()), methods.get_gathering_state, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSignalingState() SignalingState { //gd:WebRTCPeerConnection.get_signaling_state
 	var r_ret = noescape.Call[SignalingState](gd.ObjectChecked(self.AsObject()), methods.get_signaling_state, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

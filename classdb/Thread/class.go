@@ -20,6 +20,7 @@ Warning: To ensure proper cleanup without crashes or deadlocks, when a [Thread]'
 package Thread
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -52,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -262,7 +266,7 @@ func IsMainThread() bool { //gd:Thread.is_main_thread
 type Advanced = class
 type class [1]gdclass.Thread
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewThread(obj[0])
@@ -277,7 +281,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -305,26 +309,32 @@ func (self class) Start(callable Callable.Function, priority Priority) Error.Cod
 		callable gdextension.Callable
 		priority Priority
 	}{pointers.Get(gd.InternalCallable(callable)), priority})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(callable)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetId() String.Readable { //gd:Thread.get_id
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_id, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsStarted() bool { //gd:Thread.is_started
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_started, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsAlive() bool { //gd:Thread.is_alive
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_alive, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) WaitToFinish() variant.Any { //gd:Thread.wait_to_finish
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.wait_to_finish, gdextension.SizeVariant, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }

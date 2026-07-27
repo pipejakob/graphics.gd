@@ -6,6 +6,7 @@ Visual shader graphs consist of various nodes. Each node in the graph is a separ
 package VisualShaderNode
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -40,6 +41,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -185,7 +189,7 @@ func (self Instance) ClearDefaultInputValues() { //gd:VisualShaderNode.clear_def
 type Advanced = class
 type class [1]gdclass.VisualShaderNode
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVisualShaderNode(obj[0])
@@ -200,7 +204,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -261,14 +265,17 @@ func (self Instance) SetLinkedParentGraphFrame(value int) Instance { //gd:Visual
 
 func (self class) GetDefaultInputPort(atype PortType) int64 { //gd:VisualShaderNode.get_default_input_port
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_default_input_port, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ atype PortType }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOutputPortForPreview(port int64) { //gd:VisualShaderNode.set_output_port_for_preview
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_output_port_for_preview, 0|(gdextension.SizeInt<<4), &struct{ port int64 }{port})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOutputPortForPreview() int64 { //gd:VisualShaderNode.get_output_port_for_preview
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_output_port_for_preview, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -278,40 +285,51 @@ func (self class) SetInputPortDefaultValue(port int64, value variant.Any, prev_v
 		value      gdextension.Variant
 		prev_value gdextension.Variant
 	}{port, gdextension.Variant(pointers.Get(gd.InternalVariant(value))), gdextension.Variant(pointers.Get(gd.InternalVariant(prev_value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(value)
+	runtime.KeepAlive(prev_value)
 }
 func (self class) GetInputPortDefaultValue(port int64) variant.Any { //gd:VisualShaderNode.get_input_port_default_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_input_port_default_value, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ port int64 }{port})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) RemoveInputPortDefaultValue(port int64) { //gd:VisualShaderNode.remove_input_port_default_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_input_port_default_value, 0|(gdextension.SizeInt<<4), &struct{ port int64 }{port})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearDefaultInputValues() { //gd:VisualShaderNode.clear_default_input_values
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_default_input_values, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetDefaultInputValues(values Array.Any) { //gd:VisualShaderNode.set_default_input_values
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_input_values, 0|(gdextension.SizeArray<<4), &struct{ values gdextension.Array }{pointers.Get(gd.InternalArray(values))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(values)
 }
 func (self class) GetDefaultInputValues() Array.Any { //gd:VisualShaderNode.get_default_input_values
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_default_input_values, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetFrame(frame_ int64) { //gd:VisualShaderNode.set_frame
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_frame, 0|(gdextension.SizeInt<<4), &struct{ frame_ int64 }{frame_})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrame() int64 { //gd:VisualShaderNode.get_frame
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_frame, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsVisualShaderNode() Advanced          { return Advanced(o) }
 func (o Instance) AsVisualShaderNode() Instance       { return o }
 func (o *Extension[T]) AsVisualShaderNode() Instance  { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

@@ -27,6 +27,7 @@ Note: For 3D position/rotation/scale, using the dedicated [TypePosition3d], [Typ
 package Animation
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -65,6 +66,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -941,7 +945,7 @@ func (self MoreArgs) Compress(page_size int, fps int, split_tolerance Float.X) {
 type Advanced = class
 type class [1]gdclass.Animation
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimation(obj[0])
@@ -956,7 +960,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1032,24 +1036,29 @@ func (self class) AddTrack(atype TrackType, at_position int64) int64 { //gd:Anim
 		atype       TrackType
 		at_position int64
 	}{atype, at_position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RemoveTrack(track_idx int64) { //gd:Animation.remove_track
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_track, 0|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTrackCount() int64 { //gd:Animation.get_track_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_track_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) TrackGetType(track_idx int64) TrackType { //gd:Animation.track_get_type
 	var r_ret = noescape.Call[TrackType](gd.ObjectChecked(self.AsObject()), methods.track_get_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) TrackGetPath(track_idx int64) Path.ToNode { //gd:Animation.track_get_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.track_get_path, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
@@ -1058,41 +1067,51 @@ func (self class) TrackSetPath(track_idx int64, path Path.ToNode) { //gd:Animati
 		track_idx int64
 		path      gdextension.NodePath
 	}{track_idx, pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) FindTrack(path Path.ToNode, atype TrackType) int64 { //gd:Animation.find_track
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.find_track, gdextension.SizeInt|(gdextension.SizeNodePath<<4)|(gdextension.SizeInt<<8), &struct {
 		path  gdextension.NodePath
 		atype TrackType
 	}{pointers.Get(gd.InternalNodePath(path)), atype})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
 func (self class) TrackMoveUp(track_idx int64) { //gd:Animation.track_move_up
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.track_move_up, 0|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackMoveDown(track_idx int64) { //gd:Animation.track_move_down
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.track_move_down, 0|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackMoveTo(track_idx int64, to_idx int64) { //gd:Animation.track_move_to
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.track_move_to, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		track_idx int64
 		to_idx    int64
 	}{track_idx, to_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackSwap(track_idx int64, with_idx int64) { //gd:Animation.track_swap
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.track_swap, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		track_idx int64
 		with_idx  int64
 	}{track_idx, with_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackSetImported(track_idx int64, imported bool) { //gd:Animation.track_set_imported
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.track_set_imported, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		track_idx int64
 		imported  bool
 	}{track_idx, imported})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackIsImported(track_idx int64) bool { //gd:Animation.track_is_imported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.track_is_imported, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1101,9 +1120,11 @@ func (self class) TrackSetEnabled(track_idx int64, enabled bool) { //gd:Animatio
 		track_idx int64
 		enabled   bool
 	}{track_idx, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackIsEnabled(track_idx int64) bool { //gd:Animation.track_is_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.track_is_enabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1113,6 +1134,7 @@ func (self class) PositionTrackInsertKey(track_idx int64, time float64, position
 		time      float64
 		position  Vector3.XYZ
 	}{track_idx, time, position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1122,6 +1144,7 @@ func (self class) RotationTrackInsertKey(track_idx int64, time float64, rotation
 		time      float64
 		rotation  Quaternion.IJKX
 	}{track_idx, time, rotation})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1131,6 +1154,7 @@ func (self class) ScaleTrackInsertKey(track_idx int64, time float64, scale Vecto
 		time      float64
 		scale     Vector3.XYZ
 	}{track_idx, time, scale})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1140,6 +1164,7 @@ func (self class) BlendShapeTrackInsertKey(track_idx int64, time float64, amount
 		time      float64
 		amount    float64
 	}{track_idx, time, amount})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1149,6 +1174,7 @@ func (self class) PositionTrackInterpolate(track_idx int64, time_sec float64, ba
 		time_sec  float64
 		backward  bool
 	}{track_idx, time_sec, backward})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1158,6 +1184,7 @@ func (self class) RotationTrackInterpolate(track_idx int64, time_sec float64, ba
 		time_sec  float64
 		backward  bool
 	}{track_idx, time_sec, backward})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1167,6 +1194,7 @@ func (self class) ScaleTrackInterpolate(track_idx int64, time_sec float64, backw
 		time_sec  float64
 		backward  bool
 	}{track_idx, time_sec, backward})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1176,6 +1204,7 @@ func (self class) BlendShapeTrackInterpolate(track_idx int64, time_sec float64, 
 		time_sec  float64
 		backward  bool
 	}{track_idx, time_sec, backward})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1186,6 +1215,8 @@ func (self class) TrackInsertKey(track_idx int64, time float64, key variant.Any,
 		key        gdextension.Variant
 		transition float64
 	}{track_idx, time, gdextension.Variant(pointers.Get(gd.InternalVariant(key))), transition})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
@@ -1194,12 +1225,14 @@ func (self class) TrackRemoveKey(track_idx int64, key_idx int64) { //gd:Animatio
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackRemoveKeyAtTime(track_idx int64, time float64) { //gd:Animation.track_remove_key_at_time
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.track_remove_key_at_time, 0|(gdextension.SizeInt<<4)|(gdextension.SizeFloat<<8), &struct {
 		track_idx int64
 		time      float64
 	}{track_idx, time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackSetKeyValue(track_idx int64, key int64, value variant.Any) { //gd:Animation.track_set_key_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.track_set_key_value, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeVariant<<12), &struct {
@@ -1207,6 +1240,8 @@ func (self class) TrackSetKeyValue(track_idx int64, key int64, value variant.Any
 		key       int64
 		value     gdextension.Variant
 	}{track_idx, key, gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(value)
 }
 func (self class) TrackSetKeyTransition(track_idx int64, key_idx int64, transition float64) { //gd:Animation.track_set_key_transition
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.track_set_key_transition, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeFloat<<12), &struct {
@@ -1214,6 +1249,7 @@ func (self class) TrackSetKeyTransition(track_idx int64, key_idx int64, transiti
 		key_idx    int64
 		transition float64
 	}{track_idx, key_idx, transition})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackSetKeyTime(track_idx int64, key_idx int64, time float64) { //gd:Animation.track_set_key_time
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.track_set_key_time, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeFloat<<12), &struct {
@@ -1221,17 +1257,20 @@ func (self class) TrackSetKeyTime(track_idx int64, key_idx int64, time float64) 
 		key_idx   int64
 		time      float64
 	}{track_idx, key_idx, time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackGetKeyTransition(track_idx int64, key_idx int64) float64 { //gd:Animation.track_get_key_transition
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.track_get_key_transition, gdextension.SizeFloat|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) TrackGetKeyCount(track_idx int64) int64 { //gd:Animation.track_get_key_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.track_get_key_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1240,6 +1279,7 @@ func (self class) TrackGetKeyValue(track_idx int64, key_idx int64) variant.Any {
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -1248,6 +1288,7 @@ func (self class) TrackGetKeyTime(track_idx int64, key_idx int64) float64 { //gd
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1259,6 +1300,7 @@ func (self class) TrackFindKey(track_idx int64, time float64, find_mode FindMode
 		limit     bool
 		backward  bool
 	}{track_idx, time, find_mode, limit, backward})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1267,9 +1309,11 @@ func (self class) TrackSetInterpolationType(track_idx int64, interpolation Inter
 		track_idx     int64
 		interpolation InterpolationType
 	}{track_idx, interpolation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackGetInterpolationType(track_idx int64) InterpolationType { //gd:Animation.track_get_interpolation_type
 	var r_ret = noescape.Call[InterpolationType](gd.ObjectChecked(self.AsObject()), methods.track_get_interpolation_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1278,14 +1322,17 @@ func (self class) TrackSetInterpolationLoopWrap(track_idx int64, interpolation b
 		track_idx     int64
 		interpolation bool
 	}{track_idx, interpolation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TrackGetInterpolationLoopWrap(track_idx int64) bool { //gd:Animation.track_get_interpolation_loop_wrap
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.track_get_interpolation_loop_wrap, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) TrackIsCompressed(track_idx int64) bool { //gd:Animation.track_is_compressed
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.track_is_compressed, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1294,9 +1341,11 @@ func (self class) ValueTrackSetUpdateMode(track_idx int64, mode UpdateMode) { //
 		track_idx int64
 		mode      UpdateMode
 	}{track_idx, mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ValueTrackGetUpdateMode(track_idx int64) UpdateMode { //gd:Animation.value_track_get_update_mode
 	var r_ret = noescape.Call[UpdateMode](gd.ObjectChecked(self.AsObject()), methods.value_track_get_update_mode, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1306,6 +1355,7 @@ func (self class) ValueTrackInterpolate(track_idx int64, time_sec float64, backw
 		time_sec  float64
 		backward  bool
 	}{track_idx, time_sec, backward})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -1314,6 +1364,7 @@ func (self class) MethodTrackGetName(track_idx int64, key_idx int64) String.Name
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -1322,6 +1373,7 @@ func (self class) MethodTrackGetParams(track_idx int64, key_idx int64) Array.Any
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -1333,6 +1385,7 @@ func (self class) BezierTrackInsertKey(track_idx int64, time float64, value floa
 		in_handle  Vector2.XY
 		out_handle Vector2.XY
 	}{track_idx, time, value, in_handle, out_handle})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1342,6 +1395,7 @@ func (self class) BezierTrackSetKeyValue(track_idx int64, key_idx int64, value f
 		key_idx   int64
 		value     float64
 	}{track_idx, key_idx, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) BezierTrackSetKeyInHandle(track_idx int64, key_idx int64, in_handle Vector2.XY, balanced_value_time_ratio float64) { //gd:Animation.bezier_track_set_key_in_handle
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.bezier_track_set_key_in_handle, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeVector2<<12)|(gdextension.SizeFloat<<16), &struct {
@@ -1350,6 +1404,7 @@ func (self class) BezierTrackSetKeyInHandle(track_idx int64, key_idx int64, in_h
 		in_handle                 Vector2.XY
 		balanced_value_time_ratio float64
 	}{track_idx, key_idx, in_handle, balanced_value_time_ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) BezierTrackSetKeyOutHandle(track_idx int64, key_idx int64, out_handle Vector2.XY, balanced_value_time_ratio float64) { //gd:Animation.bezier_track_set_key_out_handle
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.bezier_track_set_key_out_handle, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeVector2<<12)|(gdextension.SizeFloat<<16), &struct {
@@ -1358,12 +1413,14 @@ func (self class) BezierTrackSetKeyOutHandle(track_idx int64, key_idx int64, out
 		out_handle                Vector2.XY
 		balanced_value_time_ratio float64
 	}{track_idx, key_idx, out_handle, balanced_value_time_ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) BezierTrackGetKeyValue(track_idx int64, key_idx int64) float64 { //gd:Animation.bezier_track_get_key_value
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.bezier_track_get_key_value, gdextension.SizeFloat|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1372,6 +1429,7 @@ func (self class) BezierTrackGetKeyInHandle(track_idx int64, key_idx int64) Vect
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1380,6 +1438,7 @@ func (self class) BezierTrackGetKeyOutHandle(track_idx int64, key_idx int64) Vec
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1388,6 +1447,7 @@ func (self class) BezierTrackInterpolate(track_idx int64, time float64) float64 
 		track_idx int64
 		time      float64
 	}{track_idx, time})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1399,6 +1459,8 @@ func (self class) AudioTrackInsertKey(track_idx int64, time float64, stream [1]g
 		start_offset float64
 		end_offset   float64
 	}{track_idx, time, gdextension.Object(gdreference.GetObject(gdclass.GetResource(stream[0])[0])), start_offset, end_offset})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(stream[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1408,6 +1470,8 @@ func (self class) AudioTrackSetKeyStream(track_idx int64, key_idx int64, stream 
 		key_idx   int64
 		stream    gdextension.Object
 	}{track_idx, key_idx, gdextension.Object(gdreference.GetObject(gdclass.GetResource(stream[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(stream[0].Anchor())
 }
 func (self class) AudioTrackSetKeyStartOffset(track_idx int64, key_idx int64, offset float64) { //gd:Animation.audio_track_set_key_start_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.audio_track_set_key_start_offset, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeFloat<<12), &struct {
@@ -1415,6 +1479,7 @@ func (self class) AudioTrackSetKeyStartOffset(track_idx int64, key_idx int64, of
 		key_idx   int64
 		offset    float64
 	}{track_idx, key_idx, offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AudioTrackSetKeyEndOffset(track_idx int64, key_idx int64, offset float64) { //gd:Animation.audio_track_set_key_end_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.audio_track_set_key_end_offset, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeFloat<<12), &struct {
@@ -1422,12 +1487,14 @@ func (self class) AudioTrackSetKeyEndOffset(track_idx int64, key_idx int64, offs
 		key_idx   int64
 		offset    float64
 	}{track_idx, key_idx, offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AudioTrackGetKeyStream(track_idx int64, key_idx int64) [1]gdclass.Resource { //gd:Animation.audio_track_get_key_stream
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.audio_track_get_key_stream, gdextension.SizeObject|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Resource{gdclass.NewResource(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1436,6 +1503,7 @@ func (self class) AudioTrackGetKeyStartOffset(track_idx int64, key_idx int64) fl
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1444,6 +1512,7 @@ func (self class) AudioTrackGetKeyEndOffset(track_idx int64, key_idx int64) floa
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1452,9 +1521,11 @@ func (self class) AudioTrackSetUseBlend(track_idx int64, enable bool) { //gd:Ani
 		track_idx int64
 		enable    bool
 	}{track_idx, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AudioTrackIsUseBlend(track_idx int64) bool { //gd:Animation.audio_track_is_use_blend
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.audio_track_is_use_blend, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ track_idx int64 }{track_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1464,6 +1535,8 @@ func (self class) AnimationTrackInsertKey(track_idx int64, time float64, animati
 		time      float64
 		animation gdextension.StringName
 	}{track_idx, time, pointers.Get(gd.InternalStringName(animation))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(animation)
 	var ret = r_ret
 	return ret
 }
@@ -1473,12 +1546,15 @@ func (self class) AnimationTrackSetKeyAnimation(track_idx int64, key_idx int64, 
 		key_idx   int64
 		animation gdextension.StringName
 	}{track_idx, key_idx, pointers.Get(gd.InternalStringName(animation))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(animation)
 }
 func (self class) AnimationTrackGetKeyAnimation(track_idx int64, key_idx int64) String.Name { //gd:Animation.animation_track_get_key_animation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.animation_track_get_key_animation, gdextension.SizeStringName|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		track_idx int64
 		key_idx   int64
 	}{track_idx, key_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -1487,42 +1563,56 @@ func (self class) AddMarker(name String.Name, time float64) { //gd:Animation.add
 		name gdextension.StringName
 		time float64
 	}{pointers.Get(gd.InternalStringName(name)), time})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveMarker(name String.Name) { //gd:Animation.remove_marker
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_marker, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) HasMarker(name String.Name) bool { //gd:Animation.has_marker
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_marker, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMarkerAtTime(time float64) String.Name { //gd:Animation.get_marker_at_time
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_marker_at_time, gdextension.SizeStringName|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetNextMarker(time float64) String.Name { //gd:Animation.get_next_marker
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_next_marker, gdextension.SizeStringName|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetPrevMarker(time float64) String.Name { //gd:Animation.get_prev_marker
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_prev_marker, gdextension.SizeStringName|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetMarkerTime(name String.Name) float64 { //gd:Animation.get_marker_time
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_marker_time, gdextension.SizeFloat|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMarkerNames() Packed.Strings { //gd:Animation.get_marker_names
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_marker_names, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetMarkerColor(name String.Name) Color.RGBA { //gd:Animation.get_marker_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_marker_color, gdextension.SizeColor|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -1531,39 +1621,50 @@ func (self class) SetMarkerColor(name String.Name, color Color.RGBA) { //gd:Anim
 		name  gdextension.StringName
 		color Color.RGBA
 	}{pointers.Get(gd.InternalStringName(name)), color})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) SetLength(time_sec float64) { //gd:Animation.set_length
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_length, 0|(gdextension.SizeFloat<<4), &struct{ time_sec float64 }{time_sec})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLength() float64 { //gd:Animation.get_length
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLoopMode(loop_mode LoopMode) { //gd:Animation.set_loop_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_loop_mode, 0|(gdextension.SizeInt<<4), &struct{ loop_mode LoopMode }{loop_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLoopMode() LoopMode { //gd:Animation.get_loop_mode
 	var r_ret = jumponly.Call[LoopMode](gd.ObjectChecked(self.AsObject()), methods.get_loop_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStep(size_sec float64) { //gd:Animation.set_step
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_step, 0|(gdextension.SizeFloat<<4), &struct{ size_sec float64 }{size_sec})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStep() float64 { //gd:Animation.get_step
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_step, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Clear() { //gd:Animation.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CopyTrack(track_idx int64, to_animation [1]gdclass.Animation) { //gd:Animation.copy_track
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.copy_track, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8), &struct {
 		track_idx    int64
 		to_animation gdextension.Object
 	}{track_idx, gdextension.Object(gdreference.GetObject(gdclass.GetAnimation(to_animation[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(to_animation[0].Anchor())
 }
 func (self class) Optimize(allowed_velocity_err float64, allowed_angular_err float64, precision int64) { //gd:Animation.optimize
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.optimize, 0|(gdextension.SizeFloat<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeInt<<12), &struct {
@@ -1571,6 +1672,7 @@ func (self class) Optimize(allowed_velocity_err float64, allowed_angular_err flo
 		allowed_angular_err  float64
 		precision            int64
 	}{allowed_velocity_err, allowed_angular_err, precision})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Compress(page_size int64, fps int64, split_tolerance float64) { //gd:Animation.compress
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.compress, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeFloat<<12), &struct {
@@ -1578,18 +1680,20 @@ func (self class) Compress(page_size int64, fps int64, split_tolerance float64) 
 		fps             int64
 		split_tolerance float64
 	}{page_size, fps, split_tolerance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCaptureIncluded() bool { //gd:Animation.is_capture_included
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_capture_included, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAnimation() Advanced                 { return Advanced(o) }
 func (o Instance) AsAnimation() Instance              { return o }
 func (o *Extension[T]) AsAnimation() Instance         { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

@@ -14,6 +14,7 @@ If you are looking for GDScript's built-in functions, see [GDScript] instead.
 package GDScript
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -143,7 +147,7 @@ func (self Instance) New(args ...any) any { //gd:GDScript.new
 type Advanced = class
 type class [1]gdclass.GDScript
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGDScript(obj[0])
@@ -158,7 +162,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -182,12 +186,22 @@ func New() Instance {
 }
 
 func (self class) New(args ...gd.Variant) variant.Any { //gd:GDScript.new
-	var fixed = [...]gdextension.Variant{}
-	var dynamic []gdextension.Variant
+	var fixed = [...]gd.Variant{}
+	var dynamic []gd.Variant
 	for _, arg := range args {
-		dynamic = append(dynamic, gdextension.Variant(pointers.Get(gd.NewVariant(arg))))
+		dynamic = append(dynamic, gd.NewVariant(arg))
 	}
-	ret, err := noescape.MethodForClass(methods.new).Call(gd.ObjectChecked(self.AsObject()), append(fixed[:], dynamic...)...)
+	var packed = make([]gdextension.Variant, 0, len(fixed)+len(dynamic))
+	for _, arg := range fixed {
+		packed = append(packed, gdextension.Variant(pointers.Get(arg)))
+	}
+	for _, arg := range dynamic {
+		packed = append(packed, gdextension.Variant(pointers.Get(arg)))
+	}
+	ret, err := noescape.MethodForClass(methods.new).Call(gd.ObjectChecked(self.AsObject()), packed...)
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(fixed)
+	runtime.KeepAlive(dynamic)
 	if err != nil {
 		panic(err)
 	}
@@ -197,12 +211,12 @@ func (self class) New(args ...gd.Variant) variant.Any { //gd:GDScript.new
 func (o class) AsGDScript() Advanced                  { return Advanced(o) }
 func (o Instance) AsGDScript() Instance               { return o }
 func (o *Extension[T]) AsGDScript() Instance          { return o.Super() }
-func (o class) AsScript() Script.Advanced             { return Script.Advanced{gdclass.NewScript(o[0].AsObject()[0])} }
+func (o class) AsScript() Script.Advanced             { return *(*Script.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsScript() Script.Instance     { return o.Super().AsScript() }
-func (o Instance) AsScript() Script.Instance          { return Script.Instance{gdclass.NewScript(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsScript() Script.Instance          { return *(*Script.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

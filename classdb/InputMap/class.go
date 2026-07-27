@@ -10,6 +10,7 @@ package InputMap
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -18,6 +19,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -42,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -278,7 +283,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.InputMap
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputMap(obj[0])
@@ -293,12 +298,13 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) HasAction(action String.Name) bool { //gd:InputMap.has_action
 	once.Do(singleton)
 	var r_ret = noescape.Call[bool](gdreference.GetObject(self.AsObject()[0]), methods.has_action, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
@@ -314,14 +320,17 @@ func (self class) AddAction(action String.Name, deadzone float64) { //gd:InputMa
 		action   gdextension.StringName
 		deadzone float64
 	}{pointers.Get(gd.InternalStringName(action)), deadzone})
+	runtime.KeepAlive(action)
 }
 func (self class) EraseAction(action String.Name) { //gd:InputMap.erase_action
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.erase_action, 0|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(action)
 }
 func (self class) GetActionDescription(action String.Name) String.Readable { //gd:InputMap.get_action_description
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.String](gdreference.GetObject(self.AsObject()[0]), methods.get_action_description, gdextension.SizeString|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(action)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -331,10 +340,12 @@ func (self class) ActionSetDeadzone(action String.Name, deadzone float64) { //gd
 		action   gdextension.StringName
 		deadzone float64
 	}{pointers.Get(gd.InternalStringName(action)), deadzone})
+	runtime.KeepAlive(action)
 }
 func (self class) ActionGetDeadzone(action String.Name) float64 { //gd:InputMap.action_get_deadzone
 	once.Do(singleton)
 	var r_ret = noescape.Call[float64](gdreference.GetObject(self.AsObject()[0]), methods.action_get_deadzone, gdextension.SizeFloat|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
@@ -344,6 +355,8 @@ func (self class) ActionAddEvent(action String.Name, event [1]gdclass.InputEvent
 		action gdextension.StringName
 		event  gdextension.Object
 	}{pointers.Get(gd.InternalStringName(action)), gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0]))})
+	runtime.KeepAlive(action)
+	runtime.KeepAlive(event[0].Anchor())
 }
 func (self class) ActionHasEvent(action String.Name, event [1]gdclass.InputEvent) bool { //gd:InputMap.action_has_event
 	once.Do(singleton)
@@ -351,6 +364,8 @@ func (self class) ActionHasEvent(action String.Name, event [1]gdclass.InputEvent
 		action gdextension.StringName
 		event  gdextension.Object
 	}{pointers.Get(gd.InternalStringName(action)), gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0]))})
+	runtime.KeepAlive(action)
+	runtime.KeepAlive(event[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -360,14 +375,18 @@ func (self class) ActionEraseEvent(action String.Name, event [1]gdclass.InputEve
 		action gdextension.StringName
 		event  gdextension.Object
 	}{pointers.Get(gd.InternalStringName(action)), gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0]))})
+	runtime.KeepAlive(action)
+	runtime.KeepAlive(event[0].Anchor())
 }
 func (self class) ActionEraseEvents(action String.Name) { //gd:InputMap.action_erase_events
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.action_erase_events, 0|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(action)
 }
 func (self class) ActionGetEvents(action String.Name) Array.Contains[[1]gdclass.InputEvent] { //gd:InputMap.action_get_events
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.action_get_events, gdextension.SizeArray|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(action)
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.InputEvent](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -378,6 +397,8 @@ func (self class) EventIsAction(event [1]gdclass.InputEvent, action String.Name,
 		action      gdextension.StringName
 		exact_match bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0])), pointers.Get(gd.InternalStringName(action)), exact_match})
+	runtime.KeepAlive(event[0].Anchor())
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }

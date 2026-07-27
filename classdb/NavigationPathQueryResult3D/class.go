@@ -8,6 +8,7 @@ This class stores the result of a 3D navigation path query from the [NavigationS
 package NavigationPathQueryResult3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -139,7 +143,7 @@ func (self Instance) Reset() { //gd:NavigationPathQueryResult3D.reset
 type Advanced = class
 type class [1]gdclass.NavigationPathQueryResult3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNavigationPathQueryResult3D(obj[0])
@@ -154,7 +158,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -252,9 +256,12 @@ func (self class) SetPath(path Packed.Array[Vector3.XYZ]) { //gd:NavigationPathQ
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path, 0|(gdextension.SizePackedArray<<4), &struct {
 		path gdextension.PackedArray[Vector3.XYZ]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetPath() Packed.Array[Vector3.XYZ] { //gd:NavigationPathQueryResult3D.get_path
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_path, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
@@ -262,17 +269,23 @@ func (self class) SetPathTypes(path_types Packed.Array[int32]) { //gd:Navigation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_types, 0|(gdextension.SizePackedArray<<4), &struct {
 		path_types gdextension.PackedArray[int32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](path_types))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path_types)
 }
 func (self class) GetPathTypes() Packed.Array[int32] { //gd:NavigationPathQueryResult3D.get_path_types
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_path_types, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetPathRids(path_rids Array.Contains[RID.Any]) { //gd:NavigationPathQueryResult3D.set_path_rids
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_rids, 0|(gdextension.SizeArray<<4), &struct{ path_rids gdextension.Array }{pointers.Get(gd.InternalArray(path_rids))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path_rids)
 }
 func (self class) GetPathRids() Array.Contains[RID.Any] { //gd:NavigationPathQueryResult3D.get_path_rids
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_path_rids, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -280,22 +293,28 @@ func (self class) SetPathOwnerIds(path_owner_ids Packed.Array[int64]) { //gd:Nav
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_owner_ids, 0|(gdextension.SizePackedArray<<4), &struct {
 		path_owner_ids gdextension.PackedArray[int64]
 	}{pointers.Get(gd.InternalPacked[gd.PackedInt64Array, int64](path_owner_ids))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path_owner_ids)
 }
 func (self class) GetPathOwnerIds() Packed.Array[int64] { //gd:NavigationPathQueryResult3D.get_path_owner_ids
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_path_owner_ids, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) SetPathLength(length float64) { //gd:NavigationPathQueryResult3D.set_path_length
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_length, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathLength() float64 { //gd:NavigationPathQueryResult3D.get_path_length
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_path_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Reset() { //gd:NavigationPathQueryResult3D.reset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsNavigationPathQueryResult3D() Advanced         { return Advanced(o) }
 func (o Instance) AsNavigationPathQueryResult3D() Instance      { return o }

@@ -11,6 +11,7 @@ By assigning the actual [Skeleton3D] bone name as the key value, it maps the [Sk
 package BoneMap
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -46,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -160,7 +164,7 @@ func (self Instance) FindProfileBoneName(skeleton_bone_name string) string { //g
 type Advanced = class
 type class [1]gdclass.BoneMap
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewBoneMap(obj[0])
@@ -175,7 +179,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -216,14 +220,19 @@ func (self Instance) SetProfile(value SkeletonProfile.Instance) Instance { //gd:
 
 func (self class) GetProfile() [1]gdclass.SkeletonProfile { //gd:BoneMap.get_profile
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_profile, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.SkeletonProfile{gdclass.NewSkeletonProfile(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetProfile(profile [1]gdclass.SkeletonProfile) { //gd:BoneMap.set_profile
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_profile, 0|(gdextension.SizeObject<<4), &struct{ profile gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetSkeletonProfile(profile[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(profile[0].Anchor())
 }
 func (self class) GetSkeletonBoneName(profile_bone_name String.Name) String.Name { //gd:BoneMap.get_skeleton_bone_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_skeleton_bone_name, gdextension.SizeStringName|(gdextension.SizeStringName<<4), &struct{ profile_bone_name gdextension.StringName }{pointers.Get(gd.InternalStringName(profile_bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(profile_bone_name)
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -232,9 +241,14 @@ func (self class) SetSkeletonBoneName(profile_bone_name String.Name, skeleton_bo
 		profile_bone_name  gdextension.StringName
 		skeleton_bone_name gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(profile_bone_name)), pointers.Get(gd.InternalStringName(skeleton_bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(profile_bone_name)
+	runtime.KeepAlive(skeleton_bone_name)
 }
 func (self class) FindProfileBoneName(skeleton_bone_name String.Name) String.Name { //gd:BoneMap.find_profile_bone_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.find_profile_bone_name, gdextension.SizeStringName|(gdextension.SizeStringName<<4), &struct{ skeleton_bone_name gdextension.StringName }{pointers.Get(gd.InternalStringName(skeleton_bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(skeleton_bone_name)
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -278,9 +292,9 @@ func (self class) ProfileUpdated() Signal.Any {
 func (o class) AsBoneMap() Advanced                   { return Advanced(o) }
 func (o Instance) AsBoneMap() Instance                { return o }
 func (o *Extension[T]) AsBoneMap() Instance           { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

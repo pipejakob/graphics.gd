@@ -23,6 +23,7 @@ Low/high-pass filters: [AudioEffectLowPassFilter] and [AudioEffectHighPassFilter
 package AudioEffectFilter
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -58,6 +59,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -145,7 +149,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AudioEffectFilter
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioEffectFilter(obj[0])
@@ -160,7 +164,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -252,45 +256,53 @@ func (self Instance) SetDb(value FilterDB) Instance { //gd:AudioEffectFilter.db
 
 func (self class) SetCutoff(freq float64) { //gd:AudioEffectFilter.set_cutoff
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cutoff, 0|(gdextension.SizeFloat<<4), &struct{ freq float64 }{freq})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCutoff() float64 { //gd:AudioEffectFilter.get_cutoff
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_cutoff, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetResonance(amount float64) { //gd:AudioEffectFilter.set_resonance
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_resonance, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetResonance() float64 { //gd:AudioEffectFilter.get_resonance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_resonance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGain(amount float64) { //gd:AudioEffectFilter.set_gain
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_gain, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGain() float64 { //gd:AudioEffectFilter.get_gain
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_gain, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDb(amount FilterDB) { //gd:AudioEffectFilter.set_db
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_db, 0|(gdextension.SizeInt<<4), &struct{ amount FilterDB }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDb() FilterDB { //gd:AudioEffectFilter.get_db
 	var r_ret = jumponly.Call[FilterDB](gd.ObjectChecked(self.AsObject()), methods.get_db, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAudioEffectFilter() Advanced               { return Advanced(o) }
 func (o Instance) AsAudioEffectFilter() Instance            { return o }
 func (o *Extension[T]) AsAudioEffectFilter() Instance       { return o.Super() }
-func (o class) AsAudioEffect() AudioEffect.Advanced         { return AudioEffect.Advanced{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
+func (o class) AsAudioEffect() AudioEffect.Advanced         { return *(*AudioEffect.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAudioEffect() AudioEffect.Instance { return o.Super().AsAudioEffect() }
-func (o Instance) AsAudioEffect() AudioEffect.Instance      { return AudioEffect.Instance{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsAudioEffect() AudioEffect.Instance      { return *(*AudioEffect.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

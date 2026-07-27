@@ -11,6 +11,7 @@ Range is an abstract base class for controls that represent a number within a ra
 package Range
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -46,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -211,7 +216,7 @@ func (self Instance) Unshare() { //gd:Range.unshare
 type Advanced = class
 type class [1]gdclass.Range
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRange(obj[0])
@@ -226,7 +231,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -417,92 +422,116 @@ func (class) _value_changed(impl func(ptr gdclass.Receiver, new_value float64)) 
 
 func (self class) GetValue() float64 { //gd:Range.get_value
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_value, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMin() float64 { //gd:Range.get_min
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_min, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMax() float64 { //gd:Range.get_max
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_max, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetStep() float64 { //gd:Range.get_step
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_step, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPage() float64 { //gd:Range.get_page
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_page, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetAsRatio() float64 { //gd:Range.get_as_ratio
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_as_ratio, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetValue(value float64) { //gd:Range.set_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_value, 0|(gdextension.SizeFloat<<4), &struct{ value float64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetValueNoSignal(value float64) { //gd:Range.set_value_no_signal
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_value_no_signal, 0|(gdextension.SizeFloat<<4), &struct{ value float64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetMin(minimum float64) { //gd:Range.set_min
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min, 0|(gdextension.SizeFloat<<4), &struct{ minimum float64 }{minimum})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetMax(maximum float64) { //gd:Range.set_max
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max, 0|(gdextension.SizeFloat<<4), &struct{ maximum float64 }{maximum})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetStep(step float64) { //gd:Range.set_step
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_step, 0|(gdextension.SizeFloat<<4), &struct{ step float64 }{step})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPage(pagesize float64) { //gd:Range.set_page
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_page, 0|(gdextension.SizeFloat<<4), &struct{ pagesize float64 }{pagesize})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAsRatio(value float64) { //gd:Range.set_as_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_as_ratio, 0|(gdextension.SizeFloat<<4), &struct{ value float64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetUseRoundedValues(enabled bool) { //gd:Range.set_use_rounded_values
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_rounded_values, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingRoundedValues() bool { //gd:Range.is_using_rounded_values
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_rounded_values, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetExpRatio(enabled bool) { //gd:Range.set_exp_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_exp_ratio, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRatioExp() bool { //gd:Range.is_ratio_exp
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_ratio_exp, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAllowGreater(allow bool) { //gd:Range.set_allow_greater
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_allow_greater, 0|(gdextension.SizeBool<<4), &struct{ allow bool }{allow})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsGreaterAllowed() bool { //gd:Range.is_greater_allowed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_greater_allowed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAllowLesser(allow bool) { //gd:Range.set_allow_lesser
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_allow_lesser, 0|(gdextension.SizeBool<<4), &struct{ allow bool }{allow})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLesserAllowed() bool { //gd:Range.is_lesser_allowed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_lesser_allowed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Share(with [1]gdclass.Node) { //gd:Range.share
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.share, 0|(gdextension.SizeObject<<4), &struct{ with gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode(with[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(with[0].Anchor())
 }
 func (self class) Unshare() { //gd:Range.unshare
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.unshare, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -553,15 +582,15 @@ func (self class) Changed() Signal.Any {
 func (o class) AsRange() Advanced                         { return Advanced(o) }
 func (o Instance) AsRange() Instance                      { return o }
 func (o *Extension[T]) AsRange() Instance                 { return o.Super() }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

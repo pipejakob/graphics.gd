@@ -13,6 +13,7 @@ Inheriting noise classes can optionally override this function to provide a more
 package Noise
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -270,7 +274,7 @@ func (self MoreArgs) GetSeamlessImage3d(width int, height int, depth int, invert
 type Advanced = class
 type class [1]gdclass.Noise
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNoise(obj[0])
@@ -285,7 +289,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -310,6 +314,7 @@ func New() Instance {
 
 func (self class) GetNoise1d(x float64) float64 { //gd:Noise.get_noise_1d
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_noise_1d, gdextension.SizeFloat|(gdextension.SizeFloat<<4), &struct{ x float64 }{x})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -318,11 +323,13 @@ func (self class) GetNoise2d(x float64, y float64) float64 { //gd:Noise.get_nois
 		x float64
 		y float64
 	}{x, y})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetNoise2dv(v Vector2.XY) float64 { //gd:Noise.get_noise_2dv
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_noise_2dv, gdextension.SizeFloat|(gdextension.SizeVector2<<4), &struct{ v Vector2.XY }{v})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -332,11 +339,13 @@ func (self class) GetNoise3d(x float64, y float64, z float64) float64 { //gd:Noi
 		y float64
 		z float64
 	}{x, y, z})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetNoise3dv(v Vector3.XYZ) float64 { //gd:Noise.get_noise_3dv
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_noise_3dv, gdextension.SizeFloat|(gdextension.SizeVector3<<4), &struct{ v Vector3.XYZ }{v})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -348,6 +357,7 @@ func (self class) GetImage(width int64, height int64, invert bool, in_3d_space b
 		in_3d_space bool
 		normalize   bool
 	}{width, height, invert, in_3d_space, normalize})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Image{gdclass.NewImage(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -360,6 +370,7 @@ func (self class) GetSeamlessImage(width int64, height int64, invert bool, in_3d
 		skirt       float64
 		normalize   bool
 	}{width, height, invert, in_3d_space, skirt, normalize})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Image{gdclass.NewImage(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -371,6 +382,7 @@ func (self class) GetImage3d(width int64, height int64, depth int64, invert bool
 		invert    bool
 		normalize bool
 	}{width, height, depth, invert, normalize})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.Image](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -383,15 +395,16 @@ func (self class) GetSeamlessImage3d(width int64, height int64, depth int64, inv
 		skirt     float64
 		normalize bool
 	}{width, height, depth, invert, skirt, normalize})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.Image](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsNoise() Advanced                     { return Advanced(o) }
 func (o Instance) AsNoise() Instance                  { return o }
 func (o *Extension[T]) AsNoise() Instance             { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

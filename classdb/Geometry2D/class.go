@@ -7,6 +7,7 @@ package Geometry2D
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -15,6 +16,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -40,6 +42,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -392,7 +397,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.Geometry2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGeometry2D(obj[0])
@@ -407,7 +412,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) IsPointInCircle(point Vector2.XY, circle_position Vector2.XY, circle_radius float64) bool { //gd:Geometry2D.is_point_in_circle
@@ -500,6 +505,7 @@ func (self class) IsPolygonClockwise(polygon Packed.Array[Vector2.XY]) bool { //
 	var r_ret = noescape.Call[bool](gdreference.GetObject(self.AsObject()[0]), methods.is_polygon_clockwise, gdextension.SizeBool|(gdextension.SizePackedArray<<4), &struct {
 		polygon gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
+	runtime.KeepAlive(polygon)
 	var ret = r_ret
 	return ret
 }
@@ -509,6 +515,7 @@ func (self class) IsPointInPolygon(point Vector2.XY, polygon Packed.Array[Vector
 		point   Vector2.XY
 		polygon gdextension.PackedArray[Vector2.XY]
 	}{point, pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
+	runtime.KeepAlive(polygon)
 	var ret = r_ret
 	return ret
 }
@@ -517,6 +524,7 @@ func (self class) TriangulatePolygon(polygon Packed.Array[Vector2.XY]) Packed.Ar
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.triangulate_polygon, gdextension.SizePackedArray|(gdextension.SizePackedArray<<4), &struct {
 		polygon gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
+	runtime.KeepAlive(polygon)
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -525,6 +533,7 @@ func (self class) TriangulateDelaunay(points Packed.Array[Vector2.XY]) Packed.Ar
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.triangulate_delaunay, gdextension.SizePackedArray|(gdextension.SizePackedArray<<4), &struct {
 		points gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](points))})
+	runtime.KeepAlive(points)
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -533,6 +542,7 @@ func (self class) ConvexHull(points Packed.Array[Vector2.XY]) Packed.Array[Vecto
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.convex_hull, gdextension.SizePackedArray|(gdextension.SizePackedArray<<4), &struct {
 		points gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](points))})
+	runtime.KeepAlive(points)
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -541,6 +551,7 @@ func (self class) DecomposePolygonInConvex(polygon Packed.Array[Vector2.XY]) Arr
 	var r_ret = noescape.Call[gdextension.Array](gdreference.GetObject(self.AsObject()[0]), methods.decompose_polygon_in_convex, gdextension.SizeArray|(gdextension.SizePackedArray<<4), &struct {
 		polygon gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
+	runtime.KeepAlive(polygon)
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -550,6 +561,8 @@ func (self class) MergePolygons(polygon_a Packed.Array[Vector2.XY], polygon_b Pa
 		polygon_a gdextension.PackedArray[Vector2.XY]
 		polygon_b gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_a)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_b))})
+	runtime.KeepAlive(polygon_a)
+	runtime.KeepAlive(polygon_b)
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -559,6 +572,8 @@ func (self class) ClipPolygons(polygon_a Packed.Array[Vector2.XY], polygon_b Pac
 		polygon_a gdextension.PackedArray[Vector2.XY]
 		polygon_b gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_a)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_b))})
+	runtime.KeepAlive(polygon_a)
+	runtime.KeepAlive(polygon_b)
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -568,6 +583,8 @@ func (self class) IntersectPolygons(polygon_a Packed.Array[Vector2.XY], polygon_
 		polygon_a gdextension.PackedArray[Vector2.XY]
 		polygon_b gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_a)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_b))})
+	runtime.KeepAlive(polygon_a)
+	runtime.KeepAlive(polygon_b)
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -577,6 +594,8 @@ func (self class) ExcludePolygons(polygon_a Packed.Array[Vector2.XY], polygon_b 
 		polygon_a gdextension.PackedArray[Vector2.XY]
 		polygon_b gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_a)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon_b))})
+	runtime.KeepAlive(polygon_a)
+	runtime.KeepAlive(polygon_b)
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -586,6 +605,8 @@ func (self class) ClipPolylineWithPolygon(polyline Packed.Array[Vector2.XY], pol
 		polyline gdextension.PackedArray[Vector2.XY]
 		polygon  gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polyline)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
+	runtime.KeepAlive(polyline)
+	runtime.KeepAlive(polygon)
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -595,6 +616,8 @@ func (self class) IntersectPolylineWithPolygon(polyline Packed.Array[Vector2.XY]
 		polyline gdextension.PackedArray[Vector2.XY]
 		polygon  gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polyline)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
+	runtime.KeepAlive(polyline)
+	runtime.KeepAlive(polygon)
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -605,6 +628,7 @@ func (self class) OffsetPolygon(polygon Packed.Array[Vector2.XY], delta float64,
 		delta     float64
 		join_type PolyJoinType
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon)), delta, join_type})
+	runtime.KeepAlive(polygon)
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -616,6 +640,7 @@ func (self class) OffsetPolyline(polyline Packed.Array[Vector2.XY], delta float6
 		join_type PolyJoinType
 		end_type  PolyEndType
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polyline)), delta, join_type, end_type})
+	runtime.KeepAlive(polyline)
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -624,6 +649,7 @@ func (self class) MakeAtlas(sizes Packed.Array[Vector2.XY]) Dictionary.Any { //g
 	var r_ret = noescape.Call[gdextension.Dictionary](gdreference.GetObject(self.AsObject()[0]), methods.make_atlas, gdextension.SizeDictionary|(gdextension.SizePackedArray<<4), &struct {
 		sizes gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](sizes))})
+	runtime.KeepAlive(sizes)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }

@@ -8,6 +8,7 @@ Note: When exporting to Android, make sure to enable the INTERNET permission in 
 package StreamPeerTCP
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -197,7 +201,7 @@ func (self Instance) SetNoDelay(enabled bool) Instance { //gd:StreamPeerTCP.set_
 type Advanced = class
 type class [1]gdclass.StreamPeerTCP
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewStreamPeerTCP(obj[0])
@@ -212,7 +216,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -240,6 +244,8 @@ func (self class) Bind(port int64, host String.Readable) Error.Code { //gd:Strea
 		port int64
 		host gdextension.String
 	}{port, pointers.Get(gd.InternalString(host))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -248,42 +254,48 @@ func (self class) ConnectToHost(host String.Readable, port int64) Error.Code { /
 		host gdextension.String
 		port int64
 	}{pointers.Get(gd.InternalString(host)), port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetConnectedHost() String.Readable { //gd:StreamPeerTCP.get_connected_host
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_connected_host, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetConnectedPort() int64 { //gd:StreamPeerTCP.get_connected_port
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_connected_port, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLocalPort() int64 { //gd:StreamPeerTCP.get_local_port
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_local_port, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNoDelay(enabled bool) { //gd:StreamPeerTCP.set_no_delay
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_no_delay, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsStreamPeerTCP() Advanced         { return Advanced(o) }
 func (o Instance) AsStreamPeerTCP() Instance      { return o }
 func (o *Extension[T]) AsStreamPeerTCP() Instance { return o.Super() }
 func (o class) AsStreamPeerSocket() StreamPeerSocket.Advanced {
-	return StreamPeerSocket.Advanced{gdclass.NewStreamPeerSocket(o[0].AsObject()[0])}
+	return *(*StreamPeerSocket.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsStreamPeerSocket() StreamPeerSocket.Instance {
 	return o.Super().AsStreamPeerSocket()
 }
 func (o Instance) AsStreamPeerSocket() StreamPeerSocket.Instance {
-	return StreamPeerSocket.Instance{gdclass.NewStreamPeerSocket(o[0].AsObject()[0])}
+	return *(*StreamPeerSocket.Instance)(ie.As(&o))
 }
-func (o class) AsStreamPeer() StreamPeer.Advanced         { return StreamPeer.Advanced{gdclass.NewStreamPeer(o[0].AsObject()[0])} }
+func (o class) AsStreamPeer() StreamPeer.Advanced         { return *(*StreamPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsStreamPeer() StreamPeer.Instance { return o.Super().AsStreamPeer() }
-func (o Instance) AsStreamPeer() StreamPeer.Instance      { return StreamPeer.Instance{gdclass.NewStreamPeer(o[0].AsObject()[0])} }
+func (o Instance) AsStreamPeer() StreamPeer.Instance      { return *(*StreamPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

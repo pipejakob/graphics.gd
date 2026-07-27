@@ -10,6 +10,7 @@ A resource to add to an [AnimationNodeBlendTree]. Only has one output port using
 package AnimationNodeAnimation
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -142,7 +146,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AnimationNodeAnimation
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimationNodeAnimation(obj[0])
@@ -157,7 +161,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -317,65 +321,82 @@ func (self Instance) SetLoopMode(value Animation.LoopMode) Instance { //gd:Anima
 
 func (self class) SetAnimation(name String.Name) { //gd:AnimationNodeAnimation.set_animation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_animation, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetAnimation() String.Name { //gd:AnimationNodeAnimation.get_animation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_animation, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetPlayMode(mode PlayMode) { //gd:AnimationNodeAnimation.set_play_mode
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_play_mode, 0|(gdextension.SizeInt<<4), &struct{ mode PlayMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPlayMode() PlayMode { //gd:AnimationNodeAnimation.get_play_mode
 	var r_ret = jumponly.Call[PlayMode](gd.ObjectChecked(self.AsObject()), methods.get_play_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAdvanceOnStart(advance_on_start bool) { //gd:AnimationNodeAnimation.set_advance_on_start
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_advance_on_start, 0|(gdextension.SizeBool<<4), &struct{ advance_on_start bool }{advance_on_start})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAdvanceOnStart() bool { //gd:AnimationNodeAnimation.is_advance_on_start
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_advance_on_start, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseCustomTimeline(use_custom_timeline bool) { //gd:AnimationNodeAnimation.set_use_custom_timeline
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_custom_timeline, 0|(gdextension.SizeBool<<4), &struct{ use_custom_timeline bool }{use_custom_timeline})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingCustomTimeline() bool { //gd:AnimationNodeAnimation.is_using_custom_timeline
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_custom_timeline, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTimelineLength(timeline_length float64) { //gd:AnimationNodeAnimation.set_timeline_length
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_timeline_length, 0|(gdextension.SizeFloat<<4), &struct{ timeline_length float64 }{timeline_length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTimelineLength() float64 { //gd:AnimationNodeAnimation.get_timeline_length
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_timeline_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStretchTimeScale(stretch_time_scale bool) { //gd:AnimationNodeAnimation.set_stretch_time_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stretch_time_scale, 0|(gdextension.SizeBool<<4), &struct{ stretch_time_scale bool }{stretch_time_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsStretchingTimeScale() bool { //gd:AnimationNodeAnimation.is_stretching_time_scale
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_stretching_time_scale, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStartOffset(start_offset float64) { //gd:AnimationNodeAnimation.set_start_offset
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_start_offset, 0|(gdextension.SizeFloat<<4), &struct{ start_offset float64 }{start_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStartOffset() float64 { //gd:AnimationNodeAnimation.get_start_offset
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_start_offset, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLoopMode(loop_mode Animation.LoopMode) { //gd:AnimationNodeAnimation.set_loop_mode
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_loop_mode, 0|(gdextension.SizeInt<<4), &struct{ loop_mode Animation.LoopMode }{loop_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLoopMode() Animation.LoopMode { //gd:AnimationNodeAnimation.get_loop_mode
 	var r_ret = jumponly.Call[Animation.LoopMode](gd.ObjectChecked(self.AsObject()), methods.get_loop_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -383,22 +404,22 @@ func (o class) AsAnimationNodeAnimation() Advanced         { return Advanced(o) 
 func (o Instance) AsAnimationNodeAnimation() Instance      { return o }
 func (o *Extension[T]) AsAnimationNodeAnimation() Instance { return o.Super() }
 func (o class) AsAnimationRootNode() AnimationRootNode.Advanced {
-	return AnimationRootNode.Advanced{gdclass.NewAnimationRootNode(o[0].AsObject()[0])}
+	return *(*AnimationRootNode.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsAnimationRootNode() AnimationRootNode.Instance {
 	return o.Super().AsAnimationRootNode()
 }
 func (o Instance) AsAnimationRootNode() AnimationRootNode.Instance {
-	return AnimationRootNode.Instance{gdclass.NewAnimationRootNode(o[0].AsObject()[0])}
+	return *(*AnimationRootNode.Instance)(ie.As(&o))
 }
-func (o class) AsAnimationNode() AnimationNode.Advanced         { return AnimationNode.Advanced{gdclass.NewAnimationNode(o[0].AsObject()[0])} }
+func (o class) AsAnimationNode() AnimationNode.Advanced         { return *(*AnimationNode.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAnimationNode() AnimationNode.Instance { return o.Super().AsAnimationNode() }
 func (o Instance) AsAnimationNode() AnimationNode.Instance {
-	return AnimationNode.Instance{gdclass.NewAnimationNode(o[0].AsObject()[0])}
+	return *(*AnimationNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

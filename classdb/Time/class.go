@@ -17,6 +17,7 @@ package Time
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -25,6 +26,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -48,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -345,7 +350,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.Time
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTime(obj[0])
@@ -360,7 +365,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) GetDatetimeDictFromUnixTime(unix_time_val int64) Dictionary.Any { //gd:Time.get_datetime_dict_from_unix_time
@@ -408,6 +413,7 @@ func (self class) GetDatetimeDictFromDatetimeString(datetime String.Readable, we
 		datetime gdextension.String
 		weekday  bool
 	}{pointers.Get(gd.InternalString(datetime)), weekday})
+	runtime.KeepAlive(datetime)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -417,18 +423,21 @@ func (self class) GetDatetimeStringFromDatetimeDict(datetime Dictionary.Any, use
 		datetime  gdextension.Dictionary
 		use_space bool
 	}{pointers.Get(gd.InternalDictionary(datetime)), use_space})
+	runtime.KeepAlive(datetime)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetUnixTimeFromDatetimeDict(datetime Dictionary.Any) int64 { //gd:Time.get_unix_time_from_datetime_dict
 	once.Do(singleton)
 	var r_ret = noescape.Call[int64](gdreference.GetObject(self.AsObject()[0]), methods.get_unix_time_from_datetime_dict, gdextension.SizeInt|(gdextension.SizeDictionary<<4), &struct{ datetime gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(datetime))})
+	runtime.KeepAlive(datetime)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetUnixTimeFromDatetimeString(datetime String.Readable) int64 { //gd:Time.get_unix_time_from_datetime_string
 	once.Do(singleton)
 	var r_ret = noescape.Call[int64](gdreference.GetObject(self.AsObject()[0]), methods.get_unix_time_from_datetime_string, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ datetime gdextension.String }{pointers.Get(gd.InternalString(datetime))})
+	runtime.KeepAlive(datetime)
 	var ret = r_ret
 	return ret
 }

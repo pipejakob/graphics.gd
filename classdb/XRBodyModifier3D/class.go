@@ -14,6 +14,7 @@ The body tracking position-data is scaled by [Skeleton3D.MotionScale] when appli
 package XRBodyModifier3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -23,6 +24,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -49,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -134,7 +139,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.XRBodyModifier3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewXRBodyModifier3D(obj[0])
@@ -149,7 +154,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -216,25 +221,32 @@ func (self Instance) SetBoneUpdate(value BoneUpdate) Instance { //gd:XRBodyModif
 
 func (self class) SetBodyTracker(tracker_name String.Name) { //gd:XRBodyModifier3D.set_body_tracker
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_body_tracker, 0|(gdextension.SizeStringName<<4), &struct{ tracker_name gdextension.StringName }{pointers.Get(gd.InternalStringName(tracker_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tracker_name)
 }
 func (self class) GetBodyTracker() String.Name { //gd:XRBodyModifier3D.get_body_tracker
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_body_tracker, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetBodyUpdate(body_update BodyUpdate) { //gd:XRBodyModifier3D.set_body_update
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_body_update, 0|(gdextension.SizeInt<<4), &struct{ body_update BodyUpdate }{body_update})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBodyUpdate() BodyUpdate { //gd:XRBodyModifier3D.get_body_update
 	var r_ret = jumponly.Call[BodyUpdate](gd.ObjectChecked(self.AsObject()), methods.get_body_update, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBoneUpdate(bone_update BoneUpdate) { //gd:XRBodyModifier3D.set_bone_update
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_update, 0|(gdextension.SizeInt<<4), &struct{ bone_update BoneUpdate }{bone_update})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneUpdate() BoneUpdate { //gd:XRBodyModifier3D.get_bone_update
 	var r_ret = jumponly.Call[BoneUpdate](gd.ObjectChecked(self.AsObject()), methods.get_bone_update, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -242,20 +254,20 @@ func (o class) AsXRBodyModifier3D() Advanced         { return Advanced(o) }
 func (o Instance) AsXRBodyModifier3D() Instance      { return o }
 func (o *Extension[T]) AsXRBodyModifier3D() Instance { return o.Super() }
 func (o class) AsSkeletonModifier3D() SkeletonModifier3D.Advanced {
-	return SkeletonModifier3D.Advanced{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
 	return o.Super().AsSkeletonModifier3D()
 }
 func (o Instance) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
-	return SkeletonModifier3D.Instance{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

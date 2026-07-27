@@ -12,6 +12,7 @@ Note: The Jiggle modifier has jiggle_joints, which are the data objects that hol
 package SkeletonModification2DJiggle
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -347,7 +351,7 @@ func (self Instance) GetJiggleJointGravity(joint_idx int) Vector2.XY { //gd:Skel
 type Advanced = class
 type class [1]gdclass.SkeletonModification2DJiggle
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSkeletonModification2DJiggle(obj[0])
@@ -362,7 +366,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -480,87 +484,110 @@ func (self Instance) SetGravity(value Vector2.XY) Instance { //gd:SkeletonModifi
 
 func (self class) SetTargetNode(target_nodepath Path.ToNode) { //gd:SkeletonModification2DJiggle.set_target_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_target_node, 0|(gdextension.SizeNodePath<<4), &struct{ target_nodepath gdextension.NodePath }{pointers.Get(gd.InternalNodePath(target_nodepath))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(target_nodepath)
 }
 func (self class) GetTargetNode() Path.ToNode { //gd:SkeletonModification2DJiggle.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetJiggleDataChainLength(length int64) { //gd:SkeletonModification2DJiggle.set_jiggle_data_chain_length
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_jiggle_data_chain_length, 0|(gdextension.SizeInt<<4), &struct{ length int64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJiggleDataChainLength() int64 { //gd:SkeletonModification2DJiggle.get_jiggle_data_chain_length
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_jiggle_data_chain_length, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStiffness(stiffness float64) { //gd:SkeletonModification2DJiggle.set_stiffness
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stiffness, 0|(gdextension.SizeFloat<<4), &struct{ stiffness float64 }{stiffness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStiffness() float64 { //gd:SkeletonModification2DJiggle.get_stiffness
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_stiffness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMass(mass float64) { //gd:SkeletonModification2DJiggle.set_mass
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mass, 0|(gdextension.SizeFloat<<4), &struct{ mass float64 }{mass})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMass() float64 { //gd:SkeletonModification2DJiggle.get_mass
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_mass, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDamping(damping float64) { //gd:SkeletonModification2DJiggle.set_damping
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_damping, 0|(gdextension.SizeFloat<<4), &struct{ damping float64 }{damping})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDamping() float64 { //gd:SkeletonModification2DJiggle.get_damping
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_damping, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseGravity(use_gravity bool) { //gd:SkeletonModification2DJiggle.set_use_gravity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_gravity, 0|(gdextension.SizeBool<<4), &struct{ use_gravity bool }{use_gravity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseGravity() bool { //gd:SkeletonModification2DJiggle.get_use_gravity
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_gravity, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGravity(gravity Vector2.XY) { //gd:SkeletonModification2DJiggle.set_gravity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_gravity, 0|(gdextension.SizeVector2<<4), &struct{ gravity Vector2.XY }{gravity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGravity() Vector2.XY { //gd:SkeletonModification2DJiggle.get_gravity
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_gravity, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseColliders(use_colliders bool) { //gd:SkeletonModification2DJiggle.set_use_colliders
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_colliders, 0|(gdextension.SizeBool<<4), &struct{ use_colliders bool }{use_colliders})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseColliders() bool { //gd:SkeletonModification2DJiggle.get_use_colliders
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_colliders, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollisionMask(collision_mask int64) { //gd:SkeletonModification2DJiggle.set_collision_mask
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_mask, 0|(gdextension.SizeInt<<4), &struct{ collision_mask int64 }{collision_mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionMask() int64 { //gd:SkeletonModification2DJiggle.get_collision_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Reset() { //gd:SkeletonModification2DJiggle.reset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetJiggleJointBone2dNode(joint_idx int64, bone2d_node Path.ToNode) { //gd:SkeletonModification2DJiggle.set_jiggle_joint_bone2d_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_jiggle_joint_bone2d_node, 0|(gdextension.SizeInt<<4)|(gdextension.SizeNodePath<<8), &struct {
 		joint_idx   int64
 		bone2d_node gdextension.NodePath
 	}{joint_idx, pointers.Get(gd.InternalNodePath(bone2d_node))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone2d_node)
 }
 func (self class) GetJiggleJointBone2dNode(joint_idx int64) Path.ToNode { //gd:SkeletonModification2DJiggle.get_jiggle_joint_bone2d_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_jiggle_joint_bone2d_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
@@ -569,9 +596,11 @@ func (self class) SetJiggleJointBoneIndex(joint_idx int64, bone_idx int64) { //g
 		joint_idx int64
 		bone_idx  int64
 	}{joint_idx, bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJiggleJointBoneIndex(joint_idx int64) int64 { //gd:SkeletonModification2DJiggle.get_jiggle_joint_bone_index
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_jiggle_joint_bone_index, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -580,9 +609,11 @@ func (self class) SetJiggleJointOverride(joint_idx int64, override bool) { //gd:
 		joint_idx int64
 		override  bool
 	}{joint_idx, override})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJiggleJointOverride(joint_idx int64) bool { //gd:SkeletonModification2DJiggle.get_jiggle_joint_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_jiggle_joint_override, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -591,9 +622,11 @@ func (self class) SetJiggleJointStiffness(joint_idx int64, stiffness float64) { 
 		joint_idx int64
 		stiffness float64
 	}{joint_idx, stiffness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJiggleJointStiffness(joint_idx int64) float64 { //gd:SkeletonModification2DJiggle.get_jiggle_joint_stiffness
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_jiggle_joint_stiffness, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -602,9 +635,11 @@ func (self class) SetJiggleJointMass(joint_idx int64, mass float64) { //gd:Skele
 		joint_idx int64
 		mass      float64
 	}{joint_idx, mass})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJiggleJointMass(joint_idx int64) float64 { //gd:SkeletonModification2DJiggle.get_jiggle_joint_mass
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_jiggle_joint_mass, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -613,9 +648,11 @@ func (self class) SetJiggleJointDamping(joint_idx int64, damping float64) { //gd
 		joint_idx int64
 		damping   float64
 	}{joint_idx, damping})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJiggleJointDamping(joint_idx int64) float64 { //gd:SkeletonModification2DJiggle.get_jiggle_joint_damping
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_jiggle_joint_damping, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -624,9 +661,11 @@ func (self class) SetJiggleJointUseGravity(joint_idx int64, use_gravity bool) { 
 		joint_idx   int64
 		use_gravity bool
 	}{joint_idx, use_gravity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJiggleJointUseGravity(joint_idx int64) bool { //gd:SkeletonModification2DJiggle.get_jiggle_joint_use_gravity
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_jiggle_joint_use_gravity, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -635,9 +674,11 @@ func (self class) SetJiggleJointGravity(joint_idx int64, gravity Vector2.XY) { /
 		joint_idx int64
 		gravity   Vector2.XY
 	}{joint_idx, gravity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJiggleJointGravity(joint_idx int64) Vector2.XY { //gd:SkeletonModification2DJiggle.get_jiggle_joint_gravity
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_jiggle_joint_gravity, gdextension.SizeVector2|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -645,17 +686,17 @@ func (o class) AsSkeletonModification2DJiggle() Advanced         { return Advanc
 func (o Instance) AsSkeletonModification2DJiggle() Instance      { return o }
 func (o *Extension[T]) AsSkeletonModification2DJiggle() Instance { return o.Super() }
 func (o class) AsSkeletonModification2D() SkeletonModification2D.Advanced {
-	return SkeletonModification2D.Advanced{gdclass.NewSkeletonModification2D(o[0].AsObject()[0])}
+	return *(*SkeletonModification2D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModification2D() SkeletonModification2D.Instance {
 	return o.Super().AsSkeletonModification2D()
 }
 func (o Instance) AsSkeletonModification2D() SkeletonModification2D.Instance {
-	return SkeletonModification2D.Instance{gdclass.NewSkeletonModification2D(o[0].AsObject()[0])}
+	return *(*SkeletonModification2D.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

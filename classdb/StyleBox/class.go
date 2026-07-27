@@ -12,6 +12,7 @@ Note: For control nodes that have Theme Properties, the focus [StyleBox] is disp
 package StyleBox
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -262,7 +266,7 @@ func (self Instance) Draw(peer CanvasItem.Instance, rect Rect2.PositionSize) { /
 type Advanced = class
 type class [1]gdclass.StyleBox
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewStyleBox(obj[0])
@@ -277,7 +281,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -408,6 +412,7 @@ func (class) _test_mask(impl func(ptr gdclass.Receiver, point Vector2.XY, rect R
 
 func (self class) GetMinimumSize() Vector2.XY { //gd:StyleBox.get_minimum_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_minimum_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -416,22 +421,27 @@ func (self class) SetContentMargin(margin Rect2.Side, offset float64) { //gd:Sty
 		margin Rect2.Side
 		offset float64
 	}{margin, offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetContentMarginAll(offset float64) { //gd:StyleBox.set_content_margin_all
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_content_margin_all, 0|(gdextension.SizeFloat<<4), &struct{ offset float64 }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetContentMargin(margin Rect2.Side) float64 { //gd:StyleBox.get_content_margin
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_content_margin, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ margin Rect2.Side }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMargin(margin Rect2.Side) float64 { //gd:StyleBox.get_margin
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_margin, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ margin Rect2.Side }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOffset() Vector2.XY { //gd:StyleBox.get_offset
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -440,9 +450,11 @@ func (self class) Draw(canvas_item RID.Any, rect Rect2.PositionSize) { //gd:Styl
 		canvas_item RID.Any
 		rect        Rect2.PositionSize
 	}{canvas_item, rect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCurrentItemDrawn() [1]gdclass.CanvasItem { //gd:StyleBox.get_current_item_drawn
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_current_item_drawn, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.CanvasItem{gdclass.NewCanvasItem(gdreference.LetObject(r_ret))}
 	return ret
 }
@@ -451,15 +463,16 @@ func (self class) TestMask(point Vector2.XY, rect Rect2.PositionSize) bool { //g
 		point Vector2.XY
 		rect  Rect2.PositionSize
 	}{point, rect})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsStyleBox() Advanced                  { return Advanced(o) }
 func (o Instance) AsStyleBox() Instance               { return o }
 func (o *Extension[T]) AsStyleBox() Instance          { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

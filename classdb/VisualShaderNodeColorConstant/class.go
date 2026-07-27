@@ -10,6 +10,7 @@ Translated to vec3 rgb and float alpha in the shader language.
 package VisualShaderNodeColorConstant
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -128,7 +132,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.VisualShaderNodeColorConstant
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVisualShaderNodeColorConstant(obj[0])
@@ -143,7 +147,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -183,9 +187,11 @@ func (self Instance) SetConstant(value Color.RGBA) Instance { //gd:VisualShaderN
 
 func (self class) SetConstant(constant Color.RGBA) { //gd:VisualShaderNodeColorConstant.set_constant
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_constant, 0|(gdextension.SizeColor<<4), &struct{ constant Color.RGBA }{constant})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConstant() Color.RGBA { //gd:VisualShaderNodeColorConstant.get_constant
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_constant, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -193,26 +199,26 @@ func (o class) AsVisualShaderNodeColorConstant() Advanced         { return Advan
 func (o Instance) AsVisualShaderNodeColorConstant() Instance      { return o }
 func (o *Extension[T]) AsVisualShaderNodeColorConstant() Instance { return o.Super() }
 func (o class) AsVisualShaderNodeConstant() VisualShaderNodeConstant.Advanced {
-	return VisualShaderNodeConstant.Advanced{gdclass.NewVisualShaderNodeConstant(o[0].AsObject()[0])}
+	return *(*VisualShaderNodeConstant.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualShaderNodeConstant() VisualShaderNodeConstant.Instance {
 	return o.Super().AsVisualShaderNodeConstant()
 }
 func (o Instance) AsVisualShaderNodeConstant() VisualShaderNodeConstant.Instance {
-	return VisualShaderNodeConstant.Instance{gdclass.NewVisualShaderNodeConstant(o[0].AsObject()[0])}
+	return *(*VisualShaderNodeConstant.Instance)(ie.As(&o))
 }
 func (o class) AsVisualShaderNode() VisualShaderNode.Advanced {
-	return VisualShaderNode.Advanced{gdclass.NewVisualShaderNode(o[0].AsObject()[0])}
+	return *(*VisualShaderNode.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualShaderNode() VisualShaderNode.Instance {
 	return o.Super().AsVisualShaderNode()
 }
 func (o Instance) AsVisualShaderNode() VisualShaderNode.Instance {
-	return VisualShaderNode.Instance{gdclass.NewVisualShaderNode(o[0].AsObject()[0])}
+	return *(*VisualShaderNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

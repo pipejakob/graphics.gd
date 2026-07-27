@@ -6,6 +6,7 @@ This haptic feedback resource makes it possible to define a vibration based hapt
 package OpenXRHapticVibration
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -41,6 +42,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -126,7 +130,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.OpenXRHapticVibration
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRHapticVibration(obj[0])
@@ -141,7 +145,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -205,25 +209,31 @@ func (self Instance) SetAmplitude(value Float.X) Instance { //gd:OpenXRHapticVib
 
 func (self class) SetDuration(duration int64) { //gd:OpenXRHapticVibration.set_duration
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_duration, 0|(gdextension.SizeInt<<4), &struct{ duration int64 }{duration})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDuration() int64 { //gd:OpenXRHapticVibration.get_duration
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_duration, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrequency(frequency float64) { //gd:OpenXRHapticVibration.set_frequency
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_frequency, 0|(gdextension.SizeFloat<<4), &struct{ frequency float64 }{frequency})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrequency() float64 { //gd:OpenXRHapticVibration.get_frequency
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_frequency, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAmplitude(amplitude float64) { //gd:OpenXRHapticVibration.set_amplitude
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_amplitude, 0|(gdextension.SizeFloat<<4), &struct{ amplitude float64 }{amplitude})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAmplitude() float64 { //gd:OpenXRHapticVibration.get_amplitude
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_amplitude, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -231,17 +241,17 @@ func (o class) AsOpenXRHapticVibration() Advanced         { return Advanced(o) }
 func (o Instance) AsOpenXRHapticVibration() Instance      { return o }
 func (o *Extension[T]) AsOpenXRHapticVibration() Instance { return o.Super() }
 func (o class) AsOpenXRHapticBase() OpenXRHapticBase.Advanced {
-	return OpenXRHapticBase.Advanced{gdclass.NewOpenXRHapticBase(o[0].AsObject()[0])}
+	return *(*OpenXRHapticBase.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRHapticBase() OpenXRHapticBase.Instance {
 	return o.Super().AsOpenXRHapticBase()
 }
 func (o Instance) AsOpenXRHapticBase() OpenXRHapticBase.Instance {
-	return OpenXRHapticBase.Instance{gdclass.NewOpenXRHapticBase(o[0].AsObject()[0])}
+	return *(*OpenXRHapticBase.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

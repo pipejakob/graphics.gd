@@ -21,6 +21,7 @@ Performance: Area lights are more demanding on the GPU compared to omni and spot
 package AreaLight3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -29,6 +30,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -58,6 +60,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -142,7 +147,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AreaLight3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAreaLight3D(obj[0])
@@ -157,7 +162,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -225,49 +230,56 @@ func (self Instance) SetAreaTexture(value Texture2D.Instance) Instance { //gd:Ar
 
 func (self class) SetAreaTexture(texture [1]gdclass.Texture2D) { //gd:AreaLight3D.set_area_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_area_texture, 0|(gdextension.SizeObject<<4), &struct{ texture gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetAreaTexture() [1]gdclass.Texture2D { //gd:AreaLight3D.get_area_texture
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_area_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetAreaSize(area_size Vector2.XY) { //gd:AreaLight3D.set_area_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_area_size, 0|(gdextension.SizeVector2<<4), &struct{ area_size Vector2.XY }{area_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAreaSize() Vector2.XY { //gd:AreaLight3D.get_area_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_area_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAreaNormalizeEnergy(enable bool) { //gd:AreaLight3D.set_area_normalize_energy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_area_normalize_energy, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAreaNormalizingEnergy() bool { //gd:AreaLight3D.is_area_normalizing_energy
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_area_normalizing_energy, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAreaLight3D() Advanced             { return Advanced(o) }
 func (o Instance) AsAreaLight3D() Instance          { return o }
 func (o *Extension[T]) AsAreaLight3D() Instance     { return o.Super() }
-func (o class) AsLight3D() Light3D.Advanced         { return Light3D.Advanced{gdclass.NewLight3D(o[0].AsObject()[0])} }
+func (o class) AsLight3D() Light3D.Advanced         { return *(*Light3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsLight3D() Light3D.Instance { return o.Super().AsLight3D() }
-func (o Instance) AsLight3D() Light3D.Instance      { return Light3D.Instance{gdclass.NewLight3D(o[0].AsObject()[0])} }
+func (o Instance) AsLight3D() Light3D.Instance      { return *(*Light3D.Instance)(ie.As(&o)) }
 func (o class) AsVisualInstance3D() VisualInstance3D.Advanced {
-	return VisualInstance3D.Advanced{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualInstance3D() VisualInstance3D.Instance {
 	return o.Super().AsVisualInstance3D()
 }
 func (o Instance) AsVisualInstance3D() VisualInstance3D.Instance {
-	return VisualInstance3D.Instance{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

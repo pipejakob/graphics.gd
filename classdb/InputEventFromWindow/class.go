@@ -6,6 +6,7 @@ InputEventFromWindow represents events specifically received by windows. This in
 package InputEventFromWindow
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -41,6 +42,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -122,7 +126,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.InputEventFromWindow
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputEventFromWindow(obj[0])
@@ -137,7 +141,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -177,21 +181,23 @@ func (self Instance) SetWindowId(value int) Instance { //gd:InputEventFromWindow
 
 func (self class) SetWindowId(id int64) { //gd:InputEventFromWindow.set_window_id
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_window_id, 0|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWindowId() int64 { //gd:InputEventFromWindow.get_window_id
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_window_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsInputEventFromWindow() Advanced          { return Advanced(o) }
 func (o Instance) AsInputEventFromWindow() Instance       { return o }
 func (o *Extension[T]) AsInputEventFromWindow() Instance  { return o.Super() }
-func (o class) AsInputEvent() InputEvent.Advanced         { return InputEvent.Advanced{gdclass.NewInputEvent(o[0].AsObject()[0])} }
+func (o class) AsInputEvent() InputEvent.Advanced         { return *(*InputEvent.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsInputEvent() InputEvent.Instance { return o.Super().AsInputEvent() }
-func (o Instance) AsInputEvent() InputEvent.Instance      { return InputEvent.Instance{gdclass.NewInputEvent(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced             { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsInputEvent() InputEvent.Instance      { return *(*InputEvent.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced             { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance     { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance          { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance          { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

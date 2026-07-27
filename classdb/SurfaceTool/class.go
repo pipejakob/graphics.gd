@@ -46,6 +46,7 @@ Note: Godot uses clockwise [winding order] for front faces of triangle primitive
 package SurfaceTool
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -88,6 +89,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -610,7 +614,7 @@ func (self Instance) CommitToArrays() []any { //gd:SurfaceTool.commit_to_arrays
 type Advanced = class
 type class [1]gdclass.SurfaceTool
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSurfaceTool(obj[0])
@@ -625,7 +629,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -650,9 +654,11 @@ func New() Instance {
 
 func (self class) SetSkinWeightCount(count SkinWeightCount) { //gd:SurfaceTool.set_skin_weight_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_skin_weight_count, 0|(gdextension.SizeInt<<4), &struct{ count SkinWeightCount }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkinWeightCount() SkinWeightCount { //gd:SurfaceTool.get_skin_weight_count
 	var r_ret = jumponly.Call[SkinWeightCount](gd.ObjectChecked(self.AsObject()), methods.get_skin_weight_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -661,51 +667,66 @@ func (self class) SetCustomFormat(channel_index int64, format CustomFormat) { //
 		channel_index int64
 		format        CustomFormat
 	}{channel_index, format})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCustomFormat(channel_index int64) CustomFormat { //gd:SurfaceTool.get_custom_format
 	var r_ret = noescape.Call[CustomFormat](gd.ObjectChecked(self.AsObject()), methods.get_custom_format, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ channel_index int64 }{channel_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Begin(primitive Mesh.PrimitiveType) { //gd:SurfaceTool.begin
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.begin, 0|(gdextension.SizeInt<<4), &struct{ primitive Mesh.PrimitiveType }{primitive})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddVertex(vertex Vector3.XYZ) { //gd:SurfaceTool.add_vertex
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_vertex, 0|(gdextension.SizeVector3<<4), &struct{ vertex Vector3.XYZ }{vertex})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetColor(color Color.RGBA) { //gd:SurfaceTool.set_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetNormal(normal Vector3.XYZ) { //gd:SurfaceTool.set_normal
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_normal, 0|(gdextension.SizeVector3<<4), &struct{ normal Vector3.XYZ }{normal})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTangent(tangent Plane.NormalD) { //gd:SurfaceTool.set_tangent
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tangent, 0|(gdextension.SizePlane<<4), &struct{ tangent Plane.NormalD }{tangent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetUv(uv Vector2.XY) { //gd:SurfaceTool.set_uv
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_uv, 0|(gdextension.SizeVector2<<4), &struct{ uv Vector2.XY }{uv})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetUv2(uv2 Vector2.XY) { //gd:SurfaceTool.set_uv2
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_uv2, 0|(gdextension.SizeVector2<<4), &struct{ uv2 Vector2.XY }{uv2})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetBones(bones Packed.Array[int32]) { //gd:SurfaceTool.set_bones
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bones, 0|(gdextension.SizePackedArray<<4), &struct {
 		bones gdextension.PackedArray[int32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](bones))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bones)
 }
 func (self class) SetWeights(weights Packed.Array[float32]) { //gd:SurfaceTool.set_weights
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_weights, 0|(gdextension.SizePackedArray<<4), &struct {
 		weights gdextension.PackedArray[float32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](weights))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(weights)
 }
 func (self class) SetCustom(channel_index int64, custom_color Color.RGBA) { //gd:SurfaceTool.set_custom
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_custom, 0|(gdextension.SizeInt<<4)|(gdextension.SizeColor<<8), &struct {
 		channel_index int64
 		custom_color  Color.RGBA
 	}{channel_index, custom_color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSmoothGroup(index int64) { //gd:SurfaceTool.set_smooth_group
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_smooth_group, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddTriangleFan(vertices Packed.Array[Vector3.XYZ], uvs Packed.Array[Vector2.XY], colors Packed.Array[Color.RGBA], uv2s Packed.Array[Vector2.XY], normals Packed.Array[Vector3.XYZ], tangents Array.Contains[Plane.NormalD]) { //gd:SurfaceTool.add_triangle_fan
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_triangle_fan, 0|(gdextension.SizePackedArray<<4)|(gdextension.SizePackedArray<<8)|(gdextension.SizePackedArray<<12)|(gdextension.SizePackedArray<<16)|(gdextension.SizePackedArray<<20)|(gdextension.SizeArray<<24), &struct {
@@ -716,27 +737,41 @@ func (self class) AddTriangleFan(vertices Packed.Array[Vector3.XYZ], uvs Packed.
 		normals  gdextension.PackedArray[Vector3.XYZ]
 		tangents gdextension.Array
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](vertices)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](uvs)), pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](colors)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](uv2s)), pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](normals)), pointers.Get(gd.InternalArray(tangents))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertices)
+	runtime.KeepAlive(uvs)
+	runtime.KeepAlive(colors)
+	runtime.KeepAlive(uv2s)
+	runtime.KeepAlive(normals)
+	runtime.KeepAlive(tangents)
 }
 func (self class) AddIndex(index int64) { //gd:SurfaceTool.add_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_index, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Index() { //gd:SurfaceTool.index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.index, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Deindex() { //gd:SurfaceTool.deindex
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.deindex, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GenerateNormals(flip bool) { //gd:SurfaceTool.generate_normals
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.generate_normals, 0|(gdextension.SizeBool<<4), &struct{ flip bool }{flip})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GenerateTangents() { //gd:SurfaceTool.generate_tangents
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.generate_tangents, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) OptimizeIndicesForCache() { //gd:SurfaceTool.optimize_indices_for_cache
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.optimize_indices_for_cache, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAabb() AABB.PositionSize { //gd:SurfaceTool.get_aabb
 	var r_ret = noescape.Call[AABB.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_aabb, gdextension.SizeAABB, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -745,31 +780,40 @@ func (self class) GenerateLod(nd_threshold float64, target_index_count int64) Pa
 		nd_threshold       float64
 		target_index_count int64
 	}{nd_threshold, target_index_count})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetMaterial(material [1]gdclass.Material) { //gd:SurfaceTool.set_material
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_material, 0|(gdextension.SizeObject<<4), &struct{ material gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) GetPrimitiveType() Mesh.PrimitiveType { //gd:SurfaceTool.get_primitive_type
 	var r_ret = jumponly.Call[Mesh.PrimitiveType](gd.ObjectChecked(self.AsObject()), methods.get_primitive_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Clear() { //gd:SurfaceTool.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CreateFrom(existing [1]gdclass.Mesh, surface int64) { //gd:SurfaceTool.create_from
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.create_from, 0|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8), &struct {
 		existing gdextension.Object
 		surface  int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetMesh(existing[0])[0])), surface})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(existing[0].Anchor())
 }
 func (self class) CreateFromArrays(arrays Array.Any, primitive_type Mesh.PrimitiveType) { //gd:SurfaceTool.create_from_arrays
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.create_from_arrays, 0|(gdextension.SizeArray<<4)|(gdextension.SizeInt<<8), &struct {
 		arrays         gdextension.Array
 		primitive_type Mesh.PrimitiveType
 	}{pointers.Get(gd.InternalArray(arrays)), primitive_type})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(arrays)
 }
 func (self class) CreateFromBlendShape(existing [1]gdclass.Mesh, surface int64, blend_shape String.Readable) { //gd:SurfaceTool.create_from_blend_shape
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.create_from_blend_shape, 0|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeString<<12), &struct {
@@ -777,6 +821,9 @@ func (self class) CreateFromBlendShape(existing [1]gdclass.Mesh, surface int64, 
 		surface     int64
 		blend_shape gdextension.String
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetMesh(existing[0])[0])), surface, pointers.Get(gd.InternalString(blend_shape))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(existing[0].Anchor())
+	runtime.KeepAlive(blend_shape)
 }
 func (self class) AppendFrom(existing [1]gdclass.Mesh, surface int64, transform Transform3D.BasisOrigin) { //gd:SurfaceTool.append_from
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.append_from, 0|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeTransform3D<<12), &struct {
@@ -784,17 +831,22 @@ func (self class) AppendFrom(existing [1]gdclass.Mesh, surface int64, transform 
 		surface   int64
 		transform Transform3D.BasisOrigin
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetMesh(existing[0])[0])), surface, gd.Transposed(transform)})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(existing[0].Anchor())
 }
 func (self class) Commit(existing [1]gdclass.ArrayMesh, flags int64) [1]gdclass.ArrayMesh { //gd:SurfaceTool.commit
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.commit, gdextension.SizeObject|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8), &struct {
 		existing gdextension.Object
 		flags    int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetArrayMesh(existing[0])[0])), flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(existing[0].Anchor())
 	var ret = [1]gdclass.ArrayMesh{gdclass.NewArrayMesh(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) CommitToArrays() Array.Any { //gd:SurfaceTool.commit_to_arrays
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.commit_to_arrays, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }

@@ -8,6 +8,7 @@ A control used for visual representation of a percentage. Shows the fill percent
 package ProgressBar
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -17,6 +18,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -44,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -131,7 +136,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.ProgressBar
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewProgressBar(obj[0])
@@ -146,7 +151,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -225,51 +230,59 @@ func (self Instance) SetEditorPreviewIndeterminate(value bool) Instance { //gd:P
 
 func (self class) SetFillMode(mode int64) { //gd:ProgressBar.set_fill_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fill_mode, 0|(gdextension.SizeInt<<4), &struct{ mode int64 }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFillMode() int64 { //gd:ProgressBar.get_fill_mode
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_fill_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShowPercentage(visible bool) { //gd:ProgressBar.set_show_percentage
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_percentage, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPercentageShown() bool { //gd:ProgressBar.is_percentage_shown
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_percentage_shown, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIndeterminate(indeterminate bool) { //gd:ProgressBar.set_indeterminate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_indeterminate, 0|(gdextension.SizeBool<<4), &struct{ indeterminate bool }{indeterminate})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsIndeterminate() bool { //gd:ProgressBar.is_indeterminate
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_indeterminate, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEditorPreviewIndeterminate(preview_indeterminate bool) { //gd:ProgressBar.set_editor_preview_indeterminate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_editor_preview_indeterminate, 0|(gdextension.SizeBool<<4), &struct{ preview_indeterminate bool }{preview_indeterminate})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEditorPreviewIndeterminateEnabled() bool { //gd:ProgressBar.is_editor_preview_indeterminate_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_editor_preview_indeterminate_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsProgressBar() Advanced                   { return Advanced(o) }
 func (o Instance) AsProgressBar() Instance                { return o }
 func (o *Extension[T]) AsProgressBar() Instance           { return o.Super() }
-func (o class) AsRange() Range.Advanced                   { return Range.Advanced{gdclass.NewRange(o[0].AsObject()[0])} }
+func (o class) AsRange() Range.Advanced                   { return *(*Range.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsRange() Range.Instance           { return o.Super().AsRange() }
-func (o Instance) AsRange() Range.Instance                { return Range.Instance{gdclass.NewRange(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsRange() Range.Instance                { return *(*Range.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

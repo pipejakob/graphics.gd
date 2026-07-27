@@ -1,6 +1,8 @@
 package gdclass
 
 import (
+	"unsafe"
+
 	gd "graphics.gd/internal"
 	"graphics.gd/internal/gdreference"
 )
@@ -9,6 +11,15 @@ type object gdreference.Object
 
 func (obj object) AsObject() [1]gdreference.Object {
 	return [1]gdreference.Object{gdreference.Object(obj)}
+}
+
+// Anchor returns the value to pass to [runtime.KeepAlive] in order to hold the
+// object's engine-side lifetime open across an engine call, see
+// [gdreference.Anchor]. It is a single word, so that the generated bindings can
+// keep their receiver reachable across the enqueue without spilling the whole
+// wrapper.
+func (obj object) Anchor() unsafe.Pointer {
+	return gdreference.Object(obj).Anchor()
 }
 
 type Any interface {

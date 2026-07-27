@@ -6,6 +6,7 @@ These are trackers created and managed by OpenXR's spatial entity extensions tha
 package OpenXRSpatialEntityTracker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -185,7 +189,7 @@ func (self Instance) RemoveNext(next OpenXRStructureBase.Instance) { //gd:OpenXR
 type Advanced = class
 type class [1]gdclass.OpenXRSpatialEntityTracker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRSpatialEntityTracker(obj[0])
@@ -200,7 +204,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -251,38 +255,49 @@ func (self Instance) SetSpatialTrackingState(value EntityTrackingState) Instance
 
 func (self class) SetSpatialContext(spatial_context RID.Any) { //gd:OpenXRSpatialEntityTracker.set_spatial_context
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_spatial_context, 0|(gdextension.SizeRID<<4), &struct{ spatial_context RID.Any }{spatial_context})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpatialContext() RID.Any { //gd:OpenXRSpatialEntityTracker.get_spatial_context
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_spatial_context, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEntity(entity RID.Any) { //gd:OpenXRSpatialEntityTracker.set_entity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_entity, 0|(gdextension.SizeRID<<4), &struct{ entity RID.Any }{entity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEntity() RID.Any { //gd:OpenXRSpatialEntityTracker.get_entity
 	var r_ret = jumponly.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_entity, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSpatialTrackingState(spatial_tracking_state EntityTrackingState) { //gd:OpenXRSpatialEntityTracker.set_spatial_tracking_state
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_spatial_tracking_state, 0|(gdextension.SizeInt<<4), &struct{ spatial_tracking_state EntityTrackingState }{spatial_tracking_state})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpatialTrackingState() EntityTrackingState { //gd:OpenXRSpatialEntityTracker.get_spatial_tracking_state
 	var r_ret = jumponly.Call[EntityTrackingState](gd.ObjectChecked(self.AsObject()), methods.get_spatial_tracking_state, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetNext() [1]gdclass.OpenXRStructureBase { //gd:OpenXRSpatialEntityTracker.get_next
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_next, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OpenXRStructureBase{gdclass.NewOpenXRStructureBase(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) AddNext(next [1]gdclass.OpenXRStructureBase) { //gd:OpenXRSpatialEntityTracker.add_next
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_next, 0|(gdextension.SizeObject<<4), &struct{ next gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(next[0].Anchor())
 }
 func (self class) RemoveNext(next [1]gdclass.OpenXRStructureBase) { //gd:OpenXRSpatialEntityTracker.remove_next
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_next, 0|(gdextension.SizeObject<<4), &struct{ next gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(next[0].Anchor())
 }
 
 /*
@@ -321,17 +336,17 @@ func (o class) AsOpenXRSpatialEntityTracker() Advanced         { return Advanced
 func (o Instance) AsOpenXRSpatialEntityTracker() Instance      { return o }
 func (o *Extension[T]) AsOpenXRSpatialEntityTracker() Instance { return o.Super() }
 func (o class) AsXRPositionalTracker() XRPositionalTracker.Advanced {
-	return XRPositionalTracker.Advanced{gdclass.NewXRPositionalTracker(o[0].AsObject()[0])}
+	return *(*XRPositionalTracker.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsXRPositionalTracker() XRPositionalTracker.Instance {
 	return o.Super().AsXRPositionalTracker()
 }
 func (o Instance) AsXRPositionalTracker() XRPositionalTracker.Instance {
-	return XRPositionalTracker.Instance{gdclass.NewXRPositionalTracker(o[0].AsObject()[0])}
+	return *(*XRPositionalTracker.Instance)(ie.As(&o))
 }
-func (o class) AsXRTracker() XRTracker.Advanced         { return XRTracker.Advanced{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o class) AsXRTracker() XRTracker.Advanced         { return *(*XRTracker.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRTracker() XRTracker.Instance { return o.Super().AsXRTracker() }
-func (o Instance) AsXRTracker() XRTracker.Instance      { return XRTracker.Instance{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o Instance) AsXRTracker() XRTracker.Instance      { return *(*XRTracker.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

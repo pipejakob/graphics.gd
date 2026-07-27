@@ -15,6 +15,7 @@ Register a [EditorExportPlugin] by creating a new [EditorPlugin] and calling its
 package EditorExportPlugin
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -52,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1218,7 +1222,7 @@ func (self Instance) GetExportPlatform() EditorExportPlatform.Instance { //gd:Ed
 type Advanced = class
 type class [1]gdclass.EditorExportPlugin
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorExportPlugin(obj[0])
@@ -1233,7 +1237,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1598,6 +1602,10 @@ func (self class) AddSharedObject(path String.Readable, tags Packed.Strings, tar
 		tags   gdextension.PackedArray[gdextension.String]
 		target gdextension.String
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalPackedStrings(tags)), pointers.Get(gd.InternalString(target))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(tags)
+	runtime.KeepAlive(target)
 }
 func (self class) AddFile(path String.Readable, file Packed.Bytes, remap bool) { //gd:EditorExportPlugin.add_file
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_file, 0|(gdextension.SizeString<<4)|(gdextension.SizePackedArray<<8)|(gdextension.SizeBool<<12), &struct {
@@ -1605,67 +1613,105 @@ func (self class) AddFile(path String.Readable, file Packed.Bytes, remap bool) {
 		file  gdextension.PackedArray[byte]
 		remap bool
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](file.Array))), remap})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(file)
 }
 func (self class) AddAppleEmbeddedPlatformProjectStaticLib(path String.Readable) { //gd:EditorExportPlugin.add_apple_embedded_platform_project_static_lib
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_apple_embedded_platform_project_static_lib, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) AddAppleEmbeddedPlatformFramework(path String.Readable) { //gd:EditorExportPlugin.add_apple_embedded_platform_framework
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_apple_embedded_platform_framework, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) AddAppleEmbeddedPlatformEmbeddedFramework(path String.Readable) { //gd:EditorExportPlugin.add_apple_embedded_platform_embedded_framework
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_apple_embedded_platform_embedded_framework, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) AddAppleEmbeddedPlatformPlistContent(plist_content String.Readable) { //gd:EditorExportPlugin.add_apple_embedded_platform_plist_content
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_apple_embedded_platform_plist_content, 0|(gdextension.SizeString<<4), &struct{ plist_content gdextension.String }{pointers.Get(gd.InternalString(plist_content))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(plist_content)
 }
 func (self class) AddAppleEmbeddedPlatformLinkerFlags(flags String.Readable) { //gd:EditorExportPlugin.add_apple_embedded_platform_linker_flags
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_apple_embedded_platform_linker_flags, 0|(gdextension.SizeString<<4), &struct{ flags gdextension.String }{pointers.Get(gd.InternalString(flags))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(flags)
 }
 func (self class) AddAppleEmbeddedPlatformBundleFile(path String.Readable) { //gd:EditorExportPlugin.add_apple_embedded_platform_bundle_file
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_apple_embedded_platform_bundle_file, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) AddAppleEmbeddedPlatformCppCode(code String.Readable) { //gd:EditorExportPlugin.add_apple_embedded_platform_cpp_code
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_apple_embedded_platform_cpp_code, 0|(gdextension.SizeString<<4), &struct{ code gdextension.String }{pointers.Get(gd.InternalString(code))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(code)
 }
 func (self class) AddIosProjectStaticLib(path String.Readable) { //gd:EditorExportPlugin.add_ios_project_static_lib
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_ios_project_static_lib, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) AddIosFramework(path String.Readable) { //gd:EditorExportPlugin.add_ios_framework
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_ios_framework, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) AddIosEmbeddedFramework(path String.Readable) { //gd:EditorExportPlugin.add_ios_embedded_framework
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_ios_embedded_framework, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) AddIosPlistContent(plist_content String.Readable) { //gd:EditorExportPlugin.add_ios_plist_content
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_ios_plist_content, 0|(gdextension.SizeString<<4), &struct{ plist_content gdextension.String }{pointers.Get(gd.InternalString(plist_content))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(plist_content)
 }
 func (self class) AddIosLinkerFlags(flags String.Readable) { //gd:EditorExportPlugin.add_ios_linker_flags
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_ios_linker_flags, 0|(gdextension.SizeString<<4), &struct{ flags gdextension.String }{pointers.Get(gd.InternalString(flags))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(flags)
 }
 func (self class) AddIosBundleFile(path String.Readable) { //gd:EditorExportPlugin.add_ios_bundle_file
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_ios_bundle_file, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) AddIosCppCode(code String.Readable) { //gd:EditorExportPlugin.add_ios_cpp_code
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_ios_cpp_code, 0|(gdextension.SizeString<<4), &struct{ code gdextension.String }{pointers.Get(gd.InternalString(code))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(code)
 }
 func (self class) AddMacosPluginFile(path String.Readable) { //gd:EditorExportPlugin.add_macos_plugin_file
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_macos_plugin_file, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) Skip() { //gd:EditorExportPlugin.skip
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.skip, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOption(name String.Name) variant.Any { //gd:EditorExportPlugin.get_option
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_option, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetExportPreset() [1]gdclass.EditorExportPreset { //gd:EditorExportPlugin.get_export_preset
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_export_preset, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.EditorExportPreset{gdclass.NewEditorExportPreset(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetExportPlatform() [1]gdclass.EditorExportPlatform { //gd:EditorExportPlugin.get_export_platform
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_export_platform, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.EditorExportPlatform{gdclass.NewEditorExportPlatform(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }

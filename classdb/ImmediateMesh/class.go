@@ -29,6 +29,7 @@ Note: Generating complex geometries with [ImmediateMesh] is highly inefficient. 
 package ImmediateMesh
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -68,6 +69,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -248,7 +252,7 @@ func (self Instance) ClearSurfaces() { //gd:ImmediateMesh.clear_surfaces
 type Advanced = class
 type class [1]gdclass.ImmediateMesh
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewImmediateMesh(obj[0])
@@ -263,7 +267,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -291,43 +295,54 @@ func (self class) SurfaceBegin(primitive Mesh.PrimitiveType, material [1]gdclass
 		primitive Mesh.PrimitiveType
 		material  gdextension.Object
 	}{primitive, gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) SurfaceSetColor(color Color.RGBA) { //gd:ImmediateMesh.surface_set_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.surface_set_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SurfaceSetNormal(normal Vector3.XYZ) { //gd:ImmediateMesh.surface_set_normal
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.surface_set_normal, 0|(gdextension.SizeVector3<<4), &struct{ normal Vector3.XYZ }{normal})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SurfaceSetTangent(tangent Plane.NormalD) { //gd:ImmediateMesh.surface_set_tangent
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.surface_set_tangent, 0|(gdextension.SizePlane<<4), &struct{ tangent Plane.NormalD }{tangent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SurfaceSetUv(uv Vector2.XY) { //gd:ImmediateMesh.surface_set_uv
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.surface_set_uv, 0|(gdextension.SizeVector2<<4), &struct{ uv Vector2.XY }{uv})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SurfaceSetUv2(uv2 Vector2.XY) { //gd:ImmediateMesh.surface_set_uv2
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.surface_set_uv2, 0|(gdextension.SizeVector2<<4), &struct{ uv2 Vector2.XY }{uv2})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SurfaceAddVertex(vertex Vector3.XYZ) { //gd:ImmediateMesh.surface_add_vertex
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.surface_add_vertex, 0|(gdextension.SizeVector3<<4), &struct{ vertex Vector3.XYZ }{vertex})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SurfaceAddVertex2d(vertex Vector2.XY) { //gd:ImmediateMesh.surface_add_vertex_2d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.surface_add_vertex_2d, 0|(gdextension.SizeVector2<<4), &struct{ vertex Vector2.XY }{vertex})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SurfaceEnd() { //gd:ImmediateMesh.surface_end
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.surface_end, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearSurfaces() { //gd:ImmediateMesh.clear_surfaces
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_surfaces, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsImmediateMesh() Advanced             { return Advanced(o) }
 func (o Instance) AsImmediateMesh() Instance          { return o }
 func (o *Extension[T]) AsImmediateMesh() Instance     { return o.Super() }
-func (o class) AsMesh() Mesh.Advanced                 { return Mesh.Advanced{gdclass.NewMesh(o[0].AsObject()[0])} }
+func (o class) AsMesh() Mesh.Advanced                 { return *(*Mesh.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsMesh() Mesh.Instance         { return o.Super().AsMesh() }
-func (o Instance) AsMesh() Mesh.Instance              { return Mesh.Instance{gdclass.NewMesh(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsMesh() Mesh.Instance              { return *(*Mesh.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

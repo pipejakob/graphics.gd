@@ -6,6 +6,7 @@ Provides language server functionality related to documents.
 package GDScriptTextDocument
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -38,6 +39,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -201,7 +205,7 @@ func (self Instance) Signaturehelp(params map[string]any) any { //gd:GDScriptTex
 type Advanced = class
 type class [1]gdclass.GDScriptTextDocument
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGDScriptTextDocument(obj[0])
@@ -216,7 +220,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -241,94 +245,136 @@ func New() Instance {
 
 func (self class) ShowNativeSymbolInEditor(symbol_id String.Readable) { //gd:GDScriptTextDocument.show_native_symbol_in_editor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.show_native_symbol_in_editor, 0|(gdextension.SizeString<<4), &struct{ symbol_id gdextension.String }{pointers.Get(gd.InternalString(symbol_id))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(symbol_id)
 }
 func (self class) Didopen(params variant.Any) { //gd:GDScriptTextDocument.didOpen
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.didOpen, 0|(gdextension.SizeVariant<<4), &struct{ params gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(params)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 }
 func (self class) Didclose(params variant.Any) { //gd:GDScriptTextDocument.didClose
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.didClose, 0|(gdextension.SizeVariant<<4), &struct{ params gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(params)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 }
 func (self class) Didchange(params variant.Any) { //gd:GDScriptTextDocument.didChange
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.didChange, 0|(gdextension.SizeVariant<<4), &struct{ params gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(params)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 }
 func (self class) Willsavewaituntil(params variant.Any) { //gd:GDScriptTextDocument.willSaveWaitUntil
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.willSaveWaitUntil, 0|(gdextension.SizeVariant<<4), &struct{ params gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(params)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 }
 func (self class) Didsave(params variant.Any) { //gd:GDScriptTextDocument.didSave
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.didSave, 0|(gdextension.SizeVariant<<4), &struct{ params gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(params)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 }
 func (self class) Nativesymbol(params Dictionary.Any) variant.Any { //gd:GDScriptTextDocument.nativeSymbol
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.nativeSymbol, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Documentsymbol(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.documentSymbol
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.documentSymbol, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Completion(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.completion
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.completion, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Resolve(params Dictionary.Any) Dictionary.Any { //gd:GDScriptTextDocument.resolve
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.resolve, gdextension.SizeDictionary|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) Rename(params Dictionary.Any) Dictionary.Any { //gd:GDScriptTextDocument.rename
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.rename, gdextension.SizeDictionary|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) Preparerename(params Dictionary.Any) variant.Any { //gd:GDScriptTextDocument.prepareRename
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.prepareRename, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) References(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.references
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.references, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Foldingrange(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.foldingRange
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.foldingRange, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Codelens(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.codeLens
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.codeLens, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Documentlink(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.documentLink
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.documentLink, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Colorpresentation(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.colorPresentation
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.colorPresentation, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Hover(params Dictionary.Any) variant.Any { //gd:GDScriptTextDocument.hover
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.hover, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Definition(params Dictionary.Any) Array.Any { //gd:GDScriptTextDocument.definition
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.definition, gdextension.SizeArray|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Declaration(params Dictionary.Any) variant.Any { //gd:GDScriptTextDocument.declaration
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.declaration, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Signaturehelp(params Dictionary.Any) variant.Any { //gd:GDScriptTextDocument.signatureHelp
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.signatureHelp, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }

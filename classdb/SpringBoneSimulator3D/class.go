@@ -34,6 +34,7 @@ Note: Most methods in this class take an index parameter. This parameter specifi
 package SpringBoneSimulator3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -71,6 +73,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1005,7 +1010,7 @@ func (self Instance) Reset() { //gd:SpringBoneSimulator3D.reset
 type Advanced = class
 type class [1]gdclass.SpringBoneSimulator3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSpringBoneSimulator3D(obj[0])
@@ -1020,7 +1025,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1095,9 +1100,12 @@ func (self class) SetRootBoneName(index int64, bone_name String.Readable) { //gd
 		index     int64
 		bone_name gdextension.String
 	}{index, pointers.Get(gd.InternalString(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetRootBoneName(index int64) String.Readable { //gd:SpringBoneSimulator3D.get_root_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_root_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1106,9 +1114,11 @@ func (self class) SetRootBone(index int64, bone int64) { //gd:SpringBoneSimulato
 		index int64
 		bone  int64
 	}{index, bone})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRootBone(index int64) int64 { //gd:SpringBoneSimulator3D.get_root_bone
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_root_bone, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1117,9 +1127,12 @@ func (self class) SetEndBoneName(index int64, bone_name String.Readable) { //gd:
 		index     int64
 		bone_name gdextension.String
 	}{index, pointers.Get(gd.InternalString(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetEndBoneName(index int64) String.Readable { //gd:SpringBoneSimulator3D.get_end_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_end_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1128,9 +1141,11 @@ func (self class) SetEndBone(index int64, bone int64) { //gd:SpringBoneSimulator
 		index int64
 		bone  int64
 	}{index, bone})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEndBone(index int64) int64 { //gd:SpringBoneSimulator3D.get_end_bone
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_end_bone, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1139,9 +1154,11 @@ func (self class) SetExtendEndBone(index int64, enabled bool) { //gd:SpringBoneS
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEndBoneExtended(index int64) bool { //gd:SpringBoneSimulator3D.is_end_bone_extended
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_end_bone_extended, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1150,9 +1167,11 @@ func (self class) SetEndBoneDirection(index int64, bone_direction SkeletonModifi
 		index          int64
 		bone_direction SkeletonModifier3D.BoneDirection
 	}{index, bone_direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEndBoneDirection(index int64) SkeletonModifier3D.BoneDirection { //gd:SpringBoneSimulator3D.get_end_bone_direction
 	var r_ret = noescape.Call[SkeletonModifier3D.BoneDirection](gd.ObjectChecked(self.AsObject()), methods.get_end_bone_direction, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1161,9 +1180,11 @@ func (self class) SetEndBoneLength(index int64, length float64) { //gd:SpringBon
 		index  int64
 		length float64
 	}{index, length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEndBoneLength(index int64) float64 { //gd:SpringBoneSimulator3D.get_end_bone_length
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_end_bone_length, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1172,9 +1193,11 @@ func (self class) SetCenterFrom(index int64, center_from CenterFrom) { //gd:Spri
 		index       int64
 		center_from CenterFrom
 	}{index, center_from})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCenterFrom(index int64) CenterFrom { //gd:SpringBoneSimulator3D.get_center_from
 	var r_ret = noescape.Call[CenterFrom](gd.ObjectChecked(self.AsObject()), methods.get_center_from, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1183,9 +1206,12 @@ func (self class) SetCenterNode(index int64, node_path Path.ToNode) { //gd:Sprin
 		index     int64
 		node_path gdextension.NodePath
 	}{index, pointers.Get(gd.InternalNodePath(node_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node_path)
 }
 func (self class) GetCenterNode(index int64) Path.ToNode { //gd:SpringBoneSimulator3D.get_center_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_center_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
@@ -1194,9 +1220,12 @@ func (self class) SetCenterBoneName(index int64, bone_name String.Readable) { //
 		index     int64
 		bone_name gdextension.String
 	}{index, pointers.Get(gd.InternalString(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetCenterBoneName(index int64) String.Readable { //gd:SpringBoneSimulator3D.get_center_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_center_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1205,9 +1234,11 @@ func (self class) SetCenterBone(index int64, bone int64) { //gd:SpringBoneSimula
 		index int64
 		bone  int64
 	}{index, bone})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCenterBone(index int64) int64 { //gd:SpringBoneSimulator3D.get_center_bone
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_center_bone, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1216,9 +1247,11 @@ func (self class) SetRadius(index int64, radius float64) { //gd:SpringBoneSimula
 		index  int64
 		radius float64
 	}{index, radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadius(index int64) float64 { //gd:SpringBoneSimulator3D.get_radius
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_radius, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1227,9 +1260,11 @@ func (self class) SetRotationAxis(index int64, axis SkeletonModifier3D.RotationA
 		index int64
 		axis  SkeletonModifier3D.RotationAxis
 	}{index, axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRotationAxis(index int64) SkeletonModifier3D.RotationAxis { //gd:SpringBoneSimulator3D.get_rotation_axis
 	var r_ret = noescape.Call[SkeletonModifier3D.RotationAxis](gd.ObjectChecked(self.AsObject()), methods.get_rotation_axis, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1238,9 +1273,11 @@ func (self class) SetRotationAxisVector(index int64, vector Vector3.XYZ) { //gd:
 		index  int64
 		vector Vector3.XYZ
 	}{index, vector})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRotationAxisVector(index int64) Vector3.XYZ { //gd:SpringBoneSimulator3D.get_rotation_axis_vector
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_rotation_axis_vector, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1249,9 +1286,12 @@ func (self class) SetRadiusDampingCurve(index int64, curve [1]gdclass.Curve) { /
 		index int64
 		curve gdextension.Object
 	}{index, gdextension.Object(gdreference.GetObject(gdclass.GetCurve(curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(curve[0].Anchor())
 }
 func (self class) GetRadiusDampingCurve(index int64) [1]gdclass.Curve { //gd:SpringBoneSimulator3D.get_radius_damping_curve
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_radius_damping_curve, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1260,9 +1300,11 @@ func (self class) SetStiffness(index int64, stiffness float64) { //gd:SpringBone
 		index     int64
 		stiffness float64
 	}{index, stiffness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStiffness(index int64) float64 { //gd:SpringBoneSimulator3D.get_stiffness
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_stiffness, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1271,9 +1313,12 @@ func (self class) SetStiffnessDampingCurve(index int64, curve [1]gdclass.Curve) 
 		index int64
 		curve gdextension.Object
 	}{index, gdextension.Object(gdreference.GetObject(gdclass.GetCurve(curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(curve[0].Anchor())
 }
 func (self class) GetStiffnessDampingCurve(index int64) [1]gdclass.Curve { //gd:SpringBoneSimulator3D.get_stiffness_damping_curve
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_stiffness_damping_curve, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1282,9 +1327,11 @@ func (self class) SetDrag(index int64, drag float64) { //gd:SpringBoneSimulator3
 		index int64
 		drag  float64
 	}{index, drag})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDrag(index int64) float64 { //gd:SpringBoneSimulator3D.get_drag
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_drag, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1293,9 +1340,12 @@ func (self class) SetDragDampingCurve(index int64, curve [1]gdclass.Curve) { //g
 		index int64
 		curve gdextension.Object
 	}{index, gdextension.Object(gdreference.GetObject(gdclass.GetCurve(curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(curve[0].Anchor())
 }
 func (self class) GetDragDampingCurve(index int64) [1]gdclass.Curve { //gd:SpringBoneSimulator3D.get_drag_damping_curve
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_drag_damping_curve, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1304,9 +1354,11 @@ func (self class) SetGravity(index int64, gravity float64) { //gd:SpringBoneSimu
 		index   int64
 		gravity float64
 	}{index, gravity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGravity(index int64) float64 { //gd:SpringBoneSimulator3D.get_gravity
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_gravity, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1315,9 +1367,12 @@ func (self class) SetGravityDampingCurve(index int64, curve [1]gdclass.Curve) { 
 		index int64
 		curve gdextension.Object
 	}{index, gdextension.Object(gdreference.GetObject(gdclass.GetCurve(curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(curve[0].Anchor())
 }
 func (self class) GetGravityDampingCurve(index int64) [1]gdclass.Curve { //gd:SpringBoneSimulator3D.get_gravity_damping_curve
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_gravity_damping_curve, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1326,31 +1381,38 @@ func (self class) SetGravityDirection(index int64, gravity_direction Vector3.XYZ
 		index             int64
 		gravity_direction Vector3.XYZ
 	}{index, gravity_direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGravityDirection(index int64) Vector3.XYZ { //gd:SpringBoneSimulator3D.get_gravity_direction
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_gravity_direction, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSettingCount(count int64) { //gd:SpringBoneSimulator3D.set_setting_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_setting_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSettingCount() int64 { //gd:SpringBoneSimulator3D.get_setting_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_setting_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearSettings() { //gd:SpringBoneSimulator3D.clear_settings
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_settings, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetIndividualConfig(index int64, enabled bool) { //gd:SpringBoneSimulator3D.set_individual_config
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_individual_config, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsConfigIndividual(index int64) bool { //gd:SpringBoneSimulator3D.is_config_individual
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_config_individual, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1359,6 +1421,7 @@ func (self class) GetJointBoneName(index int64, joint int64) String.Readable { /
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1367,6 +1430,7 @@ func (self class) GetJointBone(index int64, joint int64) int64 { //gd:SpringBone
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1376,12 +1440,14 @@ func (self class) SetJointRotationAxis(index int64, joint int64, axis SkeletonMo
 		joint int64
 		axis  SkeletonModifier3D.RotationAxis
 	}{index, joint, axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointRotationAxis(index int64, joint int64) SkeletonModifier3D.RotationAxis { //gd:SpringBoneSimulator3D.get_joint_rotation_axis
 	var r_ret = noescape.Call[SkeletonModifier3D.RotationAxis](gd.ObjectChecked(self.AsObject()), methods.get_joint_rotation_axis, gdextension.SizeInt|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1391,12 +1457,14 @@ func (self class) SetJointRotationAxisVector(index int64, joint int64, vector Ve
 		joint  int64
 		vector Vector3.XYZ
 	}{index, joint, vector})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointRotationAxisVector(index int64, joint int64) Vector3.XYZ { //gd:SpringBoneSimulator3D.get_joint_rotation_axis_vector
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_joint_rotation_axis_vector, gdextension.SizeVector3|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1406,12 +1474,14 @@ func (self class) SetJointRadius(index int64, joint int64, radius float64) { //g
 		joint  int64
 		radius float64
 	}{index, joint, radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointRadius(index int64, joint int64) float64 { //gd:SpringBoneSimulator3D.get_joint_radius
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_joint_radius, gdextension.SizeFloat|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1421,12 +1491,14 @@ func (self class) SetJointStiffness(index int64, joint int64, stiffness float64)
 		joint     int64
 		stiffness float64
 	}{index, joint, stiffness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointStiffness(index int64, joint int64) float64 { //gd:SpringBoneSimulator3D.get_joint_stiffness
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_joint_stiffness, gdextension.SizeFloat|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1436,12 +1508,14 @@ func (self class) SetJointDrag(index int64, joint int64, drag float64) { //gd:Sp
 		joint int64
 		drag  float64
 	}{index, joint, drag})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointDrag(index int64, joint int64) float64 { //gd:SpringBoneSimulator3D.get_joint_drag
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_joint_drag, gdextension.SizeFloat|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1451,12 +1525,14 @@ func (self class) SetJointGravity(index int64, joint int64, gravity float64) { /
 		joint   int64
 		gravity float64
 	}{index, joint, gravity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointGravity(index int64, joint int64) float64 { //gd:SpringBoneSimulator3D.get_joint_gravity
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_joint_gravity, gdextension.SizeFloat|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1466,17 +1542,20 @@ func (self class) SetJointGravityDirection(index int64, joint int64, gravity_dir
 		joint             int64
 		gravity_direction Vector3.XYZ
 	}{index, joint, gravity_direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJointGravityDirection(index int64, joint int64) Vector3.XYZ { //gd:SpringBoneSimulator3D.get_joint_gravity_direction
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_joint_gravity_direction, gdextension.SizeVector3|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetJointCount(index int64) int64 { //gd:SpringBoneSimulator3D.get_joint_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_joint_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1485,9 +1564,11 @@ func (self class) SetEnableAllChildCollisions(index int64, enabled bool) { //gd:
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AreAllChildCollisionsEnabled(index int64) bool { //gd:SpringBoneSimulator3D.are_all_child_collisions_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.are_all_child_collisions_enabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1497,12 +1578,15 @@ func (self class) SetExcludeCollisionPath(index int64, collision int64, node_pat
 		collision int64
 		node_path gdextension.NodePath
 	}{index, collision, pointers.Get(gd.InternalNodePath(node_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node_path)
 }
 func (self class) GetExcludeCollisionPath(index int64, collision int64) Path.ToNode { //gd:SpringBoneSimulator3D.get_exclude_collision_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_exclude_collision_path, gdextension.SizeNodePath|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index     int64
 		collision int64
 	}{index, collision})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
@@ -1511,14 +1595,17 @@ func (self class) SetExcludeCollisionCount(index int64, count int64) { //gd:Spri
 		index int64
 		count int64
 	}{index, count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetExcludeCollisionCount(index int64) int64 { //gd:SpringBoneSimulator3D.get_exclude_collision_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_exclude_collision_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearExcludeCollisions(index int64) { //gd:SpringBoneSimulator3D.clear_exclude_collisions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_exclude_collisions, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCollisionPath(index int64, collision int64, node_path Path.ToNode) { //gd:SpringBoneSimulator3D.set_collision_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_path, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeNodePath<<12), &struct {
@@ -1526,12 +1613,15 @@ func (self class) SetCollisionPath(index int64, collision int64, node_path Path.
 		collision int64
 		node_path gdextension.NodePath
 	}{index, collision, pointers.Get(gd.InternalNodePath(node_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node_path)
 }
 func (self class) GetCollisionPath(index int64, collision int64) Path.ToNode { //gd:SpringBoneSimulator3D.get_collision_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_collision_path, gdextension.SizeNodePath|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index     int64
 		collision int64
 	}{index, collision})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
@@ -1540,52 +1630,60 @@ func (self class) SetCollisionCount(index int64, count int64) { //gd:SpringBoneS
 		index int64
 		count int64
 	}{index, count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionCount(index int64) int64 { //gd:SpringBoneSimulator3D.get_collision_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearCollisions(index int64) { //gd:SpringBoneSimulator3D.clear_collisions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_collisions, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetExternalForce(force Vector3.XYZ) { //gd:SpringBoneSimulator3D.set_external_force
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_external_force, 0|(gdextension.SizeVector3<<4), &struct{ force Vector3.XYZ }{force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetExternalForce() Vector3.XYZ { //gd:SpringBoneSimulator3D.get_external_force
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_external_force, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMutableBoneAxes(enabled bool) { //gd:SpringBoneSimulator3D.set_mutable_bone_axes
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mutable_bone_axes, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AreBoneAxesMutable() bool { //gd:SpringBoneSimulator3D.are_bone_axes_mutable
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.are_bone_axes_mutable, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Reset() { //gd:SpringBoneSimulator3D.reset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsSpringBoneSimulator3D() Advanced         { return Advanced(o) }
 func (o Instance) AsSpringBoneSimulator3D() Instance      { return o }
 func (o *Extension[T]) AsSpringBoneSimulator3D() Instance { return o.Super() }
 func (o class) AsSkeletonModifier3D() SkeletonModifier3D.Advanced {
-	return SkeletonModifier3D.Advanced{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
 	return o.Super().AsSkeletonModifier3D()
 }
 func (o Instance) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
-	return SkeletonModifier3D.Instance{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

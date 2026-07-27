@@ -70,6 +70,64 @@ const (
 	TypeVarargs
 )
 
+// anchored reports whether a Go value of the given engine type carries a
+// garbage-collected anchor that frees an engine-side resource when it is
+// collected, and so has to outlive an engine call that took a raw pointer out
+// of it. Plain value types (numbers, enums, the math structs, RIDs) hold
+// nothing the collector can reclaim and are left alone, so that the common
+// buffered call keeps its arguments in registers.
+func anchored(classDB map[string]gdjson.Class, gdType string) bool {
+	if class, ok := classDB[gdType]; ok {
+		return !class.IsEnum
+	}
+	if strings.HasPrefix(gdType, "typedarray::") {
+		return true
+	}
+	switch gdType {
+	case "String", "StringName", "NodePath", "Array", "Dictionary", "Variant",
+		"Callable", "Signal", "Object", "PackedByteArray", "PackedInt32Array",
+		"PackedInt64Array", "PackedFloat32Array", "PackedFloat64Array",
+		"PackedStringArray", "PackedVector2Array", "PackedVector3Array",
+		"PackedVector4Array", "PackedColorArray":
+		return true
+	default:
+		return false
+	}
+}
+
+// keepalives emits the [runtime.KeepAlive] calls that have to follow an engine
+// call. Everything the call handed to the engine as a raw pointer — the
+// receiver and any reference-typed argument — is dead, as far as the collector
+// is concerned, from the moment that pointer was extracted. Off the main thread
+// the call is only *recorded* in the cross-thread ring at this point, and the
+// frees those wrappers queue when they are collected are ordered behind the
+// recorded calls, so a collection inside that window queues the free first and
+// the engine frees the object before running the call that uses it.
+//
+// The receiver is kept alive through its one-word anchor rather than as a whole
+// wrapper: keeping the wrapper live spills four words across every call (~1.5ns
+// on a ~15ns buffered call), the anchor stays in a register.
+func keepalives(w io.Writer, classDB map[string]gdjson.Class, method gdjson.Method, singleton bool) {
+	// Singletons are process-lifetime and are never collected, so their
+	// receiver needs no anchoring (matching the unchecked ObjectChecked).
+	if !method.IsStatic && !singleton {
+		fmt.Fprint(w, "\truntime.KeepAlive(self[0].Anchor())\n")
+	}
+	for _, arg := range method.Arguments {
+		if !anchored(classDB, arg.Type) {
+			continue
+		}
+		// Class-typed arguments arrive as a one element array of the wrapper
+		// ([1]gdclass.Node, [1]gdreference.Object), both of which carry the
+		// same one-word anchor as the receiver.
+		if _, isClass := classDB[arg.Type]; isClass {
+			fmt.Fprintf(w, "\truntime.KeepAlive(%s[0].Anchor())\n", fixReserved(arg.Name))
+			continue
+		}
+		fmt.Fprintf(w, "\truntime.KeepAlive(%s)\n", fixReserved(arg.Name))
+	}
+}
+
 func fixReserved(name string) string {
 	switch name {
 	case "bool":
@@ -243,19 +301,34 @@ func Generate(w io.Writer, classDB map[string]gdjson.Class, pkg string, class gd
 		callResult = ptrKind
 	}
 	if ctype == TypeVarargs {
-		fmt.Fprintf(w, "var fixed = [...]gdextension.Variant{")
+		// The variants are held as wrappers and only unwrapped into the packed
+		// argument list at the point of the call, so that they can be kept
+		// alive across it: unwrapping them straight into the list would leave
+		// the call carrying raw pointers to variants the collector is free to
+		// destroy (see keepalives).
+		fmt.Fprintf(w, "var fixed = [...]%sVariant{", prefix)
 		for i, arg := range method.Arguments {
 			if i > 0 {
 				fmt.Fprint(w, ", ")
 			}
-			fmt.Fprintf(w, "gdextension.Variant(pointers.Get(gd.NewVariant(%s)))", fixReserved(arg.Name))
+			fmt.Fprintf(w, "%sNewVariant(%s)", prefix, fixReserved(arg.Name))
 		}
 		fmt.Fprint(w, "}\n")
-		fmt.Fprintln(w, "var dynamic []gdextension.Variant")
+		fmt.Fprintf(w, "var dynamic []%sVariant\n", prefix)
 		fmt.Fprintln(w, "for _, arg := range args {")
-		fmt.Fprintln(w, "\tdynamic = append(dynamic, gdextension.Variant(pointers.Get(gd.NewVariant(arg))))")
+		fmt.Fprintf(w, "\tdynamic = append(dynamic, %sNewVariant(arg))\n", prefix)
 		fmt.Fprintln(w, "}")
-		fmt.Fprintf(w, "\tret, err := noescape.MethodForClass(methods.%v).Call%s(%s append(fixed[:], dynamic...)...)\n", method.Name, static, self)
+		fmt.Fprintln(w, "var packed = make([]gdextension.Variant, 0, len(fixed)+len(dynamic))")
+		fmt.Fprintln(w, "for _, arg := range fixed {")
+		fmt.Fprintln(w, "\tpacked = append(packed, gdextension.Variant(pointers.Get(arg)))")
+		fmt.Fprintln(w, "}")
+		fmt.Fprintln(w, "for _, arg := range dynamic {")
+		fmt.Fprintln(w, "\tpacked = append(packed, gdextension.Variant(pointers.Get(arg)))")
+		fmt.Fprintln(w, "}")
+		fmt.Fprintf(w, "\tret, err := noescape.MethodForClass(methods.%v).Call%s(%s packed...)\n", method.Name, static, self)
+		keepalives(w, classDB, method, singleton)
+		fmt.Fprintln(w, "\truntime.KeepAlive(fixed)")
+		fmt.Fprintln(w, "\truntime.KeepAlive(dynamic)")
 		fmt.Fprintf(w, "\tif err != nil {\n")
 		fmt.Fprintf(w, "\t\tpanic(err)\n")
 		fmt.Fprintf(w, "\t}\n")
@@ -318,6 +391,7 @@ func Generate(w io.Writer, classDB map[string]gdjson.Class, pkg string, class gd
 		fmt.Fprint(w, gdtype.Name(argType).CallframeValue(fixReserved(arg.Name)))
 	}
 	fmt.Fprint(w, "})\n")
+	keepalives(w, classDB, method, singleton)
 	if gdjson.Flushables[class.Name+"."+method.Name] {
 		fmt.Fprint(w, "\tgd.Flush()\n")
 	}

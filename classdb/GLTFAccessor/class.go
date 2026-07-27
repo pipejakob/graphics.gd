@@ -10,6 +10,7 @@ Most custom data stored in glTF does not need accessors, only buffer views (see 
 package GLTFAccessor
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -170,7 +174,7 @@ func (self Instance) ToDictionary() map[string]any { //gd:GLTFAccessor.to_dictio
 type Advanced = class
 type class [1]gdclass.GLTFAccessor
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGLTFAccessor(obj[0])
@@ -185,7 +189,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -405,72 +409,89 @@ func (self Instance) SetSparseValuesByteOffset(value int) Instance { //gd:GLTFAc
 
 func (self class) FromDictionary(dictionary Dictionary.Any) [1]gdclass.GLTFAccessor { //gd:GLTFAccessor.from_dictionary
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.from_dictionary, gdextension.SizeObject|(gdextension.SizeDictionary<<4), &struct{ dictionary gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(dictionary))})
+	runtime.KeepAlive(dictionary)
 	var ret = [1]gdclass.GLTFAccessor{gdclass.NewGLTFAccessor(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) ToDictionary() Dictionary.Any { //gd:GLTFAccessor.to_dictionary
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.to_dictionary, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetBufferView() int64 { //gd:GLTFAccessor.get_buffer_view
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_buffer_view, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBufferView(buffer_view int64) { //gd:GLTFAccessor.set_buffer_view
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_buffer_view, 0|(gdextension.SizeInt<<4), &struct{ buffer_view int64 }{buffer_view})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetByteOffset() int64 { //gd:GLTFAccessor.get_byte_offset
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_byte_offset, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetByteOffset(byte_offset int64) { //gd:GLTFAccessor.set_byte_offset
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_byte_offset, 0|(gdextension.SizeInt<<4), &struct{ byte_offset int64 }{byte_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetComponentType() GLTFComponentType { //gd:GLTFAccessor.get_component_type
 	var r_ret = jumponly.Call[GLTFComponentType](gd.ObjectChecked(self.AsObject()), methods.get_component_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetComponentType(component_type GLTFComponentType) { //gd:GLTFAccessor.set_component_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_component_type, 0|(gdextension.SizeInt<<4), &struct{ component_type GLTFComponentType }{component_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNormalized() bool { //gd:GLTFAccessor.get_normalized
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_normalized, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNormalized(normalized bool) { //gd:GLTFAccessor.set_normalized
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_normalized, 0|(gdextension.SizeBool<<4), &struct{ normalized bool }{normalized})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCount() int64 { //gd:GLTFAccessor.get_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCount(count int64) { //gd:GLTFAccessor.set_count
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAccessorType() GLTFAccessorType { //gd:GLTFAccessor.get_accessor_type
 	var r_ret = jumponly.Call[GLTFAccessorType](gd.ObjectChecked(self.AsObject()), methods.get_accessor_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAccessorType(accessor_type GLTFAccessorType) { //gd:GLTFAccessor.set_accessor_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accessor_type, 0|(gdextension.SizeInt<<4), &struct{ accessor_type GLTFAccessorType }{accessor_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetType() int64 { //gd:GLTFAccessor.get_type
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetType(atype int64) { //gd:GLTFAccessor.set_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_type, 0|(gdextension.SizeInt<<4), &struct{ atype int64 }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMin() Packed.Array[float64] { //gd:GLTFAccessor.get_min
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_min, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float64](Array.Through(gd.WrapPacked[gd.PackedFloat64Array, float64](pointers.Let[gd.PackedFloat64Array](r_ret))))
 	return ret
 }
@@ -478,9 +499,12 @@ func (self class) SetMin(min Packed.Array[float64]) { //gd:GLTFAccessor.set_min
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min, 0|(gdextension.SizePackedArray<<4), &struct {
 		min gdextension.PackedArray[float64]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat64Array, float64](min))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(min)
 }
 func (self class) GetMax() Packed.Array[float64] { //gd:GLTFAccessor.get_max
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_max, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float64](Array.Through(gd.WrapPacked[gd.PackedFloat64Array, float64](pointers.Let[gd.PackedFloat64Array](r_ret))))
 	return ret
 }
@@ -488,61 +512,75 @@ func (self class) SetMax(max Packed.Array[float64]) { //gd:GLTFAccessor.set_max
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max, 0|(gdextension.SizePackedArray<<4), &struct {
 		max gdextension.PackedArray[float64]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat64Array, float64](max))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(max)
 }
 func (self class) GetSparseCount() int64 { //gd:GLTFAccessor.get_sparse_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_sparse_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSparseCount(sparse_count int64) { //gd:GLTFAccessor.set_sparse_count
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sparse_count, 0|(gdextension.SizeInt<<4), &struct{ sparse_count int64 }{sparse_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSparseIndicesBufferView() int64 { //gd:GLTFAccessor.get_sparse_indices_buffer_view
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_sparse_indices_buffer_view, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSparseIndicesBufferView(sparse_indices_buffer_view int64) { //gd:GLTFAccessor.set_sparse_indices_buffer_view
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sparse_indices_buffer_view, 0|(gdextension.SizeInt<<4), &struct{ sparse_indices_buffer_view int64 }{sparse_indices_buffer_view})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSparseIndicesByteOffset() int64 { //gd:GLTFAccessor.get_sparse_indices_byte_offset
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_sparse_indices_byte_offset, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSparseIndicesByteOffset(sparse_indices_byte_offset int64) { //gd:GLTFAccessor.set_sparse_indices_byte_offset
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sparse_indices_byte_offset, 0|(gdextension.SizeInt<<4), &struct{ sparse_indices_byte_offset int64 }{sparse_indices_byte_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSparseIndicesComponentType() GLTFComponentType { //gd:GLTFAccessor.get_sparse_indices_component_type
 	var r_ret = jumponly.Call[GLTFComponentType](gd.ObjectChecked(self.AsObject()), methods.get_sparse_indices_component_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSparseIndicesComponentType(sparse_indices_component_type GLTFComponentType) { //gd:GLTFAccessor.set_sparse_indices_component_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sparse_indices_component_type, 0|(gdextension.SizeInt<<4), &struct{ sparse_indices_component_type GLTFComponentType }{sparse_indices_component_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSparseValuesBufferView() int64 { //gd:GLTFAccessor.get_sparse_values_buffer_view
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_sparse_values_buffer_view, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSparseValuesBufferView(sparse_values_buffer_view int64) { //gd:GLTFAccessor.set_sparse_values_buffer_view
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sparse_values_buffer_view, 0|(gdextension.SizeInt<<4), &struct{ sparse_values_buffer_view int64 }{sparse_values_buffer_view})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSparseValuesByteOffset() int64 { //gd:GLTFAccessor.get_sparse_values_byte_offset
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_sparse_values_byte_offset, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSparseValuesByteOffset(sparse_values_byte_offset int64) { //gd:GLTFAccessor.set_sparse_values_byte_offset
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sparse_values_byte_offset, 0|(gdextension.SizeInt<<4), &struct{ sparse_values_byte_offset int64 }{sparse_values_byte_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsGLTFAccessor() Advanced              { return Advanced(o) }
 func (o Instance) AsGLTFAccessor() Instance           { return o }
 func (o *Extension[T]) AsGLTFAccessor() Instance      { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

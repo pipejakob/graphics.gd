@@ -6,6 +6,7 @@ This is an internal class that handles the OpenXR anchor spatial entity extensio
 package OpenXRSpatialAnchorCapability
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -15,6 +16,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -44,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -392,7 +397,7 @@ func (self MoreArgs) DoEntityUpdate(spatial_context RID.SpatialContext, componen
 type Advanced = class
 type class [1]gdclass.OpenXRSpatialAnchorCapability
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRSpatialAnchorCapability(obj[0])
@@ -407,7 +412,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -432,21 +437,26 @@ func New() Instance {
 
 func (self class) IsSpatialAnchorSupported() bool { //gd:OpenXRSpatialAnchorCapability.is_spatial_anchor_supported
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_spatial_anchor_supported, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsSpatialPersistenceSupported() bool { //gd:OpenXRSpatialAnchorCapability.is_spatial_persistence_supported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_spatial_persistence_supported, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsPersistenceScopeSupported(scope PersistenceScope) bool { //gd:OpenXRSpatialAnchorCapability.is_persistence_scope_supported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_persistence_scope_supported, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ scope PersistenceScope }{scope})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) CreateDefaultPersistenceContext(user_callback Callable.Function) [1]gdclass.OpenXRFutureResult { //gd:OpenXRSpatialAnchorCapability.create_default_persistence_context
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.create_default_persistence_context, gdextension.SizeObject|(gdextension.SizeCallable<<4), &struct{ user_callback gdextension.Callable }{pointers.Get(gd.InternalCallable(user_callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(user_callback)
 	var ret = [1]gdclass.OpenXRFutureResult{gdclass.NewOpenXRFutureResult(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -455,16 +465,20 @@ func (self class) CreatePersistenceContext(scope PersistenceScope, user_callback
 		scope         PersistenceScope
 		user_callback gdextension.Callable
 	}{scope, pointers.Get(gd.InternalCallable(user_callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(user_callback)
 	var ret = [1]gdclass.OpenXRFutureResult{gdclass.NewOpenXRFutureResult(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetPersistenceContextHandle(persistence_context RID.Any) int64 { //gd:OpenXRSpatialAnchorCapability.get_persistence_context_handle
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_persistence_context_handle, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ persistence_context RID.Any }{persistence_context})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FreePersistenceContext(persistence_context RID.Any) { //gd:OpenXRSpatialAnchorCapability.free_persistence_context
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.free_persistence_context, 0|(gdextension.SizeRID<<4), &struct{ persistence_context RID.Any }{persistence_context})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CreateNewAnchor(transform Transform3D.BasisOrigin, spatial_context RID.Any, next [1]gdclass.OpenXRStructureBase) [1]gdclass.OpenXRAnchorTracker { //gd:OpenXRSpatialAnchorCapability.create_new_anchor
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.create_new_anchor, gdextension.SizeObject|(gdextension.SizeTransform3D<<4)|(gdextension.SizeRID<<8)|(gdextension.SizeObject<<12), &struct {
@@ -472,11 +486,15 @@ func (self class) CreateNewAnchor(transform Transform3D.BasisOrigin, spatial_con
 		spatial_context RID.Any
 		next            gdextension.Object
 	}{gd.Transposed(transform), spatial_context, gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(next[0].Anchor())
 	var ret = [1]gdclass.OpenXRAnchorTracker{gdclass.NewOpenXRAnchorTracker(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) RemoveAnchor(anchor_tracker [1]gdclass.OpenXRAnchorTracker) { //gd:OpenXRSpatialAnchorCapability.remove_anchor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_anchor, 0|(gdextension.SizeObject<<4), &struct{ anchor_tracker gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRAnchorTracker(anchor_tracker[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anchor_tracker[0].Anchor())
 }
 func (self class) PersistAnchor(anchor_tracker [1]gdclass.OpenXRAnchorTracker, persistence_context RID.Any, user_callback Callable.Function) [1]gdclass.OpenXRFutureResult { //gd:OpenXRSpatialAnchorCapability.persist_anchor
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.persist_anchor, gdextension.SizeObject|(gdextension.SizeObject<<4)|(gdextension.SizeRID<<8)|(gdextension.SizeCallable<<12), &struct {
@@ -484,6 +502,9 @@ func (self class) PersistAnchor(anchor_tracker [1]gdclass.OpenXRAnchorTracker, p
 		persistence_context RID.Any
 		user_callback       gdextension.Callable
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRAnchorTracker(anchor_tracker[0])[0])), persistence_context, pointers.Get(gd.InternalCallable(user_callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anchor_tracker[0].Anchor())
+	runtime.KeepAlive(user_callback)
 	var ret = [1]gdclass.OpenXRFutureResult{gdclass.NewOpenXRFutureResult(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -493,6 +514,9 @@ func (self class) UnpersistAnchor(anchor_tracker [1]gdclass.OpenXRAnchorTracker,
 		persistence_context RID.Any
 		user_callback       gdextension.Callable
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRAnchorTracker(anchor_tracker[0])[0])), persistence_context, pointers.Get(gd.InternalCallable(user_callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(anchor_tracker[0].Anchor())
+	runtime.KeepAlive(user_callback)
 	var ret = [1]gdclass.OpenXRFutureResult{gdclass.NewOpenXRFutureResult(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -504,6 +528,11 @@ func (self class) StartEntityDiscovery(spatial_context RID.Any, component_data A
 		next_snapshot_query  gdextension.Object
 		user_callback        gdextension.Callable
 	}{spatial_context, pointers.Get(gd.InternalArray(component_data)), gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next_snapshot_create[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next_snapshot_query[0])[0])), pointers.Get(gd.InternalCallable(user_callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(component_data)
+	runtime.KeepAlive(next_snapshot_create[0].Anchor())
+	runtime.KeepAlive(next_snapshot_query[0].Anchor())
+	runtime.KeepAlive(user_callback)
 	var ret = [1]gdclass.OpenXRFutureResult{gdclass.NewOpenXRFutureResult(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -514,18 +543,22 @@ func (self class) DoEntityUpdate(spatial_context RID.Any, component_data Array.C
 		next_snapshot_create gdextension.Object
 		next_snapshot_query  gdextension.Object
 	}{spatial_context, pointers.Get(gd.InternalArray(component_data)), gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next_snapshot_create[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRStructureBase(next_snapshot_query[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(component_data)
+	runtime.KeepAlive(next_snapshot_create[0].Anchor())
+	runtime.KeepAlive(next_snapshot_query[0].Anchor())
 }
 func (o class) AsOpenXRSpatialAnchorCapability() Advanced         { return Advanced(o) }
 func (o Instance) AsOpenXRSpatialAnchorCapability() Instance      { return o }
 func (o *Extension[T]) AsOpenXRSpatialAnchorCapability() Instance { return o.Super() }
 func (o class) AsOpenXRExtensionWrapper() OpenXRExtensionWrapper.Advanced {
-	return OpenXRExtensionWrapper.Advanced{gdclass.NewOpenXRExtensionWrapper(o[0].AsObject()[0])}
+	return *(*OpenXRExtensionWrapper.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRExtensionWrapper() OpenXRExtensionWrapper.Instance {
 	return o.Super().AsOpenXRExtensionWrapper()
 }
 func (o Instance) AsOpenXRExtensionWrapper() OpenXRExtensionWrapper.Instance {
-	return OpenXRExtensionWrapper.Instance{gdclass.NewOpenXRExtensionWrapper(o[0].AsObject()[0])}
+	return *(*OpenXRExtensionWrapper.Instance)(ie.As(&o))
 }
 
 func (self class) Virtual(name string) reflect.Value {

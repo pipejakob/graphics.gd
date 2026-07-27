@@ -12,6 +12,7 @@ Warning: TLS certificate revocation and certificate pinning are currently not su
 package PacketPeerDTLS
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -181,7 +185,7 @@ func (self Instance) DisconnectFromPeer() { //gd:PacketPeerDTLS.disconnect_from_
 type Advanced = class
 type class [1]gdclass.PacketPeerDTLS
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPacketPeerDTLS(obj[0])
@@ -196,7 +200,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -221,6 +225,7 @@ func New() Instance {
 
 func (self class) Poll() { //gd:PacketPeerDTLS.poll
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.poll, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ConnectToPeer(packet_peer [1]gdclass.PacketPeerUDP, hostname String.Readable, client_options [1]gdclass.TLSOptions) Error.Code { //gd:PacketPeerDTLS.connect_to_peer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.connect_to_peer, gdextension.SizeInt|(gdextension.SizeObject<<4)|(gdextension.SizeString<<8)|(gdextension.SizeObject<<12), &struct {
@@ -228,23 +233,29 @@ func (self class) ConnectToPeer(packet_peer [1]gdclass.PacketPeerUDP, hostname S
 		hostname       gdextension.String
 		client_options gdextension.Object
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetPacketPeerUDP(packet_peer[0])[0])), pointers.Get(gd.InternalString(hostname)), gdextension.Object(gdreference.GetObject(gdclass.GetTLSOptions(client_options[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(packet_peer[0].Anchor())
+	runtime.KeepAlive(hostname)
+	runtime.KeepAlive(client_options[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetStatus() Status { //gd:PacketPeerDTLS.get_status
 	var r_ret = noescape.Call[Status](gd.ObjectChecked(self.AsObject()), methods.get_status, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) DisconnectFromPeer() { //gd:PacketPeerDTLS.disconnect_from_peer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.disconnect_from_peer, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsPacketPeerDTLS() Advanced                { return Advanced(o) }
 func (o Instance) AsPacketPeerDTLS() Instance             { return o }
 func (o *Extension[T]) AsPacketPeerDTLS() Instance        { return o.Super() }
-func (o class) AsPacketPeer() PacketPeer.Advanced         { return PacketPeer.Advanced{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o class) AsPacketPeer() PacketPeer.Advanced         { return *(*PacketPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPacketPeer() PacketPeer.Instance { return o.Super().AsPacketPeer() }
-func (o Instance) AsPacketPeer() PacketPeer.Instance      { return PacketPeer.Instance{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o Instance) AsPacketPeer() PacketPeer.Instance      { return *(*PacketPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

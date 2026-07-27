@@ -17,6 +17,7 @@ If you need to play audio at a specific position, use [AudioStreamPlayer2D] or [
 package AudioStreamPlayer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -26,6 +27,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -53,6 +55,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -233,7 +238,7 @@ func (self Instance) GetStreamPlayback() AudioStreamPlayback.Instance { //gd:Aud
 type Advanced = class
 type class [1]gdclass.AudioStreamPlayer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioStreamPlayer(obj[0])
@@ -248,7 +253,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -450,113 +455,143 @@ func (self Instance) SetPlaybackType(value AudioServer.PlaybackType) Instance { 
 
 func (self class) SetStream(stream [1]gdclass.AudioStream) { //gd:AudioStreamPlayer.set_stream
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stream, 0|(gdextension.SizeObject<<4), &struct{ stream gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetAudioStream(stream[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(stream[0].Anchor())
 }
 func (self class) GetStream() [1]gdclass.AudioStream { //gd:AudioStreamPlayer.get_stream
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_stream, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.AudioStream{gdclass.NewAudioStream(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetVolumeDb(volume_db float64) { //gd:AudioStreamPlayer.set_volume_db
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volume_db, 0|(gdextension.SizeFloat<<4), &struct{ volume_db float64 }{volume_db})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumeDb() float64 { //gd:AudioStreamPlayer.get_volume_db
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volume_db, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumeLinear(volume_linear float64) { //gd:AudioStreamPlayer.set_volume_linear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volume_linear, 0|(gdextension.SizeFloat<<4), &struct{ volume_linear float64 }{volume_linear})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumeLinear() float64 { //gd:AudioStreamPlayer.get_volume_linear
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volume_linear, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPitchScale(pitch_scale float64) { //gd:AudioStreamPlayer.set_pitch_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pitch_scale, 0|(gdextension.SizeFloat<<4), &struct{ pitch_scale float64 }{pitch_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPitchScale() float64 { //gd:AudioStreamPlayer.get_pitch_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_pitch_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Play(from_position float64) { //gd:AudioStreamPlayer.play
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.play, 0|(gdextension.SizeFloat<<4), &struct{ from_position float64 }{from_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SeekTo(to_position float64) { //gd:AudioStreamPlayer.seek
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.seek, 0|(gdextension.SizeFloat<<4), &struct{ to_position float64 }{to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Stop() { //gd:AudioStreamPlayer.stop
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.stop, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPlaying() bool { //gd:AudioStreamPlayer.is_playing
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_playing, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPlaybackPosition() float64 { //gd:AudioStreamPlayer.get_playback_position
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_playback_position, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBus(bus String.Name) { //gd:AudioStreamPlayer.set_bus
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bus, 0|(gdextension.SizeStringName<<4), &struct{ bus gdextension.StringName }{pointers.Get(gd.InternalStringName(bus))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bus)
 }
 func (self class) GetBus() String.Name { //gd:AudioStreamPlayer.get_bus
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bus, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetAutoplay(enable bool) { //gd:AudioStreamPlayer.set_autoplay
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autoplay, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAutoplayEnabled() bool { //gd:AudioStreamPlayer.is_autoplay_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_autoplay_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMixTarget(mix_target MixTarget) { //gd:AudioStreamPlayer.set_mix_target
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mix_target, 0|(gdextension.SizeInt<<4), &struct{ mix_target MixTarget }{mix_target})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMixTarget() MixTarget { //gd:AudioStreamPlayer.get_mix_target
 	var r_ret = jumponly.Call[MixTarget](gd.ObjectChecked(self.AsObject()), methods.get_mix_target, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPlaying(enable bool) { //gd:AudioStreamPlayer.set_playing
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_playing, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetStreamPaused(pause bool) { //gd:AudioStreamPlayer.set_stream_paused
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stream_paused, 0|(gdextension.SizeBool<<4), &struct{ pause bool }{pause})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStreamPaused() bool { //gd:AudioStreamPlayer.get_stream_paused
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_stream_paused, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxPolyphony(max_polyphony int64) { //gd:AudioStreamPlayer.set_max_polyphony
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_polyphony, 0|(gdextension.SizeInt<<4), &struct{ max_polyphony int64 }{max_polyphony})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxPolyphony() int64 { //gd:AudioStreamPlayer.get_max_polyphony
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_polyphony, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasStreamPlayback() bool { //gd:AudioStreamPlayer.has_stream_playback
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_stream_playback, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetStreamPlayback() [1]gdclass.AudioStreamPlayback { //gd:AudioStreamPlayer.get_stream_playback
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_stream_playback, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.AudioStreamPlayback{gdclass.NewAudioStreamPlayback(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetPlaybackType(playback_type AudioServer.PlaybackType) { //gd:AudioStreamPlayer.set_playback_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_playback_type, 0|(gdextension.SizeInt<<4), &struct{ playback_type AudioServer.PlaybackType }{playback_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPlaybackType() AudioServer.PlaybackType { //gd:AudioStreamPlayer.get_playback_type
 	var r_ret = noescape.Call[AudioServer.PlaybackType](gd.ObjectChecked(self.AsObject()), methods.get_playback_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -582,9 +617,9 @@ func (self class) Finished() Signal.Any {
 func (o class) AsAudioStreamPlayer() Advanced         { return Advanced(o) }
 func (o Instance) AsAudioStreamPlayer() Instance      { return o }
 func (o *Extension[T]) AsAudioStreamPlayer() Instance { return o.Super() }
-func (o class) AsNode() Node.Advanced                 { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced                 { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance         { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance              { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance              { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -6,6 +6,7 @@ Spatial entity tracker for our OpenXR spatial entity plane tracking extension. T
 package OpenXRPlaneTracker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -199,7 +203,7 @@ func (self MoreArgs) GetShape(thickness Float.X) Shape3D.Instance { //gd:OpenXRP
 type Advanced = class
 type class [1]gdclass.OpenXRPlaneTracker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRPlaneTracker(obj[0])
@@ -214,7 +218,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -278,9 +282,11 @@ func (self Instance) SetPlaneLabel(value string) Instance { //gd:OpenXRPlaneTrac
 
 func (self class) SetBoundsSize(bounds_size Vector2.XY) { //gd:OpenXRPlaneTracker.set_bounds_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bounds_size, 0|(gdextension.SizeVector2<<4), &struct{ bounds_size Vector2.XY }{bounds_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoundsSize() Vector2.XY { //gd:OpenXRPlaneTracker.get_bounds_size
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_bounds_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -288,17 +294,22 @@ func (self class) SetPlaneAlignment(plane_alignment OpenXRSpatialComponentPlaneA
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_plane_alignment, 0|(gdextension.SizeInt<<4), &struct {
 		plane_alignment OpenXRSpatialComponentPlaneAlignmentList.PlaneAlignment
 	}{plane_alignment})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPlaneAlignment() OpenXRSpatialComponentPlaneAlignmentList.PlaneAlignment { //gd:OpenXRPlaneTracker.get_plane_alignment
 	var r_ret = jumponly.Call[OpenXRSpatialComponentPlaneAlignmentList.PlaneAlignment](gd.ObjectChecked(self.AsObject()), methods.get_plane_alignment, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPlaneLabel(plane_label String.Readable) { //gd:OpenXRPlaneTracker.set_plane_label
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_plane_label, 0|(gdextension.SizeString<<4), &struct{ plane_label gdextension.String }{pointers.Get(gd.InternalString(plane_label))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(plane_label)
 }
 func (self class) GetPlaneLabel() String.Readable { //gd:OpenXRPlaneTracker.get_plane_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_plane_label, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -308,22 +319,29 @@ func (self class) SetMeshData(origin Transform3D.BasisOrigin, vertices Packed.Ar
 		vertices gdextension.PackedArray[Vector2.XY]
 		indices  gdextension.PackedArray[int32]
 	}{gd.Transposed(origin), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](vertices)), pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](indices))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertices)
+	runtime.KeepAlive(indices)
 }
 func (self class) ClearMeshData() { //gd:OpenXRPlaneTracker.clear_mesh_data
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_mesh_data, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMeshOffset() Transform3D.BasisOrigin { //gd:OpenXRPlaneTracker.get_mesh_offset
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_mesh_offset, gdextension.SizeTransform3D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) GetMesh() [1]gdclass.Mesh { //gd:OpenXRPlaneTracker.get_mesh
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_mesh, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Mesh{gdclass.NewMesh(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetShape(thickness float64) [1]gdclass.Shape3D { //gd:OpenXRPlaneTracker.get_shape
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_shape, gdextension.SizeObject|(gdextension.SizeFloat<<4), &struct{ thickness float64 }{thickness})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Shape3D{gdclass.NewShape3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -348,26 +366,26 @@ func (o class) AsOpenXRPlaneTracker() Advanced         { return Advanced(o) }
 func (o Instance) AsOpenXRPlaneTracker() Instance      { return o }
 func (o *Extension[T]) AsOpenXRPlaneTracker() Instance { return o.Super() }
 func (o class) AsOpenXRSpatialEntityTracker() OpenXRSpatialEntityTracker.Advanced {
-	return OpenXRSpatialEntityTracker.Advanced{gdclass.NewOpenXRSpatialEntityTracker(o[0].AsObject()[0])}
+	return *(*OpenXRSpatialEntityTracker.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRSpatialEntityTracker() OpenXRSpatialEntityTracker.Instance {
 	return o.Super().AsOpenXRSpatialEntityTracker()
 }
 func (o Instance) AsOpenXRSpatialEntityTracker() OpenXRSpatialEntityTracker.Instance {
-	return OpenXRSpatialEntityTracker.Instance{gdclass.NewOpenXRSpatialEntityTracker(o[0].AsObject()[0])}
+	return *(*OpenXRSpatialEntityTracker.Instance)(ie.As(&o))
 }
 func (o class) AsXRPositionalTracker() XRPositionalTracker.Advanced {
-	return XRPositionalTracker.Advanced{gdclass.NewXRPositionalTracker(o[0].AsObject()[0])}
+	return *(*XRPositionalTracker.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsXRPositionalTracker() XRPositionalTracker.Instance {
 	return o.Super().AsXRPositionalTracker()
 }
 func (o Instance) AsXRPositionalTracker() XRPositionalTracker.Instance {
-	return XRPositionalTracker.Instance{gdclass.NewXRPositionalTracker(o[0].AsObject()[0])}
+	return *(*XRPositionalTracker.Instance)(ie.As(&o))
 }
-func (o class) AsXRTracker() XRTracker.Advanced         { return XRTracker.Advanced{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o class) AsXRTracker() XRTracker.Advanced         { return *(*XRTracker.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRTracker() XRTracker.Instance { return o.Super().AsXRTracker() }
-func (o Instance) AsXRTracker() XRTracker.Instance      { return XRTracker.Instance{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o Instance) AsXRTracker() XRTracker.Instance      { return *(*XRTracker.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

@@ -11,6 +11,7 @@ When applying multiple [LookAtModifier3D]s, the [LookAtModifier3D] assigned to t
 package LookAtModifier3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -48,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -222,7 +227,7 @@ func (self Instance) IsTargetWithinLimitation() bool { //gd:LookAtModifier3D.is_
 type Advanced = class
 type class [1]gdclass.LookAtModifier3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewLookAtModifier3D(obj[0])
@@ -237,7 +242,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -727,256 +732,323 @@ func (self Instance) SetSecondaryNegativeDampThreshold(value Float.X) Instance {
 
 func (self class) SetTargetNode(target_node Path.ToNode) { //gd:LookAtModifier3D.set_target_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_target_node, 0|(gdextension.SizeNodePath<<4), &struct{ target_node gdextension.NodePath }{pointers.Get(gd.InternalNodePath(target_node))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(target_node)
 }
 func (self class) GetTargetNode() Path.ToNode { //gd:LookAtModifier3D.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetBoneName(bone_name String.Readable) { //gd:LookAtModifier3D.set_bone_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_name, 0|(gdextension.SizeString<<4), &struct{ bone_name gdextension.String }{pointers.Get(gd.InternalString(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetBoneName() String.Readable { //gd:LookAtModifier3D.get_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_bone_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBone(bone int64) { //gd:LookAtModifier3D.set_bone
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone, 0|(gdextension.SizeInt<<4), &struct{ bone int64 }{bone})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBone() int64 { //gd:LookAtModifier3D.get_bone
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_bone, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetForwardAxis(forward_axis SkeletonModifier3D.BoneAxis) { //gd:LookAtModifier3D.set_forward_axis
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_forward_axis, 0|(gdextension.SizeInt<<4), &struct{ forward_axis SkeletonModifier3D.BoneAxis }{forward_axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetForwardAxis() SkeletonModifier3D.BoneAxis { //gd:LookAtModifier3D.get_forward_axis
 	var r_ret = jumponly.Call[SkeletonModifier3D.BoneAxis](gd.ObjectChecked(self.AsObject()), methods.get_forward_axis, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPrimaryRotationAxis(axis Vector3.Axis) { //gd:LookAtModifier3D.set_primary_rotation_axis
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_primary_rotation_axis, 0|(gdextension.SizeInt<<4), &struct{ axis Vector3.Axis }{axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPrimaryRotationAxis() Vector3.Axis { //gd:LookAtModifier3D.get_primary_rotation_axis
 	var r_ret = jumponly.Call[Vector3.Axis](gd.ObjectChecked(self.AsObject()), methods.get_primary_rotation_axis, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseSecondaryRotation(enabled bool) { //gd:LookAtModifier3D.set_use_secondary_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_secondary_rotation, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingSecondaryRotation() bool { //gd:LookAtModifier3D.is_using_secondary_rotation
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_secondary_rotation, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRelative(enabled bool) { //gd:LookAtModifier3D.set_relative
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_relative, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRelative() bool { //gd:LookAtModifier3D.is_relative
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_relative, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOriginSafeMargin(margin float64) { //gd:LookAtModifier3D.set_origin_safe_margin
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_origin_safe_margin, 0|(gdextension.SizeFloat<<4), &struct{ margin float64 }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOriginSafeMargin() float64 { //gd:LookAtModifier3D.get_origin_safe_margin
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_origin_safe_margin, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOriginFrom(origin_from OriginFrom) { //gd:LookAtModifier3D.set_origin_from
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_origin_from, 0|(gdextension.SizeInt<<4), &struct{ origin_from OriginFrom }{origin_from})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOriginFrom() OriginFrom { //gd:LookAtModifier3D.get_origin_from
 	var r_ret = jumponly.Call[OriginFrom](gd.ObjectChecked(self.AsObject()), methods.get_origin_from, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOriginBoneName(bone_name String.Readable) { //gd:LookAtModifier3D.set_origin_bone_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_origin_bone_name, 0|(gdextension.SizeString<<4), &struct{ bone_name gdextension.String }{pointers.Get(gd.InternalString(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetOriginBoneName() String.Readable { //gd:LookAtModifier3D.get_origin_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_origin_bone_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOriginBone(bone int64) { //gd:LookAtModifier3D.set_origin_bone
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_origin_bone, 0|(gdextension.SizeInt<<4), &struct{ bone int64 }{bone})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOriginBone() int64 { //gd:LookAtModifier3D.get_origin_bone
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_origin_bone, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOriginExternalNode(external_node Path.ToNode) { //gd:LookAtModifier3D.set_origin_external_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_origin_external_node, 0|(gdextension.SizeNodePath<<4), &struct{ external_node gdextension.NodePath }{pointers.Get(gd.InternalNodePath(external_node))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(external_node)
 }
 func (self class) GetOriginExternalNode() Path.ToNode { //gd:LookAtModifier3D.get_origin_external_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_origin_external_node, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetOriginOffset(offset Vector3.XYZ) { //gd:LookAtModifier3D.set_origin_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_origin_offset, 0|(gdextension.SizeVector3<<4), &struct{ offset Vector3.XYZ }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOriginOffset() Vector3.XYZ { //gd:LookAtModifier3D.get_origin_offset
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_origin_offset, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDuration(duration float64) { //gd:LookAtModifier3D.set_duration
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_duration, 0|(gdextension.SizeFloat<<4), &struct{ duration float64 }{duration})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDuration() float64 { //gd:LookAtModifier3D.get_duration
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_duration, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTransitionType(transition_type Tween.TransitionType) { //gd:LookAtModifier3D.set_transition_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transition_type, 0|(gdextension.SizeInt<<4), &struct{ transition_type Tween.TransitionType }{transition_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTransitionType() Tween.TransitionType { //gd:LookAtModifier3D.get_transition_type
 	var r_ret = jumponly.Call[Tween.TransitionType](gd.ObjectChecked(self.AsObject()), methods.get_transition_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEaseType(ease_type Tween.EaseType) { //gd:LookAtModifier3D.set_ease_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ease_type, 0|(gdextension.SizeInt<<4), &struct{ ease_type Tween.EaseType }{ease_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEaseType() Tween.EaseType { //gd:LookAtModifier3D.get_ease_type
 	var r_ret = jumponly.Call[Tween.EaseType](gd.ObjectChecked(self.AsObject()), methods.get_ease_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseAngleLimitation(enabled bool) { //gd:LookAtModifier3D.set_use_angle_limitation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_angle_limitation, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingAngleLimitation() bool { //gd:LookAtModifier3D.is_using_angle_limitation
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_angle_limitation, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSymmetryLimitation(enabled bool) { //gd:LookAtModifier3D.set_symmetry_limitation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_symmetry_limitation, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLimitationSymmetry() bool { //gd:LookAtModifier3D.is_limitation_symmetry
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_limitation_symmetry, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPrimaryLimitAngle(angle float64) { //gd:LookAtModifier3D.set_primary_limit_angle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_primary_limit_angle, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPrimaryLimitAngle() float64 { //gd:LookAtModifier3D.get_primary_limit_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_primary_limit_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPrimaryDampThreshold(power float64) { //gd:LookAtModifier3D.set_primary_damp_threshold
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_primary_damp_threshold, 0|(gdextension.SizeFloat<<4), &struct{ power float64 }{power})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPrimaryDampThreshold() float64 { //gd:LookAtModifier3D.get_primary_damp_threshold
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_primary_damp_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPrimaryPositiveLimitAngle(angle float64) { //gd:LookAtModifier3D.set_primary_positive_limit_angle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_primary_positive_limit_angle, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPrimaryPositiveLimitAngle() float64 { //gd:LookAtModifier3D.get_primary_positive_limit_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_primary_positive_limit_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPrimaryPositiveDampThreshold(power float64) { //gd:LookAtModifier3D.set_primary_positive_damp_threshold
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_primary_positive_damp_threshold, 0|(gdextension.SizeFloat<<4), &struct{ power float64 }{power})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPrimaryPositiveDampThreshold() float64 { //gd:LookAtModifier3D.get_primary_positive_damp_threshold
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_primary_positive_damp_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPrimaryNegativeLimitAngle(angle float64) { //gd:LookAtModifier3D.set_primary_negative_limit_angle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_primary_negative_limit_angle, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPrimaryNegativeLimitAngle() float64 { //gd:LookAtModifier3D.get_primary_negative_limit_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_primary_negative_limit_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPrimaryNegativeDampThreshold(power float64) { //gd:LookAtModifier3D.set_primary_negative_damp_threshold
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_primary_negative_damp_threshold, 0|(gdextension.SizeFloat<<4), &struct{ power float64 }{power})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPrimaryNegativeDampThreshold() float64 { //gd:LookAtModifier3D.get_primary_negative_damp_threshold
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_primary_negative_damp_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSecondaryLimitAngle(angle float64) { //gd:LookAtModifier3D.set_secondary_limit_angle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_secondary_limit_angle, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSecondaryLimitAngle() float64 { //gd:LookAtModifier3D.get_secondary_limit_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_secondary_limit_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSecondaryDampThreshold(power float64) { //gd:LookAtModifier3D.set_secondary_damp_threshold
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_secondary_damp_threshold, 0|(gdextension.SizeFloat<<4), &struct{ power float64 }{power})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSecondaryDampThreshold() float64 { //gd:LookAtModifier3D.get_secondary_damp_threshold
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_secondary_damp_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSecondaryPositiveLimitAngle(angle float64) { //gd:LookAtModifier3D.set_secondary_positive_limit_angle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_secondary_positive_limit_angle, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSecondaryPositiveLimitAngle() float64 { //gd:LookAtModifier3D.get_secondary_positive_limit_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_secondary_positive_limit_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSecondaryPositiveDampThreshold(power float64) { //gd:LookAtModifier3D.set_secondary_positive_damp_threshold
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_secondary_positive_damp_threshold, 0|(gdextension.SizeFloat<<4), &struct{ power float64 }{power})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSecondaryPositiveDampThreshold() float64 { //gd:LookAtModifier3D.get_secondary_positive_damp_threshold
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_secondary_positive_damp_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSecondaryNegativeLimitAngle(angle float64) { //gd:LookAtModifier3D.set_secondary_negative_limit_angle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_secondary_negative_limit_angle, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSecondaryNegativeLimitAngle() float64 { //gd:LookAtModifier3D.get_secondary_negative_limit_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_secondary_negative_limit_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSecondaryNegativeDampThreshold(power float64) { //gd:LookAtModifier3D.set_secondary_negative_damp_threshold
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_secondary_negative_damp_threshold, 0|(gdextension.SizeFloat<<4), &struct{ power float64 }{power})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSecondaryNegativeDampThreshold() float64 { //gd:LookAtModifier3D.get_secondary_negative_damp_threshold
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_secondary_negative_damp_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInterpolationRemaining() float64 { //gd:LookAtModifier3D.get_interpolation_remaining
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_interpolation_remaining, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsInterpolating() bool { //gd:LookAtModifier3D.is_interpolating
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_interpolating, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsTargetWithinLimitation() bool { //gd:LookAtModifier3D.is_target_within_limitation
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_target_within_limitation, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -984,20 +1056,20 @@ func (o class) AsLookAtModifier3D() Advanced         { return Advanced(o) }
 func (o Instance) AsLookAtModifier3D() Instance      { return o }
 func (o *Extension[T]) AsLookAtModifier3D() Instance { return o.Super() }
 func (o class) AsSkeletonModifier3D() SkeletonModifier3D.Advanced {
-	return SkeletonModifier3D.Advanced{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
 	return o.Super().AsSkeletonModifier3D()
 }
 func (o Instance) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
-	return SkeletonModifier3D.Instance{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

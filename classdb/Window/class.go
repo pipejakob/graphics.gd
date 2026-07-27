@@ -12,6 +12,7 @@ At runtime, [Window]s will not close automatically when requested. You need to h
 package Window
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -21,6 +22,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -56,6 +58,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1441,7 +1446,7 @@ func GetLastExclusive(peer Node.Instance) Instance { //gd:Node.get_last_exclusiv
 type Advanced = class
 type class [1]gdclass.Window
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewWindow(obj[0])
@@ -1456,7 +1461,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -2179,81 +2184,102 @@ func (class) _get_contents_minimum_size(impl func(ptr gdclass.Receiver) Vector2.
 
 func (self class) SetTitle(title String.Readable) { //gd:Window.set_title
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_title, 0|(gdextension.SizeString<<4), &struct{ title gdextension.String }{pointers.Get(gd.InternalString(title))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(title)
 }
 func (self class) GetTitle() String.Readable { //gd:Window.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetInitialPosition(initial_position WindowInitialPosition) { //gd:Window.set_initial_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_initial_position, 0|(gdextension.SizeInt<<4), &struct{ initial_position WindowInitialPosition }{initial_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInitialPosition() WindowInitialPosition { //gd:Window.get_initial_position
 	var r_ret = noescape.Call[WindowInitialPosition](gd.ObjectChecked(self.AsObject()), methods.get_initial_position, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCurrentScreen(index int64) { //gd:Window.set_current_screen
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_current_screen, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCurrentScreen() int64 { //gd:Window.get_current_screen
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_current_screen, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPosition(position Vector2i.XY) { //gd:Window.set_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_position, 0|(gdextension.SizeVector2i<<4), &struct{ position Vector2i.XY }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPosition() Vector2i.XY { //gd:Window.get_position
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_position, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) MoveToCenter() { //gd:Window.move_to_center
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_to_center, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSize(size Vector2i.XY) { //gd:Window.set_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSize() Vector2i.XY { //gd:Window.get_size
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ResetSize() { //gd:Window.reset_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset_size, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPositionWithDecorations() Vector2i.XY { //gd:Window.get_position_with_decorations
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_position_with_decorations, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSizeWithDecorations() Vector2i.XY { //gd:Window.get_size_with_decorations
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_size_with_decorations, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxSize(max_size Vector2i.XY) { //gd:Window.set_max_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_size, 0|(gdextension.SizeVector2i<<4), &struct{ max_size Vector2i.XY }{max_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxSize() Vector2i.XY { //gd:Window.get_max_size
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_max_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinSize(min_size Vector2i.XY) { //gd:Window.set_min_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min_size, 0|(gdextension.SizeVector2i<<4), &struct{ min_size Vector2i.XY }{min_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMinSize() Vector2i.XY { //gd:Window.get_min_size
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_min_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMode(mode Mode) { //gd:Window.set_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mode, 0|(gdextension.SizeInt<<4), &struct{ mode Mode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMode() Mode { //gd:Window.get_mode
 	var r_ret = noescape.Call[Mode](gd.ObjectChecked(self.AsObject()), methods.get_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2262,181 +2288,227 @@ func (self class) SetFlag(flag Flags, enabled bool) { //gd:Window.set_flag
 		flag    Flags
 		enabled bool
 	}{flag, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFlag(flag Flags) bool { //gd:Window.get_flag
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_flag, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ flag Flags }{flag})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHdrOutputRequested(requested bool) { //gd:Window.set_hdr_output_requested
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hdr_output_requested, 0|(gdextension.SizeBool<<4), &struct{ requested bool }{requested})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHdrOutputRequested() bool { //gd:Window.is_hdr_output_requested
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hdr_output_requested, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOutputMaxLinearValue() float64 { //gd:Window.get_output_max_linear_value
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_output_max_linear_value, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsMaximizeAllowed() bool { //gd:Window.is_maximize_allowed
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_maximize_allowed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RequestAttention() { //gd:Window.request_attention
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.request_attention, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTaskbarProgressValue(value float64) { //gd:Window.set_taskbar_progress_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_taskbar_progress_value, 0|(gdextension.SizeFloat<<4), &struct{ value float64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTaskbarProgressState(state DisplayServer.ProgressState) { //gd:Window.set_taskbar_progress_state
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_taskbar_progress_state, 0|(gdextension.SizeInt<<4), &struct{ state DisplayServer.ProgressState }{state})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MoveToForeground() { //gd:Window.move_to_foreground
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_to_foreground, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetVisible(visible bool) { //gd:Window.set_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visible, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsVisible() bool { //gd:Window.is_visible
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Hide() { //gd:Window.hide
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.hide, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Show() { //gd:Window.show
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.show, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTransient(transient bool) { //gd:Window.set_transient
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transient, 0|(gdextension.SizeBool<<4), &struct{ transient bool }{transient})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTransient() bool { //gd:Window.is_transient
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_transient, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTransientToFocused(enable bool) { //gd:Window.set_transient_to_focused
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transient_to_focused, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTransientToFocused() bool { //gd:Window.is_transient_to_focused
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_transient_to_focused, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetExclusive(exclusive bool) { //gd:Window.set_exclusive
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_exclusive, 0|(gdextension.SizeBool<<4), &struct{ exclusive bool }{exclusive})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsExclusive() bool { //gd:Window.is_exclusive
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_exclusive, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUnparentWhenInvisible(unparent bool) { //gd:Window.set_unparent_when_invisible
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_unparent_when_invisible, 0|(gdextension.SizeBool<<4), &struct{ unparent bool }{unparent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CanDraw() bool { //gd:Window.can_draw
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.can_draw, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasFocus() bool { //gd:Window.has_focus
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_focus, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GrabFocus() { //gd:Window.grab_focus
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.grab_focus, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) StartDrag() { //gd:Window.start_drag
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.start_drag, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) StartResize(edge DisplayServer.WindowResizeEdge) { //gd:Window.start_resize
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.start_resize, 0|(gdextension.SizeInt<<4), &struct {
 		edge DisplayServer.WindowResizeEdge
 	}{edge})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetImeActive(active bool) { //gd:Window.set_ime_active
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ime_active, 0|(gdextension.SizeBool<<4), &struct{ active bool }{active})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetImePosition(position Vector2i.XY) { //gd:Window.set_ime_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ime_position, 0|(gdextension.SizeVector2i<<4), &struct{ position Vector2i.XY }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEmbedded() bool { //gd:Window.is_embedded
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_embedded, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetContentsMinimumSize() Vector2.XY { //gd:Window.get_contents_minimum_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_contents_minimum_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetForceNative(force_native bool) { //gd:Window.set_force_native
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_force_native, 0|(gdextension.SizeBool<<4), &struct{ force_native bool }{force_native})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetForceNative() bool { //gd:Window.get_force_native
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_force_native, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetContentScaleSize(size Vector2i.XY) { //gd:Window.set_content_scale_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_content_scale_size, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetContentScaleSize() Vector2i.XY { //gd:Window.get_content_scale_size
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_content_scale_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetContentScaleMode(mode ContentScaleMode) { //gd:Window.set_content_scale_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_content_scale_mode, 0|(gdextension.SizeInt<<4), &struct{ mode ContentScaleMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetContentScaleMode() ContentScaleMode { //gd:Window.get_content_scale_mode
 	var r_ret = noescape.Call[ContentScaleMode](gd.ObjectChecked(self.AsObject()), methods.get_content_scale_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetContentScaleAspect(aspect ContentScaleAspect) { //gd:Window.set_content_scale_aspect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_content_scale_aspect, 0|(gdextension.SizeInt<<4), &struct{ aspect ContentScaleAspect }{aspect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetContentScaleAspect() ContentScaleAspect { //gd:Window.get_content_scale_aspect
 	var r_ret = noescape.Call[ContentScaleAspect](gd.ObjectChecked(self.AsObject()), methods.get_content_scale_aspect, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetContentScaleStretch(stretch ContentScaleStretch) { //gd:Window.set_content_scale_stretch
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_content_scale_stretch, 0|(gdextension.SizeInt<<4), &struct{ stretch ContentScaleStretch }{stretch})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetContentScaleStretch() ContentScaleStretch { //gd:Window.get_content_scale_stretch
 	var r_ret = jumponly.Call[ContentScaleStretch](gd.ObjectChecked(self.AsObject()), methods.get_content_scale_stretch, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNonclientArea(area Rect2i.PositionSize) { //gd:Window.set_nonclient_area
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_nonclient_area, 0|(gdextension.SizeRect2i<<4), &struct{ area Rect2i.PositionSize }{area})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNonclientArea() Rect2i.PositionSize { //gd:Window.get_nonclient_area
 	var r_ret = jumponly.Call[Rect2i.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_nonclient_area, gdextension.SizeRect2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetKeepTitleVisible(title_visible bool) { //gd:Window.set_keep_title_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_keep_title_visible, 0|(gdextension.SizeBool<<4), &struct{ title_visible bool }{title_visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetKeepTitleVisible() bool { //gd:Window.get_keep_title_visible
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_keep_title_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetContentScaleFactor(factor float64) { //gd:Window.set_content_scale_factor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_content_scale_factor, 0|(gdextension.SizeFloat<<4), &struct{ factor float64 }{factor})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetContentScaleFactor() float64 { //gd:Window.get_content_scale_factor
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_content_scale_factor, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2444,104 +2516,148 @@ func (self class) SetMousePassthroughPolygon(polygon Packed.Array[Vector2.XY]) {
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mouse_passthrough_polygon, 0|(gdextension.SizePackedArray<<4), &struct {
 		polygon gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(polygon)
 }
 func (self class) GetMousePassthroughPolygon() Packed.Array[Vector2.XY] { //gd:Window.get_mouse_passthrough_polygon
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_mouse_passthrough_polygon, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetWrapControls(enable bool) { //gd:Window.set_wrap_controls
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_wrap_controls, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsWrappingControls() bool { //gd:Window.is_wrapping_controls
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_wrapping_controls, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ChildControlsChanged() { //gd:Window.child_controls_changed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.child_controls_changed, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTheme(theme [1]gdclass.Theme) { //gd:Window.set_theme
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_theme, 0|(gdextension.SizeObject<<4), &struct{ theme gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTheme(theme[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme[0].Anchor())
 }
 func (self class) GetTheme() [1]gdclass.Theme { //gd:Window.get_theme
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_theme, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Theme{gdclass.NewTheme(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetThemeTypeVariation(theme_type String.Name) { //gd:Window.set_theme_type_variation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_theme_type_variation, 0|(gdextension.SizeStringName<<4), &struct{ theme_type gdextension.StringName }{pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetThemeTypeVariation() String.Name { //gd:Window.get_theme_type_variation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_theme_type_variation, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) BeginBulkThemeOverride() { //gd:Window.begin_bulk_theme_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.begin_bulk_theme_override, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) EndBulkThemeOverride() { //gd:Window.end_bulk_theme_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.end_bulk_theme_override, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddThemeIconOverride(name String.Name, texture [1]gdclass.Texture2D) { //gd:Window.add_theme_icon_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_icon_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeObject<<8), &struct {
 		name    gdextension.StringName
 		texture gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) AddThemeStyleboxOverride(name String.Name, stylebox [1]gdclass.StyleBox) { //gd:Window.add_theme_stylebox_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_stylebox_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeObject<<8), &struct {
 		name     gdextension.StringName
 		stylebox gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetStyleBox(stylebox[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(stylebox[0].Anchor())
 }
 func (self class) AddThemeFontOverride(name String.Name, font [1]gdclass.Font) { //gd:Window.add_theme_font_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_font_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeObject<<8), &struct {
 		name gdextension.StringName
 		font gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetFont(font[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(font[0].Anchor())
 }
 func (self class) AddThemeFontSizeOverride(name String.Name, font_size int64) { //gd:Window.add_theme_font_size_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_font_size_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeInt<<8), &struct {
 		name      gdextension.StringName
 		font_size int64
 	}{pointers.Get(gd.InternalStringName(name)), font_size})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) AddThemeColorOverride(name String.Name, color Color.RGBA) { //gd:Window.add_theme_color_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_color_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeColor<<8), &struct {
 		name  gdextension.StringName
 		color Color.RGBA
 	}{pointers.Get(gd.InternalStringName(name)), color})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) AddThemeConstantOverride(name String.Name, constant int64) { //gd:Window.add_theme_constant_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_constant_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeInt<<8), &struct {
 		name     gdextension.StringName
 		constant int64
 	}{pointers.Get(gd.InternalStringName(name)), constant})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeIconOverride(name String.Name) { //gd:Window.remove_theme_icon_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_icon_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeStyleboxOverride(name String.Name) { //gd:Window.remove_theme_stylebox_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_stylebox_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeFontOverride(name String.Name) { //gd:Window.remove_theme_font_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_font_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeFontSizeOverride(name String.Name) { //gd:Window.remove_theme_font_size_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_font_size_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeColorOverride(name String.Name) { //gd:Window.remove_theme_color_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_color_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeConstantOverride(name String.Name) { //gd:Window.remove_theme_constant_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_constant_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetThemeIcon(name String.Name, theme_type String.Name) [1]gdclass.Texture2D { //gd:Window.get_theme_icon
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_theme_icon, gdextension.SizeObject|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -2550,6 +2666,9 @@ func (self class) GetThemeStylebox(name String.Name, theme_type String.Name) [1]
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = [1]gdclass.StyleBox{gdclass.NewStyleBox(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -2558,6 +2677,9 @@ func (self class) GetThemeFont(name String.Name, theme_type String.Name) [1]gdcl
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = [1]gdclass.Font{gdclass.NewFont(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -2566,6 +2688,9 @@ func (self class) GetThemeFontSize(name String.Name, theme_type String.Name) int
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -2574,6 +2699,9 @@ func (self class) GetThemeColor(name String.Name, theme_type String.Name) Color.
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -2582,36 +2710,51 @@ func (self class) GetThemeConstant(name String.Name, theme_type String.Name) int
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeIconOverride(name String.Name) bool { //gd:Window.has_theme_icon_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_icon_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeStyleboxOverride(name String.Name) bool { //gd:Window.has_theme_stylebox_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_stylebox_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeFontOverride(name String.Name) bool { //gd:Window.has_theme_font_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_font_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeFontSizeOverride(name String.Name) bool { //gd:Window.has_theme_font_size_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_font_size_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeColorOverride(name String.Name) bool { //gd:Window.has_theme_color_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_color_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeConstantOverride(name String.Name) bool { //gd:Window.has_theme_constant_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_constant_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -2620,6 +2763,9 @@ func (self class) HasThemeIcon(name String.Name, theme_type String.Name) bool { 
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -2628,6 +2774,9 @@ func (self class) HasThemeStylebox(name String.Name, theme_type String.Name) boo
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -2636,6 +2785,9 @@ func (self class) HasThemeFont(name String.Name, theme_type String.Name) bool { 
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -2644,6 +2796,9 @@ func (self class) HasThemeFontSize(name String.Name, theme_type String.Name) boo
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -2652,6 +2807,9 @@ func (self class) HasThemeColor(name String.Name, theme_type String.Name) bool {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -2660,42 +2818,55 @@ func (self class) HasThemeConstant(name String.Name, theme_type String.Name) boo
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetThemeDefaultBaseScale() float64 { //gd:Window.get_theme_default_base_scale
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_theme_default_base_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetThemeDefaultFont() [1]gdclass.Font { //gd:Window.get_theme_default_font
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_theme_default_font, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Font{gdclass.NewFont(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetThemeDefaultFontSize() int64 { //gd:Window.get_theme_default_font_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_theme_default_font_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetWindowId() int64 { //gd:Window.get_window_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_window_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAccessibilityName(name String.Readable) { //gd:Window.set_accessibility_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accessibility_name, 0|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetAccessibilityName() String.Readable { //gd:Window.get_accessibility_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityDescription(description String.Readable) { //gd:Window.set_accessibility_description
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accessibility_description, 0|(gdextension.SizeString<<4), &struct{ description gdextension.String }{pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(description)
 }
 func (self class) GetAccessibilityDescription() String.Readable { //gd:Window.get_accessibility_description
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_description, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -2706,74 +2877,94 @@ func (self class) GetFocusedWindow() [1]gdclass.Window { //gd:Window.get_focused
 }
 func (self class) SetLayoutDirection(direction LayoutDirection) { //gd:Window.set_layout_direction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_layout_direction, 0|(gdextension.SizeInt<<4), &struct{ direction LayoutDirection }{direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLayoutDirection() LayoutDirection { //gd:Window.get_layout_direction
 	var r_ret = noescape.Call[LayoutDirection](gd.ObjectChecked(self.AsObject()), methods.get_layout_direction, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsLayoutRtl() bool { //gd:Window.is_layout_rtl
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_layout_rtl, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoTranslate(enable bool) { //gd:Window.set_auto_translate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_translate, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAutoTranslating() bool { //gd:Window.is_auto_translating
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_auto_translating, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseFontOversampling(enable bool) { //gd:Window.set_use_font_oversampling
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_font_oversampling, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingFontOversampling() bool { //gd:Window.is_using_font_oversampling
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_font_oversampling, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Popup(rect Rect2i.PositionSize) { //gd:Window.popup
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup, 0|(gdextension.SizeRect2i<<4), &struct{ rect Rect2i.PositionSize }{rect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PopupOnParent(parent_rect Rect2i.PositionSize) { //gd:Window.popup_on_parent
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_on_parent, 0|(gdextension.SizeRect2i<<4), &struct{ parent_rect Rect2i.PositionSize }{parent_rect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PopupCentered(minsize Vector2i.XY) { //gd:Window.popup_centered
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_centered, 0|(gdextension.SizeVector2i<<4), &struct{ minsize Vector2i.XY }{minsize})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PopupCenteredRatio(ratio float64) { //gd:Window.popup_centered_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_centered_ratio, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PopupCenteredClamped(minsize Vector2i.XY, fallback_ratio float64) { //gd:Window.popup_centered_clamped
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_centered_clamped, 0|(gdextension.SizeVector2i<<4)|(gdextension.SizeFloat<<8), &struct {
 		minsize        Vector2i.XY
 		fallback_ratio float64
 	}{minsize, fallback_ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PopupExclusive(from_node [1]gdclass.Node, rect Rect2i.PositionSize) { //gd:Window.popup_exclusive
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_exclusive, 0|(gdextension.SizeObject<<4)|(gdextension.SizeRect2i<<8), &struct {
 		from_node gdextension.Object
 		rect      Rect2i.PositionSize
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNode(from_node[0])[0])), rect})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from_node[0].Anchor())
 }
 func (self class) PopupExclusiveOnParent(from_node [1]gdclass.Node, parent_rect Rect2i.PositionSize) { //gd:Window.popup_exclusive_on_parent
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_exclusive_on_parent, 0|(gdextension.SizeObject<<4)|(gdextension.SizeRect2i<<8), &struct {
 		from_node   gdextension.Object
 		parent_rect Rect2i.PositionSize
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNode(from_node[0])[0])), parent_rect})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from_node[0].Anchor())
 }
 func (self class) PopupExclusiveCentered(from_node [1]gdclass.Node, minsize Vector2i.XY) { //gd:Window.popup_exclusive_centered
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_exclusive_centered, 0|(gdextension.SizeObject<<4)|(gdextension.SizeVector2i<<8), &struct {
 		from_node gdextension.Object
 		minsize   Vector2i.XY
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNode(from_node[0])[0])), minsize})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from_node[0].Anchor())
 }
 func (self class) PopupExclusiveCenteredRatio(from_node [1]gdclass.Node, ratio float64) { //gd:Window.popup_exclusive_centered_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_exclusive_centered_ratio, 0|(gdextension.SizeObject<<4)|(gdextension.SizeFloat<<8), &struct {
 		from_node gdextension.Object
 		ratio     float64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNode(from_node[0])[0])), ratio})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from_node[0].Anchor())
 }
 func (self class) PopupExclusiveCenteredClamped(from_node [1]gdclass.Node, minsize Vector2i.XY, fallback_ratio float64) { //gd:Window.popup_exclusive_centered_clamped
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_exclusive_centered_clamped, 0|(gdextension.SizeObject<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeFloat<<12), &struct {
@@ -2781,6 +2972,8 @@ func (self class) PopupExclusiveCenteredClamped(from_node [1]gdclass.Node, minsi
 		minsize        Vector2i.XY
 		fallback_ratio float64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNode(from_node[0])[0])), minsize, fallback_ratio})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from_node[0].Anchor())
 }
 
 /*
@@ -3080,12 +3273,12 @@ func (self class) OutputMaxLinearValueChanged() Signal.Any {
 func (o class) AsWindow() Advanced                    { return Advanced(o) }
 func (o Instance) AsWindow() Instance                 { return o }
 func (o *Extension[T]) AsWindow() Instance            { return o.Super() }
-func (o class) AsViewport() Viewport.Advanced         { return Viewport.Advanced{gdclass.NewViewport(o[0].AsObject()[0])} }
+func (o class) AsViewport() Viewport.Advanced         { return *(*Viewport.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsViewport() Viewport.Instance { return o.Super().AsViewport() }
-func (o Instance) AsViewport() Viewport.Instance      { return Viewport.Instance{gdclass.NewViewport(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                 { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsViewport() Viewport.Instance      { return *(*Viewport.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                 { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance         { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance              { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance              { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -10,6 +10,7 @@ Its title, description and color can be customized.
 package VisualShaderNodeFrame
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -156,7 +160,7 @@ func (self Instance) RemoveAttachedNode(node int) { //gd:VisualShaderNodeFrame.r
 type Advanced = class
 type class [1]gdclass.VisualShaderNodeFrame
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVisualShaderNodeFrame(obj[0])
@@ -171,7 +175,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -265,49 +269,63 @@ func (self Instance) SetAttachedNodes(value []int32) Instance { //gd:VisualShade
 
 func (self class) SetTitle(title String.Readable) { //gd:VisualShaderNodeFrame.set_title
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_title, 0|(gdextension.SizeString<<4), &struct{ title gdextension.String }{pointers.Get(gd.InternalString(title))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(title)
 }
 func (self class) GetTitle() String.Readable { //gd:VisualShaderNodeFrame.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTintColorEnabled(enable bool) { //gd:VisualShaderNodeFrame.set_tint_color_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tint_color_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTintColorEnabled() bool { //gd:VisualShaderNodeFrame.is_tint_color_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_tint_color_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTintColor(color Color.RGBA) { //gd:VisualShaderNodeFrame.set_tint_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tint_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTintColor() Color.RGBA { //gd:VisualShaderNodeFrame.get_tint_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_tint_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoshrinkEnabled(enable bool) { //gd:VisualShaderNodeFrame.set_autoshrink_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autoshrink_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAutoshrinkEnabled() bool { //gd:VisualShaderNodeFrame.is_autoshrink_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_autoshrink_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddAttachedNode(node int64) { //gd:VisualShaderNodeFrame.add_attached_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_attached_node, 0|(gdextension.SizeInt<<4), &struct{ node int64 }{node})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveAttachedNode(node int64) { //gd:VisualShaderNodeFrame.remove_attached_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_attached_node, 0|(gdextension.SizeInt<<4), &struct{ node int64 }{node})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAttachedNodes(attached_nodes Packed.Array[int32]) { //gd:VisualShaderNodeFrame.set_attached_nodes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_attached_nodes, 0|(gdextension.SizePackedArray<<4), &struct {
 		attached_nodes gdextension.PackedArray[int32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](attached_nodes))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(attached_nodes)
 }
 func (self class) GetAttachedNodes() Packed.Array[int32] { //gd:VisualShaderNodeFrame.get_attached_nodes
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_attached_nodes, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -315,26 +333,26 @@ func (o class) AsVisualShaderNodeFrame() Advanced         { return Advanced(o) }
 func (o Instance) AsVisualShaderNodeFrame() Instance      { return o }
 func (o *Extension[T]) AsVisualShaderNodeFrame() Instance { return o.Super() }
 func (o class) AsVisualShaderNodeResizableBase() VisualShaderNodeResizableBase.Advanced {
-	return VisualShaderNodeResizableBase.Advanced{gdclass.NewVisualShaderNodeResizableBase(o[0].AsObject()[0])}
+	return *(*VisualShaderNodeResizableBase.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualShaderNodeResizableBase() VisualShaderNodeResizableBase.Instance {
 	return o.Super().AsVisualShaderNodeResizableBase()
 }
 func (o Instance) AsVisualShaderNodeResizableBase() VisualShaderNodeResizableBase.Instance {
-	return VisualShaderNodeResizableBase.Instance{gdclass.NewVisualShaderNodeResizableBase(o[0].AsObject()[0])}
+	return *(*VisualShaderNodeResizableBase.Instance)(ie.As(&o))
 }
 func (o class) AsVisualShaderNode() VisualShaderNode.Advanced {
-	return VisualShaderNode.Advanced{gdclass.NewVisualShaderNode(o[0].AsObject()[0])}
+	return *(*VisualShaderNode.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualShaderNode() VisualShaderNode.Instance {
 	return o.Super().AsVisualShaderNode()
 }
 func (o Instance) AsVisualShaderNode() VisualShaderNode.Instance {
-	return VisualShaderNode.Instance{gdclass.NewVisualShaderNode(o[0].AsObject()[0])}
+	return *(*VisualShaderNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

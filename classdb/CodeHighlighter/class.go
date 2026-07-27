@@ -8,6 +8,7 @@ By adjusting various properties of this resource, you can change the colors of s
 package CodeHighlighter
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -273,7 +277,7 @@ func (self Instance) ClearColorRegions() { //gd:CodeHighlighter.clear_color_regi
 type Advanced = class
 type class [1]gdclass.CodeHighlighter
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCodeHighlighter(obj[0])
@@ -288,7 +292,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -427,28 +431,40 @@ func (self class) AddKeywordColor(keyword String.Readable, color Color.RGBA) { /
 		keyword gdextension.String
 		color   Color.RGBA
 	}{pointers.Get(gd.InternalString(keyword)), color})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(keyword)
 }
 func (self class) RemoveKeywordColor(keyword String.Readable) { //gd:CodeHighlighter.remove_keyword_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_keyword_color, 0|(gdextension.SizeString<<4), &struct{ keyword gdextension.String }{pointers.Get(gd.InternalString(keyword))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(keyword)
 }
 func (self class) HasKeywordColor(keyword String.Readable) bool { //gd:CodeHighlighter.has_keyword_color
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_keyword_color, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ keyword gdextension.String }{pointers.Get(gd.InternalString(keyword))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(keyword)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetKeywordColor(keyword String.Readable) Color.RGBA { //gd:CodeHighlighter.get_keyword_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_keyword_color, gdextension.SizeColor|(gdextension.SizeString<<4), &struct{ keyword gdextension.String }{pointers.Get(gd.InternalString(keyword))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(keyword)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetKeywordColors(keywords Dictionary.Any) { //gd:CodeHighlighter.set_keyword_colors
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_keyword_colors, 0|(gdextension.SizeDictionary<<4), &struct{ keywords gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(keywords))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(keywords)
 }
 func (self class) ClearKeywordColors() { //gd:CodeHighlighter.clear_keyword_colors
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_keyword_colors, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetKeywordColors() Dictionary.Any { //gd:CodeHighlighter.get_keyword_colors
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_keyword_colors, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -457,28 +473,40 @@ func (self class) AddMemberKeywordColor(member_keyword String.Readable, color Co
 		member_keyword gdextension.String
 		color          Color.RGBA
 	}{pointers.Get(gd.InternalString(member_keyword)), color})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(member_keyword)
 }
 func (self class) RemoveMemberKeywordColor(member_keyword String.Readable) { //gd:CodeHighlighter.remove_member_keyword_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_member_keyword_color, 0|(gdextension.SizeString<<4), &struct{ member_keyword gdextension.String }{pointers.Get(gd.InternalString(member_keyword))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(member_keyword)
 }
 func (self class) HasMemberKeywordColor(member_keyword String.Readable) bool { //gd:CodeHighlighter.has_member_keyword_color
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_member_keyword_color, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ member_keyword gdextension.String }{pointers.Get(gd.InternalString(member_keyword))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(member_keyword)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMemberKeywordColor(member_keyword String.Readable) Color.RGBA { //gd:CodeHighlighter.get_member_keyword_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_member_keyword_color, gdextension.SizeColor|(gdextension.SizeString<<4), &struct{ member_keyword gdextension.String }{pointers.Get(gd.InternalString(member_keyword))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(member_keyword)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMemberKeywordColors(member_keyword Dictionary.Any) { //gd:CodeHighlighter.set_member_keyword_colors
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_member_keyword_colors, 0|(gdextension.SizeDictionary<<4), &struct{ member_keyword gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(member_keyword))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(member_keyword)
 }
 func (self class) ClearMemberKeywordColors() { //gd:CodeHighlighter.clear_member_keyword_colors
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_member_keyword_colors, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMemberKeywordColors() Dictionary.Any { //gd:CodeHighlighter.get_member_keyword_colors
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_member_keyword_colors, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -489,55 +517,74 @@ func (self class) AddColorRegion(start_key String.Readable, end_key String.Reada
 		color     Color.RGBA
 		line_only bool
 	}{pointers.Get(gd.InternalString(start_key)), pointers.Get(gd.InternalString(end_key)), color, line_only})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_key)
+	runtime.KeepAlive(end_key)
 }
 func (self class) RemoveColorRegion(start_key String.Readable) { //gd:CodeHighlighter.remove_color_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_color_region, 0|(gdextension.SizeString<<4), &struct{ start_key gdextension.String }{pointers.Get(gd.InternalString(start_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_key)
 }
 func (self class) HasColorRegion(start_key String.Readable) bool { //gd:CodeHighlighter.has_color_region
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_color_region, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ start_key gdextension.String }{pointers.Get(gd.InternalString(start_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_key)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetColorRegions(color_regions Dictionary.Any) { //gd:CodeHighlighter.set_color_regions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color_regions, 0|(gdextension.SizeDictionary<<4), &struct{ color_regions gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(color_regions))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(color_regions)
 }
 func (self class) ClearColorRegions() { //gd:CodeHighlighter.clear_color_regions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_color_regions, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetColorRegions() Dictionary.Any { //gd:CodeHighlighter.get_color_regions
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_color_regions, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetFunctionColor(color Color.RGBA) { //gd:CodeHighlighter.set_function_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_function_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFunctionColor() Color.RGBA { //gd:CodeHighlighter.get_function_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_function_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNumberColor(color Color.RGBA) { //gd:CodeHighlighter.set_number_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_number_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNumberColor() Color.RGBA { //gd:CodeHighlighter.get_number_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_number_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSymbolColor(color Color.RGBA) { //gd:CodeHighlighter.set_symbol_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_symbol_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSymbolColor() Color.RGBA { //gd:CodeHighlighter.get_symbol_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_symbol_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMemberVariableColor(color Color.RGBA) { //gd:CodeHighlighter.set_member_variable_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_member_variable_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMemberVariableColor() Color.RGBA { //gd:CodeHighlighter.get_member_variable_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_member_variable_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -545,17 +592,17 @@ func (o class) AsCodeHighlighter() Advanced         { return Advanced(o) }
 func (o Instance) AsCodeHighlighter() Instance      { return o }
 func (o *Extension[T]) AsCodeHighlighter() Instance { return o.Super() }
 func (o class) AsSyntaxHighlighter() SyntaxHighlighter.Advanced {
-	return SyntaxHighlighter.Advanced{gdclass.NewSyntaxHighlighter(o[0].AsObject()[0])}
+	return *(*SyntaxHighlighter.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSyntaxHighlighter() SyntaxHighlighter.Instance {
 	return o.Super().AsSyntaxHighlighter()
 }
 func (o Instance) AsSyntaxHighlighter() SyntaxHighlighter.Instance {
-	return SyntaxHighlighter.Instance{gdclass.NewSyntaxHighlighter(o[0].AsObject()[0])}
+	return *(*SyntaxHighlighter.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

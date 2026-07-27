@@ -20,6 +20,7 @@ Note: The signs are only used to distinguish ports, and additive blending occurs
 package AnimationNodeAdd3
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -55,6 +56,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -133,7 +137,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AnimationNodeAdd3
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimationNodeAdd3(obj[0])
@@ -148,7 +152,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -175,22 +179,22 @@ func (o class) AsAnimationNodeAdd3() Advanced         { return Advanced(o) }
 func (o Instance) AsAnimationNodeAdd3() Instance      { return o }
 func (o *Extension[T]) AsAnimationNodeAdd3() Instance { return o.Super() }
 func (o class) AsAnimationNodeSync() AnimationNodeSync.Advanced {
-	return AnimationNodeSync.Advanced{gdclass.NewAnimationNodeSync(o[0].AsObject()[0])}
+	return *(*AnimationNodeSync.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsAnimationNodeSync() AnimationNodeSync.Instance {
 	return o.Super().AsAnimationNodeSync()
 }
 func (o Instance) AsAnimationNodeSync() AnimationNodeSync.Instance {
-	return AnimationNodeSync.Instance{gdclass.NewAnimationNodeSync(o[0].AsObject()[0])}
+	return *(*AnimationNodeSync.Instance)(ie.As(&o))
 }
-func (o class) AsAnimationNode() AnimationNode.Advanced         { return AnimationNode.Advanced{gdclass.NewAnimationNode(o[0].AsObject()[0])} }
+func (o class) AsAnimationNode() AnimationNode.Advanced         { return *(*AnimationNode.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAnimationNode() AnimationNode.Instance { return o.Super().AsAnimationNode() }
 func (o Instance) AsAnimationNode() AnimationNode.Instance {
-	return AnimationNode.Instance{gdclass.NewAnimationNode(o[0].AsObject()[0])}
+	return *(*AnimationNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

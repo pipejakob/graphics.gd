@@ -13,6 +13,7 @@ To set up different types of inverse kinematics for the given Skeleton2D, a [Ske
 package Skeleton2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -22,6 +23,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -51,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -225,7 +230,7 @@ func Get(peer SkeletonModificationStack2D.Instance) Instance { //gd:SkeletonModi
 type Advanced = class
 type class [1]gdclass.Skeleton2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSkeleton2D(obj[0])
@@ -240,7 +245,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -265,24 +270,30 @@ func New() Instance {
 
 func (self class) GetBoneCount() int64 { //gd:Skeleton2D.get_bone_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_bone_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBone(idx int64) [1]gdclass.Bone2D { //gd:Skeleton2D.get_bone
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_bone, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Bone2D{gdclass.NewBone2D(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) GetSkeleton() RID.Any { //gd:Skeleton2D.get_skeleton
 	var r_ret = jumponly.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_skeleton, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetModificationStack(modification_stack [1]gdclass.SkeletonModificationStack2D) { //gd:Skeleton2D.set_modification_stack
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_modification_stack, 0|(gdextension.SizeObject<<4), &struct{ modification_stack gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetSkeletonModificationStack2D(modification_stack[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(modification_stack[0].Anchor())
 }
 func (self class) GetModificationStack() [1]gdclass.SkeletonModificationStack2D { //gd:Skeleton2D.get_modification_stack
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_modification_stack, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.SkeletonModificationStack2D{gdclass.NewSkeletonModificationStack2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -291,6 +302,7 @@ func (self class) ExecuteModifications(delta float64, execution_mode int64) { //
 		delta          float64
 		execution_mode int64
 	}{delta, execution_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetBoneLocalPoseOverride(bone_idx int64, override_pose Transform2D.OriginXY, strength float64, persistent bool) { //gd:Skeleton2D.set_bone_local_pose_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_local_pose_override, 0|(gdextension.SizeInt<<4)|(gdextension.SizeTransform2D<<8)|(gdextension.SizeFloat<<12)|(gdextension.SizeBool<<16), &struct {
@@ -299,9 +311,11 @@ func (self class) SetBoneLocalPoseOverride(bone_idx int64, override_pose Transfo
 		strength      float64
 		persistent    bool
 	}{bone_idx, override_pose, strength, persistent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneLocalPoseOverride(bone_idx int64) Transform2D.OriginXY { //gd:Skeleton2D.get_bone_local_pose_override
 	var r_ret = noescape.Call[Transform2D.OriginXY](gd.ObjectChecked(self.AsObject()), methods.get_bone_local_pose_override, gdextension.SizeTransform2D|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -327,15 +341,15 @@ func (self class) BoneSetupChanged() Signal.Any {
 func (o class) AsSkeleton2D() Advanced                    { return Advanced(o) }
 func (o Instance) AsSkeleton2D() Instance                 { return o }
 func (o *Extension[T]) AsSkeleton2D() Instance            { return o.Super() }
-func (o class) AsNode2D() Node2D.Advanced                 { return Node2D.Advanced{gdclass.NewNode2D(o[0].AsObject()[0])} }
+func (o class) AsNode2D() Node2D.Advanced                 { return *(*Node2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode2D() Node2D.Instance         { return o.Super().AsNode2D() }
-func (o Instance) AsNode2D() Node2D.Instance              { return Node2D.Instance{gdclass.NewNode2D(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsNode2D() Node2D.Instance              { return *(*Node2D.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

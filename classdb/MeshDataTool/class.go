@@ -53,6 +53,7 @@ Note: Godot uses clockwise [winding order] for front faces of triangle primitive
 package MeshDataTool
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -92,6 +93,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -570,7 +574,7 @@ func (self Instance) GetMaterial() Material.Instance { //gd:MeshDataTool.get_mat
 type Advanced = class
 type class [1]gdclass.MeshDataTool
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMeshDataTool(obj[0])
@@ -585,7 +589,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -610,12 +614,15 @@ func New() Instance {
 
 func (self class) Clear() { //gd:MeshDataTool.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CreateFromSurface(mesh [1]gdclass.ArrayMesh, surface int64) Error.Code { //gd:MeshDataTool.create_from_surface
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.create_from_surface, gdextension.SizeInt|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8), &struct {
 		mesh    gdextension.Object
 		surface int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetArrayMesh(mesh[0])[0])), surface})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(mesh[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -624,26 +631,32 @@ func (self class) CommitToSurface(mesh [1]gdclass.ArrayMesh, compression_flags i
 		mesh              gdextension.Object
 		compression_flags int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetArrayMesh(mesh[0])[0])), compression_flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(mesh[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetFormat() int64 { //gd:MeshDataTool.get_format
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_format, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVertexCount() int64 { //gd:MeshDataTool.get_vertex_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_vertex_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetEdgeCount() int64 { //gd:MeshDataTool.get_edge_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_edge_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFaceCount() int64 { //gd:MeshDataTool.get_face_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_face_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -652,9 +665,11 @@ func (self class) SetVertex(idx int64, vertex Vector3.XYZ) { //gd:MeshDataTool.s
 		idx    int64
 		vertex Vector3.XYZ
 	}{idx, vertex})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertex(idx int64) Vector3.XYZ { //gd:MeshDataTool.get_vertex
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_vertex, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -663,9 +678,11 @@ func (self class) SetVertexNormal(idx int64, normal Vector3.XYZ) { //gd:MeshData
 		idx    int64
 		normal Vector3.XYZ
 	}{idx, normal})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertexNormal(idx int64) Vector3.XYZ { //gd:MeshDataTool.get_vertex_normal
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_vertex_normal, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -674,9 +691,11 @@ func (self class) SetVertexTangent(idx int64, tangent Plane.NormalD) { //gd:Mesh
 		idx     int64
 		tangent Plane.NormalD
 	}{idx, tangent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertexTangent(idx int64) Plane.NormalD { //gd:MeshDataTool.get_vertex_tangent
 	var r_ret = noescape.Call[Plane.NormalD](gd.ObjectChecked(self.AsObject()), methods.get_vertex_tangent, gdextension.SizePlane|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -685,9 +704,11 @@ func (self class) SetVertexUv(idx int64, uv Vector2.XY) { //gd:MeshDataTool.set_
 		idx int64
 		uv  Vector2.XY
 	}{idx, uv})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertexUv(idx int64) Vector2.XY { //gd:MeshDataTool.get_vertex_uv
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_vertex_uv, gdextension.SizeVector2|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -696,9 +717,11 @@ func (self class) SetVertexUv2(idx int64, uv2 Vector2.XY) { //gd:MeshDataTool.se
 		idx int64
 		uv2 Vector2.XY
 	}{idx, uv2})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertexUv2(idx int64) Vector2.XY { //gd:MeshDataTool.get_vertex_uv2
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_vertex_uv2, gdextension.SizeVector2|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -707,9 +730,11 @@ func (self class) SetVertexColor(idx int64, color Color.RGBA) { //gd:MeshDataToo
 		idx   int64
 		color Color.RGBA
 	}{idx, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertexColor(idx int64) Color.RGBA { //gd:MeshDataTool.get_vertex_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_vertex_color, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -718,9 +743,12 @@ func (self class) SetVertexBones(idx int64, bones Packed.Array[int32]) { //gd:Me
 		idx   int64
 		bones gdextension.PackedArray[int32]
 	}{idx, pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](bones))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bones)
 }
 func (self class) GetVertexBones(idx int64) Packed.Array[int32] { //gd:MeshDataTool.get_vertex_bones
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertex_bones, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -729,9 +757,12 @@ func (self class) SetVertexWeights(idx int64, weights Packed.Array[float32]) { /
 		idx     int64
 		weights gdextension.PackedArray[float32]
 	}{idx, pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](weights))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(weights)
 }
 func (self class) GetVertexWeights(idx int64) Packed.Array[float32] { //gd:MeshDataTool.get_vertex_weights
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertex_weights, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
@@ -740,19 +771,24 @@ func (self class) SetVertexMeta(idx int64, meta variant.Any) { //gd:MeshDataTool
 		idx  int64
 		meta gdextension.Variant
 	}{idx, gdextension.Variant(pointers.Get(gd.InternalVariant(meta)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(meta)
 }
 func (self class) GetVertexMeta(idx int64) variant.Any { //gd:MeshDataTool.get_vertex_meta
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_vertex_meta, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetVertexEdges(idx int64) Packed.Array[int32] { //gd:MeshDataTool.get_vertex_edges
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertex_edges, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetVertexFaces(idx int64) Packed.Array[int32] { //gd:MeshDataTool.get_vertex_faces
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertex_faces, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -761,11 +797,13 @@ func (self class) GetEdgeVertex(idx int64, vertex int64) int64 { //gd:MeshDataTo
 		idx    int64
 		vertex int64
 	}{idx, vertex})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetEdgeFaces(idx int64) Packed.Array[int32] { //gd:MeshDataTool.get_edge_faces
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_edge_faces, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -774,9 +812,12 @@ func (self class) SetEdgeMeta(idx int64, meta variant.Any) { //gd:MeshDataTool.s
 		idx  int64
 		meta gdextension.Variant
 	}{idx, gdextension.Variant(pointers.Get(gd.InternalVariant(meta)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(meta)
 }
 func (self class) GetEdgeMeta(idx int64) variant.Any { //gd:MeshDataTool.get_edge_meta
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_edge_meta, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -785,6 +826,7 @@ func (self class) GetFaceVertex(idx int64, vertex int64) int64 { //gd:MeshDataTo
 		idx    int64
 		vertex int64
 	}{idx, vertex})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -793,6 +835,7 @@ func (self class) GetFaceEdge(idx int64, edge int64) int64 { //gd:MeshDataTool.g
 		idx  int64
 		edge int64
 	}{idx, edge})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -801,22 +844,29 @@ func (self class) SetFaceMeta(idx int64, meta variant.Any) { //gd:MeshDataTool.s
 		idx  int64
 		meta gdextension.Variant
 	}{idx, gdextension.Variant(pointers.Get(gd.InternalVariant(meta)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(meta)
 }
 func (self class) GetFaceMeta(idx int64) variant.Any { //gd:MeshDataTool.get_face_meta
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_face_meta, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetFaceNormal(idx int64) Vector3.XYZ { //gd:MeshDataTool.get_face_normal
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_face_normal, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaterial(material [1]gdclass.Material) { //gd:MeshDataTool.set_material
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_material, 0|(gdextension.SizeObject<<4), &struct{ material gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) GetMaterial() [1]gdclass.Material { //gd:MeshDataTool.get_material
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_material, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Material{gdclass.NewMaterial(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }

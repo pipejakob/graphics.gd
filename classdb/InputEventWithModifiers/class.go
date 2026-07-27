@@ -11,6 +11,7 @@ Note: Modifier keys are considered modifiers only when used in combination with 
 package InputEventWithModifiers
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -155,7 +159,7 @@ func (self Instance) GetModifiersMask() Input.KeyModifierMask { //gd:InputEventW
 type Advanced = class
 type class [1]gdclass.InputEventWithModifiers
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputEventWithModifiers(obj[0])
@@ -170,7 +174,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -263,51 +267,63 @@ func (self Instance) SetMetaPressed(value bool) Instance { //gd:InputEventWithMo
 
 func (self class) SetCommandOrControlAutoremap(enable bool) { //gd:InputEventWithModifiers.set_command_or_control_autoremap
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_command_or_control_autoremap, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCommandOrControlAutoremap() bool { //gd:InputEventWithModifiers.is_command_or_control_autoremap
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_command_or_control_autoremap, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsCommandOrControlPressed() bool { //gd:InputEventWithModifiers.is_command_or_control_pressed
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_command_or_control_pressed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAltPressed(pressed bool) { //gd:InputEventWithModifiers.set_alt_pressed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_alt_pressed, 0|(gdextension.SizeBool<<4), &struct{ pressed bool }{pressed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAltPressed() bool { //gd:InputEventWithModifiers.is_alt_pressed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_alt_pressed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShiftPressed(pressed bool) { //gd:InputEventWithModifiers.set_shift_pressed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shift_pressed, 0|(gdextension.SizeBool<<4), &struct{ pressed bool }{pressed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShiftPressed() bool { //gd:InputEventWithModifiers.is_shift_pressed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_shift_pressed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCtrlPressed(pressed bool) { //gd:InputEventWithModifiers.set_ctrl_pressed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ctrl_pressed, 0|(gdextension.SizeBool<<4), &struct{ pressed bool }{pressed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCtrlPressed() bool { //gd:InputEventWithModifiers.is_ctrl_pressed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_ctrl_pressed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMetaPressed(pressed bool) { //gd:InputEventWithModifiers.set_meta_pressed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_meta_pressed, 0|(gdextension.SizeBool<<4), &struct{ pressed bool }{pressed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsMetaPressed() bool { //gd:InputEventWithModifiers.is_meta_pressed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_meta_pressed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetModifiersMask() Input.KeyModifierMask { //gd:InputEventWithModifiers.get_modifiers_mask
 	var r_ret = noescape.Call[Input.KeyModifierMask](gd.ObjectChecked(self.AsObject()), methods.get_modifiers_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -315,20 +331,20 @@ func (o class) AsInputEventWithModifiers() Advanced         { return Advanced(o)
 func (o Instance) AsInputEventWithModifiers() Instance      { return o }
 func (o *Extension[T]) AsInputEventWithModifiers() Instance { return o.Super() }
 func (o class) AsInputEventFromWindow() InputEventFromWindow.Advanced {
-	return InputEventFromWindow.Advanced{gdclass.NewInputEventFromWindow(o[0].AsObject()[0])}
+	return *(*InputEventFromWindow.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventFromWindow() InputEventFromWindow.Instance {
 	return o.Super().AsInputEventFromWindow()
 }
 func (o Instance) AsInputEventFromWindow() InputEventFromWindow.Instance {
-	return InputEventFromWindow.Instance{gdclass.NewInputEventFromWindow(o[0].AsObject()[0])}
+	return *(*InputEventFromWindow.Instance)(ie.As(&o))
 }
-func (o class) AsInputEvent() InputEvent.Advanced         { return InputEvent.Advanced{gdclass.NewInputEvent(o[0].AsObject()[0])} }
+func (o class) AsInputEvent() InputEvent.Advanced         { return *(*InputEvent.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsInputEvent() InputEvent.Instance { return o.Super().AsInputEvent() }
-func (o Instance) AsInputEvent() InputEvent.Instance      { return InputEvent.Instance{gdclass.NewInputEvent(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced             { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsInputEvent() InputEvent.Instance      { return *(*InputEvent.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced             { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance     { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance          { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance          { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

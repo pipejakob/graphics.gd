@@ -10,6 +10,7 @@ See also [AudioEffectReverb] for a blurry, continuous echo.
 package AudioEffectDelay
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -150,7 +154,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AudioEffectDelay
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioEffectDelay(obj[0])
@@ -165,7 +169,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -359,117 +363,143 @@ func (self Instance) SetFeedbackLowpass(value Float.X) Instance { //gd:AudioEffe
 
 func (self class) SetDry(amount float64) { //gd:AudioEffectDelay.set_dry
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_dry, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDry() float64 { //gd:AudioEffectDelay.get_dry
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_dry, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTap1Active(amount bool) { //gd:AudioEffectDelay.set_tap1_active
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tap1_active, 0|(gdextension.SizeBool<<4), &struct{ amount bool }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTap1Active() bool { //gd:AudioEffectDelay.is_tap1_active
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_tap1_active, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTap1DelayMs(amount float64) { //gd:AudioEffectDelay.set_tap1_delay_ms
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tap1_delay_ms, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTap1DelayMs() float64 { //gd:AudioEffectDelay.get_tap1_delay_ms
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tap1_delay_ms, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTap1LevelDb(amount float64) { //gd:AudioEffectDelay.set_tap1_level_db
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tap1_level_db, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTap1LevelDb() float64 { //gd:AudioEffectDelay.get_tap1_level_db
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tap1_level_db, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTap1Pan(amount float64) { //gd:AudioEffectDelay.set_tap1_pan
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tap1_pan, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTap1Pan() float64 { //gd:AudioEffectDelay.get_tap1_pan
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tap1_pan, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTap2Active(amount bool) { //gd:AudioEffectDelay.set_tap2_active
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tap2_active, 0|(gdextension.SizeBool<<4), &struct{ amount bool }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTap2Active() bool { //gd:AudioEffectDelay.is_tap2_active
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_tap2_active, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTap2DelayMs(amount float64) { //gd:AudioEffectDelay.set_tap2_delay_ms
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tap2_delay_ms, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTap2DelayMs() float64 { //gd:AudioEffectDelay.get_tap2_delay_ms
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tap2_delay_ms, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTap2LevelDb(amount float64) { //gd:AudioEffectDelay.set_tap2_level_db
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tap2_level_db, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTap2LevelDb() float64 { //gd:AudioEffectDelay.get_tap2_level_db
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tap2_level_db, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTap2Pan(amount float64) { //gd:AudioEffectDelay.set_tap2_pan
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tap2_pan, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTap2Pan() float64 { //gd:AudioEffectDelay.get_tap2_pan
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tap2_pan, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFeedbackActive(amount bool) { //gd:AudioEffectDelay.set_feedback_active
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_feedback_active, 0|(gdextension.SizeBool<<4), &struct{ amount bool }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFeedbackActive() bool { //gd:AudioEffectDelay.is_feedback_active
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_feedback_active, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFeedbackDelayMs(amount float64) { //gd:AudioEffectDelay.set_feedback_delay_ms
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_feedback_delay_ms, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFeedbackDelayMs() float64 { //gd:AudioEffectDelay.get_feedback_delay_ms
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_feedback_delay_ms, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFeedbackLevelDb(amount float64) { //gd:AudioEffectDelay.set_feedback_level_db
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_feedback_level_db, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFeedbackLevelDb() float64 { //gd:AudioEffectDelay.get_feedback_level_db
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_feedback_level_db, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFeedbackLowpass(amount float64) { //gd:AudioEffectDelay.set_feedback_lowpass
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_feedback_lowpass, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFeedbackLowpass() float64 { //gd:AudioEffectDelay.get_feedback_lowpass
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_feedback_lowpass, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAudioEffectDelay() Advanced                { return Advanced(o) }
 func (o Instance) AsAudioEffectDelay() Instance             { return o }
 func (o *Extension[T]) AsAudioEffectDelay() Instance        { return o.Super() }
-func (o class) AsAudioEffect() AudioEffect.Advanced         { return AudioEffect.Advanced{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
+func (o class) AsAudioEffect() AudioEffect.Advanced         { return *(*AudioEffect.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAudioEffect() AudioEffect.Instance { return o.Super().AsAudioEffect() }
-func (o Instance) AsAudioEffect() AudioEffect.Instance      { return AudioEffect.Instance{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsAudioEffect() AudioEffect.Instance      { return *(*AudioEffect.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

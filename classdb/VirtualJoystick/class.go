@@ -13,6 +13,7 @@ This control can simulate directional actions (see [ActionUp], [ActionDown], [Ac
 package VirtualJoystick
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -21,6 +22,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -48,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -148,7 +153,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.VirtualJoystick
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVirtualJoystick(obj[0])
@@ -163,7 +168,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -343,89 +348,115 @@ func (self Instance) SetVisibilityMode(value VisibilityMode) Instance { //gd:Vir
 
 func (self class) SetJoystickMode(mode JoystickMode) { //gd:VirtualJoystick.set_joystick_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_joystick_mode, 0|(gdextension.SizeInt<<4), &struct{ mode JoystickMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJoystickMode() JoystickMode { //gd:VirtualJoystick.get_joystick_mode
 	var r_ret = noescape.Call[JoystickMode](gd.ObjectChecked(self.AsObject()), methods.get_joystick_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetJoystickSize(size float64) { //gd:VirtualJoystick.set_joystick_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_joystick_size, 0|(gdextension.SizeFloat<<4), &struct{ size float64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetJoystickSize() float64 { //gd:VirtualJoystick.get_joystick_size
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_joystick_size, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTipSize(size float64) { //gd:VirtualJoystick.set_tip_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tip_size, 0|(gdextension.SizeFloat<<4), &struct{ size float64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTipSize() float64 { //gd:VirtualJoystick.get_tip_size
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tip_size, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDeadzoneRatio(ratio float64) { //gd:VirtualJoystick.set_deadzone_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_deadzone_ratio, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDeadzoneRatio() float64 { //gd:VirtualJoystick.get_deadzone_ratio
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_deadzone_ratio, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetClampzoneRatio(ratio float64) { //gd:VirtualJoystick.set_clampzone_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_clampzone_ratio, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetClampzoneRatio() float64 { //gd:VirtualJoystick.get_clampzone_ratio
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_clampzone_ratio, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInitialOffsetRatio(ratio Vector2.XY) { //gd:VirtualJoystick.set_initial_offset_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_initial_offset_ratio, 0|(gdextension.SizeVector2<<4), &struct{ ratio Vector2.XY }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInitialOffsetRatio() Vector2.XY { //gd:VirtualJoystick.get_initial_offset_ratio
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_initial_offset_ratio, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetActionLeft(action String.Name) { //gd:VirtualJoystick.set_action_left
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_action_left, 0|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action)
 }
 func (self class) GetActionLeft() String.Name { //gd:VirtualJoystick.get_action_left
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_action_left, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetActionRight(action String.Name) { //gd:VirtualJoystick.set_action_right
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_action_right, 0|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action)
 }
 func (self class) GetActionRight() String.Name { //gd:VirtualJoystick.get_action_right
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_action_right, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetActionUp(action String.Name) { //gd:VirtualJoystick.set_action_up
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_action_up, 0|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action)
 }
 func (self class) GetActionUp() String.Name { //gd:VirtualJoystick.get_action_up
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_action_up, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetActionDown(action String.Name) { //gd:VirtualJoystick.set_action_down
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_action_down, 0|(gdextension.SizeStringName<<4), &struct{ action gdextension.StringName }{pointers.Get(gd.InternalStringName(action))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action)
 }
 func (self class) GetActionDown() String.Name { //gd:VirtualJoystick.get_action_down
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_action_down, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetVisibilityMode(mode VisibilityMode) { //gd:VirtualJoystick.set_visibility_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visibility_mode, 0|(gdextension.SizeInt<<4), &struct{ mode VisibilityMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVisibilityMode() VisibilityMode { //gd:VirtualJoystick.get_visibility_mode
 	var r_ret = noescape.Call[VisibilityMode](gd.ObjectChecked(self.AsObject()), methods.get_visibility_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -513,15 +544,15 @@ func (self class) FlickCanceled() Signal.Any {
 func (o class) AsVirtualJoystick() Advanced               { return Advanced(o) }
 func (o Instance) AsVirtualJoystick() Instance            { return o }
 func (o *Extension[T]) AsVirtualJoystick() Instance       { return o.Super() }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

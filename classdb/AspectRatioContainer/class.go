@@ -6,6 +6,7 @@ A container type that arranges its child controls in a way that preserves their 
 package AspectRatioContainer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -15,6 +16,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -42,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -129,7 +134,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AspectRatioContainer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAspectRatioContainer(obj[0])
@@ -144,7 +149,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -223,51 +228,59 @@ func (self Instance) SetAlignmentVertical(value AlignmentMode) Instance { //gd:A
 
 func (self class) SetRatio(ratio float64) { //gd:AspectRatioContainer.set_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ratio, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRatio() float64 { //gd:AspectRatioContainer.get_ratio
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ratio, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStretchMode(stretch_mode StretchMode) { //gd:AspectRatioContainer.set_stretch_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stretch_mode, 0|(gdextension.SizeInt<<4), &struct{ stretch_mode StretchMode }{stretch_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStretchMode() StretchMode { //gd:AspectRatioContainer.get_stretch_mode
 	var r_ret = jumponly.Call[StretchMode](gd.ObjectChecked(self.AsObject()), methods.get_stretch_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAlignmentHorizontal(alignment_horizontal AlignmentMode) { //gd:AspectRatioContainer.set_alignment_horizontal
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_alignment_horizontal, 0|(gdextension.SizeInt<<4), &struct{ alignment_horizontal AlignmentMode }{alignment_horizontal})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAlignmentHorizontal() AlignmentMode { //gd:AspectRatioContainer.get_alignment_horizontal
 	var r_ret = jumponly.Call[AlignmentMode](gd.ObjectChecked(self.AsObject()), methods.get_alignment_horizontal, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAlignmentVertical(alignment_vertical AlignmentMode) { //gd:AspectRatioContainer.set_alignment_vertical
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_alignment_vertical, 0|(gdextension.SizeInt<<4), &struct{ alignment_vertical AlignmentMode }{alignment_vertical})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAlignmentVertical() AlignmentMode { //gd:AspectRatioContainer.get_alignment_vertical
 	var r_ret = jumponly.Call[AlignmentMode](gd.ObjectChecked(self.AsObject()), methods.get_alignment_vertical, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAspectRatioContainer() Advanced          { return Advanced(o) }
 func (o Instance) AsAspectRatioContainer() Instance       { return o }
 func (o *Extension[T]) AsAspectRatioContainer() Instance  { return o.Super() }
-func (o class) AsContainer() Container.Advanced           { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o class) AsContainer() Container.Advanced           { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance   { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance        { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance        { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

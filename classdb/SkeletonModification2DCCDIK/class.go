@@ -15,6 +15,7 @@ CCDIK also fully supports angle constraints, allowing for more control over how 
 package SkeletonModification2DCCDIK
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -50,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -278,7 +282,7 @@ func (self Instance) GetCcdikJointConstraintAngleInvert(joint_idx int) bool { //
 type Advanced = class
 type class [1]gdclass.SkeletonModification2DCCDIK
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSkeletonModification2DCCDIK(obj[0])
@@ -293,7 +297,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -359,25 +363,33 @@ func (self Instance) SetCcdikDataChainLength(value int) Instance { //gd:Skeleton
 
 func (self class) SetTargetNode(target_nodepath Path.ToNode) { //gd:SkeletonModification2DCCDIK.set_target_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_target_node, 0|(gdextension.SizeNodePath<<4), &struct{ target_nodepath gdextension.NodePath }{pointers.Get(gd.InternalNodePath(target_nodepath))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(target_nodepath)
 }
 func (self class) GetTargetNode() Path.ToNode { //gd:SkeletonModification2DCCDIK.get_target_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_target_node, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetTipNode(tip_nodepath Path.ToNode) { //gd:SkeletonModification2DCCDIK.set_tip_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tip_node, 0|(gdextension.SizeNodePath<<4), &struct{ tip_nodepath gdextension.NodePath }{pointers.Get(gd.InternalNodePath(tip_nodepath))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tip_nodepath)
 }
 func (self class) GetTipNode() Path.ToNode { //gd:SkeletonModification2DCCDIK.get_tip_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_tip_node, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetCcdikDataChainLength(length int64) { //gd:SkeletonModification2DCCDIK.set_ccdik_data_chain_length
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ccdik_data_chain_length, 0|(gdextension.SizeInt<<4), &struct{ length int64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCcdikDataChainLength() int64 { //gd:SkeletonModification2DCCDIK.get_ccdik_data_chain_length
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_ccdik_data_chain_length, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -386,9 +398,12 @@ func (self class) SetCcdikJointBone2dNode(joint_idx int64, bone2d_nodepath Path.
 		joint_idx       int64
 		bone2d_nodepath gdextension.NodePath
 	}{joint_idx, pointers.Get(gd.InternalNodePath(bone2d_nodepath))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone2d_nodepath)
 }
 func (self class) GetCcdikJointBone2dNode(joint_idx int64) Path.ToNode { //gd:SkeletonModification2DCCDIK.get_ccdik_joint_bone2d_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_ccdik_joint_bone2d_node, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
@@ -397,9 +412,11 @@ func (self class) SetCcdikJointBoneIndex(joint_idx int64, bone_idx int64) { //gd
 		joint_idx int64
 		bone_idx  int64
 	}{joint_idx, bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCcdikJointBoneIndex(joint_idx int64) int64 { //gd:SkeletonModification2DCCDIK.get_ccdik_joint_bone_index
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_ccdik_joint_bone_index, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -408,9 +425,11 @@ func (self class) SetCcdikJointRotateFromJoint(joint_idx int64, rotate_from_join
 		joint_idx         int64
 		rotate_from_joint bool
 	}{joint_idx, rotate_from_joint})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCcdikJointRotateFromJoint(joint_idx int64) bool { //gd:SkeletonModification2DCCDIK.get_ccdik_joint_rotate_from_joint
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_ccdik_joint_rotate_from_joint, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -419,9 +438,11 @@ func (self class) SetCcdikJointEnableConstraint(joint_idx int64, enable_constrai
 		joint_idx         int64
 		enable_constraint bool
 	}{joint_idx, enable_constraint})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCcdikJointEnableConstraint(joint_idx int64) bool { //gd:SkeletonModification2DCCDIK.get_ccdik_joint_enable_constraint
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_ccdik_joint_enable_constraint, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -430,9 +451,11 @@ func (self class) SetCcdikJointConstraintAngleMin(joint_idx int64, angle_min flo
 		joint_idx int64
 		angle_min float64
 	}{joint_idx, angle_min})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCcdikJointConstraintAngleMin(joint_idx int64) float64 { //gd:SkeletonModification2DCCDIK.get_ccdik_joint_constraint_angle_min
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ccdik_joint_constraint_angle_min, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -441,9 +464,11 @@ func (self class) SetCcdikJointConstraintAngleMax(joint_idx int64, angle_max flo
 		joint_idx int64
 		angle_max float64
 	}{joint_idx, angle_max})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCcdikJointConstraintAngleMax(joint_idx int64) float64 { //gd:SkeletonModification2DCCDIK.get_ccdik_joint_constraint_angle_max
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ccdik_joint_constraint_angle_max, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -452,9 +477,11 @@ func (self class) SetCcdikJointConstraintAngleInvert(joint_idx int64, invert boo
 		joint_idx int64
 		invert    bool
 	}{joint_idx, invert})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCcdikJointConstraintAngleInvert(joint_idx int64) bool { //gd:SkeletonModification2DCCDIK.get_ccdik_joint_constraint_angle_invert
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_ccdik_joint_constraint_angle_invert, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ joint_idx int64 }{joint_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -462,17 +489,17 @@ func (o class) AsSkeletonModification2DCCDIK() Advanced         { return Advance
 func (o Instance) AsSkeletonModification2DCCDIK() Instance      { return o }
 func (o *Extension[T]) AsSkeletonModification2DCCDIK() Instance { return o.Super() }
 func (o class) AsSkeletonModification2D() SkeletonModification2D.Advanced {
-	return SkeletonModification2D.Advanced{gdclass.NewSkeletonModification2D(o[0].AsObject()[0])}
+	return *(*SkeletonModification2D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModification2D() SkeletonModification2D.Instance {
 	return o.Super().AsSkeletonModification2D()
 }
 func (o Instance) AsSkeletonModification2D() SkeletonModification2D.Instance {
-	return SkeletonModification2D.Instance{gdclass.NewSkeletonModification2D(o[0].AsObject()[0])}
+	return *(*SkeletonModification2D.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

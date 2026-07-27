@@ -18,6 +18,7 @@ Note: Blend Shapes will be ignored if used in a MultiMesh.
 package MultiMesh
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -57,6 +58,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -300,7 +304,7 @@ func (self Instance) SetBufferInterpolated(buffer_curr []float32, buffer_prev []
 type Advanced = class
 type class [1]gdclass.MultiMesh
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMultiMesh(obj[0])
@@ -315,7 +319,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -476,57 +480,72 @@ func (self Instance) SetPhysicsInterpolationQuality(value PhysicsInterpolationQu
 
 func (self class) SetMesh(mesh [1]gdclass.Mesh) { //gd:MultiMesh.set_mesh
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mesh, 0|(gdextension.SizeObject<<4), &struct{ mesh gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMesh(mesh[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(mesh[0].Anchor())
 }
 func (self class) GetMesh() [1]gdclass.Mesh { //gd:MultiMesh.get_mesh
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_mesh, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Mesh{gdclass.NewMesh(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetUseColors(enable bool) { //gd:MultiMesh.set_use_colors
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_colors, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingColors() bool { //gd:MultiMesh.is_using_colors
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_colors, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseCustomData(enable bool) { //gd:MultiMesh.set_use_custom_data
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_custom_data, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingCustomData() bool { //gd:MultiMesh.is_using_custom_data
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_custom_data, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTransformFormat(format TransformFormat) { //gd:MultiMesh.set_transform_format
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transform_format, 0|(gdextension.SizeInt<<4), &struct{ format TransformFormat }{format})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTransformFormat() TransformFormat { //gd:MultiMesh.get_transform_format
 	var r_ret = jumponly.Call[TransformFormat](gd.ObjectChecked(self.AsObject()), methods.get_transform_format, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInstanceCount(count int64) { //gd:MultiMesh.set_instance_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_instance_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInstanceCount() int64 { //gd:MultiMesh.get_instance_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_instance_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVisibleInstanceCount(count int64) { //gd:MultiMesh.set_visible_instance_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visible_instance_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVisibleInstanceCount() int64 { //gd:MultiMesh.get_visible_instance_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_visible_instance_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPhysicsInterpolationQuality(quality PhysicsInterpolationQuality) { //gd:MultiMesh.set_physics_interpolation_quality
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_physics_interpolation_quality, 0|(gdextension.SizeInt<<4), &struct{ quality PhysicsInterpolationQuality }{quality})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPhysicsInterpolationQuality() PhysicsInterpolationQuality { //gd:MultiMesh.get_physics_interpolation_quality
 	var r_ret = jumponly.Call[PhysicsInterpolationQuality](gd.ObjectChecked(self.AsObject()), methods.get_physics_interpolation_quality, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -535,20 +554,24 @@ func (self class) SetInstanceTransform(instance int64, transform Transform3D.Bas
 		instance  int64
 		transform Transform3D.BasisOrigin
 	}{instance, gd.Transposed(transform)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetInstanceTransform2d(instance int64, transform Transform2D.OriginXY) { //gd:MultiMesh.set_instance_transform_2d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_instance_transform_2d, 0|(gdextension.SizeInt<<4)|(gdextension.SizeTransform2D<<8), &struct {
 		instance  int64
 		transform Transform2D.OriginXY
 	}{instance, transform})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInstanceTransform(instance int64) Transform3D.BasisOrigin { //gd:MultiMesh.get_instance_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_instance_transform, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ instance int64 }{instance})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) GetInstanceTransform2d(instance int64) Transform2D.OriginXY { //gd:MultiMesh.get_instance_transform_2d
 	var r_ret = noescape.Call[Transform2D.OriginXY](gd.ObjectChecked(self.AsObject()), methods.get_instance_transform_2d, gdextension.SizeTransform2D|(gdextension.SizeInt<<4), &struct{ instance int64 }{instance})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -557,9 +580,11 @@ func (self class) SetInstanceColor(instance int64, color Color.RGBA) { //gd:Mult
 		instance int64
 		color    Color.RGBA
 	}{instance, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInstanceColor(instance int64) Color.RGBA { //gd:MultiMesh.get_instance_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_instance_color, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ instance int64 }{instance})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -568,33 +593,41 @@ func (self class) SetInstanceCustomData(instance int64, custom_data Color.RGBA) 
 		instance    int64
 		custom_data Color.RGBA
 	}{instance, custom_data})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInstanceCustomData(instance int64) Color.RGBA { //gd:MultiMesh.get_instance_custom_data
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_instance_custom_data, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ instance int64 }{instance})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ResetInstancePhysicsInterpolation(instance int64) { //gd:MultiMesh.reset_instance_physics_interpolation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset_instance_physics_interpolation, 0|(gdextension.SizeInt<<4), &struct{ instance int64 }{instance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ResetInstancesPhysicsInterpolation() { //gd:MultiMesh.reset_instances_physics_interpolation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset_instances_physics_interpolation, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCustomAabb(aabb AABB.PositionSize) { //gd:MultiMesh.set_custom_aabb
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_custom_aabb, 0|(gdextension.SizeAABB<<4), &struct{ aabb AABB.PositionSize }{aabb})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCustomAabb() AABB.PositionSize { //gd:MultiMesh.get_custom_aabb
 	var r_ret = jumponly.Call[AABB.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_custom_aabb, gdextension.SizeAABB, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetAabb() AABB.PositionSize { //gd:MultiMesh.get_aabb
 	var r_ret = noescape.Call[AABB.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_aabb, gdextension.SizeAABB, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBuffer() Packed.Array[float32] { //gd:MultiMesh.get_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_buffer, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
@@ -602,19 +635,24 @@ func (self class) SetBuffer(buffer Packed.Array[float32]) { //gd:MultiMesh.set_b
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_buffer, 0|(gdextension.SizePackedArray<<4), &struct {
 		buffer gdextension.PackedArray[float32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](buffer))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 }
 func (self class) SetBufferInterpolated(buffer_curr Packed.Array[float32], buffer_prev Packed.Array[float32]) { //gd:MultiMesh.set_buffer_interpolated
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_buffer_interpolated, 0|(gdextension.SizePackedArray<<4)|(gdextension.SizePackedArray<<8), &struct {
 		buffer_curr gdextension.PackedArray[float32]
 		buffer_prev gdextension.PackedArray[float32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](buffer_curr)), pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](buffer_prev))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer_curr)
+	runtime.KeepAlive(buffer_prev)
 }
 func (o class) AsMultiMesh() Advanced                 { return Advanced(o) }
 func (o Instance) AsMultiMesh() Instance              { return o }
 func (o *Extension[T]) AsMultiMesh() Instance         { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

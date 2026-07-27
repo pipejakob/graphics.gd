@@ -9,6 +9,7 @@ Gizmo that is used for providing custom visualization and editing (handles and s
 package EditorNode3DGizmo
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -55,6 +56,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -639,7 +643,7 @@ func (self Instance) GetSubgizmoSelection() []int32 { //gd:EditorNode3DGizmo.get
 type Advanced = class
 type class [1]gdclass.EditorNode3DGizmo
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorNode3DGizmo(obj[0])
@@ -654,7 +658,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -813,6 +817,9 @@ func (self class) AddLines(lines Packed.Array[Vector3.XYZ], material [1]gdclass.
 		billboard bool
 		modulate  Color.RGBA
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](lines)), gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0])), billboard, modulate})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(lines)
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) AddMesh(mesh [1]gdclass.Mesh, material [1]gdclass.Material, transform Transform3D.BasisOrigin, skeleton [1]gdclass.SkinReference) { //gd:EditorNode3DGizmo.add_mesh
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_mesh, 0|(gdextension.SizeObject<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeTransform3D<<12)|(gdextension.SizeObject<<16), &struct {
@@ -821,14 +828,22 @@ func (self class) AddMesh(mesh [1]gdclass.Mesh, material [1]gdclass.Material, tr
 		transform Transform3D.BasisOrigin
 		skeleton  gdextension.Object
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetMesh(mesh[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0])), gd.Transposed(transform), gdextension.Object(gdreference.GetObject(gdclass.GetSkinReference(skeleton[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(mesh[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
+	runtime.KeepAlive(skeleton[0].Anchor())
 }
 func (self class) AddCollisionSegments(segments Packed.Array[Vector3.XYZ]) { //gd:EditorNode3DGizmo.add_collision_segments
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_collision_segments, 0|(gdextension.SizePackedArray<<4), &struct {
 		segments gdextension.PackedArray[Vector3.XYZ]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](segments))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(segments)
 }
 func (self class) AddCollisionTriangles(triangles [1]gdclass.TriangleMesh) { //gd:EditorNode3DGizmo.add_collision_triangles
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_collision_triangles, 0|(gdextension.SizeObject<<4), &struct{ triangles gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTriangleMesh(triangles[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(triangles[0].Anchor())
 }
 func (self class) AddUnscaledBillboard(material [1]gdclass.Material, default_scale float64, modulate Color.RGBA) { //gd:EditorNode3DGizmo.add_unscaled_billboard
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_unscaled_billboard, 0|(gdextension.SizeObject<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeColor<<12), &struct {
@@ -836,6 +851,8 @@ func (self class) AddUnscaledBillboard(material [1]gdclass.Material, default_sca
 		default_scale float64
 		modulate      Color.RGBA
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0])), default_scale, modulate})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) AddHandles(handles Packed.Array[Vector3.XYZ], material [1]gdclass.Material, ids Packed.Array[int32], billboard bool, secondary bool) { //gd:EditorNode3DGizmo.add_handles
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_handles, 0|(gdextension.SizePackedArray<<4)|(gdextension.SizeObject<<8)|(gdextension.SizePackedArray<<12)|(gdextension.SizeBool<<16)|(gdextension.SizeBool<<20), &struct {
@@ -845,42 +862,54 @@ func (self class) AddHandles(handles Packed.Array[Vector3.XYZ], material [1]gdcl
 		billboard bool
 		secondary bool
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](handles)), gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0])), pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](ids)), billboard, secondary})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(handles)
+	runtime.KeepAlive(material[0].Anchor())
+	runtime.KeepAlive(ids)
 }
 func (self class) SetNode3d(node [1]gdclass.Node) { //gd:EditorNode3DGizmo.set_node_3d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_node_3d, 0|(gdextension.SizeObject<<4), &struct{ node gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetNode(node[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node[0].Anchor())
 }
 func (self class) GetNode3d() [1]gdclass.Node3D { //gd:EditorNode3DGizmo.get_node_3d
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_node_3d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Node3D{gdclass.NewNode3D(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) GetPlugin() [1]gdclass.EditorNode3DGizmoPlugin { //gd:EditorNode3DGizmo.get_plugin
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_plugin, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.EditorNode3DGizmoPlugin{gdclass.NewEditorNode3DGizmoPlugin(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) Clear() { //gd:EditorNode3DGizmo.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetHidden(hidden bool) { //gd:EditorNode3DGizmo.set_hidden
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hidden, 0|(gdextension.SizeBool<<4), &struct{ hidden bool }{hidden})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSubgizmoSelected(id int64) bool { //gd:EditorNode3DGizmo.is_subgizmo_selected
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_subgizmo_selected, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSubgizmoSelection() Packed.Array[int32] { //gd:EditorNode3DGizmo.get_subgizmo_selection
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_subgizmo_selection, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (o class) AsEditorNode3DGizmo() Advanced               { return Advanced(o) }
 func (o Instance) AsEditorNode3DGizmo() Instance            { return o }
 func (o *Extension[T]) AsEditorNode3DGizmo() Instance       { return o.Super() }
-func (o class) AsNode3DGizmo() Node3DGizmo.Advanced         { return Node3DGizmo.Advanced{gdclass.NewNode3DGizmo(o[0].AsObject()[0])} }
+func (o class) AsNode3DGizmo() Node3DGizmo.Advanced         { return *(*Node3DGizmo.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3DGizmo() Node3DGizmo.Instance { return o.Super().AsNode3DGizmo() }
-func (o Instance) AsNode3DGizmo() Node3DGizmo.Instance      { return Node3DGizmo.Instance{gdclass.NewNode3DGizmo(o[0].AsObject()[0])} }
+func (o Instance) AsNode3DGizmo() Node3DGizmo.Instance      { return *(*Node3DGizmo.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

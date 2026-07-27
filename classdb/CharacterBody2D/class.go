@@ -13,6 +13,7 @@ For game objects that don't require complex movement or collision detection, suc
 package CharacterBody2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -22,6 +23,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -52,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -407,7 +412,7 @@ func (self Instance) GetLastSlideCollision() KinematicCollision2D.Instance { //g
 type Advanced = class
 type class [1]gdclass.CharacterBody2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCharacterBody2D(obj[0])
@@ -422,7 +427,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -684,238 +689,286 @@ func (self Instance) SetSafeMargin(value Float.X) Instance { //gd:CharacterBody2
 
 func (self class) MoveAndSlide() bool { //gd:CharacterBody2D.move_and_slide
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.move_and_slide, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ApplyFloorSnap() { //gd:CharacterBody2D.apply_floor_snap
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.apply_floor_snap, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetVelocity(velocity Vector2.XY) { //gd:CharacterBody2D.set_velocity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_velocity, 0|(gdextension.SizeVector2<<4), &struct{ velocity Vector2.XY }{velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVelocity() Vector2.XY { //gd:CharacterBody2D.get_velocity
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_velocity, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSafeMargin(margin float64) { //gd:CharacterBody2D.set_safe_margin
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_safe_margin, 0|(gdextension.SizeFloat<<4), &struct{ margin float64 }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSafeMargin() float64 { //gd:CharacterBody2D.get_safe_margin
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_safe_margin, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsFloorStopOnSlopeEnabled() bool { //gd:CharacterBody2D.is_floor_stop_on_slope_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_floor_stop_on_slope_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFloorStopOnSlopeEnabled(enabled bool) { //gd:CharacterBody2D.set_floor_stop_on_slope_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_floor_stop_on_slope_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFloorConstantSpeedEnabled(enabled bool) { //gd:CharacterBody2D.set_floor_constant_speed_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_floor_constant_speed_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFloorConstantSpeedEnabled() bool { //gd:CharacterBody2D.is_floor_constant_speed_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_floor_constant_speed_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFloorBlockOnWallEnabled(enabled bool) { //gd:CharacterBody2D.set_floor_block_on_wall_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_floor_block_on_wall_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFloorBlockOnWallEnabled() bool { //gd:CharacterBody2D.is_floor_block_on_wall_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_floor_block_on_wall_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSlideOnCeilingEnabled(enabled bool) { //gd:CharacterBody2D.set_slide_on_ceiling_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_slide_on_ceiling_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSlideOnCeilingEnabled() bool { //gd:CharacterBody2D.is_slide_on_ceiling_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_slide_on_ceiling_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPlatformFloorLayers(exclude_layer int64) { //gd:CharacterBody2D.set_platform_floor_layers
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_platform_floor_layers, 0|(gdextension.SizeInt<<4), &struct{ exclude_layer int64 }{exclude_layer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPlatformFloorLayers() int64 { //gd:CharacterBody2D.get_platform_floor_layers
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_platform_floor_layers, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPlatformWallLayers(exclude_layer int64) { //gd:CharacterBody2D.set_platform_wall_layers
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_platform_wall_layers, 0|(gdextension.SizeInt<<4), &struct{ exclude_layer int64 }{exclude_layer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPlatformWallLayers() int64 { //gd:CharacterBody2D.get_platform_wall_layers
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_platform_wall_layers, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMaxSlides() int64 { //gd:CharacterBody2D.get_max_slides
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_slides, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxSlides(max_slides int64) { //gd:CharacterBody2D.set_max_slides
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_slides, 0|(gdextension.SizeInt<<4), &struct{ max_slides int64 }{max_slides})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFloorMaxAngle() float64 { //gd:CharacterBody2D.get_floor_max_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_floor_max_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFloorMaxAngle(radians float64) { //gd:CharacterBody2D.set_floor_max_angle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_floor_max_angle, 0|(gdextension.SizeFloat<<4), &struct{ radians float64 }{radians})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFloorSnapLength() float64 { //gd:CharacterBody2D.get_floor_snap_length
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_floor_snap_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFloorSnapLength(floor_snap_length float64) { //gd:CharacterBody2D.set_floor_snap_length
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_floor_snap_length, 0|(gdextension.SizeFloat<<4), &struct{ floor_snap_length float64 }{floor_snap_length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWallMinSlideAngle() float64 { //gd:CharacterBody2D.get_wall_min_slide_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_wall_min_slide_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWallMinSlideAngle(radians float64) { //gd:CharacterBody2D.set_wall_min_slide_angle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_wall_min_slide_angle, 0|(gdextension.SizeFloat<<4), &struct{ radians float64 }{radians})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUpDirection() Vector2.XY { //gd:CharacterBody2D.get_up_direction
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_up_direction, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUpDirection(up_direction Vector2.XY) { //gd:CharacterBody2D.set_up_direction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_up_direction, 0|(gdextension.SizeVector2<<4), &struct{ up_direction Vector2.XY }{up_direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetMotionMode(mode MotionMode) { //gd:CharacterBody2D.set_motion_mode
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_motion_mode, 0|(gdextension.SizeInt<<4), &struct{ mode MotionMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMotionMode() MotionMode { //gd:CharacterBody2D.get_motion_mode
 	var r_ret = jumponly.Call[MotionMode](gd.ObjectChecked(self.AsObject()), methods.get_motion_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPlatformOnLeave(on_leave_apply_velocity PlatformOnLeave) { //gd:CharacterBody2D.set_platform_on_leave
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_platform_on_leave, 0|(gdextension.SizeInt<<4), &struct{ on_leave_apply_velocity PlatformOnLeave }{on_leave_apply_velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPlatformOnLeave() PlatformOnLeave { //gd:CharacterBody2D.get_platform_on_leave
 	var r_ret = jumponly.Call[PlatformOnLeave](gd.ObjectChecked(self.AsObject()), methods.get_platform_on_leave, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsOnFloor() bool { //gd:CharacterBody2D.is_on_floor
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_on_floor, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsOnFloorOnly() bool { //gd:CharacterBody2D.is_on_floor_only
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_on_floor_only, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsOnCeiling() bool { //gd:CharacterBody2D.is_on_ceiling
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_on_ceiling, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsOnCeilingOnly() bool { //gd:CharacterBody2D.is_on_ceiling_only
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_on_ceiling_only, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsOnWall() bool { //gd:CharacterBody2D.is_on_wall
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_on_wall, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsOnWallOnly() bool { //gd:CharacterBody2D.is_on_wall_only
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_on_wall_only, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFloorNormal() Vector2.XY { //gd:CharacterBody2D.get_floor_normal
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_floor_normal, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetWallNormal() Vector2.XY { //gd:CharacterBody2D.get_wall_normal
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_wall_normal, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLastMotion() Vector2.XY { //gd:CharacterBody2D.get_last_motion
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_last_motion, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPositionDelta() Vector2.XY { //gd:CharacterBody2D.get_position_delta
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_position_delta, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRealVelocity() Vector2.XY { //gd:CharacterBody2D.get_real_velocity
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_real_velocity, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFloorAngle(up_direction Vector2.XY) float64 { //gd:CharacterBody2D.get_floor_angle
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_floor_angle, gdextension.SizeFloat|(gdextension.SizeVector2<<4), &struct{ up_direction Vector2.XY }{up_direction})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPlatformVelocity() Vector2.XY { //gd:CharacterBody2D.get_platform_velocity
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_platform_velocity, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSlideCollisionCount() int64 { //gd:CharacterBody2D.get_slide_collision_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_slide_collision_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSlideCollision(slide_idx int64) [1]gdclass.KinematicCollision2D { //gd:CharacterBody2D.get_slide_collision
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_slide_collision, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ slide_idx int64 }{slide_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.KinematicCollision2D{gdclass.NewKinematicCollision2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetLastSlideCollision() [1]gdclass.KinematicCollision2D { //gd:CharacterBody2D.get_last_slide_collision
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_last_slide_collision, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.KinematicCollision2D{gdclass.NewKinematicCollision2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsCharacterBody2D() Advanced                     { return Advanced(o) }
 func (o Instance) AsCharacterBody2D() Instance                  { return o }
 func (o *Extension[T]) AsCharacterBody2D() Instance             { return o.Super() }
-func (o class) AsPhysicsBody2D() PhysicsBody2D.Advanced         { return PhysicsBody2D.Advanced{gdclass.NewPhysicsBody2D(o[0].AsObject()[0])} }
+func (o class) AsPhysicsBody2D() PhysicsBody2D.Advanced         { return *(*PhysicsBody2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPhysicsBody2D() PhysicsBody2D.Instance { return o.Super().AsPhysicsBody2D() }
 func (o Instance) AsPhysicsBody2D() PhysicsBody2D.Instance {
-	return PhysicsBody2D.Instance{gdclass.NewPhysicsBody2D(o[0].AsObject()[0])}
+	return *(*PhysicsBody2D.Instance)(ie.As(&o))
 }
 func (o class) AsCollisionObject2D() CollisionObject2D.Advanced {
-	return CollisionObject2D.Advanced{gdclass.NewCollisionObject2D(o[0].AsObject()[0])}
+	return *(*CollisionObject2D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsCollisionObject2D() CollisionObject2D.Instance {
 	return o.Super().AsCollisionObject2D()
 }
 func (o Instance) AsCollisionObject2D() CollisionObject2D.Instance {
-	return CollisionObject2D.Instance{gdclass.NewCollisionObject2D(o[0].AsObject()[0])}
+	return *(*CollisionObject2D.Instance)(ie.As(&o))
 }
-func (o class) AsNode2D() Node2D.Advanced                 { return Node2D.Advanced{gdclass.NewNode2D(o[0].AsObject()[0])} }
+func (o class) AsNode2D() Node2D.Advanced                 { return *(*Node2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode2D() Node2D.Instance         { return o.Super().AsNode2D() }
-func (o Instance) AsNode2D() Node2D.Instance              { return Node2D.Instance{gdclass.NewNode2D(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsNode2D() Node2D.Instance              { return *(*Node2D.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

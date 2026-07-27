@@ -14,6 +14,7 @@ You can add tabs to the session UI via [AddSessionTab], send messages via [SendM
 package EditorDebuggerSession
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -221,7 +225,7 @@ func (self Instance) SetBreakpoint(path string, line int, enabled bool) Instance
 type Advanced = class
 type class [1]gdclass.EditorDebuggerSession
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorDebuggerSession(obj[0])
@@ -236,7 +240,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -264,6 +268,9 @@ func (self class) SendMessage(message String.Readable, data Array.Any) { //gd:Ed
 		message gdextension.String
 		data    gdextension.Array
 	}{pointers.Get(gd.InternalString(message)), pointers.Get(gd.InternalArray(data))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(message)
+	runtime.KeepAlive(data)
 }
 func (self class) ToggleProfiler(profiler String.Readable, enable bool, data Array.Any) { //gd:EditorDebuggerSession.toggle_profiler
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.toggle_profiler, 0|(gdextension.SizeString<<4)|(gdextension.SizeBool<<8)|(gdextension.SizeArray<<12), &struct {
@@ -271,27 +278,37 @@ func (self class) ToggleProfiler(profiler String.Readable, enable bool, data Arr
 		enable   bool
 		data     gdextension.Array
 	}{pointers.Get(gd.InternalString(profiler)), enable, pointers.Get(gd.InternalArray(data))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(profiler)
+	runtime.KeepAlive(data)
 }
 func (self class) IsBreaked() bool { //gd:EditorDebuggerSession.is_breaked
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_breaked, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsDebuggable() bool { //gd:EditorDebuggerSession.is_debuggable
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_debuggable, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsActive() bool { //gd:EditorDebuggerSession.is_active
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_active, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddSessionTab(control [1]gdclass.Control) { //gd:EditorDebuggerSession.add_session_tab
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_session_tab, 0|(gdextension.SizeObject<<4), &struct{ control gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetControl(control[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(control[0].Anchor())
 }
 func (self class) RemoveSessionTab(control [1]gdclass.Control) { //gd:EditorDebuggerSession.remove_session_tab
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_session_tab, 0|(gdextension.SizeObject<<4), &struct{ control gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetControl(control[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(control[0].Anchor())
 }
 func (self class) SetBreakpoint(path String.Readable, line int64, enabled bool) { //gd:EditorDebuggerSession.set_breakpoint
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_breakpoint, 0|(gdextension.SizeString<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeBool<<12), &struct {
@@ -299,6 +316,8 @@ func (self class) SetBreakpoint(path String.Readable, line int64, enabled bool) 
 		line    int64
 		enabled bool
 	}{pointers.Get(gd.InternalString(path)), line, enabled})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 
 /*

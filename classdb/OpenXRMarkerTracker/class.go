@@ -6,6 +6,7 @@ Spatial entity tracker for our OpenXR spatial entity marker tracking extension. 
 package OpenXRMarkerTracker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -150,7 +154,7 @@ func (self Instance) GetMarkerData() any { //gd:OpenXRMarkerTracker.get_marker_d
 type Advanced = class
 type class [1]gdclass.OpenXRMarkerTracker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRMarkerTracker(obj[0])
@@ -165,7 +169,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -231,9 +235,11 @@ func (self Instance) SetMarkerId(value int) Instance { //gd:OpenXRMarkerTracker.
 
 func (self class) SetBoundsSize(bounds_size Vector2.XY) { //gd:OpenXRMarkerTracker.set_bounds_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bounds_size, 0|(gdextension.SizeVector2<<4), &struct{ bounds_size Vector2.XY }{bounds_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoundsSize() Vector2.XY { //gd:OpenXRMarkerTracker.get_bounds_size
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_bounds_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -241,25 +247,32 @@ func (self class) SetMarkerType(marker_type OpenXRSpatialComponentMarkerList.Mar
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_marker_type, 0|(gdextension.SizeInt<<4), &struct {
 		marker_type OpenXRSpatialComponentMarkerList.MarkerType
 	}{marker_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMarkerType() OpenXRSpatialComponentMarkerList.MarkerType { //gd:OpenXRMarkerTracker.get_marker_type
 	var r_ret = jumponly.Call[OpenXRSpatialComponentMarkerList.MarkerType](gd.ObjectChecked(self.AsObject()), methods.get_marker_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMarkerId(marker_id int64) { //gd:OpenXRMarkerTracker.set_marker_id
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_marker_id, 0|(gdextension.SizeInt<<4), &struct{ marker_id int64 }{marker_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMarkerId() int64 { //gd:OpenXRMarkerTracker.get_marker_id
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_marker_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMarkerData(marker_data variant.Any) { //gd:OpenXRMarkerTracker.set_marker_data
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_marker_data, 0|(gdextension.SizeVariant<<4), &struct{ marker_data gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(marker_data)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(marker_data)
 }
 func (self class) GetMarkerData() variant.Any { //gd:OpenXRMarkerTracker.get_marker_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_marker_data, gdextension.SizeVariant, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -267,26 +280,26 @@ func (o class) AsOpenXRMarkerTracker() Advanced         { return Advanced(o) }
 func (o Instance) AsOpenXRMarkerTracker() Instance      { return o }
 func (o *Extension[T]) AsOpenXRMarkerTracker() Instance { return o.Super() }
 func (o class) AsOpenXRSpatialEntityTracker() OpenXRSpatialEntityTracker.Advanced {
-	return OpenXRSpatialEntityTracker.Advanced{gdclass.NewOpenXRSpatialEntityTracker(o[0].AsObject()[0])}
+	return *(*OpenXRSpatialEntityTracker.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRSpatialEntityTracker() OpenXRSpatialEntityTracker.Instance {
 	return o.Super().AsOpenXRSpatialEntityTracker()
 }
 func (o Instance) AsOpenXRSpatialEntityTracker() OpenXRSpatialEntityTracker.Instance {
-	return OpenXRSpatialEntityTracker.Instance{gdclass.NewOpenXRSpatialEntityTracker(o[0].AsObject()[0])}
+	return *(*OpenXRSpatialEntityTracker.Instance)(ie.As(&o))
 }
 func (o class) AsXRPositionalTracker() XRPositionalTracker.Advanced {
-	return XRPositionalTracker.Advanced{gdclass.NewXRPositionalTracker(o[0].AsObject()[0])}
+	return *(*XRPositionalTracker.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsXRPositionalTracker() XRPositionalTracker.Instance {
 	return o.Super().AsXRPositionalTracker()
 }
 func (o Instance) AsXRPositionalTracker() XRPositionalTracker.Instance {
-	return XRPositionalTracker.Instance{gdclass.NewXRPositionalTracker(o[0].AsObject()[0])}
+	return *(*XRPositionalTracker.Instance)(ie.As(&o))
 }
-func (o class) AsXRTracker() XRTracker.Advanced         { return XRTracker.Advanced{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o class) AsXRTracker() XRTracker.Advanced         { return *(*XRTracker.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRTracker() XRTracker.Instance { return o.Super().AsXRTracker() }
-func (o Instance) AsXRTracker() XRTracker.Instance      { return XRTracker.Instance{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o Instance) AsXRTracker() XRTracker.Instance      { return *(*XRTracker.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

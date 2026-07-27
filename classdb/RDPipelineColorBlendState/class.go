@@ -8,6 +8,7 @@ This object is used by [RenderingDevice].
 package RDPipelineColorBlendState
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -131,7 +135,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.RDPipelineColorBlendState
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDPipelineColorBlendState(obj[0])
@@ -146,7 +150,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -229,33 +233,42 @@ func (self Instance) SetAttachments(value []RDPipelineColorBlendStateAttachment.
 
 func (self class) SetEnableLogicOp(p_member bool) { //gd:RDPipelineColorBlendState.set_enable_logic_op
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_logic_op, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableLogicOp() bool { //gd:RDPipelineColorBlendState.get_enable_logic_op
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enable_logic_op, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLogicOp(p_member Rendering.LogicOperation) { //gd:RDPipelineColorBlendState.set_logic_op
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_logic_op, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.LogicOperation }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLogicOp() Rendering.LogicOperation { //gd:RDPipelineColorBlendState.get_logic_op
 	var r_ret = jumponly.Call[Rendering.LogicOperation](gd.ObjectChecked(self.AsObject()), methods.get_logic_op, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBlendConstant(p_member Color.RGBA) { //gd:RDPipelineColorBlendState.set_blend_constant
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_blend_constant, 0|(gdextension.SizeColor<<4), &struct{ p_member Color.RGBA }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBlendConstant() Color.RGBA { //gd:RDPipelineColorBlendState.get_blend_constant
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_blend_constant, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAttachments(attachments Array.Contains[[1]gdclass.RDPipelineColorBlendStateAttachment]) { //gd:RDPipelineColorBlendState.set_attachments
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_attachments, 0|(gdextension.SizeArray<<4), &struct{ attachments gdextension.Array }{pointers.Get(gd.InternalArray(attachments))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(attachments)
 }
 func (self class) GetAttachments() Array.Contains[[1]gdclass.RDPipelineColorBlendStateAttachment] { //gd:RDPipelineColorBlendState.get_attachments
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_attachments, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.RDPipelineColorBlendStateAttachment](pointers.New[gd.Array](r_ret)))
 	return ret
 }

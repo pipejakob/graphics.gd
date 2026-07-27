@@ -10,6 +10,7 @@ Base class for [CompressedTexture2DArray] and [CompressedTexture3D]. Cannot be u
 package CompressedTextureLayered
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -46,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -127,7 +131,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.CompressedTextureLayered
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCompressedTextureLayered(obj[0])
@@ -142,7 +146,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -180,11 +184,14 @@ func (self Instance) SetLoadPath(value string) Instance { //gd:CompressedTexture
 
 func (self class) Load(path String.Readable) Error.Code { //gd:CompressedTextureLayered.load
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetLoadPath() String.Readable { //gd:CompressedTextureLayered.get_load_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_load_path, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -192,20 +199,20 @@ func (o class) AsCompressedTextureLayered() Advanced         { return Advanced(o
 func (o Instance) AsCompressedTextureLayered() Instance      { return o }
 func (o *Extension[T]) AsCompressedTextureLayered() Instance { return o.Super() }
 func (o class) AsTextureLayered() TextureLayered.Advanced {
-	return TextureLayered.Advanced{gdclass.NewTextureLayered(o[0].AsObject()[0])}
+	return *(*TextureLayered.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsTextureLayered() TextureLayered.Instance {
 	return o.Super().AsTextureLayered()
 }
 func (o Instance) AsTextureLayered() TextureLayered.Instance {
-	return TextureLayered.Instance{gdclass.NewTextureLayered(o[0].AsObject()[0])}
+	return *(*TextureLayered.Instance)(ie.As(&o))
 }
-func (o class) AsTexture() Texture.Advanced           { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o class) AsTexture() Texture.Advanced           { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance   { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance        { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance        { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

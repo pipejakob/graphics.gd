@@ -19,6 +19,7 @@ Note: On Linux and macOS, sandboxed apps always use native dialogs to access the
 package EditorFileDialog
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -27,6 +28,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -57,6 +59,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -159,7 +164,7 @@ func (self MoreArgs) AddSideMenu(menu Control.Instance, title string) { //gd:Edi
 type Advanced = class
 type class [1]gdclass.EditorFileDialog
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorFileDialog(obj[0])
@@ -174,7 +179,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -217,42 +222,47 @@ func (self class) AddSideMenu(menu [1]gdclass.Control, title String.Readable) { 
 		menu  gdextension.Object
 		title gdextension.String
 	}{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetControl(menu[0])[0])), pointers.Get(gd.InternalString(title))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(menu[0].Anchor())
+	runtime.KeepAlive(title)
 }
 func (self class) SetDisableOverwriteWarning(disable bool) { //gd:EditorFileDialog.set_disable_overwrite_warning
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_disable_overwrite_warning, 0|(gdextension.SizeBool<<4), &struct{ disable bool }{disable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsOverwriteWarningDisabled() bool { //gd:EditorFileDialog.is_overwrite_warning_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_overwrite_warning_disabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsEditorFileDialog() Advanced              { return Advanced(o) }
 func (o Instance) AsEditorFileDialog() Instance           { return o }
 func (o *Extension[T]) AsEditorFileDialog() Instance      { return o.Super() }
-func (o class) AsFileDialog() FileDialog.Advanced         { return FileDialog.Advanced{gdclass.NewFileDialog(o[0].AsObject()[0])} }
+func (o class) AsFileDialog() FileDialog.Advanced         { return *(*FileDialog.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsFileDialog() FileDialog.Instance { return o.Super().AsFileDialog() }
-func (o Instance) AsFileDialog() FileDialog.Instance      { return FileDialog.Instance{gdclass.NewFileDialog(o[0].AsObject()[0])} }
+func (o Instance) AsFileDialog() FileDialog.Instance      { return *(*FileDialog.Instance)(ie.As(&o)) }
 func (o class) AsConfirmationDialog() ConfirmationDialog.Advanced {
-	return ConfirmationDialog.Advanced{gdclass.NewConfirmationDialog(o[0].AsObject()[0])}
+	return *(*ConfirmationDialog.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsConfirmationDialog() ConfirmationDialog.Instance {
 	return o.Super().AsConfirmationDialog()
 }
 func (o Instance) AsConfirmationDialog() ConfirmationDialog.Instance {
-	return ConfirmationDialog.Instance{gdclass.NewConfirmationDialog(o[0].AsObject()[0])}
+	return *(*ConfirmationDialog.Instance)(ie.As(&o))
 }
-func (o class) AsAcceptDialog() AcceptDialog.Advanced         { return AcceptDialog.Advanced{gdclass.NewAcceptDialog(o[0].AsObject()[0])} }
+func (o class) AsAcceptDialog() AcceptDialog.Advanced         { return *(*AcceptDialog.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAcceptDialog() AcceptDialog.Instance { return o.Super().AsAcceptDialog() }
-func (o Instance) AsAcceptDialog() AcceptDialog.Instance      { return AcceptDialog.Instance{gdclass.NewAcceptDialog(o[0].AsObject()[0])} }
-func (o class) AsWindow() Window.Advanced                     { return Window.Advanced{gdclass.NewWindow(o[0].AsObject()[0])} }
+func (o Instance) AsAcceptDialog() AcceptDialog.Instance      { return *(*AcceptDialog.Instance)(ie.As(&o)) }
+func (o class) AsWindow() Window.Advanced                     { return *(*Window.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsWindow() Window.Instance             { return o.Super().AsWindow() }
-func (o Instance) AsWindow() Window.Instance                  { return Window.Instance{gdclass.NewWindow(o[0].AsObject()[0])} }
-func (o class) AsViewport() Viewport.Advanced                 { return Viewport.Advanced{gdclass.NewViewport(o[0].AsObject()[0])} }
+func (o Instance) AsWindow() Window.Instance                  { return *(*Window.Instance)(ie.As(&o)) }
+func (o class) AsViewport() Viewport.Advanced                 { return *(*Viewport.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsViewport() Viewport.Instance         { return o.Super().AsViewport() }
-func (o Instance) AsViewport() Viewport.Instance              { return Viewport.Instance{gdclass.NewViewport(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsViewport() Viewport.Instance              { return *(*Viewport.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                         { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance                 { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                      { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

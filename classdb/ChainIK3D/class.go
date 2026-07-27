@@ -10,6 +10,7 @@ Note: All the methods in this class take an index parameter. This parameter spec
 package ChainIK3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -18,6 +19,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -45,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -294,7 +299,7 @@ func (self Instance) GetJointCount(index int) int { //gd:ChainIK3D.get_joint_cou
 type Advanced = class
 type class [1]gdclass.ChainIK3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewChainIK3D(obj[0])
@@ -309,7 +314,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -337,9 +342,12 @@ func (self class) SetRootBoneName(index int64, bone_name String.Readable) { //gd
 		index     int64
 		bone_name gdextension.String
 	}{index, pointers.Get(gd.InternalString(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetRootBoneName(index int64) String.Readable { //gd:ChainIK3D.get_root_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_root_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -348,9 +356,11 @@ func (self class) SetRootBone(index int64, bone int64) { //gd:ChainIK3D.set_root
 		index int64
 		bone  int64
 	}{index, bone})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRootBone(index int64) int64 { //gd:ChainIK3D.get_root_bone
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_root_bone, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -359,9 +369,12 @@ func (self class) SetEndBoneName(index int64, bone_name String.Readable) { //gd:
 		index     int64
 		bone_name gdextension.String
 	}{index, pointers.Get(gd.InternalString(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetEndBoneName(index int64) String.Readable { //gd:ChainIK3D.get_end_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_end_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -370,9 +383,11 @@ func (self class) SetEndBone(index int64, bone int64) { //gd:ChainIK3D.set_end_b
 		index int64
 		bone  int64
 	}{index, bone})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEndBone(index int64) int64 { //gd:ChainIK3D.get_end_bone
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_end_bone, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -381,9 +396,11 @@ func (self class) SetExtendEndBone(index int64, enabled bool) { //gd:ChainIK3D.s
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEndBoneExtended(index int64) bool { //gd:ChainIK3D.is_end_bone_extended
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_end_bone_extended, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -392,9 +409,11 @@ func (self class) SetEndBoneDirection(index int64, bone_direction SkeletonModifi
 		index          int64
 		bone_direction SkeletonModifier3D.BoneDirection
 	}{index, bone_direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEndBoneDirection(index int64) SkeletonModifier3D.BoneDirection { //gd:ChainIK3D.get_end_bone_direction
 	var r_ret = noescape.Call[SkeletonModifier3D.BoneDirection](gd.ObjectChecked(self.AsObject()), methods.get_end_bone_direction, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -403,9 +422,11 @@ func (self class) SetEndBoneLength(index int64, length float64) { //gd:ChainIK3D
 		index  int64
 		length float64
 	}{index, length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEndBoneLength(index int64) float64 { //gd:ChainIK3D.get_end_bone_length
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_end_bone_length, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -414,6 +435,7 @@ func (self class) GetJointBoneName(index int64, joint int64) String.Readable { /
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -422,35 +444,37 @@ func (self class) GetJointBone(index int64, joint int64) int64 { //gd:ChainIK3D.
 		index int64
 		joint int64
 	}{index, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetJointCount(index int64) int64 { //gd:ChainIK3D.get_joint_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_joint_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsChainIK3D() Advanced                         { return Advanced(o) }
 func (o Instance) AsChainIK3D() Instance                      { return o }
 func (o *Extension[T]) AsChainIK3D() Instance                 { return o.Super() }
-func (o class) AsIKModifier3D() IKModifier3D.Advanced         { return IKModifier3D.Advanced{gdclass.NewIKModifier3D(o[0].AsObject()[0])} }
+func (o class) AsIKModifier3D() IKModifier3D.Advanced         { return *(*IKModifier3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsIKModifier3D() IKModifier3D.Instance { return o.Super().AsIKModifier3D() }
-func (o Instance) AsIKModifier3D() IKModifier3D.Instance      { return IKModifier3D.Instance{gdclass.NewIKModifier3D(o[0].AsObject()[0])} }
+func (o Instance) AsIKModifier3D() IKModifier3D.Instance      { return *(*IKModifier3D.Instance)(ie.As(&o)) }
 func (o class) AsSkeletonModifier3D() SkeletonModifier3D.Advanced {
-	return SkeletonModifier3D.Advanced{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
 	return o.Super().AsSkeletonModifier3D()
 }
 func (o Instance) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
-	return SkeletonModifier3D.Instance{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

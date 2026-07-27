@@ -9,6 +9,7 @@ A 2D texture that can be modified via blit calls, copying from a target texture 
 package DrawableTexture2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -215,7 +219,7 @@ func (self Instance) GenerateMipmaps() { //gd:DrawableTexture2D.generate_mipmaps
 type Advanced = class
 type class [1]gdclass.DrawableTexture2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewDrawableTexture2D(obj[0])
@@ -230,7 +234,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -255,12 +259,15 @@ func New() Instance {
 
 func (self class) SetFormat(format DrawableFormat) { //gd:DrawableTexture2D.set_format
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_format, 0|(gdextension.SizeInt<<4), &struct{ format DrawableFormat }{format})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetUseMipmaps(mipmaps bool) { //gd:DrawableTexture2D.set_use_mipmaps
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_mipmaps, 0|(gdextension.SizeBool<<4), &struct{ mipmaps bool }{mipmaps})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseMipmaps() bool { //gd:DrawableTexture2D.get_use_mipmaps
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_mipmaps, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -272,6 +279,7 @@ func (self class) Setup(width int64, height int64, format DrawableFormat, color 
 		color       Color.RGBA
 		use_mipmaps bool
 	}{width, height, format, color, use_mipmaps})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) BlitRect(rect Rect2i.PositionSize, source [1]gdclass.Texture2D, modulate Color.RGBA, mipmap int64, material [1]gdclass.Material) { //gd:DrawableTexture2D.blit_rect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.blit_rect, 0|(gdextension.SizeRect2i<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeColor<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeObject<<20), &struct {
@@ -281,6 +289,9 @@ func (self class) BlitRect(rect Rect2i.PositionSize, source [1]gdclass.Texture2D
 		mipmap   int64
 		material gdextension.Object
 	}{rect, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(source[0])[0])), modulate, mipmap, gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(source[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) BlitRectMulti(rect Rect2i.PositionSize, sources Array.Contains[[1]gdclass.Texture2D], extra_targets Array.Contains[[1]gdclass.DrawableTexture2D], modulate Color.RGBA, mipmap int64, material [1]gdclass.Material) { //gd:DrawableTexture2D.blit_rect_multi
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.blit_rect_multi, 0|(gdextension.SizeRect2i<<4)|(gdextension.SizeArray<<8)|(gdextension.SizeArray<<12)|(gdextension.SizeColor<<16)|(gdextension.SizeInt<<20)|(gdextension.SizeObject<<24), &struct {
@@ -291,22 +302,27 @@ func (self class) BlitRectMulti(rect Rect2i.PositionSize, sources Array.Contains
 		mipmap        int64
 		material      gdextension.Object
 	}{rect, pointers.Get(gd.InternalArray(sources)), pointers.Get(gd.InternalArray(extra_targets)), modulate, mipmap, gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(sources)
+	runtime.KeepAlive(extra_targets)
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) GenerateMipmaps() { //gd:DrawableTexture2D.generate_mipmaps
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.generate_mipmaps, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsDrawableTexture2D() Advanced           { return Advanced(o) }
 func (o Instance) AsDrawableTexture2D() Instance        { return o }
 func (o *Extension[T]) AsDrawableTexture2D() Instance   { return o.Super() }
-func (o class) AsTexture2D() Texture2D.Advanced         { return Texture2D.Advanced{gdclass.NewTexture2D(o[0].AsObject()[0])} }
+func (o class) AsTexture2D() Texture2D.Advanced         { return *(*Texture2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture2D() Texture2D.Instance { return o.Super().AsTexture2D() }
-func (o Instance) AsTexture2D() Texture2D.Instance      { return Texture2D.Instance{gdclass.NewTexture2D(o[0].AsObject()[0])} }
-func (o class) AsTexture() Texture.Advanced             { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o Instance) AsTexture2D() Texture2D.Instance      { return *(*Texture2D.Instance)(ie.As(&o)) }
+func (o class) AsTexture() Texture.Advanced             { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance     { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance          { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced           { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance          { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced           { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance   { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance        { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance        { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

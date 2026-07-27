@@ -27,6 +27,7 @@ To use [EditorInspectorPlugin], register it using the [EditorPlugin.AddInspector
 package EditorInspectorPlugin
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -61,6 +62,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -322,7 +326,7 @@ func (self Instance) AddPropertyEditorForMultipleProperties(label string, proper
 type Advanced = class
 type class [1]gdclass.EditorInspectorPlugin
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorInspectorPlugin(obj[0])
@@ -337,7 +341,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -424,6 +428,8 @@ func (class) _parse_end(impl func(ptr gdclass.Receiver, obj [1]gdreference.Objec
 
 func (self class) AddCustomControl(control [1]gdclass.Control) { //gd:EditorInspectorPlugin.add_custom_control
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_custom_control, 0|(gdextension.SizeObject<<4), &struct{ control gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetControl(control[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(control[0].Anchor())
 }
 func (self class) AddPropertyEditor(property String.Readable, editor [1]gdclass.Control, add_to_end bool, label String.Readable) { //gd:EditorInspectorPlugin.add_property_editor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_property_editor, 0|(gdextension.SizeString<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeString<<16), &struct {
@@ -432,6 +438,10 @@ func (self class) AddPropertyEditor(property String.Readable, editor [1]gdclass.
 		add_to_end bool
 		label      gdextension.String
 	}{pointers.Get(gd.InternalString(property)), gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetControl(editor[0])[0])), add_to_end, pointers.Get(gd.InternalString(label))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(property)
+	runtime.KeepAlive(editor[0].Anchor())
+	runtime.KeepAlive(label)
 }
 func (self class) AddPropertyEditorForMultipleProperties(label String.Readable, properties Packed.Strings, editor [1]gdclass.Control) { //gd:EditorInspectorPlugin.add_property_editor_for_multiple_properties
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_property_editor_for_multiple_properties, 0|(gdextension.SizeString<<4)|(gdextension.SizePackedArray<<8)|(gdextension.SizeObject<<12), &struct {
@@ -439,6 +449,10 @@ func (self class) AddPropertyEditorForMultipleProperties(label String.Readable, 
 		properties gdextension.PackedArray[gdextension.String]
 		editor     gdextension.Object
 	}{pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalPackedStrings(properties)), gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetControl(editor[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(properties)
+	runtime.KeepAlive(editor[0].Anchor())
 }
 func (o class) AsEditorInspectorPlugin() Advanced         { return Advanced(o) }
 func (o Instance) AsEditorInspectorPlugin() Instance      { return o }

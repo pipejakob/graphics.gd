@@ -42,6 +42,7 @@ In the following example we use a [LineEdit] node to write our expression and sh
 package Expression
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -75,6 +76,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -226,7 +230,7 @@ func (self Instance) GetErrorText() string { //gd:Expression.get_error_text
 type Advanced = class
 type class [1]gdclass.Expression
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewExpression(obj[0])
@@ -241,7 +245,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -269,6 +273,9 @@ func (self class) Parse(expression String.Readable, input_names Packed.Strings) 
 		expression  gdextension.String
 		input_names gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalString(expression)), pointers.Get(gd.InternalPackedStrings(input_names))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(expression)
+	runtime.KeepAlive(input_names)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -279,16 +286,21 @@ func (self class) Execute(inputs Array.Any, base_instance [1]gdreference.Object,
 		show_error       bool
 		const_calls_only bool
 	}{pointers.Get(gd.InternalArray(inputs)), gdextension.Object(gdreference.GetObject(gdclass.GetObject(base_instance[0])[0])), show_error, const_calls_only})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(inputs)
+	runtime.KeepAlive(base_instance[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) HasExecuteFailed() bool { //gd:Expression.has_execute_failed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_execute_failed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetErrorText() String.Readable { //gd:Expression.get_error_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_error_text, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }

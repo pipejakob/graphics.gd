@@ -12,6 +12,7 @@ See [OccluderInstance3D]'s documentation for instructions on setting up occlusio
 package ArrayOccluder3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -141,7 +145,7 @@ func (self Instance) SetArrays(vertices []Vector3.XYZ, indices []int32) Instance
 type Advanced = class
 type class [1]gdclass.ArrayOccluder3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewArrayOccluder3D(obj[0])
@@ -156,7 +160,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -211,26 +215,33 @@ func (self class) SetArrays(vertices Packed.Array[Vector3.XYZ], indices Packed.A
 		vertices gdextension.PackedArray[Vector3.XYZ]
 		indices  gdextension.PackedArray[int32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](vertices)), pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](indices))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertices)
+	runtime.KeepAlive(indices)
 }
 func (self class) SetVertices(vertices Packed.Array[Vector3.XYZ]) { //gd:ArrayOccluder3D.set_vertices
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertices, 0|(gdextension.SizePackedArray<<4), &struct {
 		vertices gdextension.PackedArray[Vector3.XYZ]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](vertices))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertices)
 }
 func (self class) SetIndices(indices Packed.Array[int32]) { //gd:ArrayOccluder3D.set_indices
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_indices, 0|(gdextension.SizePackedArray<<4), &struct {
 		indices gdextension.PackedArray[int32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](indices))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(indices)
 }
 func (o class) AsArrayOccluder3D() Advanced               { return Advanced(o) }
 func (o Instance) AsArrayOccluder3D() Instance            { return o }
 func (o *Extension[T]) AsArrayOccluder3D() Instance       { return o.Super() }
-func (o class) AsOccluder3D() Occluder3D.Advanced         { return Occluder3D.Advanced{gdclass.NewOccluder3D(o[0].AsObject()[0])} }
+func (o class) AsOccluder3D() Occluder3D.Advanced         { return *(*Occluder3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsOccluder3D() Occluder3D.Instance { return o.Super().AsOccluder3D() }
-func (o Instance) AsOccluder3D() Occluder3D.Instance      { return Occluder3D.Instance{gdclass.NewOccluder3D(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced             { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsOccluder3D() Occluder3D.Instance      { return *(*Occluder3D.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced             { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance     { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance          { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance          { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

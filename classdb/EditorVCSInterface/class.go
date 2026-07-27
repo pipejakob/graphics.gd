@@ -8,6 +8,7 @@ Defines the API that the editor uses to extract information from the underlying 
 package EditorVCSInterface
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -16,6 +17,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -39,6 +41,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -664,7 +669,7 @@ func (self Instance) PopupError(msg string) { //gd:EditorVCSInterface.popup_erro
 type Advanced = class
 type class [1]gdclass.EditorVCSInterface
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorVCSInterface(obj[0])
@@ -679,7 +684,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -953,6 +958,9 @@ func (self class) CreateDiffLine(new_line_no int64, old_line_no int64, content S
 		content     gdextension.String
 		status      gdextension.String
 	}{new_line_no, old_line_no, pointers.Get(gd.InternalString(content)), pointers.Get(gd.InternalString(status))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(content)
+	runtime.KeepAlive(status)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -963,6 +971,7 @@ func (self class) CreateDiffHunk(old_start int64, new_start int64, old_lines int
 		old_lines int64
 		new_lines int64
 	}{old_start, new_start, old_lines, new_lines})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -971,6 +980,9 @@ func (self class) CreateDiffFile(new_file String.Readable, old_file String.Reada
 		new_file gdextension.String
 		old_file gdextension.String
 	}{pointers.Get(gd.InternalString(new_file)), pointers.Get(gd.InternalString(old_file))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(new_file)
+	runtime.KeepAlive(old_file)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -982,6 +994,10 @@ func (self class) CreateCommit(msg String.Readable, author String.Readable, id S
 		unix_timestamp int64
 		offset_minutes int64
 	}{pointers.Get(gd.InternalString(msg)), pointers.Get(gd.InternalString(author)), pointers.Get(gd.InternalString(id)), unix_timestamp, offset_minutes})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(msg)
+	runtime.KeepAlive(author)
+	runtime.KeepAlive(id)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -991,6 +1007,8 @@ func (self class) CreateStatusFile(file_path String.Readable, change_type Change
 		change_type ChangeType
 		area        TreeArea
 	}{pointers.Get(gd.InternalString(file_path)), change_type, area})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(file_path)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -999,6 +1017,9 @@ func (self class) AddDiffHunksIntoDiffFile(diff_file Dictionary.Any, diff_hunks 
 		diff_file  gdextension.Dictionary
 		diff_hunks gdextension.Array
 	}{pointers.Get(gd.InternalDictionary(diff_file)), pointers.Get(gd.InternalArray(diff_hunks))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(diff_file)
+	runtime.KeepAlive(diff_hunks)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -1007,11 +1028,16 @@ func (self class) AddLineDiffsIntoDiffHunk(diff_hunk Dictionary.Any, line_diffs 
 		diff_hunk  gdextension.Dictionary
 		line_diffs gdextension.Array
 	}{pointers.Get(gd.InternalDictionary(diff_hunk)), pointers.Get(gd.InternalArray(line_diffs))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(diff_hunk)
+	runtime.KeepAlive(line_diffs)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) PopupError(msg String.Readable) { //gd:EditorVCSInterface.popup_error
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.popup_error, 0|(gdextension.SizeString<<4), &struct{ msg gdextension.String }{pointers.Get(gd.InternalString(msg))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(msg)
 }
 func (o class) AsEditorVCSInterface() Advanced         { return Advanced(o) }
 func (o Instance) AsEditorVCSInterface() Instance      { return o }

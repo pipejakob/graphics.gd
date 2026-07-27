@@ -18,6 +18,7 @@ It is also possible to extend or replace the default implementation via scriptin
 package MultiplayerAPI
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -52,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -292,7 +296,7 @@ func CreateDefaultInterface() Instance { //gd:MultiplayerAPI.create_default_inte
 type Advanced = class
 type class [1]gdclass.MultiplayerAPI
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMultiplayerAPI(obj[0])
@@ -307,7 +311,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -347,34 +351,42 @@ func (self Instance) SetMultiplayerPeer(value MultiplayerPeer.Instance) Instance
 
 func (self class) HasMultiplayerPeer() bool { //gd:MultiplayerAPI.has_multiplayer_peer
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_multiplayer_peer, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMultiplayerPeer() [1]gdclass.MultiplayerPeer { //gd:MultiplayerAPI.get_multiplayer_peer
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_multiplayer_peer, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.MultiplayerPeer{gdclass.NewMultiplayerPeer(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetMultiplayerPeer(peer [1]gdclass.MultiplayerPeer) { //gd:MultiplayerAPI.set_multiplayer_peer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_multiplayer_peer, 0|(gdextension.SizeObject<<4), &struct{ peer gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMultiplayerPeer(peer[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(peer[0].Anchor())
 }
 func (self class) GetUniqueId() int64 { //gd:MultiplayerAPI.get_unique_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_unique_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsServer() bool { //gd:MultiplayerAPI.is_server
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_server, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRemoteSenderId() int64 { //gd:MultiplayerAPI.get_remote_sender_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_remote_sender_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Poll() Error.Code { //gd:MultiplayerAPI.poll
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.poll, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -385,6 +397,10 @@ func (self class) Rpc(peer int64, obj [1]gdreference.Object, method String.Name,
 		method    gdextension.StringName
 		arguments gdextension.Array
 	}{peer, gdextension.Object(gdreference.GetObject(gdclass.GetObject(obj[0])[0])), pointers.Get(gd.InternalStringName(method)), pointers.Get(gd.InternalArray(arguments))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(method)
+	runtime.KeepAlive(arguments)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -393,6 +409,9 @@ func (self class) ObjectConfigurationAdd(obj [1]gdreference.Object, configuratio
 		obj           gdextension.Object
 		configuration gdextension.Variant
 	}{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetObject(obj[0])[0])), gdextension.Variant(pointers.Get(gd.InternalVariant(configuration)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(configuration)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -401,16 +420,21 @@ func (self class) ObjectConfigurationRemove(obj [1]gdreference.Object, configura
 		obj           gdextension.Object
 		configuration gdextension.Variant
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetObject(obj[0])[0])), gdextension.Variant(pointers.Get(gd.InternalVariant(configuration)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(configuration)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetPeers() Packed.Array[int32] { //gd:MultiplayerAPI.get_peers
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_peers, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetDefaultInterface(interface_name String.Name) { //gd:MultiplayerAPI.set_default_interface
 	noescape.CallStatic[struct{}](methods.set_default_interface, 0|(gdextension.SizeStringName<<4), &struct{ interface_name gdextension.StringName }{pointers.Get(gd.InternalStringName(interface_name))})
+	runtime.KeepAlive(interface_name)
 }
 func (self class) GetDefaultInterface() String.Name { //gd:MultiplayerAPI.get_default_interface
 	var r_ret = noescape.CallStatic[gdextension.StringName](methods.get_default_interface, gdextension.SizeStringName, &struct{}{})

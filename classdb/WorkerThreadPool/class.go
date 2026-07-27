@@ -40,6 +40,7 @@ package WorkerThreadPool
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -71,6 +73,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -260,7 +265,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.WorkerThreadPool
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewWorkerThreadPool(obj[0])
@@ -275,7 +280,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) AddTask(action Callable.Function, high_priority bool, description String.Readable) int64 { //gd:WorkerThreadPool.add_task
@@ -285,6 +290,8 @@ func (self class) AddTask(action Callable.Function, high_priority bool, descript
 		high_priority bool
 		description   gdextension.String
 	}{pointers.Get(gd.InternalCallable(action)), high_priority, pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(action)
+	runtime.KeepAlive(description)
 	var ret = r_ret
 	return ret
 }
@@ -315,6 +322,8 @@ func (self class) AddGroupTask(action Callable.Function, elements int64, tasks_n
 		high_priority bool
 		description   gdextension.String
 	}{pointers.Get(gd.InternalCallable(action)), elements, tasks_needed, high_priority, pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(action)
+	runtime.KeepAlive(description)
 	var ret = r_ret
 	return ret
 }

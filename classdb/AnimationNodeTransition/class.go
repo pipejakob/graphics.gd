@@ -30,6 +30,7 @@ Note: When using a cross-fade, current_state and current_index change to the nex
 package AnimationNodeTransition
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -67,6 +68,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -210,7 +214,7 @@ func (self Instance) IsInputReset(input int) bool { //gd:AnimationNodeTransition
 type Advanced = class
 type class [1]gdclass.AnimationNodeTransition
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimationNodeTransition(obj[0])
@@ -225,7 +229,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -307,15 +311,18 @@ func (self Instance) SetInputCount(value int) Instance { //gd:AnimationNodeTrans
 
 func (self class) SetInputCount(input_count int64) { //gd:AnimationNodeTransition.set_input_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_input_count, 0|(gdextension.SizeInt<<4), &struct{ input_count int64 }{input_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetInputAsAutoAdvance(input int64, enable bool) { //gd:AnimationNodeTransition.set_input_as_auto_advance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_input_as_auto_advance, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		input  int64
 		enable bool
 	}{input, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsInputSetAsAutoAdvance(input int64) bool { //gd:AnimationNodeTransition.is_input_set_as_auto_advance
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_input_set_as_auto_advance, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ input int64 }{input})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -324,9 +331,11 @@ func (self class) SetInputBreakLoopAtEnd(input int64, enable bool) { //gd:Animat
 		input  int64
 		enable bool
 	}{input, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsInputLoopBrokenAtEnd(input int64) bool { //gd:AnimationNodeTransition.is_input_loop_broken_at_end
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_input_loop_broken_at_end, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ input int64 }{input})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -335,33 +344,42 @@ func (self class) SetInputReset(input int64, enable bool) { //gd:AnimationNodeTr
 		input  int64
 		enable bool
 	}{input, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsInputReset(input int64) bool { //gd:AnimationNodeTransition.is_input_reset
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_input_reset, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ input int64 }{input})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetXfadeTime(time float64) { //gd:AnimationNodeTransition.set_xfade_time
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_xfade_time, 0|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetXfadeTime() float64 { //gd:AnimationNodeTransition.get_xfade_time
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_xfade_time, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetXfadeCurve(curve [1]gdclass.Curve) { //gd:AnimationNodeTransition.set_xfade_curve
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_xfade_curve, 0|(gdextension.SizeObject<<4), &struct{ curve gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCurve(curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(curve[0].Anchor())
 }
 func (self class) GetXfadeCurve() [1]gdclass.Curve { //gd:AnimationNodeTransition.get_xfade_curve
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_xfade_curve, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetAllowTransitionToSelf(enable bool) { //gd:AnimationNodeTransition.set_allow_transition_to_self
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_allow_transition_to_self, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAllowTransitionToSelf() bool { //gd:AnimationNodeTransition.is_allow_transition_to_self
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_allow_transition_to_self, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -369,22 +387,22 @@ func (o class) AsAnimationNodeTransition() Advanced         { return Advanced(o)
 func (o Instance) AsAnimationNodeTransition() Instance      { return o }
 func (o *Extension[T]) AsAnimationNodeTransition() Instance { return o.Super() }
 func (o class) AsAnimationNodeSync() AnimationNodeSync.Advanced {
-	return AnimationNodeSync.Advanced{gdclass.NewAnimationNodeSync(o[0].AsObject()[0])}
+	return *(*AnimationNodeSync.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsAnimationNodeSync() AnimationNodeSync.Instance {
 	return o.Super().AsAnimationNodeSync()
 }
 func (o Instance) AsAnimationNodeSync() AnimationNodeSync.Instance {
-	return AnimationNodeSync.Instance{gdclass.NewAnimationNodeSync(o[0].AsObject()[0])}
+	return *(*AnimationNodeSync.Instance)(ie.As(&o))
 }
-func (o class) AsAnimationNode() AnimationNode.Advanced         { return AnimationNode.Advanced{gdclass.NewAnimationNode(o[0].AsObject()[0])} }
+func (o class) AsAnimationNode() AnimationNode.Advanced         { return *(*AnimationNode.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAnimationNode() AnimationNode.Instance { return o.Super().AsAnimationNode() }
 func (o Instance) AsAnimationNode() AnimationNode.Instance {
-	return AnimationNode.Instance{gdclass.NewAnimationNode(o[0].AsObject()[0])}
+	return *(*AnimationNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

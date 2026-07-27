@@ -44,6 +44,7 @@ Note: If you need to use a spacing different than 1 unit, you can adjust the [No
 package HeightMapShape3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -80,6 +81,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -204,7 +208,7 @@ func (self Instance) UpdateMapDataFromImage(image Image.Instance, height_min Flo
 type Advanced = class
 type class [1]gdclass.HeightMapShape3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewHeightMapShape3D(obj[0])
@@ -219,7 +223,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -290,17 +294,21 @@ func (self Instance) SetMapData(value []float32) Instance { //gd:HeightMapShape3
 
 func (self class) SetMapWidth(width int64) { //gd:HeightMapShape3D.set_map_width
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_map_width, 0|(gdextension.SizeInt<<4), &struct{ width int64 }{width})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMapWidth() int64 { //gd:HeightMapShape3D.get_map_width
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_map_width, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMapDepth(height int64) { //gd:HeightMapShape3D.set_map_depth
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_map_depth, 0|(gdextension.SizeInt<<4), &struct{ height int64 }{height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMapDepth() int64 { //gd:HeightMapShape3D.get_map_depth
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_map_depth, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -308,19 +316,24 @@ func (self class) SetMapData(data Packed.Array[float32]) { //gd:HeightMapShape3D
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_map_data, 0|(gdextension.SizePackedArray<<4), &struct {
 		data gdextension.PackedArray[float32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](data))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 }
 func (self class) GetMapData() Packed.Array[float32] { //gd:HeightMapShape3D.get_map_data
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_map_data, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) GetMinHeight() float64 { //gd:HeightMapShape3D.get_min_height
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_min_height, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMaxHeight() float64 { //gd:HeightMapShape3D.get_max_height
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_max_height, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -330,16 +343,18 @@ func (self class) UpdateMapDataFromImage(image [1]gdclass.Image, height_min floa
 		height_min float64
 		height_max float64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0])), height_min, height_max})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (o class) AsHeightMapShape3D() Advanced          { return Advanced(o) }
 func (o Instance) AsHeightMapShape3D() Instance       { return o }
 func (o *Extension[T]) AsHeightMapShape3D() Instance  { return o.Super() }
-func (o class) AsShape3D() Shape3D.Advanced           { return Shape3D.Advanced{gdclass.NewShape3D(o[0].AsObject()[0])} }
+func (o class) AsShape3D() Shape3D.Advanced           { return *(*Shape3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsShape3D() Shape3D.Instance   { return o.Super().AsShape3D() }
-func (o Instance) AsShape3D() Shape3D.Instance        { return Shape3D.Instance{gdclass.NewShape3D(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsShape3D() Shape3D.Instance        { return *(*Shape3D.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

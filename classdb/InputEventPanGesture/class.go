@@ -10,6 +10,7 @@ Note: On Android, this requires the [ProjectSettings] "input_devices/pointing/an
 package InputEventPanGesture
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -130,7 +134,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.InputEventPanGesture
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputEventPanGesture(obj[0])
@@ -145,7 +149,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -183,9 +187,11 @@ func (self Instance) SetDelta(value Vector2.XY) Instance { //gd:InputEventPanGes
 
 func (self class) SetDelta(delta Vector2.XY) { //gd:InputEventPanGesture.set_delta
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_delta, 0|(gdextension.SizeVector2<<4), &struct{ delta Vector2.XY }{delta})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDelta() Vector2.XY { //gd:InputEventPanGesture.get_delta
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_delta, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -193,38 +199,38 @@ func (o class) AsInputEventPanGesture() Advanced         { return Advanced(o) }
 func (o Instance) AsInputEventPanGesture() Instance      { return o }
 func (o *Extension[T]) AsInputEventPanGesture() Instance { return o.Super() }
 func (o class) AsInputEventGesture() InputEventGesture.Advanced {
-	return InputEventGesture.Advanced{gdclass.NewInputEventGesture(o[0].AsObject()[0])}
+	return *(*InputEventGesture.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventGesture() InputEventGesture.Instance {
 	return o.Super().AsInputEventGesture()
 }
 func (o Instance) AsInputEventGesture() InputEventGesture.Instance {
-	return InputEventGesture.Instance{gdclass.NewInputEventGesture(o[0].AsObject()[0])}
+	return *(*InputEventGesture.Instance)(ie.As(&o))
 }
 func (o class) AsInputEventWithModifiers() InputEventWithModifiers.Advanced {
-	return InputEventWithModifiers.Advanced{gdclass.NewInputEventWithModifiers(o[0].AsObject()[0])}
+	return *(*InputEventWithModifiers.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventWithModifiers() InputEventWithModifiers.Instance {
 	return o.Super().AsInputEventWithModifiers()
 }
 func (o Instance) AsInputEventWithModifiers() InputEventWithModifiers.Instance {
-	return InputEventWithModifiers.Instance{gdclass.NewInputEventWithModifiers(o[0].AsObject()[0])}
+	return *(*InputEventWithModifiers.Instance)(ie.As(&o))
 }
 func (o class) AsInputEventFromWindow() InputEventFromWindow.Advanced {
-	return InputEventFromWindow.Advanced{gdclass.NewInputEventFromWindow(o[0].AsObject()[0])}
+	return *(*InputEventFromWindow.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventFromWindow() InputEventFromWindow.Instance {
 	return o.Super().AsInputEventFromWindow()
 }
 func (o Instance) AsInputEventFromWindow() InputEventFromWindow.Instance {
-	return InputEventFromWindow.Instance{gdclass.NewInputEventFromWindow(o[0].AsObject()[0])}
+	return *(*InputEventFromWindow.Instance)(ie.As(&o))
 }
-func (o class) AsInputEvent() InputEvent.Advanced         { return InputEvent.Advanced{gdclass.NewInputEvent(o[0].AsObject()[0])} }
+func (o class) AsInputEvent() InputEvent.Advanced         { return *(*InputEvent.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsInputEvent() InputEvent.Instance { return o.Super().AsInputEvent() }
-func (o Instance) AsInputEvent() InputEvent.Instance      { return InputEvent.Instance{gdclass.NewInputEvent(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced             { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsInputEvent() InputEvent.Instance      { return *(*InputEvent.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced             { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance     { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance          { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance          { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

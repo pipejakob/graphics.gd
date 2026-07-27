@@ -8,6 +8,7 @@ This object is used by [RenderingDevice].
 package RDAttachmentFormat
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -127,7 +131,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.RDAttachmentFormat
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDAttachmentFormat(obj[0])
@@ -142,7 +146,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -206,25 +210,31 @@ func (self Instance) SetUsageFlags(value int) Instance { //gd:RDAttachmentFormat
 
 func (self class) SetFormat(p_member Rendering.DataFormat) { //gd:RDAttachmentFormat.set_format
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_format, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.DataFormat }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFormat() Rendering.DataFormat { //gd:RDAttachmentFormat.get_format
 	var r_ret = jumponly.Call[Rendering.DataFormat](gd.ObjectChecked(self.AsObject()), methods.get_format, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSamples(p_member Rendering.TextureSamples) { //gd:RDAttachmentFormat.set_samples
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_samples, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.TextureSamples }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSamples() Rendering.TextureSamples { //gd:RDAttachmentFormat.get_samples
 	var r_ret = jumponly.Call[Rendering.TextureSamples](gd.ObjectChecked(self.AsObject()), methods.get_samples, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUsageFlags(p_member int64) { //gd:RDAttachmentFormat.set_usage_flags
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_usage_flags, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUsageFlags() int64 { //gd:RDAttachmentFormat.get_usage_flags
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_usage_flags, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

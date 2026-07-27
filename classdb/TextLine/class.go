@@ -8,6 +8,7 @@ Abstraction over [TextServer] for handling a single line of text.
 package TextLine
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -361,7 +365,7 @@ func (self Instance) HitTest(coords Float.X) int { //gd:TextLine.hit_test
 type Advanced = class
 type class [1]gdclass.TextLine
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTextLine(obj[0])
@@ -376,7 +380,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -520,51 +524,64 @@ func (self Instance) SetEllipsisChar(value string) Instance { //gd:TextLine.elli
 
 func (self class) Clear() { //gd:TextLine.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Duplicate() [1]gdclass.TextLine { //gd:TextLine.duplicate
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.duplicate, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.TextLine{gdclass.NewTextLine(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetDirection(direction TextServer.Direction) { //gd:TextLine.set_direction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_direction, 0|(gdextension.SizeInt<<4), &struct{ direction TextServer.Direction }{direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDirection() TextServer.Direction { //gd:TextLine.get_direction
 	var r_ret = noescape.Call[TextServer.Direction](gd.ObjectChecked(self.AsObject()), methods.get_direction, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInferredDirection() TextServer.Direction { //gd:TextLine.get_inferred_direction
 	var r_ret = noescape.Call[TextServer.Direction](gd.ObjectChecked(self.AsObject()), methods.get_inferred_direction, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOrientation(orientation TextServer.Orientation) { //gd:TextLine.set_orientation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_orientation, 0|(gdextension.SizeInt<<4), &struct{ orientation TextServer.Orientation }{orientation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOrientation() TextServer.Orientation { //gd:TextLine.get_orientation
 	var r_ret = noescape.Call[TextServer.Orientation](gd.ObjectChecked(self.AsObject()), methods.get_orientation, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPreserveInvalid(enabled bool) { //gd:TextLine.set_preserve_invalid
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_preserve_invalid, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPreserveInvalid() bool { //gd:TextLine.get_preserve_invalid
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_preserve_invalid, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPreserveControl(enabled bool) { //gd:TextLine.set_preserve_control
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_preserve_control, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPreserveControl() bool { //gd:TextLine.get_preserve_control
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_preserve_control, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBidiOverride(override Array.Any) { //gd:TextLine.set_bidi_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bidi_override, 0|(gdextension.SizeArray<<4), &struct{ override gdextension.Array }{pointers.Get(gd.InternalArray(override))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(override)
 }
 func (self class) AddString(text String.Readable, font [1]gdclass.Font, font_size int64, language String.Readable, meta variant.Any) bool { //gd:TextLine.add_string
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.add_string, gdextension.SizeBool|(gdextension.SizeString<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeString<<16)|(gdextension.SizeVariant<<20), &struct {
@@ -574,6 +591,11 @@ func (self class) AddString(text String.Readable, font [1]gdclass.Font, font_siz
 		language  gdextension.String
 		meta      gdextension.Variant
 	}{pointers.Get(gd.InternalString(text)), gdextension.Object(gdreference.GetObject(gdclass.GetFont(font[0])[0])), font_size, pointers.Get(gd.InternalString(language)), gdextension.Variant(pointers.Get(gd.InternalVariant(meta)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
+	runtime.KeepAlive(font[0].Anchor())
+	runtime.KeepAlive(language)
+	runtime.KeepAlive(meta)
 	var ret = r_ret
 	return ret
 }
@@ -585,6 +607,8 @@ func (self class) AddObject(key variant.Any, size Vector2.XY, inline_align GUI.I
 		length       int64
 		baseline     float64
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(key))), size, inline_align, length, baseline})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
@@ -595,27 +619,35 @@ func (self class) ResizeObject(key variant.Any, size Vector2.XY, inline_align GU
 		inline_align GUI.InlineAlignment
 		baseline     float64
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(key))), size, inline_align, baseline})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasObject(key variant.Any) bool { //gd:TextLine.has_object
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_object, gdextension.SizeBool|(gdextension.SizeVariant<<4), &struct{ key gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(key)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWidth(width float64) { //gd:TextLine.set_width
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_width, 0|(gdextension.SizeFloat<<4), &struct{ width float64 }{width})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWidth() float64 { //gd:TextLine.get_width
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_width, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHorizontalAlignment(alignment GUI.HorizontalAlignment) { //gd:TextLine.set_horizontal_alignment
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_horizontal_alignment, 0|(gdextension.SizeInt<<4), &struct{ alignment GUI.HorizontalAlignment }{alignment})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHorizontalAlignment() GUI.HorizontalAlignment { //gd:TextLine.get_horizontal_alignment
 	var r_ret = jumponly.Call[GUI.HorizontalAlignment](gd.ObjectChecked(self.AsObject()), methods.get_horizontal_alignment, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -623,73 +655,92 @@ func (self class) TabAlign(tab_stops Packed.Array[float32]) { //gd:TextLine.tab_
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.tab_align, 0|(gdextension.SizePackedArray<<4), &struct {
 		tab_stops gdextension.PackedArray[float32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](tab_stops))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tab_stops)
 }
 func (self class) SetFlags(flags TextServer.JustificationFlag) { //gd:TextLine.set_flags
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flags, 0|(gdextension.SizeInt<<4), &struct{ flags TextServer.JustificationFlag }{flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFlags() TextServer.JustificationFlag { //gd:TextLine.get_flags
 	var r_ret = jumponly.Call[TextServer.JustificationFlag](gd.ObjectChecked(self.AsObject()), methods.get_flags, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextOverrunBehavior(overrun_behavior TextServer.OverrunBehavior) { //gd:TextLine.set_text_overrun_behavior
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_text_overrun_behavior, 0|(gdextension.SizeInt<<4), &struct{ overrun_behavior TextServer.OverrunBehavior }{overrun_behavior})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextOverrunBehavior() TextServer.OverrunBehavior { //gd:TextLine.get_text_overrun_behavior
 	var r_ret = jumponly.Call[TextServer.OverrunBehavior](gd.ObjectChecked(self.AsObject()), methods.get_text_overrun_behavior, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEllipsisChar(char String.Readable) { //gd:TextLine.set_ellipsis_char
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ellipsis_char, 0|(gdextension.SizeString<<4), &struct{ char gdextension.String }{pointers.Get(gd.InternalString(char))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(char)
 }
 func (self class) GetEllipsisChar() String.Readable { //gd:TextLine.get_ellipsis_char
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_ellipsis_char, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetObjects() Array.Any { //gd:TextLine.get_objects
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_objects, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetObjectRect(key variant.Any) Rect2.PositionSize { //gd:TextLine.get_object_rect
 	var r_ret = noescape.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_object_rect, gdextension.SizeRect2|(gdextension.SizeVariant<<4), &struct{ key gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(key)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSize() Vector2.XY { //gd:TextLine.get_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRid() RID.Any { //gd:TextLine.get_rid
 	var r_ret = jumponly.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_rid, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLineAscent() float64 { //gd:TextLine.get_line_ascent
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_line_ascent, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLineDescent() float64 { //gd:TextLine.get_line_descent
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_line_descent, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLineWidth() float64 { //gd:TextLine.get_line_width
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_line_width, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLineUnderlinePosition() float64 { //gd:TextLine.get_line_underline_position
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_line_underline_position, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLineUnderlineThickness() float64 { //gd:TextLine.get_line_underline_thickness
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_line_underline_thickness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -700,6 +751,7 @@ func (self class) Draw(canvas RID.Any, pos Vector2.XY, color Color.RGBA, oversam
 		color        Color.RGBA
 		oversampling float64
 	}{canvas, pos, color, oversampling})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawOutline(canvas RID.Any, pos Vector2.XY, outline_size int64, color Color.RGBA, oversampling float64) { //gd:TextLine.draw_outline
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_outline, 0|(gdextension.SizeRID<<4)|(gdextension.SizeVector2<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeColor<<16)|(gdextension.SizeFloat<<20), &struct {
@@ -709,9 +761,11 @@ func (self class) DrawOutline(canvas RID.Any, pos Vector2.XY, outline_size int64
 		color        Color.RGBA
 		oversampling float64
 	}{canvas, pos, outline_size, color, oversampling})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HitTest(coords float64) int64 { //gd:TextLine.hit_test
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.hit_test, gdextension.SizeInt|(gdextension.SizeFloat<<4), &struct{ coords float64 }{coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

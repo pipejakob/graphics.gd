@@ -10,6 +10,7 @@ For more information see the [interaction profiles info in the OpenXR specificat
 package OpenXRInteractionProfile
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -46,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -165,7 +169,7 @@ func (self Instance) GetBindingModifier(index int) OpenXRIPBindingModifier.Insta
 type Advanced = class
 type class [1]gdclass.OpenXRInteractionProfile
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRInteractionProfile(obj[0])
@@ -180,7 +184,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -244,54 +248,67 @@ func (self Instance) SetBindingModifiers(value []OpenXRIPBindingModifier.Instanc
 
 func (self class) SetInteractionProfilePath(interaction_profile_path String.Readable) { //gd:OpenXRInteractionProfile.set_interaction_profile_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_interaction_profile_path, 0|(gdextension.SizeString<<4), &struct{ interaction_profile_path gdextension.String }{pointers.Get(gd.InternalString(interaction_profile_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(interaction_profile_path)
 }
 func (self class) GetInteractionProfilePath() String.Readable { //gd:OpenXRInteractionProfile.get_interaction_profile_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_interaction_profile_path, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetBindingCount() int64 { //gd:OpenXRInteractionProfile.get_binding_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_binding_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBinding(index int64) [1]gdclass.OpenXRIPBinding { //gd:OpenXRInteractionProfile.get_binding
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_binding, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OpenXRIPBinding{gdclass.NewOpenXRIPBinding(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetBindings(bindings Array.Any) { //gd:OpenXRInteractionProfile.set_bindings
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bindings, 0|(gdextension.SizeArray<<4), &struct{ bindings gdextension.Array }{pointers.Get(gd.InternalArray(bindings))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bindings)
 }
 func (self class) GetBindings() Array.Any { //gd:OpenXRInteractionProfile.get_bindings
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_bindings, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBindingModifierCount() int64 { //gd:OpenXRInteractionProfile.get_binding_modifier_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_binding_modifier_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBindingModifier(index int64) [1]gdclass.OpenXRIPBindingModifier { //gd:OpenXRInteractionProfile.get_binding_modifier
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_binding_modifier, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OpenXRIPBindingModifier{gdclass.NewOpenXRIPBindingModifier(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetBindingModifiers(binding_modifiers Array.Any) { //gd:OpenXRInteractionProfile.set_binding_modifiers
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_binding_modifiers, 0|(gdextension.SizeArray<<4), &struct{ binding_modifiers gdextension.Array }{pointers.Get(gd.InternalArray(binding_modifiers))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(binding_modifiers)
 }
 func (self class) GetBindingModifiers() Array.Any { //gd:OpenXRInteractionProfile.get_binding_modifiers
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_binding_modifiers, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsOpenXRInteractionProfile() Advanced         { return Advanced(o) }
 func (o Instance) AsOpenXRInteractionProfile() Instance      { return o }
 func (o *Extension[T]) AsOpenXRInteractionProfile() Instance { return o.Super() }
-func (o class) AsResource() Resource.Advanced                { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced                { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance        { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance             { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance             { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                          { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                  { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }

@@ -6,6 +6,7 @@ Represents a texture sampler as defined by the base glTF spec. Texture samplers 
 package GLTFTextureSampler
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -40,6 +41,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -127,7 +131,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.GLTFTextureSampler
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGLTFTextureSampler(obj[0])
@@ -142,7 +146,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -219,42 +223,50 @@ func (self Instance) SetWrapT(value int) Instance { //gd:GLTFTextureSampler.wrap
 
 func (self class) GetMagFilter() int64 { //gd:GLTFTextureSampler.get_mag_filter
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_mag_filter, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMagFilter(filter_mode int64) { //gd:GLTFTextureSampler.set_mag_filter
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mag_filter, 0|(gdextension.SizeInt<<4), &struct{ filter_mode int64 }{filter_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMinFilter() int64 { //gd:GLTFTextureSampler.get_min_filter
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_min_filter, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinFilter(filter_mode int64) { //gd:GLTFTextureSampler.set_min_filter
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min_filter, 0|(gdextension.SizeInt<<4), &struct{ filter_mode int64 }{filter_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWrapS() int64 { //gd:GLTFTextureSampler.get_wrap_s
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_wrap_s, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWrapS(wrap_mode int64) { //gd:GLTFTextureSampler.set_wrap_s
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_wrap_s, 0|(gdextension.SizeInt<<4), &struct{ wrap_mode int64 }{wrap_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWrapT() int64 { //gd:GLTFTextureSampler.get_wrap_t
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_wrap_t, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWrapT(wrap_mode int64) { //gd:GLTFTextureSampler.set_wrap_t
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_wrap_t, 0|(gdextension.SizeInt<<4), &struct{ wrap_mode int64 }{wrap_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsGLTFTextureSampler() Advanced         { return Advanced(o) }
 func (o Instance) AsGLTFTextureSampler() Instance      { return o }
 func (o *Extension[T]) AsGLTFTextureSampler() Instance { return o.Super() }
-func (o class) AsResource() Resource.Advanced          { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced          { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance  { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance       { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance       { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC            { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                 { return *(*ie.RC)(ie.As(&o)) }

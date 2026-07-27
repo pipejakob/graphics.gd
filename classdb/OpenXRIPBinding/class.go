@@ -8,6 +8,7 @@ This binding resource binds an [OpenXRAction] to an input or output. As most con
 package OpenXRIPBinding
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -181,7 +185,7 @@ func (self Instance) RemovePath(path string) { //gd:OpenXRIPBinding.remove_path
 type Advanced = class
 type class [1]gdclass.OpenXRIPBinding
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRIPBinding(obj[0])
@@ -196,7 +200,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -280,35 +284,46 @@ func (self Instance) SetPaths(value []string) Instance { //gd:OpenXRIPBinding.pa
 
 func (self class) SetAction(action [1]gdclass.OpenXRAction) { //gd:OpenXRIPBinding.set_action
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_action, 0|(gdextension.SizeObject<<4), &struct{ action gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRAction(action[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action[0].Anchor())
 }
 func (self class) GetAction() [1]gdclass.OpenXRAction { //gd:OpenXRIPBinding.get_action
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_action, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OpenXRAction{gdclass.NewOpenXRAction(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetBindingPath(binding_path String.Readable) { //gd:OpenXRIPBinding.set_binding_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_binding_path, 0|(gdextension.SizeString<<4), &struct{ binding_path gdextension.String }{pointers.Get(gd.InternalString(binding_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(binding_path)
 }
 func (self class) GetBindingPath() String.Readable { //gd:OpenXRIPBinding.get_binding_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_binding_path, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetBindingModifierCount() int64 { //gd:OpenXRIPBinding.get_binding_modifier_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_binding_modifier_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBindingModifier(index int64) [1]gdclass.OpenXRActionBindingModifier { //gd:OpenXRIPBinding.get_binding_modifier
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_binding_modifier, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OpenXRActionBindingModifier{gdclass.NewOpenXRActionBindingModifier(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetBindingModifiers(binding_modifiers Array.Any) { //gd:OpenXRIPBinding.set_binding_modifiers
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_binding_modifiers, 0|(gdextension.SizeArray<<4), &struct{ binding_modifiers gdextension.Array }{pointers.Get(gd.InternalArray(binding_modifiers))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(binding_modifiers)
 }
 func (self class) GetBindingModifiers() Array.Any { //gd:OpenXRIPBinding.get_binding_modifiers
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_binding_modifiers, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -316,34 +331,44 @@ func (self class) SetPaths(paths Packed.Strings) { //gd:OpenXRIPBinding.set_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_paths, 0|(gdextension.SizePackedArray<<4), &struct {
 		paths gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(paths))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(paths)
 }
 func (self class) GetPaths() Packed.Strings { //gd:OpenXRIPBinding.get_paths
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_paths, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetPathCount() int64 { //gd:OpenXRIPBinding.get_path_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_path_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasPath(path String.Readable) bool { //gd:OpenXRIPBinding.has_path
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_path, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
 func (self class) AddPath(path String.Readable) { //gd:OpenXRIPBinding.add_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_path, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) RemovePath(path String.Readable) { //gd:OpenXRIPBinding.remove_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_path, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (o class) AsOpenXRIPBinding() Advanced           { return Advanced(o) }
 func (o Instance) AsOpenXRIPBinding() Instance        { return o }
 func (o *Extension[T]) AsOpenXRIPBinding() Instance   { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

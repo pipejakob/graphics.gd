@@ -14,6 +14,7 @@ Note: By default, the button may not be wide enough for the color preview swatch
 package ColorPickerButton
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -23,6 +24,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -54,6 +56,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -165,7 +170,7 @@ func (self Instance) GetPopup() PopupPanel.Instance { //gd:ColorPickerButton.get
 type Advanced = class
 type class [1]gdclass.ColorPickerButton
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewColorPickerButton(obj[0])
@@ -180,7 +185,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -248,35 +253,43 @@ func (self Instance) SetEditIntensity(value bool) Instance { //gd:ColorPickerBut
 
 func (self class) SetPickColor(color Color.RGBA) { //gd:ColorPickerButton.set_pick_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pick_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPickColor() Color.RGBA { //gd:ColorPickerButton.get_pick_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_pick_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPicker() [1]gdclass.ColorPicker { //gd:ColorPickerButton.get_picker
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_picker, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.ColorPicker{gdclass.NewColorPicker(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) GetPopup() [1]gdclass.PopupPanel { //gd:ColorPickerButton.get_popup
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_popup, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.PopupPanel{gdclass.NewPopupPanel(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) SetEditAlpha(show bool) { //gd:ColorPickerButton.set_edit_alpha
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_edit_alpha, 0|(gdextension.SizeBool<<4), &struct{ show bool }{show})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEditingAlpha() bool { //gd:ColorPickerButton.is_editing_alpha
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_editing_alpha, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEditIntensity(show bool) { //gd:ColorPickerButton.set_edit_intensity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_edit_intensity, 0|(gdextension.SizeBool<<4), &struct{ show bool }{show})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEditingIntensity() bool { //gd:ColorPickerButton.is_editing_intensity
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_editing_intensity, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -336,21 +349,21 @@ func (self class) PickerCreated() Signal.Any {
 func (o class) AsColorPickerButton() Advanced             { return Advanced(o) }
 func (o Instance) AsColorPickerButton() Instance          { return o }
 func (o *Extension[T]) AsColorPickerButton() Instance     { return o.Super() }
-func (o class) AsButton() Button.Advanced                 { return Button.Advanced{gdclass.NewButton(o[0].AsObject()[0])} }
+func (o class) AsButton() Button.Advanced                 { return *(*Button.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsButton() Button.Instance         { return o.Super().AsButton() }
-func (o Instance) AsButton() Button.Instance              { return Button.Instance{gdclass.NewButton(o[0].AsObject()[0])} }
-func (o class) AsBaseButton() BaseButton.Advanced         { return BaseButton.Advanced{gdclass.NewBaseButton(o[0].AsObject()[0])} }
+func (o Instance) AsButton() Button.Instance              { return *(*Button.Instance)(ie.As(&o)) }
+func (o class) AsBaseButton() BaseButton.Advanced         { return *(*BaseButton.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsBaseButton() BaseButton.Instance { return o.Super().AsBaseButton() }
-func (o Instance) AsBaseButton() BaseButton.Instance      { return BaseButton.Instance{gdclass.NewBaseButton(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsBaseButton() BaseButton.Instance      { return *(*BaseButton.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

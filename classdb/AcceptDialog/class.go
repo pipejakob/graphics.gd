@@ -15,6 +15,7 @@ Note: [AcceptDialog] is invisible by default. To make it visible, call one of th
 package AcceptDialog
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -24,6 +25,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -53,6 +55,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -243,7 +248,7 @@ func (self Instance) RegisterTextEnter(line_edit LineEdit.Instance) { //gd:Accep
 type Advanced = class
 type class [1]gdclass.AcceptDialog
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAcceptDialog(obj[0])
@@ -258,7 +263,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -355,27 +360,33 @@ func (self Instance) SetDialogAutowrap(value bool) Instance { //gd:AcceptDialog.
 
 func (self class) GetOkButton() [1]gdclass.Button { //gd:AcceptDialog.get_ok_button
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_ok_button, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Button{gdclass.NewButton(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) GetLabel() [1]gdclass.Label { //gd:AcceptDialog.get_label
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_label, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Label{gdclass.NewLabel(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) SetHideOnOk(enabled bool) { //gd:AcceptDialog.set_hide_on_ok
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hide_on_ok, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHideOnOk() bool { //gd:AcceptDialog.get_hide_on_ok
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_hide_on_ok, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCloseOnEscape(enabled bool) { //gd:AcceptDialog.set_close_on_escape
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_close_on_escape, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCloseOnEscape() bool { //gd:AcceptDialog.get_close_on_escape
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_close_on_escape, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -385,41 +396,58 @@ func (self class) AddButton(text String.Readable, right bool, action String.Read
 		right  bool
 		action gdextension.String
 	}{pointers.Get(gd.InternalString(text)), right, pointers.Get(gd.InternalString(action))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
+	runtime.KeepAlive(action)
 	var ret = [1]gdclass.Button{gdclass.NewButton(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) AddCancelButton(name String.Readable) [1]gdclass.Button { //gd:AcceptDialog.add_cancel_button
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.add_cancel_button, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = [1]gdclass.Button{gdclass.NewButton(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) RemoveButton(button [1]gdclass.Button) { //gd:AcceptDialog.remove_button
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_button, 0|(gdextension.SizeObject<<4), &struct{ button gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetButton(button[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(button[0].Anchor())
 }
 func (self class) RegisterTextEnter(line_edit [1]gdclass.LineEdit) { //gd:AcceptDialog.register_text_enter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.register_text_enter, 0|(gdextension.SizeObject<<4), &struct{ line_edit gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetLineEdit(line_edit[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(line_edit[0].Anchor())
 }
 func (self class) SetText(text String.Readable) { //gd:AcceptDialog.set_text
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_text, 0|(gdextension.SizeString<<4), &struct{ text gdextension.String }{pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
 }
 func (self class) GetText() String.Readable { //gd:AcceptDialog.get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetAutowrap(autowrap bool) { //gd:AcceptDialog.set_autowrap
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autowrap, 0|(gdextension.SizeBool<<4), &struct{ autowrap bool }{autowrap})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasAutowrap() bool { //gd:AcceptDialog.has_autowrap
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_autowrap, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOkButtonText(text String.Readable) { //gd:AcceptDialog.set_ok_button_text
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ok_button_text, 0|(gdextension.SizeString<<4), &struct{ text gdextension.String }{pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
 }
 func (self class) GetOkButtonText() String.Readable { //gd:AcceptDialog.get_ok_button_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_ok_button_text, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -479,15 +507,15 @@ func (self class) CustomAction() Signal.Any {
 func (o class) AsAcceptDialog() Advanced              { return Advanced(o) }
 func (o Instance) AsAcceptDialog() Instance           { return o }
 func (o *Extension[T]) AsAcceptDialog() Instance      { return o.Super() }
-func (o class) AsWindow() Window.Advanced             { return Window.Advanced{gdclass.NewWindow(o[0].AsObject()[0])} }
+func (o class) AsWindow() Window.Advanced             { return *(*Window.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsWindow() Window.Instance     { return o.Super().AsWindow() }
-func (o Instance) AsWindow() Window.Instance          { return Window.Instance{gdclass.NewWindow(o[0].AsObject()[0])} }
-func (o class) AsViewport() Viewport.Advanced         { return Viewport.Advanced{gdclass.NewViewport(o[0].AsObject()[0])} }
+func (o Instance) AsWindow() Window.Instance          { return *(*Window.Instance)(ie.As(&o)) }
+func (o class) AsViewport() Viewport.Advanced         { return *(*Viewport.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsViewport() Viewport.Instance { return o.Super().AsViewport() }
-func (o Instance) AsViewport() Viewport.Instance      { return Viewport.Instance{gdclass.NewViewport(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                 { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsViewport() Viewport.Instance      { return *(*Viewport.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                 { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance         { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance              { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance              { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

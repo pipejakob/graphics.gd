@@ -26,6 +26,7 @@ The manager's API is mostly the same as in [UndoRedo], so you can refer to its d
 package EditorUndoRedoManager
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -35,6 +36,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -59,6 +61,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -351,7 +356,7 @@ func (self MoreArgs) ClearHistory(id int, increase_version bool) { //gd:EditorUn
 type Advanced = class
 type class [1]gdclass.EditorUndoRedoManager
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorUndoRedoManager(obj[0])
@@ -366,7 +371,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -397,25 +402,43 @@ func (self class) CreateAction(name String.Readable, merge_mode UndoRedo.MergeMo
 		backward_undo_ops bool
 		mark_unsaved      bool
 	}{pointers.Get(gd.InternalString(name)), merge_mode, gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetObject(custom_context[0])[0])), backward_undo_ops, mark_unsaved})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(custom_context[0].Anchor())
 }
 func (self class) CommitAction(execute bool) { //gd:EditorUndoRedoManager.commit_action
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.commit_action, 0|(gdextension.SizeBool<<4), &struct{ execute bool }{execute})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCommittingAction() bool { //gd:EditorUndoRedoManager.is_committing_action
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_committing_action, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ForceFixedHistory() { //gd:EditorUndoRedoManager.force_fixed_history
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.force_fixed_history, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddDoMethod(obj [1]gdreference.Object, method String.Name, args ...gd.Variant) { //gd:EditorUndoRedoManager.add_do_method
-	var fixed = [...]gdextension.Variant{gdextension.Variant(pointers.Get(gd.NewVariant(obj))), gdextension.Variant(pointers.Get(gd.NewVariant(method)))}
-	var dynamic []gdextension.Variant
+	var fixed = [...]gd.Variant{gd.NewVariant(obj), gd.NewVariant(method)}
+	var dynamic []gd.Variant
 	for _, arg := range args {
-		dynamic = append(dynamic, gdextension.Variant(pointers.Get(gd.NewVariant(arg))))
+		dynamic = append(dynamic, gd.NewVariant(arg))
 	}
-	ret, err := noescape.MethodForClass(methods.add_do_method).Call(gd.ObjectChecked(self.AsObject()), append(fixed[:], dynamic...)...)
+	var packed = make([]gdextension.Variant, 0, len(fixed)+len(dynamic))
+	for _, arg := range fixed {
+		packed = append(packed, gdextension.Variant(pointers.Get(arg)))
+	}
+	for _, arg := range dynamic {
+		packed = append(packed, gdextension.Variant(pointers.Get(arg)))
+	}
+	ret, err := noescape.MethodForClass(methods.add_do_method).Call(gd.ObjectChecked(self.AsObject()), packed...)
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(method)
+	runtime.KeepAlive(fixed)
+	runtime.KeepAlive(dynamic)
 	if err != nil {
 		panic(err)
 	}
@@ -423,12 +446,24 @@ func (self class) AddDoMethod(obj [1]gdreference.Object, method String.Name, arg
 }
 
 func (self class) AddUndoMethod(obj [1]gdreference.Object, method String.Name, args ...gd.Variant) { //gd:EditorUndoRedoManager.add_undo_method
-	var fixed = [...]gdextension.Variant{gdextension.Variant(pointers.Get(gd.NewVariant(obj))), gdextension.Variant(pointers.Get(gd.NewVariant(method)))}
-	var dynamic []gdextension.Variant
+	var fixed = [...]gd.Variant{gd.NewVariant(obj), gd.NewVariant(method)}
+	var dynamic []gd.Variant
 	for _, arg := range args {
-		dynamic = append(dynamic, gdextension.Variant(pointers.Get(gd.NewVariant(arg))))
+		dynamic = append(dynamic, gd.NewVariant(arg))
 	}
-	ret, err := noescape.MethodForClass(methods.add_undo_method).Call(gd.ObjectChecked(self.AsObject()), append(fixed[:], dynamic...)...)
+	var packed = make([]gdextension.Variant, 0, len(fixed)+len(dynamic))
+	for _, arg := range fixed {
+		packed = append(packed, gdextension.Variant(pointers.Get(arg)))
+	}
+	for _, arg := range dynamic {
+		packed = append(packed, gdextension.Variant(pointers.Get(arg)))
+	}
+	ret, err := noescape.MethodForClass(methods.add_undo_method).Call(gd.ObjectChecked(self.AsObject()), packed...)
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(method)
+	runtime.KeepAlive(fixed)
+	runtime.KeepAlive(dynamic)
 	if err != nil {
 		panic(err)
 	}
@@ -441,6 +476,10 @@ func (self class) AddDoProperty(obj [1]gdreference.Object, property String.Name,
 		property gdextension.StringName
 		value    gdextension.Variant
 	}{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetObject(obj[0])[0])), pointers.Get(gd.InternalStringName(property)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(property)
+	runtime.KeepAlive(value)
 }
 func (self class) AddUndoProperty(obj [1]gdreference.Object, property String.Name, value variant.Any) { //gd:EditorUndoRedoManager.add_undo_property
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_undo_property, 0|(gdextension.SizeObject<<4)|(gdextension.SizeStringName<<8)|(gdextension.SizeVariant<<12), &struct {
@@ -448,20 +487,31 @@ func (self class) AddUndoProperty(obj [1]gdreference.Object, property String.Nam
 		property gdextension.StringName
 		value    gdextension.Variant
 	}{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetObject(obj[0])[0])), pointers.Get(gd.InternalStringName(property)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(property)
+	runtime.KeepAlive(value)
 }
 func (self class) AddDoReference(obj [1]gdreference.Object) { //gd:EditorUndoRedoManager.add_do_reference
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_do_reference, 0|(gdextension.SizeObject<<4), &struct{ obj gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetObject(obj[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
 }
 func (self class) AddUndoReference(obj [1]gdreference.Object) { //gd:EditorUndoRedoManager.add_undo_reference
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_undo_reference, 0|(gdextension.SizeObject<<4), &struct{ obj gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetObject(obj[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
 }
 func (self class) GetObjectHistoryId(obj [1]gdreference.Object) int64 { //gd:EditorUndoRedoManager.get_object_history_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_object_history_id, gdextension.SizeInt|(gdextension.SizeObject<<4), &struct{ obj gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetObject(obj[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetHistoryUndoRedo(id int64) [1]gdclass.UndoRedo { //gd:EditorUndoRedoManager.get_history_undo_redo
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_history_undo_redo, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.UndoRedo{gdclass.NewUndoRedo(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
@@ -470,6 +520,7 @@ func (self class) ClearHistory(id int64, increase_version bool) { //gd:EditorUnd
 		id               int64
 		increase_version bool
 	}{id, increase_version})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*

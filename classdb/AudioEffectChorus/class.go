@@ -12,6 +12,7 @@ This effect can also be used to widen mono audio and make digital sounds have a 
 package AudioEffectChorus
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -246,7 +250,7 @@ func (self Instance) GetVoicePan(voice_idx int) Float.X { //gd:AudioEffectChorus
 type Advanced = class
 type class [1]gdclass.AudioEffectChorus
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioEffectChorus(obj[0])
@@ -261,7 +265,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -325,9 +329,11 @@ func (self Instance) SetWet(value Float.X) Instance { //gd:AudioEffectChorus.wet
 
 func (self class) SetVoiceCount(voices int64) { //gd:AudioEffectChorus.set_voice_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_voice_count, 0|(gdextension.SizeInt<<4), &struct{ voices int64 }{voices})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVoiceCount() int64 { //gd:AudioEffectChorus.get_voice_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_voice_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -336,9 +342,11 @@ func (self class) SetVoiceDelayMs(voice_idx int64, delay_ms float64) { //gd:Audi
 		voice_idx int64
 		delay_ms  float64
 	}{voice_idx, delay_ms})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVoiceDelayMs(voice_idx int64) float64 { //gd:AudioEffectChorus.get_voice_delay_ms
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_voice_delay_ms, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ voice_idx int64 }{voice_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -347,9 +355,11 @@ func (self class) SetVoiceRateHz(voice_idx int64, rate_hz float64) { //gd:AudioE
 		voice_idx int64
 		rate_hz   float64
 	}{voice_idx, rate_hz})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVoiceRateHz(voice_idx int64) float64 { //gd:AudioEffectChorus.get_voice_rate_hz
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_voice_rate_hz, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ voice_idx int64 }{voice_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -358,9 +368,11 @@ func (self class) SetVoiceDepthMs(voice_idx int64, depth_ms float64) { //gd:Audi
 		voice_idx int64
 		depth_ms  float64
 	}{voice_idx, depth_ms})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVoiceDepthMs(voice_idx int64) float64 { //gd:AudioEffectChorus.get_voice_depth_ms
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_voice_depth_ms, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ voice_idx int64 }{voice_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -369,9 +381,11 @@ func (self class) SetVoiceLevelDb(voice_idx int64, level_db float64) { //gd:Audi
 		voice_idx int64
 		level_db  float64
 	}{voice_idx, level_db})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVoiceLevelDb(voice_idx int64) float64 { //gd:AudioEffectChorus.get_voice_level_db
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_voice_level_db, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ voice_idx int64 }{voice_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -380,9 +394,11 @@ func (self class) SetVoiceCutoffHz(voice_idx int64, cutoff_hz float64) { //gd:Au
 		voice_idx int64
 		cutoff_hz float64
 	}{voice_idx, cutoff_hz})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVoiceCutoffHz(voice_idx int64) float64 { //gd:AudioEffectChorus.get_voice_cutoff_hz
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_voice_cutoff_hz, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ voice_idx int64 }{voice_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -391,37 +407,43 @@ func (self class) SetVoicePan(voice_idx int64, pan float64) { //gd:AudioEffectCh
 		voice_idx int64
 		pan       float64
 	}{voice_idx, pan})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVoicePan(voice_idx int64) float64 { //gd:AudioEffectChorus.get_voice_pan
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_voice_pan, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ voice_idx int64 }{voice_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWet(amount float64) { //gd:AudioEffectChorus.set_wet
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_wet, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWet() float64 { //gd:AudioEffectChorus.get_wet
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_wet, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDry(amount float64) { //gd:AudioEffectChorus.set_dry
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_dry, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDry() float64 { //gd:AudioEffectChorus.get_dry
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_dry, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAudioEffectChorus() Advanced               { return Advanced(o) }
 func (o Instance) AsAudioEffectChorus() Instance            { return o }
 func (o *Extension[T]) AsAudioEffectChorus() Instance       { return o.Super() }
-func (o class) AsAudioEffect() AudioEffect.Advanced         { return AudioEffect.Advanced{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
+func (o class) AsAudioEffect() AudioEffect.Advanced         { return *(*AudioEffect.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAudioEffect() AudioEffect.Instance { return o.Super().AsAudioEffect() }
-func (o Instance) AsAudioEffect() AudioEffect.Instance      { return AudioEffect.Instance{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsAudioEffect() AudioEffect.Instance      { return *(*AudioEffect.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

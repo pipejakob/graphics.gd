@@ -16,6 +16,7 @@
 package ProceduralSkyMaterial
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -53,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -160,7 +164,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.ProceduralSkyMaterial
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewProceduralSkyMaterial(obj[0])
@@ -175,7 +179,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -404,125 +408,154 @@ func (self Instance) SetEnergyMultiplier(value Float.X) Instance { //gd:Procedur
 
 func (self class) SetSkyTopColor(color Color.RGBA) { //gd:ProceduralSkyMaterial.set_sky_top_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sky_top_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkyTopColor() Color.RGBA { //gd:ProceduralSkyMaterial.get_sky_top_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_sky_top_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSkyHorizonColor(color Color.RGBA) { //gd:ProceduralSkyMaterial.set_sky_horizon_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sky_horizon_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkyHorizonColor() Color.RGBA { //gd:ProceduralSkyMaterial.get_sky_horizon_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_sky_horizon_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSkyCurve(curve float64) { //gd:ProceduralSkyMaterial.set_sky_curve
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sky_curve, 0|(gdextension.SizeFloat<<4), &struct{ curve float64 }{curve})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkyCurve() float64 { //gd:ProceduralSkyMaterial.get_sky_curve
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sky_curve, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSkyEnergyMultiplier(multiplier float64) { //gd:ProceduralSkyMaterial.set_sky_energy_multiplier
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sky_energy_multiplier, 0|(gdextension.SizeFloat<<4), &struct{ multiplier float64 }{multiplier})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkyEnergyMultiplier() float64 { //gd:ProceduralSkyMaterial.get_sky_energy_multiplier
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sky_energy_multiplier, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSkyCover(sky_cover [1]gdclass.Texture2D) { //gd:ProceduralSkyMaterial.set_sky_cover
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sky_cover, 0|(gdextension.SizeObject<<4), &struct{ sky_cover gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(sky_cover[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(sky_cover[0].Anchor())
 }
 func (self class) GetSkyCover() [1]gdclass.Texture2D { //gd:ProceduralSkyMaterial.get_sky_cover
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_sky_cover, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetSkyCoverModulate(color Color.RGBA) { //gd:ProceduralSkyMaterial.set_sky_cover_modulate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sky_cover_modulate, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkyCoverModulate() Color.RGBA { //gd:ProceduralSkyMaterial.get_sky_cover_modulate
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_sky_cover_modulate, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGroundBottomColor(color Color.RGBA) { //gd:ProceduralSkyMaterial.set_ground_bottom_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ground_bottom_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGroundBottomColor() Color.RGBA { //gd:ProceduralSkyMaterial.get_ground_bottom_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_ground_bottom_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGroundHorizonColor(color Color.RGBA) { //gd:ProceduralSkyMaterial.set_ground_horizon_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ground_horizon_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGroundHorizonColor() Color.RGBA { //gd:ProceduralSkyMaterial.get_ground_horizon_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_ground_horizon_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGroundCurve(curve float64) { //gd:ProceduralSkyMaterial.set_ground_curve
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ground_curve, 0|(gdextension.SizeFloat<<4), &struct{ curve float64 }{curve})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGroundCurve() float64 { //gd:ProceduralSkyMaterial.get_ground_curve
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ground_curve, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGroundEnergyMultiplier(energy float64) { //gd:ProceduralSkyMaterial.set_ground_energy_multiplier
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ground_energy_multiplier, 0|(gdextension.SizeFloat<<4), &struct{ energy float64 }{energy})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGroundEnergyMultiplier() float64 { //gd:ProceduralSkyMaterial.get_ground_energy_multiplier
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ground_energy_multiplier, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSunAngleMax(degrees float64) { //gd:ProceduralSkyMaterial.set_sun_angle_max
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sun_angle_max, 0|(gdextension.SizeFloat<<4), &struct{ degrees float64 }{degrees})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSunAngleMax() float64 { //gd:ProceduralSkyMaterial.get_sun_angle_max
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sun_angle_max, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSunCurve(curve float64) { //gd:ProceduralSkyMaterial.set_sun_curve
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sun_curve, 0|(gdextension.SizeFloat<<4), &struct{ curve float64 }{curve})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSunCurve() float64 { //gd:ProceduralSkyMaterial.get_sun_curve
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sun_curve, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseDebanding(use_debanding bool) { //gd:ProceduralSkyMaterial.set_use_debanding
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_debanding, 0|(gdextension.SizeBool<<4), &struct{ use_debanding bool }{use_debanding})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseDebanding() bool { //gd:ProceduralSkyMaterial.get_use_debanding
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_debanding, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnergyMultiplier(multiplier float64) { //gd:ProceduralSkyMaterial.set_energy_multiplier
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_energy_multiplier, 0|(gdextension.SizeFloat<<4), &struct{ multiplier float64 }{multiplier})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnergyMultiplier() float64 { //gd:ProceduralSkyMaterial.get_energy_multiplier
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_energy_multiplier, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsProceduralSkyMaterial() Advanced         { return Advanced(o) }
 func (o Instance) AsProceduralSkyMaterial() Instance      { return o }
 func (o *Extension[T]) AsProceduralSkyMaterial() Instance { return o.Super() }
-func (o class) AsMaterial() Material.Advanced             { return Material.Advanced{gdclass.NewMaterial(o[0].AsObject()[0])} }
+func (o class) AsMaterial() Material.Advanced             { return *(*Material.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsMaterial() Material.Instance     { return o.Super().AsMaterial() }
-func (o Instance) AsMaterial() Material.Instance          { return Material.Instance{gdclass.NewMaterial(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced             { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsMaterial() Material.Instance          { return *(*Material.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced             { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance     { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance          { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance          { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

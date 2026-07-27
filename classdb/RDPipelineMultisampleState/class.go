@@ -9,6 +9,7 @@
 package RDPipelineMultisampleState
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -134,7 +138,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.RDPipelineMultisampleState
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDPipelineMultisampleState(obj[0])
@@ -149,7 +153,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -265,49 +269,62 @@ func (self Instance) SetSampleMasks(value []int) Instance { //gd:RDPipelineMulti
 
 func (self class) SetSampleCount(p_member Rendering.TextureSamples) { //gd:RDPipelineMultisampleState.set_sample_count
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sample_count, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.TextureSamples }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSampleCount() Rendering.TextureSamples { //gd:RDPipelineMultisampleState.get_sample_count
 	var r_ret = jumponly.Call[Rendering.TextureSamples](gd.ObjectChecked(self.AsObject()), methods.get_sample_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnableSampleShading(p_member bool) { //gd:RDPipelineMultisampleState.set_enable_sample_shading
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_sample_shading, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableSampleShading() bool { //gd:RDPipelineMultisampleState.get_enable_sample_shading
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enable_sample_shading, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinSampleShading(p_member float64) { //gd:RDPipelineMultisampleState.set_min_sample_shading
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min_sample_shading, 0|(gdextension.SizeFloat<<4), &struct{ p_member float64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMinSampleShading() float64 { //gd:RDPipelineMultisampleState.get_min_sample_shading
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_min_sample_shading, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnableAlphaToCoverage(p_member bool) { //gd:RDPipelineMultisampleState.set_enable_alpha_to_coverage
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_alpha_to_coverage, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableAlphaToCoverage() bool { //gd:RDPipelineMultisampleState.get_enable_alpha_to_coverage
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enable_alpha_to_coverage, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnableAlphaToOne(p_member bool) { //gd:RDPipelineMultisampleState.set_enable_alpha_to_one
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_alpha_to_one, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableAlphaToOne() bool { //gd:RDPipelineMultisampleState.get_enable_alpha_to_one
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enable_alpha_to_one, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSampleMasks(masks Array.Contains[int64]) { //gd:RDPipelineMultisampleState.set_sample_masks
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sample_masks, 0|(gdextension.SizeArray<<4), &struct{ masks gdextension.Array }{pointers.Get(gd.InternalArray(masks))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(masks)
 }
 func (self class) GetSampleMasks() Array.Contains[int64] { //gd:RDPipelineMultisampleState.get_sample_masks
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_sample_masks, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[int64](pointers.New[gd.Array](r_ret)))
 	return ret
 }

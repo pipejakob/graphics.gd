@@ -14,6 +14,7 @@ Note: You must set the [ScriptOwner] for the custom context menu items to work.
 package EditorScriptPicker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -23,6 +24,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -53,6 +55,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -134,7 +139,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.EditorScriptPicker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorScriptPicker(obj[0])
@@ -149,7 +154,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -189,9 +194,12 @@ func (self Instance) SetScriptOwner(value Node.Instance) Instance { //gd:EditorS
 
 func (self class) SetScriptOwner(owner_node [1]gdclass.Node) { //gd:EditorScriptPicker.set_script_owner
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_script_owner, 0|(gdextension.SizeObject<<4), &struct{ owner_node gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetNode(owner_node[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(owner_node[0].Anchor())
 }
 func (self class) GetScriptOwner() [1]gdclass.Node { //gd:EditorScriptPicker.get_script_owner
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_script_owner, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Node{gdclass.NewNode(gdreference.LetObject(r_ret))}
 	return ret
 }
@@ -199,34 +207,34 @@ func (o class) AsEditorScriptPicker() Advanced         { return Advanced(o) }
 func (o Instance) AsEditorScriptPicker() Instance      { return o }
 func (o *Extension[T]) AsEditorScriptPicker() Instance { return o.Super() }
 func (o class) AsEditorResourcePicker() EditorResourcePicker.Advanced {
-	return EditorResourcePicker.Advanced{gdclass.NewEditorResourcePicker(o[0].AsObject()[0])}
+	return *(*EditorResourcePicker.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsEditorResourcePicker() EditorResourcePicker.Instance {
 	return o.Super().AsEditorResourcePicker()
 }
 func (o Instance) AsEditorResourcePicker() EditorResourcePicker.Instance {
-	return EditorResourcePicker.Instance{gdclass.NewEditorResourcePicker(o[0].AsObject()[0])}
+	return *(*EditorResourcePicker.Instance)(ie.As(&o))
 }
-func (o class) AsHBoxContainer() HBoxContainer.Advanced         { return HBoxContainer.Advanced{gdclass.NewHBoxContainer(o[0].AsObject()[0])} }
+func (o class) AsHBoxContainer() HBoxContainer.Advanced         { return *(*HBoxContainer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsHBoxContainer() HBoxContainer.Instance { return o.Super().AsHBoxContainer() }
 func (o Instance) AsHBoxContainer() HBoxContainer.Instance {
-	return HBoxContainer.Instance{gdclass.NewHBoxContainer(o[0].AsObject()[0])}
+	return *(*HBoxContainer.Instance)(ie.As(&o))
 }
-func (o class) AsBoxContainer() BoxContainer.Advanced         { return BoxContainer.Advanced{gdclass.NewBoxContainer(o[0].AsObject()[0])} }
+func (o class) AsBoxContainer() BoxContainer.Advanced         { return *(*BoxContainer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsBoxContainer() BoxContainer.Instance { return o.Super().AsBoxContainer() }
-func (o Instance) AsBoxContainer() BoxContainer.Instance      { return BoxContainer.Instance{gdclass.NewBoxContainer(o[0].AsObject()[0])} }
-func (o class) AsContainer() Container.Advanced               { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o Instance) AsBoxContainer() BoxContainer.Instance      { return *(*BoxContainer.Instance)(ie.As(&o)) }
+func (o class) AsContainer() Container.Advanced               { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance       { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance            { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced                   { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance            { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced                   { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance           { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance                { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced             { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance                { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced             { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance     { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance          { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance          { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                         { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance                 { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                      { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

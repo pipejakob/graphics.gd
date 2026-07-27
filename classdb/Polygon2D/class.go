@@ -6,6 +6,7 @@ A Polygon2D is defined by a set of points. Each point is connected to the next, 
 package Polygon2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -15,6 +16,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -44,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -229,7 +234,7 @@ func (self Instance) SetBoneWeights(index int, weights []float32) Instance { //g
 type Advanced = class
 type class [1]gdclass.Polygon2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPolygon2D(obj[0])
@@ -244,7 +249,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -486,9 +491,12 @@ func (self class) SetPolygon(polygon Packed.Array[Vector2.XY]) { //gd:Polygon2D.
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_polygon, 0|(gdextension.SizePackedArray<<4), &struct {
 		polygon gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(polygon)
 }
 func (self class) GetPolygon() Packed.Array[Vector2.XY] { //gd:Polygon2D.get_polygon
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_polygon, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -496,25 +504,33 @@ func (self class) SetUv(uv Packed.Array[Vector2.XY]) { //gd:Polygon2D.set_uv
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_uv, 0|(gdextension.SizePackedArray<<4), &struct {
 		uv gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](uv))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(uv)
 }
 func (self class) GetUv() Packed.Array[Vector2.XY] { //gd:Polygon2D.get_uv
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_uv, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetColor(color Color.RGBA) { //gd:Polygon2D.set_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetColor() Color.RGBA { //gd:Polygon2D.get_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPolygons(polygons Array.Any) { //gd:Polygon2D.set_polygons
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_polygons, 0|(gdextension.SizeArray<<4), &struct{ polygons gdextension.Array }{pointers.Get(gd.InternalArray(polygons))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(polygons)
 }
 func (self class) GetPolygons() Array.Any { //gd:Polygon2D.get_polygons
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_polygons, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -522,73 +538,93 @@ func (self class) SetVertexColors(vertex_colors Packed.Array[Color.RGBA]) { //gd
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertex_colors, 0|(gdextension.SizePackedArray<<4), &struct {
 		vertex_colors gdextension.PackedArray[Color.RGBA]
 	}{pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](vertex_colors))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertex_colors)
 }
 func (self class) GetVertexColors() Packed.Array[Color.RGBA] { //gd:Polygon2D.get_vertex_colors
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertex_colors, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) SetTexture(texture [1]gdclass.Texture2D) { //gd:Polygon2D.set_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture, 0|(gdextension.SizeObject<<4), &struct{ texture gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetTexture() [1]gdclass.Texture2D { //gd:Polygon2D.get_texture
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetTextureOffset(texture_offset Vector2.XY) { //gd:Polygon2D.set_texture_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_offset, 0|(gdextension.SizeVector2<<4), &struct{ texture_offset Vector2.XY }{texture_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureOffset() Vector2.XY { //gd:Polygon2D.get_texture_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_texture_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextureRotation(texture_rotation float64) { //gd:Polygon2D.set_texture_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_rotation, 0|(gdextension.SizeFloat<<4), &struct{ texture_rotation float64 }{texture_rotation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureRotation() float64 { //gd:Polygon2D.get_texture_rotation
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_texture_rotation, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextureScale(texture_scale Vector2.XY) { //gd:Polygon2D.set_texture_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_scale, 0|(gdextension.SizeVector2<<4), &struct{ texture_scale Vector2.XY }{texture_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureScale() Vector2.XY { //gd:Polygon2D.get_texture_scale
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_texture_scale, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInvertEnabled(invert bool) { //gd:Polygon2D.set_invert_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_invert_enabled, 0|(gdextension.SizeBool<<4), &struct{ invert bool }{invert})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInvertEnabled() bool { //gd:Polygon2D.get_invert_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_invert_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAntialiased(antialiased bool) { //gd:Polygon2D.set_antialiased
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_antialiased, 0|(gdextension.SizeBool<<4), &struct{ antialiased bool }{antialiased})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAntialiased() bool { //gd:Polygon2D.get_antialiased
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_antialiased, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInvertBorder(invert_border float64) { //gd:Polygon2D.set_invert_border
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_invert_border, 0|(gdextension.SizeFloat<<4), &struct{ invert_border float64 }{invert_border})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInvertBorder() float64 { //gd:Polygon2D.get_invert_border
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_invert_border, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffset(offset Vector2.XY) { //gd:Polygon2D.set_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffset() Vector2.XY { //gd:Polygon2D.get_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -597,68 +633,85 @@ func (self class) AddBone(path Path.ToNode, weights Packed.Array[float32]) { //g
 		path    gdextension.NodePath
 		weights gdextension.PackedArray[float32]
 	}{pointers.Get(gd.InternalNodePath(path)), pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](weights))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(weights)
 }
 func (self class) GetBoneCount() int64 { //gd:Polygon2D.get_bone_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_bone_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBonePath(index int64) Path.ToNode { //gd:Polygon2D.get_bone_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_bone_path, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) GetBoneWeights(index int64) Packed.Array[float32] { //gd:Polygon2D.get_bone_weights
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_bone_weights, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) EraseBone(index int64) { //gd:Polygon2D.erase_bone
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.erase_bone, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearBones() { //gd:Polygon2D.clear_bones
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_bones, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetBonePath(index int64, path Path.ToNode) { //gd:Polygon2D.set_bone_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_path, 0|(gdextension.SizeInt<<4)|(gdextension.SizeNodePath<<8), &struct {
 		index int64
 		path  gdextension.NodePath
 	}{index, pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) SetBoneWeights(index int64, weights Packed.Array[float32]) { //gd:Polygon2D.set_bone_weights
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_weights, 0|(gdextension.SizeInt<<4)|(gdextension.SizePackedArray<<8), &struct {
 		index   int64
 		weights gdextension.PackedArray[float32]
 	}{index, pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](weights))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(weights)
 }
 func (self class) SetSkeleton(skeleton Path.ToNode) { //gd:Polygon2D.set_skeleton
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_skeleton, 0|(gdextension.SizeNodePath<<4), &struct{ skeleton gdextension.NodePath }{pointers.Get(gd.InternalNodePath(skeleton))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(skeleton)
 }
 func (self class) GetSkeleton() Path.ToNode { //gd:Polygon2D.get_skeleton
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_skeleton, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetInternalVertexCount(internal_vertex_count int64) { //gd:Polygon2D.set_internal_vertex_count
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_internal_vertex_count, 0|(gdextension.SizeInt<<4), &struct{ internal_vertex_count int64 }{internal_vertex_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInternalVertexCount() int64 { //gd:Polygon2D.get_internal_vertex_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_internal_vertex_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsPolygon2D() Advanced                     { return Advanced(o) }
 func (o Instance) AsPolygon2D() Instance                  { return o }
 func (o *Extension[T]) AsPolygon2D() Instance             { return o.Super() }
-func (o class) AsNode2D() Node2D.Advanced                 { return Node2D.Advanced{gdclass.NewNode2D(o[0].AsObject()[0])} }
+func (o class) AsNode2D() Node2D.Advanced                 { return *(*Node2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode2D() Node2D.Instance         { return o.Super().AsNode2D() }
-func (o Instance) AsNode2D() Node2D.Instance              { return Node2D.Instance{gdclass.NewNode2D(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsNode2D() Node2D.Instance              { return *(*Node2D.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -28,6 +28,7 @@ Note: Synchronization is not supported for [Object] type properties, like [Resou
 package MultiplayerSynchronizer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -37,6 +38,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -62,6 +64,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -214,7 +219,7 @@ func (self Instance) GetVisibilityFor(peer int) bool { //gd:MultiplayerSynchroni
 type Advanced = class
 type class [1]gdclass.MultiplayerSynchronizer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMultiplayerSynchronizer(obj[0])
@@ -229,7 +234,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -340,69 +345,90 @@ func (self Instance) SetPublicVisibility(value bool) Instance { //gd:Multiplayer
 
 func (self class) SetRootPath(path Path.ToNode) { //gd:MultiplayerSynchronizer.set_root_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_root_path, 0|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetRootPath() Path.ToNode { //gd:MultiplayerSynchronizer.get_root_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_root_path, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetReplicationInterval(milliseconds float64) { //gd:MultiplayerSynchronizer.set_replication_interval
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_replication_interval, 0|(gdextension.SizeFloat<<4), &struct{ milliseconds float64 }{milliseconds})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetReplicationInterval() float64 { //gd:MultiplayerSynchronizer.get_replication_interval
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_replication_interval, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDeltaInterval(milliseconds float64) { //gd:MultiplayerSynchronizer.set_delta_interval
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_delta_interval, 0|(gdextension.SizeFloat<<4), &struct{ milliseconds float64 }{milliseconds})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDeltaInterval() float64 { //gd:MultiplayerSynchronizer.get_delta_interval
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_delta_interval, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetReplicationConfig(config [1]gdclass.SceneReplicationConfig) { //gd:MultiplayerSynchronizer.set_replication_config
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_replication_config, 0|(gdextension.SizeObject<<4), &struct{ config gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetSceneReplicationConfig(config[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(config[0].Anchor())
 }
 func (self class) GetReplicationConfig() [1]gdclass.SceneReplicationConfig { //gd:MultiplayerSynchronizer.get_replication_config
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_replication_config, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.SceneReplicationConfig{gdclass.NewSceneReplicationConfig(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetVisibilityUpdateMode(mode VisibilityUpdateMode) { //gd:MultiplayerSynchronizer.set_visibility_update_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visibility_update_mode, 0|(gdextension.SizeInt<<4), &struct{ mode VisibilityUpdateMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVisibilityUpdateMode() VisibilityUpdateMode { //gd:MultiplayerSynchronizer.get_visibility_update_mode
 	var r_ret = jumponly.Call[VisibilityUpdateMode](gd.ObjectChecked(self.AsObject()), methods.get_visibility_update_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) UpdateVisibility(for_peer int64) { //gd:MultiplayerSynchronizer.update_visibility
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update_visibility, 0|(gdextension.SizeInt<<4), &struct{ for_peer int64 }{for_peer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetVisibilityPublic(visible bool) { //gd:MultiplayerSynchronizer.set_visibility_public
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visibility_public, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsVisibilityPublic() bool { //gd:MultiplayerSynchronizer.is_visibility_public
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_visibility_public, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddVisibilityFilter(filter Callable.Function) { //gd:MultiplayerSynchronizer.add_visibility_filter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_visibility_filter, 0|(gdextension.SizeCallable<<4), &struct{ filter gdextension.Callable }{pointers.Get(gd.InternalCallable(filter))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(filter)
 }
 func (self class) RemoveVisibilityFilter(filter Callable.Function) { //gd:MultiplayerSynchronizer.remove_visibility_filter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_visibility_filter, 0|(gdextension.SizeCallable<<4), &struct{ filter gdextension.Callable }{pointers.Get(gd.InternalCallable(filter))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(filter)
 }
 func (self class) SetVisibilityFor(peer int64, visible bool) { //gd:MultiplayerSynchronizer.set_visibility_for
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visibility_for, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		peer    int64
 		visible bool
 	}{peer, visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVisibilityFor(peer int64) bool { //gd:MultiplayerSynchronizer.get_visibility_for
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_visibility_for, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ peer int64 }{peer})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -460,9 +486,9 @@ func (self class) VisibilityChanged() Signal.Any {
 func (o class) AsMultiplayerSynchronizer() Advanced         { return Advanced(o) }
 func (o Instance) AsMultiplayerSynchronizer() Instance      { return o }
 func (o *Extension[T]) AsMultiplayerSynchronizer() Instance { return o.Super() }
-func (o class) AsNode() Node.Advanced                       { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced                       { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance               { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                    { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                    { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

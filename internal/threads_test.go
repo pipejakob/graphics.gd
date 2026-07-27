@@ -256,6 +256,62 @@ func waitFrames(frames int) {
 	}
 }
 
+// TestGoroutineObjectAnchor covers the guarantee the generated bindings rely
+// on to keep their receiver alive across an engine call: an object created off
+// the main thread is freed by a runtime.AddCleanup on its wrapper, and that
+// cleanup cannot run while the wrapper's one-word anchor is still reachable.
+//
+// Without it the bindings have a use-after-free window they cannot close. The
+// receiver is dead, as far as the collector is concerned, from the moment
+// gd.ObjectChecked hands its raw pointer to the call — and off the main thread
+// the call is only *recorded* in the dispatch ring at that point. A collection
+// inside that window queues the free first, so the main thread frees the object
+// before running the call that uses it. On Android, where the whole suite runs
+// off the main thread, that surfaced as an "invalid reference" panic under GC
+// pressure.
+func TestGoroutineObjectAnchor(t *testing.T) {
+	finished := make(chan struct{})
+	go func() {
+		defer close(finished)
+		node := Node.New()
+		id := Object.Instance(node.AsObject()).ID()
+		anchor := node.AsObject()[0].Anchor()
+		if anchor == nil {
+			t.Error("an object created off the main thread should carry a collectable anchor")
+			return
+		}
+		node = Node.Nil // the wrapper is unreachable from here on, only the anchor is
+
+		// Reachable anchor: the cleanup cannot run, so the object survives
+		// every collection and every frame of the main thread's own cycle.
+		for range 3 {
+			runtime.GC()
+			waitFrames(2)
+		}
+		if Object.ID(id).Instance() == Object.Nil {
+			t.Error("object was freed while its anchor was still reachable")
+		}
+		runtime.KeepAlive(anchor)
+
+		// Unreachable anchor: the cleanup runs and the free is queued behind
+		// the calls already recorded, so the object goes away. Polled, because
+		// it takes a collection and a drain, neither of which is synchronous.
+		var freed bool
+		for range 10 {
+			runtime.GC()
+			waitFrames(2)
+			if Object.ID(id).Instance() == Object.Nil {
+				freed = true
+				break
+			}
+		}
+		if !freed {
+			t.Error("object was not freed after its anchor became unreachable")
+		}
+	}()
+	<-finished
+}
+
 // TestGoroutineReferenceLifetimes holds one of each engine-backed reference
 // type on a goroutine across several frames (and Go collections) before
 // using it. Wrappers created off the main thread are anchored to the Go

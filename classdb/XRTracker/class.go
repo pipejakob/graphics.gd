@@ -6,6 +6,7 @@ This object is the base of all XR trackers.
 package XRTracker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -39,6 +40,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -124,7 +128,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.XRTracker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewXRTracker(obj[0])
@@ -139,7 +143,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -224,27 +228,35 @@ func (self Instance) SetDescription(value string) Instance { //gd:XRTracker.desc
 
 func (self class) GetTrackerType() Type { //gd:XRTracker.get_tracker_type
 	var r_ret = jumponly.Call[Type](gd.ObjectChecked(self.AsObject()), methods.get_tracker_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTrackerType(atype Type) { //gd:XRTracker.set_tracker_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tracker_type, 0|(gdextension.SizeInt<<4), &struct{ atype Type }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTrackerName() String.Name { //gd:XRTracker.get_tracker_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_tracker_name, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetTrackerName(name String.Name) { //gd:XRTracker.set_tracker_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tracker_name, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetTrackerDesc() String.Readable { //gd:XRTracker.get_tracker_desc
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tracker_desc, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTrackerDesc(description String.Readable) { //gd:XRTracker.set_tracker_desc
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tracker_desc, 0|(gdextension.SizeString<<4), &struct{ description gdextension.String }{pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(description)
 }
 func (o class) AsXRTracker() Advanced         { return Advanced(o) }
 func (o Instance) AsXRTracker() Instance      { return o }

@@ -14,6 +14,7 @@ Note: This event may be emitted even when the mouse hasn't moved, either by the 
 package InputEventMouseMotion
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -53,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -146,7 +150,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.InputEventMouseMotion
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputEventMouseMotion(obj[0])
@@ -161,7 +165,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -308,57 +312,71 @@ func (self Instance) SetScreenVelocity(value Vector2.XY) Instance { //gd:InputEv
 
 func (self class) SetTilt(tilt Vector2.XY) { //gd:InputEventMouseMotion.set_tilt
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tilt, 0|(gdextension.SizeVector2<<4), &struct{ tilt Vector2.XY }{tilt})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTilt() Vector2.XY { //gd:InputEventMouseMotion.get_tilt
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_tilt, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPressure(pressure float64) { //gd:InputEventMouseMotion.set_pressure
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pressure, 0|(gdextension.SizeFloat<<4), &struct{ pressure float64 }{pressure})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPressure() float64 { //gd:InputEventMouseMotion.get_pressure
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_pressure, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPenInverted(pen_inverted bool) { //gd:InputEventMouseMotion.set_pen_inverted
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pen_inverted, 0|(gdextension.SizeBool<<4), &struct{ pen_inverted bool }{pen_inverted})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPenInverted() bool { //gd:InputEventMouseMotion.get_pen_inverted
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_pen_inverted, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRelative(relative Vector2.XY) { //gd:InputEventMouseMotion.set_relative
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_relative, 0|(gdextension.SizeVector2<<4), &struct{ relative Vector2.XY }{relative})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRelative() Vector2.XY { //gd:InputEventMouseMotion.get_relative
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_relative, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetScreenRelative(relative Vector2.XY) { //gd:InputEventMouseMotion.set_screen_relative
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_screen_relative, 0|(gdextension.SizeVector2<<4), &struct{ relative Vector2.XY }{relative})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScreenRelative() Vector2.XY { //gd:InputEventMouseMotion.get_screen_relative
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_screen_relative, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVelocity(velocity Vector2.XY) { //gd:InputEventMouseMotion.set_velocity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_velocity, 0|(gdextension.SizeVector2<<4), &struct{ velocity Vector2.XY }{velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVelocity() Vector2.XY { //gd:InputEventMouseMotion.get_velocity
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_velocity, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetScreenVelocity(velocity Vector2.XY) { //gd:InputEventMouseMotion.set_screen_velocity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_screen_velocity, 0|(gdextension.SizeVector2<<4), &struct{ velocity Vector2.XY }{velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScreenVelocity() Vector2.XY { //gd:InputEventMouseMotion.get_screen_velocity
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_screen_velocity, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -366,38 +384,38 @@ func (o class) AsInputEventMouseMotion() Advanced         { return Advanced(o) }
 func (o Instance) AsInputEventMouseMotion() Instance      { return o }
 func (o *Extension[T]) AsInputEventMouseMotion() Instance { return o.Super() }
 func (o class) AsInputEventMouse() InputEventMouse.Advanced {
-	return InputEventMouse.Advanced{gdclass.NewInputEventMouse(o[0].AsObject()[0])}
+	return *(*InputEventMouse.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventMouse() InputEventMouse.Instance {
 	return o.Super().AsInputEventMouse()
 }
 func (o Instance) AsInputEventMouse() InputEventMouse.Instance {
-	return InputEventMouse.Instance{gdclass.NewInputEventMouse(o[0].AsObject()[0])}
+	return *(*InputEventMouse.Instance)(ie.As(&o))
 }
 func (o class) AsInputEventWithModifiers() InputEventWithModifiers.Advanced {
-	return InputEventWithModifiers.Advanced{gdclass.NewInputEventWithModifiers(o[0].AsObject()[0])}
+	return *(*InputEventWithModifiers.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventWithModifiers() InputEventWithModifiers.Instance {
 	return o.Super().AsInputEventWithModifiers()
 }
 func (o Instance) AsInputEventWithModifiers() InputEventWithModifiers.Instance {
-	return InputEventWithModifiers.Instance{gdclass.NewInputEventWithModifiers(o[0].AsObject()[0])}
+	return *(*InputEventWithModifiers.Instance)(ie.As(&o))
 }
 func (o class) AsInputEventFromWindow() InputEventFromWindow.Advanced {
-	return InputEventFromWindow.Advanced{gdclass.NewInputEventFromWindow(o[0].AsObject()[0])}
+	return *(*InputEventFromWindow.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventFromWindow() InputEventFromWindow.Instance {
 	return o.Super().AsInputEventFromWindow()
 }
 func (o Instance) AsInputEventFromWindow() InputEventFromWindow.Instance {
-	return InputEventFromWindow.Instance{gdclass.NewInputEventFromWindow(o[0].AsObject()[0])}
+	return *(*InputEventFromWindow.Instance)(ie.As(&o))
 }
-func (o class) AsInputEvent() InputEvent.Advanced         { return InputEvent.Advanced{gdclass.NewInputEvent(o[0].AsObject()[0])} }
+func (o class) AsInputEvent() InputEvent.Advanced         { return *(*InputEvent.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsInputEvent() InputEvent.Instance { return o.Super().AsInputEvent() }
-func (o Instance) AsInputEvent() InputEvent.Instance      { return InputEvent.Instance{gdclass.NewInputEvent(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced             { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsInputEvent() InputEvent.Instance      { return *(*InputEvent.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced             { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance     { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance          { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance          { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

@@ -22,6 +22,7 @@ Note: Due to memory constraints, occlusion culling is not supported by default i
 package OccluderInstance3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -31,6 +32,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -58,6 +60,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -166,7 +171,7 @@ func (self Instance) GetBakeMaskValue(layer_number int) bool { //gd:OccluderInst
 type Advanced = class
 type class [1]gdclass.OccluderInstance3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOccluderInstance3D(obj[0])
@@ -181,7 +186,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -270,9 +275,11 @@ func (self Instance) SetBakeSimplificationDistance(value Float.X) Instance { //g
 
 func (self class) SetBakeMask(mask int64) { //gd:OccluderInstance3D.set_bake_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bake_mask, 0|(gdextension.SizeInt<<4), &struct{ mask int64 }{mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBakeMask() int64 { //gd:OccluderInstance3D.get_bake_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_bake_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -281,25 +288,32 @@ func (self class) SetBakeMaskValue(layer_number int64, value bool) { //gd:Occlud
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBakeMaskValue(layer_number int64) bool { //gd:OccluderInstance3D.get_bake_mask_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_bake_mask_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBakeSimplificationDistance(simplification_distance float64) { //gd:OccluderInstance3D.set_bake_simplification_distance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bake_simplification_distance, 0|(gdextension.SizeFloat<<4), &struct{ simplification_distance float64 }{simplification_distance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBakeSimplificationDistance() float64 { //gd:OccluderInstance3D.get_bake_simplification_distance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_bake_simplification_distance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOccluder(occluder [1]gdclass.Occluder3D) { //gd:OccluderInstance3D.set_occluder
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_occluder, 0|(gdextension.SizeObject<<4), &struct{ occluder gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOccluder3D(occluder[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(occluder[0].Anchor())
 }
 func (self class) GetOccluder() [1]gdclass.Occluder3D { //gd:OccluderInstance3D.get_occluder
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_occluder, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Occluder3D{gdclass.NewOccluder3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -307,20 +321,20 @@ func (o class) AsOccluderInstance3D() Advanced         { return Advanced(o) }
 func (o Instance) AsOccluderInstance3D() Instance      { return o }
 func (o *Extension[T]) AsOccluderInstance3D() Instance { return o.Super() }
 func (o class) AsVisualInstance3D() VisualInstance3D.Advanced {
-	return VisualInstance3D.Advanced{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualInstance3D() VisualInstance3D.Instance {
 	return o.Super().AsVisualInstance3D()
 }
 func (o Instance) AsVisualInstance3D() VisualInstance3D.Instance {
-	return VisualInstance3D.Instance{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -8,6 +8,7 @@ An OpenXR composition layer that allows rendering a [SubViewport] on an internal
 package OpenXRCompositionLayerEquirect
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -17,6 +18,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -43,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -132,7 +137,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.OpenXRCompositionLayerEquirect
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRCompositionLayerEquirect(obj[0])
@@ -147,7 +152,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -241,41 +246,51 @@ func (self Instance) SetFallbackSegments(value int) Instance { //gd:OpenXRCompos
 
 func (self class) SetRadius(radius float64) { //gd:OpenXRCompositionLayerEquirect.set_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadius() float64 { //gd:OpenXRCompositionLayerEquirect.get_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCentralHorizontalAngle(angle float64) { //gd:OpenXRCompositionLayerEquirect.set_central_horizontal_angle
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_central_horizontal_angle, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCentralHorizontalAngle() float64 { //gd:OpenXRCompositionLayerEquirect.get_central_horizontal_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_central_horizontal_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUpperVerticalAngle(angle float64) { //gd:OpenXRCompositionLayerEquirect.set_upper_vertical_angle
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_upper_vertical_angle, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUpperVerticalAngle() float64 { //gd:OpenXRCompositionLayerEquirect.get_upper_vertical_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_upper_vertical_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLowerVerticalAngle(angle float64) { //gd:OpenXRCompositionLayerEquirect.set_lower_vertical_angle
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_lower_vertical_angle, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLowerVerticalAngle() float64 { //gd:OpenXRCompositionLayerEquirect.get_lower_vertical_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_lower_vertical_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFallbackSegments(segments int64) { //gd:OpenXRCompositionLayerEquirect.set_fallback_segments
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fallback_segments, 0|(gdextension.SizeInt<<4), &struct{ segments int64 }{segments})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFallbackSegments() int64 { //gd:OpenXRCompositionLayerEquirect.get_fallback_segments
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_fallback_segments, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -283,20 +298,20 @@ func (o class) AsOpenXRCompositionLayerEquirect() Advanced         { return Adva
 func (o Instance) AsOpenXRCompositionLayerEquirect() Instance      { return o }
 func (o *Extension[T]) AsOpenXRCompositionLayerEquirect() Instance { return o.Super() }
 func (o class) AsOpenXRCompositionLayer() OpenXRCompositionLayer.Advanced {
-	return OpenXRCompositionLayer.Advanced{gdclass.NewOpenXRCompositionLayer(o[0].AsObject()[0])}
+	return *(*OpenXRCompositionLayer.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRCompositionLayer() OpenXRCompositionLayer.Instance {
 	return o.Super().AsOpenXRCompositionLayer()
 }
 func (o Instance) AsOpenXRCompositionLayer() OpenXRCompositionLayer.Instance {
-	return OpenXRCompositionLayer.Instance{gdclass.NewOpenXRCompositionLayer(o[0].AsObject()[0])}
+	return *(*OpenXRCompositionLayer.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

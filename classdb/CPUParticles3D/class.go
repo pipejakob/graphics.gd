@@ -10,6 +10,7 @@ See also [GPUParticles3D], which provides the same functionality with hardware a
 package CPUParticles3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -19,6 +20,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -52,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -285,7 +290,7 @@ func (self Instance) ConvertFromParticles(particles Node.Instance) { //gd:CPUPar
 type Advanced = class
 type class [1]gdclass.CPUParticles3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCPUParticles3D(obj[0])
@@ -300,7 +305,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1407,175 +1412,219 @@ func (self Instance) SetAnimOffsetCurve(value Curve.Instance) Instance { //gd:CP
 
 func (self class) SetEmitting(emitting bool) { //gd:CPUParticles3D.set_emitting
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emitting, 0|(gdextension.SizeBool<<4), &struct{ emitting bool }{emitting})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAmount(amount int64) { //gd:CPUParticles3D.set_amount
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_amount, 0|(gdextension.SizeInt<<4), &struct{ amount int64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetLifetime(secs float64) { //gd:CPUParticles3D.set_lifetime
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_lifetime, 0|(gdextension.SizeFloat<<4), &struct{ secs float64 }{secs})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetOneShot(enable bool) { //gd:CPUParticles3D.set_one_shot
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_one_shot, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPreProcessTime(secs float64) { //gd:CPUParticles3D.set_pre_process_time
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pre_process_time, 0|(gdextension.SizeFloat<<4), &struct{ secs float64 }{secs})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetExplosivenessRatio(ratio float64) { //gd:CPUParticles3D.set_explosiveness_ratio
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_explosiveness_ratio, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetRandomnessRatio(ratio float64) { //gd:CPUParticles3D.set_randomness_ratio
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_randomness_ratio, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetVisibilityAabb(aabb AABB.PositionSize) { //gd:CPUParticles3D.set_visibility_aabb
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visibility_aabb, 0|(gdextension.SizeAABB<<4), &struct{ aabb AABB.PositionSize }{aabb})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetLifetimeRandomness(random float64) { //gd:CPUParticles3D.set_lifetime_randomness
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_lifetime_randomness, 0|(gdextension.SizeFloat<<4), &struct{ random float64 }{random})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetUseLocalCoordinates(enable bool) { //gd:CPUParticles3D.set_use_local_coordinates
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_local_coordinates, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFixedFps(fps int64) { //gd:CPUParticles3D.set_fixed_fps
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fixed_fps, 0|(gdextension.SizeInt<<4), &struct{ fps int64 }{fps})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFractionalDelta(enable bool) { //gd:CPUParticles3D.set_fractional_delta
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fractional_delta, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSpeedScale(scale float64) { //gd:CPUParticles3D.set_speed_scale
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_speed_scale, 0|(gdextension.SizeFloat<<4), &struct{ scale float64 }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEmitting() bool { //gd:CPUParticles3D.is_emitting
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_emitting, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetAmount() int64 { //gd:CPUParticles3D.get_amount
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_amount, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLifetime() float64 { //gd:CPUParticles3D.get_lifetime
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_lifetime, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOneShot() bool { //gd:CPUParticles3D.get_one_shot
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_one_shot, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPreProcessTime() float64 { //gd:CPUParticles3D.get_pre_process_time
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_pre_process_time, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetExplosivenessRatio() float64 { //gd:CPUParticles3D.get_explosiveness_ratio
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_explosiveness_ratio, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRandomnessRatio() float64 { //gd:CPUParticles3D.get_randomness_ratio
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_randomness_ratio, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVisibilityAabb() AABB.PositionSize { //gd:CPUParticles3D.get_visibility_aabb
 	var r_ret = jumponly.Call[AABB.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_visibility_aabb, gdextension.SizeAABB, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLifetimeRandomness() float64 { //gd:CPUParticles3D.get_lifetime_randomness
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_lifetime_randomness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetUseLocalCoordinates() bool { //gd:CPUParticles3D.get_use_local_coordinates
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_local_coordinates, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFixedFps() int64 { //gd:CPUParticles3D.get_fixed_fps
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_fixed_fps, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFractionalDelta() bool { //gd:CPUParticles3D.get_fractional_delta
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_fractional_delta, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSpeedScale() float64 { //gd:CPUParticles3D.get_speed_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_speed_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDrawOrder(order DrawOrder) { //gd:CPUParticles3D.set_draw_order
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_draw_order, 0|(gdextension.SizeInt<<4), &struct{ order DrawOrder }{order})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDrawOrder() DrawOrder { //gd:CPUParticles3D.get_draw_order
 	var r_ret = jumponly.Call[DrawOrder](gd.ObjectChecked(self.AsObject()), methods.get_draw_order, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMesh(mesh [1]gdclass.Mesh) { //gd:CPUParticles3D.set_mesh
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mesh, 0|(gdextension.SizeObject<<4), &struct{ mesh gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMesh(mesh[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(mesh[0].Anchor())
 }
 func (self class) GetMesh() [1]gdclass.Mesh { //gd:CPUParticles3D.get_mesh
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_mesh, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Mesh{gdclass.NewMesh(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetUseFixedSeed(use_fixed_seed bool) { //gd:CPUParticles3D.set_use_fixed_seed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_fixed_seed, 0|(gdextension.SizeBool<<4), &struct{ use_fixed_seed bool }{use_fixed_seed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseFixedSeed() bool { //gd:CPUParticles3D.get_use_fixed_seed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_fixed_seed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSeed(seed int64) { //gd:CPUParticles3D.set_seed
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_seed, 0|(gdextension.SizeInt<<4), &struct{ seed int64 }{seed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSeed() int64 { //gd:CPUParticles3D.get_seed
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_seed, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Restart(keep_seed bool) { //gd:CPUParticles3D.restart
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.restart, 0|(gdextension.SizeBool<<4), &struct{ keep_seed bool }{keep_seed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RequestParticlesProcess(process_time float64, process_time_residual float64) { //gd:CPUParticles3D.request_particles_process
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.request_particles_process, 0|(gdextension.SizeFloat<<4)|(gdextension.SizeFloat<<8), &struct {
 		process_time          float64
 		process_time_residual float64
 	}{process_time, process_time_residual})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CaptureAabb() AABB.PositionSize { //gd:CPUParticles3D.capture_aabb
 	var r_ret = noescape.Call[AABB.PositionSize](gd.ObjectChecked(self.AsObject()), methods.capture_aabb, gdextension.SizeAABB, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDirection(direction Vector3.XYZ) { //gd:CPUParticles3D.set_direction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_direction, 0|(gdextension.SizeVector3<<4), &struct{ direction Vector3.XYZ }{direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDirection() Vector3.XYZ { //gd:CPUParticles3D.get_direction
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_direction, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSpread(degrees float64) { //gd:CPUParticles3D.set_spread
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_spread, 0|(gdextension.SizeFloat<<4), &struct{ degrees float64 }{degrees})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpread() float64 { //gd:CPUParticles3D.get_spread
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_spread, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFlatness(amount float64) { //gd:CPUParticles3D.set_flatness
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flatness, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFlatness() float64 { //gd:CPUParticles3D.get_flatness
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_flatness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1584,9 +1633,11 @@ func (self class) SetParamMin(param Parameter, value float64) { //gd:CPUParticle
 		param Parameter
 		value float64
 	}{param, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetParamMin(param Parameter) float64 { //gd:CPUParticles3D.get_param_min
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_param_min, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ param Parameter }{param})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1595,9 +1646,11 @@ func (self class) SetParamMax(param Parameter, value float64) { //gd:CPUParticle
 		param Parameter
 		value float64
 	}{param, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetParamMax(param Parameter) float64 { //gd:CPUParticles3D.get_param_max
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_param_max, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ param Parameter }{param})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1606,33 +1659,44 @@ func (self class) SetParamCurve(param Parameter, curve [1]gdclass.Curve) { //gd:
 		param Parameter
 		curve gdextension.Object
 	}{param, gdextension.Object(gdreference.GetObject(gdclass.GetCurve(curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(curve[0].Anchor())
 }
 func (self class) GetParamCurve(param Parameter) [1]gdclass.Curve { //gd:CPUParticles3D.get_param_curve
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_param_curve, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ param Parameter }{param})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetColor(color Color.RGBA) { //gd:CPUParticles3D.set_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetColor() Color.RGBA { //gd:CPUParticles3D.get_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetColorRamp(ramp [1]gdclass.Gradient) { //gd:CPUParticles3D.set_color_ramp
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color_ramp, 0|(gdextension.SizeObject<<4), &struct{ ramp gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetGradient(ramp[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(ramp[0].Anchor())
 }
 func (self class) GetColorRamp() [1]gdclass.Gradient { //gd:CPUParticles3D.get_color_ramp
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_color_ramp, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Gradient{gdclass.NewGradient(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetColorInitialRamp(ramp [1]gdclass.Gradient) { //gd:CPUParticles3D.set_color_initial_ramp
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color_initial_ramp, 0|(gdextension.SizeObject<<4), &struct{ ramp gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetGradient(ramp[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(ramp[0].Anchor())
 }
 func (self class) GetColorInitialRamp() [1]gdclass.Gradient { //gd:CPUParticles3D.get_color_initial_ramp
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_color_initial_ramp, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Gradient{gdclass.NewGradient(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1641,33 +1705,41 @@ func (self class) SetParticleFlag(particle_flag ParticleFlags, enable bool) { //
 		particle_flag ParticleFlags
 		enable        bool
 	}{particle_flag, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetParticleFlag(particle_flag ParticleFlags) bool { //gd:CPUParticles3D.get_particle_flag
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_particle_flag, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ particle_flag ParticleFlags }{particle_flag})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEmissionShape(shape EmissionShape) { //gd:CPUParticles3D.set_emission_shape
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_shape, 0|(gdextension.SizeInt<<4), &struct{ shape EmissionShape }{shape})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEmissionShape() EmissionShape { //gd:CPUParticles3D.get_emission_shape
 	var r_ret = jumponly.Call[EmissionShape](gd.ObjectChecked(self.AsObject()), methods.get_emission_shape, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEmissionSphereRadius(radius float64) { //gd:CPUParticles3D.set_emission_sphere_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_sphere_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEmissionSphereRadius() float64 { //gd:CPUParticles3D.get_emission_sphere_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_emission_sphere_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEmissionBoxExtents(extents Vector3.XYZ) { //gd:CPUParticles3D.set_emission_box_extents
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_box_extents, 0|(gdextension.SizeVector3<<4), &struct{ extents Vector3.XYZ }{extents})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEmissionBoxExtents() Vector3.XYZ { //gd:CPUParticles3D.get_emission_box_extents
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_emission_box_extents, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1675,9 +1747,12 @@ func (self class) SetEmissionPoints(array Packed.Array[Vector3.XYZ]) { //gd:CPUP
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_points, 0|(gdextension.SizePackedArray<<4), &struct {
 		array gdextension.PackedArray[Vector3.XYZ]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](array))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(array)
 }
 func (self class) GetEmissionPoints() Packed.Array[Vector3.XYZ] { //gd:CPUParticles3D.get_emission_points
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_emission_points, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
@@ -1685,9 +1760,12 @@ func (self class) SetEmissionNormals(array Packed.Array[Vector3.XYZ]) { //gd:CPU
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_normals, 0|(gdextension.SizePackedArray<<4), &struct {
 		array gdextension.PackedArray[Vector3.XYZ]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](array))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(array)
 }
 func (self class) GetEmissionNormals() Packed.Array[Vector3.XYZ] { //gd:CPUParticles3D.get_emission_normals
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_emission_normals, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
@@ -1695,94 +1773,122 @@ func (self class) SetEmissionColors(array Packed.Array[Color.RGBA]) { //gd:CPUPa
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_colors, 0|(gdextension.SizePackedArray<<4), &struct {
 		array gdextension.PackedArray[Color.RGBA]
 	}{pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](array))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(array)
 }
 func (self class) GetEmissionColors() Packed.Array[Color.RGBA] { //gd:CPUParticles3D.get_emission_colors
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_emission_colors, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) SetEmissionRingAxis(axis Vector3.XYZ) { //gd:CPUParticles3D.set_emission_ring_axis
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_ring_axis, 0|(gdextension.SizeVector3<<4), &struct{ axis Vector3.XYZ }{axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEmissionRingAxis() Vector3.XYZ { //gd:CPUParticles3D.get_emission_ring_axis
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_emission_ring_axis, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEmissionRingHeight(height float64) { //gd:CPUParticles3D.set_emission_ring_height
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_ring_height, 0|(gdextension.SizeFloat<<4), &struct{ height float64 }{height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEmissionRingHeight() float64 { //gd:CPUParticles3D.get_emission_ring_height
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_emission_ring_height, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEmissionRingRadius(radius float64) { //gd:CPUParticles3D.set_emission_ring_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_ring_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEmissionRingRadius() float64 { //gd:CPUParticles3D.get_emission_ring_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_emission_ring_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEmissionRingInnerRadius(inner_radius float64) { //gd:CPUParticles3D.set_emission_ring_inner_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_ring_inner_radius, 0|(gdextension.SizeFloat<<4), &struct{ inner_radius float64 }{inner_radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEmissionRingInnerRadius() float64 { //gd:CPUParticles3D.get_emission_ring_inner_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_emission_ring_inner_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEmissionRingConeAngle(cone_angle float64) { //gd:CPUParticles3D.set_emission_ring_cone_angle
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emission_ring_cone_angle, 0|(gdextension.SizeFloat<<4), &struct{ cone_angle float64 }{cone_angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEmissionRingConeAngle() float64 { //gd:CPUParticles3D.get_emission_ring_cone_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_emission_ring_cone_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetGravity() Vector3.XYZ { //gd:CPUParticles3D.get_gravity
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_gravity, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGravity(accel_vec Vector3.XYZ) { //gd:CPUParticles3D.set_gravity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_gravity, 0|(gdextension.SizeVector3<<4), &struct{ accel_vec Vector3.XYZ }{accel_vec})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSplitScale() bool { //gd:CPUParticles3D.get_split_scale
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_split_scale, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSplitScale(split_scale bool) { //gd:CPUParticles3D.set_split_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_split_scale, 0|(gdextension.SizeBool<<4), &struct{ split_scale bool }{split_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScaleCurveX() [1]gdclass.Curve { //gd:CPUParticles3D.get_scale_curve_x
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_scale_curve_x, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetScaleCurveX(scale_curve [1]gdclass.Curve) { //gd:CPUParticles3D.set_scale_curve_x
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scale_curve_x, 0|(gdextension.SizeObject<<4), &struct{ scale_curve gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCurve(scale_curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(scale_curve[0].Anchor())
 }
 func (self class) GetScaleCurveY() [1]gdclass.Curve { //gd:CPUParticles3D.get_scale_curve_y
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_scale_curve_y, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetScaleCurveY(scale_curve [1]gdclass.Curve) { //gd:CPUParticles3D.set_scale_curve_y
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scale_curve_y, 0|(gdextension.SizeObject<<4), &struct{ scale_curve gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCurve(scale_curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(scale_curve[0].Anchor())
 }
 func (self class) GetScaleCurveZ() [1]gdclass.Curve { //gd:CPUParticles3D.get_scale_curve_z
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_scale_curve_z, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetScaleCurveZ(scale_curve [1]gdclass.Curve) { //gd:CPUParticles3D.set_scale_curve_z
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scale_curve_z, 0|(gdextension.SizeObject<<4), &struct{ scale_curve gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCurve(scale_curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(scale_curve[0].Anchor())
 }
 func (self class) ConvertFromParticles(particles [1]gdclass.Node) { //gd:CPUParticles3D.convert_from_particles
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.convert_from_particles, 0|(gdextension.SizeObject<<4), &struct{ particles gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode(particles[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(particles[0].Anchor())
 }
 
 /*
@@ -1807,29 +1913,29 @@ func (o class) AsCPUParticles3D() Advanced         { return Advanced(o) }
 func (o Instance) AsCPUParticles3D() Instance      { return o }
 func (o *Extension[T]) AsCPUParticles3D() Instance { return o.Super() }
 func (o class) AsGeometryInstance3D() GeometryInstance3D.Advanced {
-	return GeometryInstance3D.Advanced{gdclass.NewGeometryInstance3D(o[0].AsObject()[0])}
+	return *(*GeometryInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsGeometryInstance3D() GeometryInstance3D.Instance {
 	return o.Super().AsGeometryInstance3D()
 }
 func (o Instance) AsGeometryInstance3D() GeometryInstance3D.Instance {
-	return GeometryInstance3D.Instance{gdclass.NewGeometryInstance3D(o[0].AsObject()[0])}
+	return *(*GeometryInstance3D.Instance)(ie.As(&o))
 }
 func (o class) AsVisualInstance3D() VisualInstance3D.Advanced {
-	return VisualInstance3D.Advanced{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualInstance3D() VisualInstance3D.Instance {
 	return o.Super().AsVisualInstance3D()
 }
 func (o Instance) AsVisualInstance3D() VisualInstance3D.Instance {
-	return VisualInstance3D.Instance{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

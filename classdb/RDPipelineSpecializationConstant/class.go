@@ -10,6 +10,7 @@ This object is used by [RenderingDevice].
 package RDPipelineSpecializationConstant
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -126,7 +130,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.RDPipelineSpecializationConstant
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDPipelineSpecializationConstant(obj[0])
@@ -141,7 +145,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -194,17 +198,22 @@ func (self Instance) SetConstantId(value int) Instance { //gd:RDPipelineSpeciali
 
 func (self class) SetValue(value variant.Any) { //gd:RDPipelineSpecializationConstant.set_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_value, 0|(gdextension.SizeVariant<<4), &struct{ value gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(value)
 }
 func (self class) GetValue() variant.Any { //gd:RDPipelineSpecializationConstant.get_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_value, gdextension.SizeVariant, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) SetConstantId(constant_id int64) { //gd:RDPipelineSpecializationConstant.set_constant_id
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_constant_id, 0|(gdextension.SizeInt<<4), &struct{ constant_id int64 }{constant_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConstantId() int64 { //gd:RDPipelineSpecializationConstant.get_constant_id
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_constant_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

@@ -6,6 +6,7 @@ This class implements the OpenXR Render Model Extension, if enabled it will main
 package OpenXRRenderModelExtension
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -15,6 +16,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -42,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -239,7 +244,7 @@ func (self Instance) RenderModelGetAnimatableNodeTransform(render_model RID.Rend
 type Advanced = class
 type class [1]gdclass.OpenXRRenderModelExtension
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRRenderModelExtension(obj[0])
@@ -254,7 +259,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -279,49 +284,59 @@ func New() Instance {
 
 func (self class) IsActive() bool { //gd:OpenXRRenderModelExtension.is_active
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_active, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RenderModelCreate(render_model_id int64) RID.Any { //gd:OpenXRRenderModelExtension.render_model_create
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.render_model_create, gdextension.SizeRID|(gdextension.SizeInt<<4), &struct{ render_model_id int64 }{render_model_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RenderModelDestroy(render_model RID.Any) { //gd:OpenXRRenderModelExtension.render_model_destroy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.render_model_destroy, 0|(gdextension.SizeRID<<4), &struct{ render_model RID.Any }{render_model})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RenderModelGetAll() Array.Contains[RID.Any] { //gd:OpenXRRenderModelExtension.render_model_get_all
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.render_model_get_all, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) RenderModelNewSceneInstance(render_model RID.Any) [1]gdclass.Node3D { //gd:OpenXRRenderModelExtension.render_model_new_scene_instance
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.render_model_new_scene_instance, gdextension.SizeObject|(gdextension.SizeRID<<4), &struct{ render_model RID.Any }{render_model})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Node3D{gdclass.NewNode3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) RenderModelGetSubactionPaths(render_model RID.Any) Packed.Strings { //gd:OpenXRRenderModelExtension.render_model_get_subaction_paths
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.render_model_get_subaction_paths, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ render_model RID.Any }{render_model})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) RenderModelGetTopLevelPath(render_model RID.Any) String.Readable { //gd:OpenXRRenderModelExtension.render_model_get_top_level_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.render_model_get_top_level_path, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ render_model RID.Any }{render_model})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) RenderModelGetConfidence(render_model RID.Any) XRPose.TrackingConfidence { //gd:OpenXRRenderModelExtension.render_model_get_confidence
 	var r_ret = noescape.Call[XRPose.TrackingConfidence](gd.ObjectChecked(self.AsObject()), methods.render_model_get_confidence, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ render_model RID.Any }{render_model})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RenderModelGetRootTransform(render_model RID.Any) Transform3D.BasisOrigin { //gd:OpenXRRenderModelExtension.render_model_get_root_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.render_model_get_root_transform, gdextension.SizeTransform3D|(gdextension.SizeRID<<4), &struct{ render_model RID.Any }{render_model})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) RenderModelGetAnimatableNodeCount(render_model RID.Any) int64 { //gd:OpenXRRenderModelExtension.render_model_get_animatable_node_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.render_model_get_animatable_node_count, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ render_model RID.Any }{render_model})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -330,6 +345,7 @@ func (self class) RenderModelGetAnimatableNodeName(render_model RID.Any, index i
 		render_model RID.Any
 		index        int64
 	}{render_model, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -338,6 +354,7 @@ func (self class) RenderModelIsAnimatableNodeVisible(render_model RID.Any, index
 		render_model RID.Any
 		index        int64
 	}{render_model, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -346,6 +363,7 @@ func (self class) RenderModelGetAnimatableNodeTransform(render_model RID.Any, in
 		render_model RID.Any
 		index        int64
 	}{render_model, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
@@ -402,13 +420,13 @@ func (o class) AsOpenXRRenderModelExtension() Advanced         { return Advanced
 func (o Instance) AsOpenXRRenderModelExtension() Instance      { return o }
 func (o *Extension[T]) AsOpenXRRenderModelExtension() Instance { return o.Super() }
 func (o class) AsOpenXRExtensionWrapper() OpenXRExtensionWrapper.Advanced {
-	return OpenXRExtensionWrapper.Advanced{gdclass.NewOpenXRExtensionWrapper(o[0].AsObject()[0])}
+	return *(*OpenXRExtensionWrapper.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRExtensionWrapper() OpenXRExtensionWrapper.Instance {
 	return o.Super().AsOpenXRExtensionWrapper()
 }
 func (o Instance) AsOpenXRExtensionWrapper() OpenXRExtensionWrapper.Instance {
-	return OpenXRExtensionWrapper.Instance{gdclass.NewOpenXRExtensionWrapper(o[0].AsObject()[0])}
+	return *(*OpenXRExtensionWrapper.Instance)(ie.As(&o))
 }
 
 func (self class) Virtual(name string) reflect.Value {

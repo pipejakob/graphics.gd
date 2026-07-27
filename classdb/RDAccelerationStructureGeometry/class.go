@@ -11,6 +11,7 @@ The geometry is always in triangle list form, either indexed or non-indexed. Tri
 package RDAccelerationStructureGeometry
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -140,7 +144,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.RDAccelerationStructureGeometry
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDAccelerationStructureGeometry(obj[0])
@@ -155,7 +159,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -311,73 +315,91 @@ func (self class) SetFlags(p_member Rendering.AccelerationStructureGeometryFlagB
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flags, 0|(gdextension.SizeInt<<4), &struct {
 		p_member Rendering.AccelerationStructureGeometryFlagBits
 	}{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFlags() Rendering.AccelerationStructureGeometryFlagBits { //gd:RDAccelerationStructureGeometry.get_flags
 	var r_ret = noescape.Call[Rendering.AccelerationStructureGeometryFlagBits](gd.ObjectChecked(self.AsObject()), methods.get_flags, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVertexBuffer(p_member RID.Any) { //gd:RDAccelerationStructureGeometry.set_vertex_buffer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertex_buffer, 0|(gdextension.SizeRID<<4), &struct{ p_member RID.Any }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertexBuffer() RID.Any { //gd:RDAccelerationStructureGeometry.get_vertex_buffer
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_vertex_buffer, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVertexOffset(p_member int64) { //gd:RDAccelerationStructureGeometry.set_vertex_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertex_offset, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertexOffset() int64 { //gd:RDAccelerationStructureGeometry.get_vertex_offset
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_vertex_offset, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVertexStride(p_member int64) { //gd:RDAccelerationStructureGeometry.set_vertex_stride
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertex_stride, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertexStride() int64 { //gd:RDAccelerationStructureGeometry.get_vertex_stride
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_vertex_stride, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVertexCount(p_member int64) { //gd:RDAccelerationStructureGeometry.set_vertex_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertex_count, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertexCount() int64 { //gd:RDAccelerationStructureGeometry.get_vertex_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_vertex_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVertexFormat(p_member Rendering.DataFormat) { //gd:RDAccelerationStructureGeometry.set_vertex_format
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertex_format, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.DataFormat }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVertexFormat() Rendering.DataFormat { //gd:RDAccelerationStructureGeometry.get_vertex_format
 	var r_ret = noescape.Call[Rendering.DataFormat](gd.ObjectChecked(self.AsObject()), methods.get_vertex_format, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIndexBuffer(p_member RID.Any) { //gd:RDAccelerationStructureGeometry.set_index_buffer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_index_buffer, 0|(gdextension.SizeRID<<4), &struct{ p_member RID.Any }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIndexBuffer() RID.Any { //gd:RDAccelerationStructureGeometry.get_index_buffer
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_index_buffer, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIndexOffset(p_member int64) { //gd:RDAccelerationStructureGeometry.set_index_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_index_offset, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIndexOffset() int64 { //gd:RDAccelerationStructureGeometry.get_index_offset
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_index_offset, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIndexCount(p_member int64) { //gd:RDAccelerationStructureGeometry.set_index_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_index_count, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIndexCount() int64 { //gd:RDAccelerationStructureGeometry.get_index_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_index_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

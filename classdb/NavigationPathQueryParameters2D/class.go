@@ -8,6 +8,7 @@ By changing various properties of this object, such as the start and target posi
 package NavigationPathQueryParameters2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -151,7 +155,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.NavigationPathQueryParameters2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNavigationPathQueryParameters2D(obj[0])
@@ -166,7 +170,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -408,121 +412,153 @@ func (self Instance) SetPathSearchMaxDistance(value Float.X) Instance { //gd:Nav
 
 func (self class) SetPathfindingAlgorithm(pathfinding_algorithm PathfindingAlgorithm) { //gd:NavigationPathQueryParameters2D.set_pathfinding_algorithm
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pathfinding_algorithm, 0|(gdextension.SizeInt<<4), &struct{ pathfinding_algorithm PathfindingAlgorithm }{pathfinding_algorithm})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathfindingAlgorithm() PathfindingAlgorithm { //gd:NavigationPathQueryParameters2D.get_pathfinding_algorithm
 	var r_ret = jumponly.Call[PathfindingAlgorithm](gd.ObjectChecked(self.AsObject()), methods.get_pathfinding_algorithm, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathPostprocessing(path_postprocessing PathPostProcessing) { //gd:NavigationPathQueryParameters2D.set_path_postprocessing
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_postprocessing, 0|(gdextension.SizeInt<<4), &struct{ path_postprocessing PathPostProcessing }{path_postprocessing})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathPostprocessing() PathPostProcessing { //gd:NavigationPathQueryParameters2D.get_path_postprocessing
 	var r_ret = jumponly.Call[PathPostProcessing](gd.ObjectChecked(self.AsObject()), methods.get_path_postprocessing, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMap(mapping RID.Any) { //gd:NavigationPathQueryParameters2D.set_map
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_map, 0|(gdextension.SizeRID<<4), &struct{ mapping RID.Any }{mapping})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMap() RID.Any { //gd:NavigationPathQueryParameters2D.get_map
 	var r_ret = jumponly.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_map, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStartPosition(start_position Vector2.XY) { //gd:NavigationPathQueryParameters2D.set_start_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_start_position, 0|(gdextension.SizeVector2<<4), &struct{ start_position Vector2.XY }{start_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStartPosition() Vector2.XY { //gd:NavigationPathQueryParameters2D.get_start_position
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_start_position, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTargetPosition(target_position Vector2.XY) { //gd:NavigationPathQueryParameters2D.set_target_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_target_position, 0|(gdextension.SizeVector2<<4), &struct{ target_position Vector2.XY }{target_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTargetPosition() Vector2.XY { //gd:NavigationPathQueryParameters2D.get_target_position
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_target_position, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNavigationLayers(navigation_layers int64) { //gd:NavigationPathQueryParameters2D.set_navigation_layers
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_navigation_layers, 0|(gdextension.SizeInt<<4), &struct{ navigation_layers int64 }{navigation_layers})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNavigationLayers() int64 { //gd:NavigationPathQueryParameters2D.get_navigation_layers
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_navigation_layers, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMetadataFlags(flags PathMetadataFlags) { //gd:NavigationPathQueryParameters2D.set_metadata_flags
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_metadata_flags, 0|(gdextension.SizeInt<<4), &struct{ flags PathMetadataFlags }{flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMetadataFlags() PathMetadataFlags { //gd:NavigationPathQueryParameters2D.get_metadata_flags
 	var r_ret = noescape.Call[PathMetadataFlags](gd.ObjectChecked(self.AsObject()), methods.get_metadata_flags, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSimplifyPath(enabled bool) { //gd:NavigationPathQueryParameters2D.set_simplify_path
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_simplify_path, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSimplifyPath() bool { //gd:NavigationPathQueryParameters2D.get_simplify_path
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_simplify_path, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSimplifyEpsilon(epsilon float64) { //gd:NavigationPathQueryParameters2D.set_simplify_epsilon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_simplify_epsilon, 0|(gdextension.SizeFloat<<4), &struct{ epsilon float64 }{epsilon})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSimplifyEpsilon() float64 { //gd:NavigationPathQueryParameters2D.get_simplify_epsilon
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_simplify_epsilon, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIncludedRegions(regions Array.Contains[RID.Any]) { //gd:NavigationPathQueryParameters2D.set_included_regions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_included_regions, 0|(gdextension.SizeArray<<4), &struct{ regions gdextension.Array }{pointers.Get(gd.InternalArray(regions))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(regions)
 }
 func (self class) GetIncludedRegions() Array.Contains[RID.Any] { //gd:NavigationPathQueryParameters2D.get_included_regions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_included_regions, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetExcludedRegions(regions Array.Contains[RID.Any]) { //gd:NavigationPathQueryParameters2D.set_excluded_regions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_excluded_regions, 0|(gdextension.SizeArray<<4), &struct{ regions gdextension.Array }{pointers.Get(gd.InternalArray(regions))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(regions)
 }
 func (self class) GetExcludedRegions() Array.Contains[RID.Any] { //gd:NavigationPathQueryParameters2D.get_excluded_regions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_excluded_regions, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetPathReturnMaxLength(length float64) { //gd:NavigationPathQueryParameters2D.set_path_return_max_length
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_return_max_length, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathReturnMaxLength() float64 { //gd:NavigationPathQueryParameters2D.get_path_return_max_length
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_path_return_max_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathReturnMaxRadius(radius float64) { //gd:NavigationPathQueryParameters2D.set_path_return_max_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_return_max_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathReturnMaxRadius() float64 { //gd:NavigationPathQueryParameters2D.get_path_return_max_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_path_return_max_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathSearchMaxPolygons(max_polygons int64) { //gd:NavigationPathQueryParameters2D.set_path_search_max_polygons
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_search_max_polygons, 0|(gdextension.SizeInt<<4), &struct{ max_polygons int64 }{max_polygons})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathSearchMaxPolygons() int64 { //gd:NavigationPathQueryParameters2D.get_path_search_max_polygons
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_path_search_max_polygons, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathSearchMaxDistance(distance float64) { //gd:NavigationPathQueryParameters2D.set_path_search_max_distance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_search_max_distance, 0|(gdextension.SizeFloat<<4), &struct{ distance float64 }{distance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathSearchMaxDistance() float64 { //gd:NavigationPathQueryParameters2D.get_path_search_max_distance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_path_search_max_distance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

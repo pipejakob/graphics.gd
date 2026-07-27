@@ -35,6 +35,7 @@ After setting the request and changing the animation playback, the one-shot node
 package AnimationNodeOneShot
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -72,6 +73,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -171,7 +175,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AnimationNodeOneShot
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimationNodeOneShot(obj[0])
@@ -186,7 +190,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -360,81 +364,103 @@ func (self Instance) SetAutorestartRandomDelay(value Float.X) Instance { //gd:An
 
 func (self class) SetFadeinTime(time float64) { //gd:AnimationNodeOneShot.set_fadein_time
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fadein_time, 0|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFadeinTime() float64 { //gd:AnimationNodeOneShot.get_fadein_time
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fadein_time, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFadeinCurve(curve [1]gdclass.Curve) { //gd:AnimationNodeOneShot.set_fadein_curve
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fadein_curve, 0|(gdextension.SizeObject<<4), &struct{ curve gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCurve(curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(curve[0].Anchor())
 }
 func (self class) GetFadeinCurve() [1]gdclass.Curve { //gd:AnimationNodeOneShot.get_fadein_curve
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_fadein_curve, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetFadeoutTime(time float64) { //gd:AnimationNodeOneShot.set_fadeout_time
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fadeout_time, 0|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFadeoutTime() float64 { //gd:AnimationNodeOneShot.get_fadeout_time
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fadeout_time, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFadeoutCurve(curve [1]gdclass.Curve) { //gd:AnimationNodeOneShot.set_fadeout_curve
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fadeout_curve, 0|(gdextension.SizeObject<<4), &struct{ curve gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCurve(curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(curve[0].Anchor())
 }
 func (self class) GetFadeoutCurve() [1]gdclass.Curve { //gd:AnimationNodeOneShot.get_fadeout_curve
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_fadeout_curve, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetBreakLoopAtEnd(enable bool) { //gd:AnimationNodeOneShot.set_break_loop_at_end
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_break_loop_at_end, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLoopBrokenAtEnd() bool { //gd:AnimationNodeOneShot.is_loop_broken_at_end
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_loop_broken_at_end, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAbortOnReset(enable bool) { //gd:AnimationNodeOneShot.set_abort_on_reset
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_abort_on_reset, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAbortedOnReset() bool { //gd:AnimationNodeOneShot.is_aborted_on_reset
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_aborted_on_reset, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutorestart(active bool) { //gd:AnimationNodeOneShot.set_autorestart
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autorestart, 0|(gdextension.SizeBool<<4), &struct{ active bool }{active})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasAutorestart() bool { //gd:AnimationNodeOneShot.has_autorestart
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_autorestart, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutorestartDelay(time float64) { //gd:AnimationNodeOneShot.set_autorestart_delay
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autorestart_delay, 0|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAutorestartDelay() float64 { //gd:AnimationNodeOneShot.get_autorestart_delay
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_autorestart_delay, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutorestartRandomDelay(time float64) { //gd:AnimationNodeOneShot.set_autorestart_random_delay
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autorestart_random_delay, 0|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAutorestartRandomDelay() float64 { //gd:AnimationNodeOneShot.get_autorestart_random_delay
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_autorestart_random_delay, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMixMode(mode MixMode) { //gd:AnimationNodeOneShot.set_mix_mode
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mix_mode, 0|(gdextension.SizeInt<<4), &struct{ mode MixMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMixMode() MixMode { //gd:AnimationNodeOneShot.get_mix_mode
 	var r_ret = jumponly.Call[MixMode](gd.ObjectChecked(self.AsObject()), methods.get_mix_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -442,22 +468,22 @@ func (o class) AsAnimationNodeOneShot() Advanced         { return Advanced(o) }
 func (o Instance) AsAnimationNodeOneShot() Instance      { return o }
 func (o *Extension[T]) AsAnimationNodeOneShot() Instance { return o.Super() }
 func (o class) AsAnimationNodeSync() AnimationNodeSync.Advanced {
-	return AnimationNodeSync.Advanced{gdclass.NewAnimationNodeSync(o[0].AsObject()[0])}
+	return *(*AnimationNodeSync.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsAnimationNodeSync() AnimationNodeSync.Instance {
 	return o.Super().AsAnimationNodeSync()
 }
 func (o Instance) AsAnimationNodeSync() AnimationNodeSync.Instance {
-	return AnimationNodeSync.Instance{gdclass.NewAnimationNodeSync(o[0].AsObject()[0])}
+	return *(*AnimationNodeSync.Instance)(ie.As(&o))
 }
-func (o class) AsAnimationNode() AnimationNode.Advanced         { return AnimationNode.Advanced{gdclass.NewAnimationNode(o[0].AsObject()[0])} }
+func (o class) AsAnimationNode() AnimationNode.Advanced         { return *(*AnimationNode.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAnimationNode() AnimationNode.Instance { return o.Super().AsAnimationNode() }
 func (o Instance) AsAnimationNode() AnimationNode.Instance {
-	return AnimationNode.Instance{gdclass.NewAnimationNode(o[0].AsObject()[0])}
+	return *(*AnimationNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

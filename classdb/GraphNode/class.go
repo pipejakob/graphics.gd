@@ -20,6 +20,7 @@ Note: While GraphNode is set up using slots and slot indices, connections are ma
 package GraphNode
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -29,6 +30,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -62,6 +64,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -573,7 +578,7 @@ func (self Instance) GetOutputPortSlot(port_idx int) int { //gd:GraphNode.get_ou
 type Advanced = class
 type class [1]gdclass.GraphNode
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGraphNode(obj[0])
@@ -588,7 +593,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -672,14 +677,18 @@ func (class) _draw_port(impl func(ptr gdclass.Receiver, slot_index int64, positi
 
 func (self class) SetTitle(title String.Readable) { //gd:GraphNode.set_title
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_title, 0|(gdextension.SizeString<<4), &struct{ title gdextension.String }{pointers.Get(gd.InternalString(title))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(title)
 }
 func (self class) GetTitle() String.Readable { //gd:GraphNode.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTitlebarHbox() [1]gdclass.HBoxContainer { //gd:GraphNode.get_titlebar_hbox
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_titlebar_hbox, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.HBoxContainer{gdclass.NewHBoxContainer(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
@@ -696,15 +705,21 @@ func (self class) SetSlot(slot_index int64, enable_left_port bool, type_left int
 		custom_icon_right gdextension.Object
 		draw_stylebox     bool
 	}{slot_index, enable_left_port, type_left, color_left, enable_right_port, type_right, color_right, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(custom_icon_left[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(custom_icon_right[0])[0])), draw_stylebox})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(custom_icon_left[0].Anchor())
+	runtime.KeepAlive(custom_icon_right[0].Anchor())
 }
 func (self class) ClearSlot(slot_index int64) { //gd:GraphNode.clear_slot
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_slot, 0|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearAllSlots() { //gd:GraphNode.clear_all_slots
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_all_slots, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSlotEnabledLeft(slot_index int64) bool { //gd:GraphNode.is_slot_enabled_left
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_slot_enabled_left, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -713,15 +728,18 @@ func (self class) SetSlotEnabledLeft(slot_index int64, enable bool) { //gd:Graph
 		slot_index int64
 		enable     bool
 	}{slot_index, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSlotTypeLeft(slot_index int64, atype int64) { //gd:GraphNode.set_slot_type_left
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_slot_type_left, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		slot_index int64
 		atype      int64
 	}{slot_index, atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSlotTypeLeft(slot_index int64) int64 { //gd:GraphNode.get_slot_type_left
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_slot_type_left, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -730,9 +748,11 @@ func (self class) SetSlotColorLeft(slot_index int64, color Color.RGBA) { //gd:Gr
 		slot_index int64
 		color      Color.RGBA
 	}{slot_index, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSlotColorLeft(slot_index int64) Color.RGBA { //gd:GraphNode.get_slot_color_left
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_slot_color_left, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -741,9 +761,12 @@ func (self class) SetSlotCustomIconLeft(slot_index int64, custom_icon [1]gdclass
 		slot_index  int64
 		custom_icon gdextension.Object
 	}{slot_index, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(custom_icon[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(custom_icon[0].Anchor())
 }
 func (self class) GetSlotCustomIconLeft(slot_index int64) [1]gdclass.Texture2D { //gd:GraphNode.get_slot_custom_icon_left
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_slot_custom_icon_left, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -752,14 +775,18 @@ func (self class) SetSlotMetadataLeft(slot_index int64, value variant.Any) { //g
 		slot_index int64
 		value      gdextension.Variant
 	}{slot_index, gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(value)
 }
 func (self class) GetSlotMetadataLeft(slot_index int64) variant.Any { //gd:GraphNode.get_slot_metadata_left
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_slot_metadata_left, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) IsSlotEnabledRight(slot_index int64) bool { //gd:GraphNode.is_slot_enabled_right
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_slot_enabled_right, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -768,15 +795,18 @@ func (self class) SetSlotEnabledRight(slot_index int64, enable bool) { //gd:Grap
 		slot_index int64
 		enable     bool
 	}{slot_index, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSlotTypeRight(slot_index int64, atype int64) { //gd:GraphNode.set_slot_type_right
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_slot_type_right, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		slot_index int64
 		atype      int64
 	}{slot_index, atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSlotTypeRight(slot_index int64) int64 { //gd:GraphNode.get_slot_type_right
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_slot_type_right, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -785,9 +815,11 @@ func (self class) SetSlotColorRight(slot_index int64, color Color.RGBA) { //gd:G
 		slot_index int64
 		color      Color.RGBA
 	}{slot_index, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSlotColorRight(slot_index int64) Color.RGBA { //gd:GraphNode.get_slot_color_right
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_slot_color_right, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -796,9 +828,12 @@ func (self class) SetSlotCustomIconRight(slot_index int64, custom_icon [1]gdclas
 		slot_index  int64
 		custom_icon gdextension.Object
 	}{slot_index, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(custom_icon[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(custom_icon[0].Anchor())
 }
 func (self class) GetSlotCustomIconRight(slot_index int64) [1]gdclass.Texture2D { //gd:GraphNode.get_slot_custom_icon_right
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_slot_custom_icon_right, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -807,14 +842,18 @@ func (self class) SetSlotMetadataRight(slot_index int64, value variant.Any) { //
 		slot_index int64
 		value      gdextension.Variant
 	}{slot_index, gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(value)
 }
 func (self class) GetSlotMetadataRight(slot_index int64) variant.Any { //gd:GraphNode.get_slot_metadata_right
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_slot_metadata_right, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) IsSlotDrawStylebox(slot_index int64) bool { //gd:GraphNode.is_slot_draw_stylebox
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_slot_draw_stylebox, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ slot_index int64 }{slot_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -823,70 +862,85 @@ func (self class) SetSlotDrawStylebox(slot_index int64, enable bool) { //gd:Grap
 		slot_index int64
 		enable     bool
 	}{slot_index, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetIgnoreInvalidConnectionType(ignore bool) { //gd:GraphNode.set_ignore_invalid_connection_type
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ignore_invalid_connection_type, 0|(gdextension.SizeBool<<4), &struct{ ignore bool }{ignore})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsIgnoringValidConnectionType() bool { //gd:GraphNode.is_ignoring_valid_connection_type
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_ignoring_valid_connection_type, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSlotsFocusMode(focus_mode Control.FocusMode) { //gd:GraphNode.set_slots_focus_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_slots_focus_mode, 0|(gdextension.SizeInt<<4), &struct{ focus_mode Control.FocusMode }{focus_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSlotsFocusMode() Control.FocusMode { //gd:GraphNode.get_slots_focus_mode
 	var r_ret = jumponly.Call[Control.FocusMode](gd.ObjectChecked(self.AsObject()), methods.get_slots_focus_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInputPortCount() int64 { //gd:GraphNode.get_input_port_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_input_port_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInputPortPosition(port_idx int64) Vector2.XY { //gd:GraphNode.get_input_port_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_input_port_position, gdextension.SizeVector2|(gdextension.SizeInt<<4), &struct{ port_idx int64 }{port_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInputPortType(port_idx int64) int64 { //gd:GraphNode.get_input_port_type
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_input_port_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ port_idx int64 }{port_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInputPortColor(port_idx int64) Color.RGBA { //gd:GraphNode.get_input_port_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_input_port_color, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ port_idx int64 }{port_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInputPortSlot(port_idx int64) int64 { //gd:GraphNode.get_input_port_slot
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_input_port_slot, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ port_idx int64 }{port_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOutputPortCount() int64 { //gd:GraphNode.get_output_port_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_output_port_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOutputPortPosition(port_idx int64) Vector2.XY { //gd:GraphNode.get_output_port_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_output_port_position, gdextension.SizeVector2|(gdextension.SizeInt<<4), &struct{ port_idx int64 }{port_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOutputPortType(port_idx int64) int64 { //gd:GraphNode.get_output_port_type
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_output_port_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ port_idx int64 }{port_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOutputPortColor(port_idx int64) Color.RGBA { //gd:GraphNode.get_output_port_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_output_port_color, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ port_idx int64 }{port_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOutputPortSlot(port_idx int64) int64 { //gd:GraphNode.get_output_port_slot
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_output_port_slot, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ port_idx int64 }{port_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -926,21 +980,21 @@ func (self class) SlotSizesChanged() Signal.Any {
 func (o class) AsGraphNode() Advanced                         { return Advanced(o) }
 func (o Instance) AsGraphNode() Instance                      { return o }
 func (o *Extension[T]) AsGraphNode() Instance                 { return o.Super() }
-func (o class) AsGraphElement() GraphElement.Advanced         { return GraphElement.Advanced{gdclass.NewGraphElement(o[0].AsObject()[0])} }
+func (o class) AsGraphElement() GraphElement.Advanced         { return *(*GraphElement.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsGraphElement() GraphElement.Instance { return o.Super().AsGraphElement() }
-func (o Instance) AsGraphElement() GraphElement.Instance      { return GraphElement.Instance{gdclass.NewGraphElement(o[0].AsObject()[0])} }
-func (o class) AsContainer() Container.Advanced               { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o Instance) AsGraphElement() GraphElement.Instance      { return *(*GraphElement.Instance)(ie.As(&o)) }
+func (o class) AsContainer() Container.Advanced               { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance       { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance            { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced                   { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance            { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced                   { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance           { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance                { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced             { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance                { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced             { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance     { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance          { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance          { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                         { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance                 { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                      { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

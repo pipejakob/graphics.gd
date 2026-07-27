@@ -17,6 +17,7 @@ Note: [InputEvent]s are not passed to a standalone [SubViewport] by default. To 
 package SubViewport
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -25,6 +26,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -51,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -141,7 +146,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.SubViewport
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSubViewport(obj[0])
@@ -156,7 +161,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -266,61 +271,73 @@ func (self Instance) SetRenderTargetUpdateMode(value UpdateMode) Instance { //gd
 
 func (self class) SetSize(size Vector2i.XY) { //gd:SubViewport.set_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSize() Vector2i.XY { //gd:SubViewport.get_size
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSize2dOverride(size Vector2i.XY) { //gd:SubViewport.set_size_2d_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size_2d_override, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSize2dOverride() Vector2i.XY { //gd:SubViewport.get_size_2d_override
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_size_2d_override, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSize2dOverrideStretch(enable bool) { //gd:SubViewport.set_size_2d_override_stretch
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size_2d_override_stretch, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSize2dOverrideStretchEnabled() bool { //gd:SubViewport.is_size_2d_override_stretch_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_size_2d_override_stretch_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetViewCount(view_count int64) { //gd:SubViewport.set_view_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_view_count, 0|(gdextension.SizeInt<<4), &struct{ view_count int64 }{view_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetViewCount() int64 { //gd:SubViewport.get_view_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_view_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUpdateMode(mode UpdateMode) { //gd:SubViewport.set_update_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_update_mode, 0|(gdextension.SizeInt<<4), &struct{ mode UpdateMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUpdateMode() UpdateMode { //gd:SubViewport.get_update_mode
 	var r_ret = noescape.Call[UpdateMode](gd.ObjectChecked(self.AsObject()), methods.get_update_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetClearMode(mode ClearMode) { //gd:SubViewport.set_clear_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_clear_mode, 0|(gdextension.SizeInt<<4), &struct{ mode ClearMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetClearMode() ClearMode { //gd:SubViewport.get_clear_mode
 	var r_ret = noescape.Call[ClearMode](gd.ObjectChecked(self.AsObject()), methods.get_clear_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsSubViewport() Advanced               { return Advanced(o) }
 func (o Instance) AsSubViewport() Instance            { return o }
 func (o *Extension[T]) AsSubViewport() Instance       { return o.Super() }
-func (o class) AsViewport() Viewport.Advanced         { return Viewport.Advanced{gdclass.NewViewport(o[0].AsObject()[0])} }
+func (o class) AsViewport() Viewport.Advanced         { return *(*Viewport.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsViewport() Viewport.Instance { return o.Super().AsViewport() }
-func (o Instance) AsViewport() Viewport.Instance      { return Viewport.Instance{gdclass.NewViewport(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                 { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsViewport() Viewport.Instance      { return *(*Viewport.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                 { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance         { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance              { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance              { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -9,6 +9,7 @@
 package Camera3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -18,6 +19,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -51,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -380,7 +385,7 @@ func (self Instance) GetCullMaskValue(layer_number int) bool { //gd:Camera3D.get
 type Advanced = class
 type class [1]gdclass.Camera3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCamera3D(obj[0])
@@ -395,7 +400,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -673,26 +678,31 @@ func (self Instance) SetFar(value Float.X) Instance { //gd:Camera3D.far
 
 func (self class) ProjectRayNormal(screen_point Vector2.XY) Vector3.XYZ { //gd:Camera3D.project_ray_normal
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.project_ray_normal, gdextension.SizeVector3|(gdextension.SizeVector2<<4), &struct{ screen_point Vector2.XY }{screen_point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ProjectLocalRayNormal(screen_point Vector2.XY) Vector3.XYZ { //gd:Camera3D.project_local_ray_normal
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.project_local_ray_normal, gdextension.SizeVector3|(gdextension.SizeVector2<<4), &struct{ screen_point Vector2.XY }{screen_point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ProjectRayOrigin(screen_point Vector2.XY) Vector3.XYZ { //gd:Camera3D.project_ray_origin
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.project_ray_origin, gdextension.SizeVector3|(gdextension.SizeVector2<<4), &struct{ screen_point Vector2.XY }{screen_point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) UnprojectPosition(world_point Vector3.XYZ) Vector2.XY { //gd:Camera3D.unproject_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.unproject_position, gdextension.SizeVector2|(gdextension.SizeVector3<<4), &struct{ world_point Vector3.XYZ }{world_point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsPositionBehind(world_point Vector3.XYZ) bool { //gd:Camera3D.is_position_behind
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_position_behind, gdextension.SizeBool|(gdextension.SizeVector3<<4), &struct{ world_point Vector3.XYZ }{world_point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -701,6 +711,7 @@ func (self class) ProjectPosition(screen_point Vector2.XY, z_depth float64) Vect
 		screen_point Vector2.XY
 		z_depth      float64
 	}{screen_point, z_depth})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -710,6 +721,7 @@ func (self class) SetPerspective(fov float64, z_near float64, z_far float64) { /
 		z_near float64
 		z_far  float64
 	}{fov, z_near, z_far})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetOrthogonal(size float64, z_near float64, z_far float64) { //gd:Camera3D.set_orthogonal
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_orthogonal, 0|(gdextension.SizeFloat<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeFloat<<12), &struct {
@@ -717,6 +729,7 @@ func (self class) SetOrthogonal(size float64, z_near float64, z_far float64) { /
 		z_near float64
 		z_far  float64
 	}{size, z_near, z_far})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFrustum(size float64, offset Vector2.XY, z_near float64, z_far float64) { //gd:Camera3D.set_frustum
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_frustum, 0|(gdextension.SizeFloat<<4)|(gdextension.SizeVector2<<8)|(gdextension.SizeFloat<<12)|(gdextension.SizeFloat<<16), &struct {
@@ -725,160 +738,202 @@ func (self class) SetFrustum(size float64, offset Vector2.XY, z_near float64, z_
 		z_near float64
 		z_far  float64
 	}{size, offset, z_near, z_far})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MakeCurrent() { //gd:Camera3D.make_current
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.make_current, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearCurrent(enable_next bool) { //gd:Camera3D.clear_current
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_current, 0|(gdextension.SizeBool<<4), &struct{ enable_next bool }{enable_next})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCurrent(enabled bool) { //gd:Camera3D.set_current
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_current, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCurrent() bool { //gd:Camera3D.is_current
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_current, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCameraTransform() Transform3D.BasisOrigin { //gd:Camera3D.get_camera_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_camera_transform, gdextension.SizeTransform3D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) GetCameraProjection() Projection.XYZW { //gd:Camera3D.get_camera_projection
 	var r_ret = noescape.Call[Projection.XYZW](gd.ObjectChecked(self.AsObject()), methods.get_camera_projection, gdextension.SizeProjection, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFov() float64 { //gd:Camera3D.get_fov
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fov, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFrustumOffset() Vector2.XY { //gd:Camera3D.get_frustum_offset
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_frustum_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSize() float64 { //gd:Camera3D.get_size
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFar() float64 { //gd:Camera3D.get_far
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_far, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetNear() float64 { //gd:Camera3D.get_near
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_near, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFov(fov float64) { //gd:Camera3D.set_fov
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fov, 0|(gdextension.SizeFloat<<4), &struct{ fov float64 }{fov})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFrustumOffset(offset Vector2.XY) { //gd:Camera3D.set_frustum_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_frustum_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSize(size float64) { //gd:Camera3D.set_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size, 0|(gdextension.SizeFloat<<4), &struct{ size float64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFar(far float64) { //gd:Camera3D.set_far
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_far, 0|(gdextension.SizeFloat<<4), &struct{ far float64 }{far})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetNear(near float64) { //gd:Camera3D.set_near
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_near, 0|(gdextension.SizeFloat<<4), &struct{ near float64 }{near})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetProjection() ProjectionType { //gd:Camera3D.get_projection
 	var r_ret = jumponly.Call[ProjectionType](gd.ObjectChecked(self.AsObject()), methods.get_projection, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetProjection(mode ProjectionType) { //gd:Camera3D.set_projection
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_projection, 0|(gdextension.SizeInt<<4), &struct{ mode ProjectionType }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetHOffset(offset float64) { //gd:Camera3D.set_h_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_h_offset, 0|(gdextension.SizeFloat<<4), &struct{ offset float64 }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHOffset() float64 { //gd:Camera3D.get_h_offset
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_h_offset, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVOffset(offset float64) { //gd:Camera3D.set_v_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_v_offset, 0|(gdextension.SizeFloat<<4), &struct{ offset float64 }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVOffset() float64 { //gd:Camera3D.get_v_offset
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_v_offset, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCullMask(mask int64) { //gd:Camera3D.set_cull_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cull_mask, 0|(gdextension.SizeInt<<4), &struct{ mask int64 }{mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCullMask() int64 { //gd:Camera3D.get_cull_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_cull_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnvironment(env [1]gdclass.Environment) { //gd:Camera3D.set_environment
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_environment, 0|(gdextension.SizeObject<<4), &struct{ env gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetEnvironment(env[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(env[0].Anchor())
 }
 func (self class) GetEnvironment() [1]gdclass.Environment { //gd:Camera3D.get_environment
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_environment, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Environment{gdclass.NewEnvironment(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetAttributes(env [1]gdclass.CameraAttributes) { //gd:Camera3D.set_attributes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_attributes, 0|(gdextension.SizeObject<<4), &struct{ env gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCameraAttributes(env[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(env[0].Anchor())
 }
 func (self class) GetAttributes() [1]gdclass.CameraAttributes { //gd:Camera3D.get_attributes
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_attributes, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.CameraAttributes{gdclass.NewCameraAttributes(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetCompositor(compositor [1]gdclass.Compositor) { //gd:Camera3D.set_compositor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_compositor, 0|(gdextension.SizeObject<<4), &struct{ compositor gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCompositor(compositor[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(compositor[0].Anchor())
 }
 func (self class) GetCompositor() [1]gdclass.Compositor { //gd:Camera3D.get_compositor
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_compositor, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Compositor{gdclass.NewCompositor(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetKeepAspectMode(mode KeepAspect) { //gd:Camera3D.set_keep_aspect_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_keep_aspect_mode, 0|(gdextension.SizeInt<<4), &struct{ mode KeepAspect }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetKeepAspectMode() KeepAspect { //gd:Camera3D.get_keep_aspect_mode
 	var r_ret = jumponly.Call[KeepAspect](gd.ObjectChecked(self.AsObject()), methods.get_keep_aspect_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDopplerTracking(mode DopplerTracking) { //gd:Camera3D.set_doppler_tracking
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_doppler_tracking, 0|(gdextension.SizeInt<<4), &struct{ mode DopplerTracking }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDopplerTracking() DopplerTracking { //gd:Camera3D.get_doppler_tracking
 	var r_ret = jumponly.Call[DopplerTracking](gd.ObjectChecked(self.AsObject()), methods.get_doppler_tracking, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFrustum() Array.Contains[Plane.NormalD] { //gd:Camera3D.get_frustum
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_frustum, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Plane.NormalD](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) IsPositionInFrustum(world_point Vector3.XYZ) bool { //gd:Camera3D.is_position_in_frustum
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_position_in_frustum, gdextension.SizeBool|(gdextension.SizeVector3<<4), &struct{ world_point Vector3.XYZ }{world_point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCameraRid() RID.Any { //gd:Camera3D.get_camera_rid
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_camera_rid, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPyramidShapeRid() RID.Any { //gd:Camera3D.get_pyramid_shape_rid
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_pyramid_shape_rid, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -887,21 +942,23 @@ func (self class) SetCullMaskValue(layer_number int64, value bool) { //gd:Camera
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCullMaskValue(layer_number int64) bool { //gd:Camera3D.get_cull_mask_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_cull_mask_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsCamera3D() Advanced              { return Advanced(o) }
 func (o Instance) AsCamera3D() Instance           { return o }
 func (o *Extension[T]) AsCamera3D() Instance      { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

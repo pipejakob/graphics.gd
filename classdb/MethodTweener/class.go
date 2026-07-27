@@ -15,6 +15,7 @@ Note: [Tween.TweenMethod] is the only correct way to create [MethodTweener]. Any
 package MethodTweener
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -50,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -208,7 +212,7 @@ func Make(peer Tween.Instance, method Callable.Function, from any, to any, durat
 type Advanced = class
 type class [1]gdclass.MethodTweener
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMethodTweener(obj[0])
@@ -223,7 +227,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -248,25 +252,28 @@ func New() Instance {
 
 func (self class) SetDelay(delay float64) [1]gdclass.MethodTweener { //gd:MethodTweener.set_delay
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.set_delay, gdextension.SizeObject|(gdextension.SizeFloat<<4), &struct{ delay float64 }{delay})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.MethodTweener{gdclass.NewMethodTweener(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetTrans(trans Tween.TransitionType) [1]gdclass.MethodTweener { //gd:MethodTweener.set_trans
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.set_trans, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ trans Tween.TransitionType }{trans})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.MethodTweener{gdclass.NewMethodTweener(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetEase(ease Tween.EaseType) [1]gdclass.MethodTweener { //gd:MethodTweener.set_ease
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.set_ease, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ ease Tween.EaseType }{ease})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.MethodTweener{gdclass.NewMethodTweener(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsMethodTweener() Advanced           { return Advanced(o) }
 func (o Instance) AsMethodTweener() Instance        { return o }
 func (o *Extension[T]) AsMethodTweener() Instance   { return o.Super() }
-func (o class) AsTweener() Tweener.Advanced         { return Tweener.Advanced{gdclass.NewTweener(o[0].AsObject()[0])} }
+func (o class) AsTweener() Tweener.Advanced         { return *(*Tweener.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTweener() Tweener.Instance { return o.Super().AsTweener() }
-func (o Instance) AsTweener() Tweener.Instance      { return Tweener.Instance{gdclass.NewTweener(o[0].AsObject()[0])} }
+func (o Instance) AsTweener() Tweener.Instance      { return *(*Tweener.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                 { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC         { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC              { return *(*ie.RC)(ie.As(&o)) }

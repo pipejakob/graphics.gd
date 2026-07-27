@@ -10,6 +10,7 @@ This class provides a graph-like visual editor for creating a [Shader]. Although
 package VisualShader
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -46,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -292,7 +296,7 @@ func (self Instance) HasVarying(name string) bool { //gd:VisualShader.has_varyin
 type Advanced = class
 type class [1]gdclass.VisualShader
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVisualShader(obj[0])
@@ -307,7 +311,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -345,6 +349,7 @@ func (self Instance) SetGraphOffset(value Vector2.XY) Instance { //gd:VisualShad
 
 func (self class) SetMode(mode Shader.Mode) { //gd:VisualShader.set_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mode, 0|(gdextension.SizeInt<<4), &struct{ mode Shader.Mode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddNode(atype Type, node [1]gdclass.VisualShaderNode, position Vector2.XY, id int64) { //gd:VisualShader.add_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_node, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeVector2<<12)|(gdextension.SizeInt<<16), &struct {
@@ -353,12 +358,15 @@ func (self class) AddNode(atype Type, node [1]gdclass.VisualShaderNode, position
 		position Vector2.XY
 		id       int64
 	}{atype, gdextension.Object(gdreference.GetObject(gdclass.GetVisualShaderNode(node[0])[0])), position, id})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node[0].Anchor())
 }
 func (self class) GetNode(atype Type, id int64) [1]gdclass.VisualShaderNode { //gd:VisualShader.get_node
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_node, gdextension.SizeObject|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		atype Type
 		id    int64
 	}{atype, id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.VisualShaderNode{gdclass.NewVisualShaderNode(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -368,22 +376,26 @@ func (self class) SetNodePosition(atype Type, id int64, position Vector2.XY) { /
 		id       int64
 		position Vector2.XY
 	}{atype, id, position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNodePosition(atype Type, id int64) Vector2.XY { //gd:VisualShader.get_node_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_node_position, gdextension.SizeVector2|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		atype Type
 		id    int64
 	}{atype, id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetNodeList(atype Type) Packed.Array[int32] { //gd:VisualShader.get_node_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_node_list, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ atype Type }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetValidNodeId(atype Type) int64 { //gd:VisualShader.get_valid_node_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_valid_node_id, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ atype Type }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -392,6 +404,7 @@ func (self class) RemoveNode(atype Type, id int64) { //gd:VisualShader.remove_no
 		atype Type
 		id    int64
 	}{atype, id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ReplaceNode(atype Type, id int64, new_class String.Name) { //gd:VisualShader.replace_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.replace_node, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeStringName<<12), &struct {
@@ -399,6 +412,8 @@ func (self class) ReplaceNode(atype Type, id int64, new_class String.Name) { //g
 		id        int64
 		new_class gdextension.StringName
 	}{atype, id, pointers.Get(gd.InternalStringName(new_class))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(new_class)
 }
 func (self class) IsNodeConnection(atype Type, from_node int64, from_port int64, to_node int64, to_port int64) bool { //gd:VisualShader.is_node_connection
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_node_connection, gdextension.SizeBool|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeInt<<20), &struct {
@@ -408,6 +423,7 @@ func (self class) IsNodeConnection(atype Type, from_node int64, from_port int64,
 		to_node   int64
 		to_port   int64
 	}{atype, from_node, from_port, to_node, to_port})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -419,6 +435,7 @@ func (self class) CanConnectNodes(atype Type, from_node int64, from_port int64, 
 		to_node   int64
 		to_port   int64
 	}{atype, from_node, from_port, to_node, to_port})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -430,6 +447,7 @@ func (self class) ConnectNodes(atype Type, from_node int64, from_port int64, to_
 		to_node   int64
 		to_port   int64
 	}{atype, from_node, from_port, to_node, to_port})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -441,6 +459,7 @@ func (self class) DisconnectNodes(atype Type, from_node int64, from_port int64, 
 		to_node   int64
 		to_port   int64
 	}{atype, from_node, from_port, to_node, to_port})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ConnectNodesForced(atype Type, from_node int64, from_port int64, to_node int64, to_port int64) { //gd:VisualShader.connect_nodes_forced
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.connect_nodes_forced, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeInt<<20), &struct {
@@ -450,9 +469,11 @@ func (self class) ConnectNodesForced(atype Type, from_node int64, from_port int6
 		to_node   int64
 		to_port   int64
 	}{atype, from_node, from_port, to_node, to_port})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNodeConnections(atype Type) Array.Contains[Dictionary.Any] { //gd:VisualShader.get_node_connections
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_node_connections, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ atype Type }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -462,12 +483,14 @@ func (self class) AttachNodeToFrame(atype Type, id int64, frame_ int64) { //gd:V
 		id     int64
 		frame_ int64
 	}{atype, id, frame_})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DetachNodeFromFrame(atype Type, id int64) { //gd:VisualShader.detach_node_from_frame
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.detach_node_from_frame, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		atype Type
 		id    int64
 	}{atype, id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddVarying(name String.Readable, mode VaryingMode, atype VaryingType) { //gd:VisualShader.add_varying
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_varying, 0|(gdextension.SizeString<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -475,32 +498,40 @@ func (self class) AddVarying(name String.Readable, mode VaryingMode, atype Varyi
 		mode  VaryingMode
 		atype VaryingType
 	}{pointers.Get(gd.InternalString(name)), mode, atype})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveVarying(name String.Readable) { //gd:VisualShader.remove_varying
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_varying, 0|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) HasVarying(name String.Readable) bool { //gd:VisualShader.has_varying
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_varying, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGraphOffset(offset Vector2.XY) { //gd:VisualShader.set_graph_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_graph_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGraphOffset() Vector2.XY { //gd:VisualShader.get_graph_offset
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_graph_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsVisualShader() Advanced              { return Advanced(o) }
 func (o Instance) AsVisualShader() Instance           { return o }
 func (o *Extension[T]) AsVisualShader() Instance      { return o.Super() }
-func (o class) AsShader() Shader.Advanced             { return Shader.Advanced{gdclass.NewShader(o[0].AsObject()[0])} }
+func (o class) AsShader() Shader.Advanced             { return *(*Shader.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsShader() Shader.Instance     { return o.Super().AsShader() }
-func (o Instance) AsShader() Shader.Instance          { return Shader.Instance{gdclass.NewShader(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsShader() Shader.Instance          { return *(*Shader.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

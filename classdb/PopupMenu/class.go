@@ -25,6 +25,7 @@ Note: The ID values used for items are limited to 32 bits, not full 64 bits of i
 package PopupMenu
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -34,6 +35,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -68,6 +70,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1282,7 +1287,7 @@ func (self Instance) IsSystemMenu() bool { //gd:PopupMenu.is_system_menu
 type Advanced = class
 type class [1]gdclass.PopupMenu
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPopupMenu(obj[0])
@@ -1297,7 +1302,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1545,19 +1550,24 @@ func (self class) ActivateItemByEvent(event [1]gdclass.InputEvent, for_global_on
 		event           gdextension.Object
 		for_global_only bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0])), for_global_only})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(event[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPreferNativeMenu(enabled bool) { //gd:PopupMenu.set_prefer_native_menu
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_prefer_native_menu, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPreferNativeMenu() bool { //gd:PopupMenu.is_prefer_native_menu
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_prefer_native_menu, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsNativeMenu() bool { //gd:PopupMenu.is_native_menu
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_native_menu, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1567,6 +1577,8 @@ func (self class) AddItem(label String.Readable, id int64, accel Input.Key) { //
 		id    int64
 		accel Input.Key
 	}{pointers.Get(gd.InternalString(label)), id, accel})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label)
 }
 func (self class) AddIconItem(texture [1]gdclass.Texture2D, label String.Readable, id int64, accel Input.Key) { //gd:PopupMenu.add_icon_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_icon_item, 0|(gdextension.SizeObject<<4)|(gdextension.SizeString<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16), &struct {
@@ -1575,6 +1587,9 @@ func (self class) AddIconItem(texture [1]gdclass.Texture2D, label String.Readabl
 		id      int64
 		accel   Input.Key
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), pointers.Get(gd.InternalString(label)), id, accel})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
+	runtime.KeepAlive(label)
 }
 func (self class) AddCheckItem(label String.Readable, id int64, accel Input.Key) { //gd:PopupMenu.add_check_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_check_item, 0|(gdextension.SizeString<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -1582,6 +1597,8 @@ func (self class) AddCheckItem(label String.Readable, id int64, accel Input.Key)
 		id    int64
 		accel Input.Key
 	}{pointers.Get(gd.InternalString(label)), id, accel})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label)
 }
 func (self class) AddIconCheckItem(texture [1]gdclass.Texture2D, label String.Readable, id int64, accel Input.Key) { //gd:PopupMenu.add_icon_check_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_icon_check_item, 0|(gdextension.SizeObject<<4)|(gdextension.SizeString<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16), &struct {
@@ -1590,6 +1607,9 @@ func (self class) AddIconCheckItem(texture [1]gdclass.Texture2D, label String.Re
 		id      int64
 		accel   Input.Key
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), pointers.Get(gd.InternalString(label)), id, accel})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
+	runtime.KeepAlive(label)
 }
 func (self class) AddRadioCheckItem(label String.Readable, id int64, accel Input.Key) { //gd:PopupMenu.add_radio_check_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_radio_check_item, 0|(gdextension.SizeString<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -1597,6 +1617,8 @@ func (self class) AddRadioCheckItem(label String.Readable, id int64, accel Input
 		id    int64
 		accel Input.Key
 	}{pointers.Get(gd.InternalString(label)), id, accel})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label)
 }
 func (self class) AddIconRadioCheckItem(texture [1]gdclass.Texture2D, label String.Readable, id int64, accel Input.Key) { //gd:PopupMenu.add_icon_radio_check_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_icon_radio_check_item, 0|(gdextension.SizeObject<<4)|(gdextension.SizeString<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16), &struct {
@@ -1605,6 +1627,9 @@ func (self class) AddIconRadioCheckItem(texture [1]gdclass.Texture2D, label Stri
 		id      int64
 		accel   Input.Key
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), pointers.Get(gd.InternalString(label)), id, accel})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
+	runtime.KeepAlive(label)
 }
 func (self class) AddMultistateItem(label String.Readable, max_states int64, default_state int64, id int64, accel Input.Key) { //gd:PopupMenu.add_multistate_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_multistate_item, 0|(gdextension.SizeString<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeInt<<20), &struct {
@@ -1614,6 +1639,8 @@ func (self class) AddMultistateItem(label String.Readable, max_states int64, def
 		id            int64
 		accel         Input.Key
 	}{pointers.Get(gd.InternalString(label)), max_states, default_state, id, accel})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label)
 }
 func (self class) AddShortcut(shortcut [1]gdclass.Shortcut, id int64, global bool, allow_echo bool) { //gd:PopupMenu.add_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_shortcut, 0|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeBool<<16), &struct {
@@ -1622,6 +1649,8 @@ func (self class) AddShortcut(shortcut [1]gdclass.Shortcut, id int64, global boo
 		global     bool
 		allow_echo bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetShortcut(shortcut[0])[0])), id, global, allow_echo})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shortcut[0].Anchor())
 }
 func (self class) AddIconShortcut(texture [1]gdclass.Texture2D, shortcut [1]gdclass.Shortcut, id int64, global bool, allow_echo bool) { //gd:PopupMenu.add_icon_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_icon_shortcut, 0|(gdextension.SizeObject<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeBool<<16)|(gdextension.SizeBool<<20), &struct {
@@ -1631,6 +1660,9 @@ func (self class) AddIconShortcut(texture [1]gdclass.Texture2D, shortcut [1]gdcl
 		global     bool
 		allow_echo bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetShortcut(shortcut[0])[0])), id, global, allow_echo})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
+	runtime.KeepAlive(shortcut[0].Anchor())
 }
 func (self class) AddCheckShortcut(shortcut [1]gdclass.Shortcut, id int64, global bool) { //gd:PopupMenu.add_check_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_check_shortcut, 0|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeBool<<12), &struct {
@@ -1638,6 +1670,8 @@ func (self class) AddCheckShortcut(shortcut [1]gdclass.Shortcut, id int64, globa
 		id       int64
 		global   bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetShortcut(shortcut[0])[0])), id, global})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shortcut[0].Anchor())
 }
 func (self class) AddIconCheckShortcut(texture [1]gdclass.Texture2D, shortcut [1]gdclass.Shortcut, id int64, global bool) { //gd:PopupMenu.add_icon_check_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_icon_check_shortcut, 0|(gdextension.SizeObject<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeBool<<16), &struct {
@@ -1646,6 +1680,9 @@ func (self class) AddIconCheckShortcut(texture [1]gdclass.Texture2D, shortcut [1
 		id       int64
 		global   bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetShortcut(shortcut[0])[0])), id, global})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
+	runtime.KeepAlive(shortcut[0].Anchor())
 }
 func (self class) AddRadioCheckShortcut(shortcut [1]gdclass.Shortcut, id int64, global bool) { //gd:PopupMenu.add_radio_check_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_radio_check_shortcut, 0|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeBool<<12), &struct {
@@ -1653,6 +1690,8 @@ func (self class) AddRadioCheckShortcut(shortcut [1]gdclass.Shortcut, id int64, 
 		id       int64
 		global   bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetShortcut(shortcut[0])[0])), id, global})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shortcut[0].Anchor())
 }
 func (self class) AddIconRadioCheckShortcut(texture [1]gdclass.Texture2D, shortcut [1]gdclass.Shortcut, id int64, global bool) { //gd:PopupMenu.add_icon_radio_check_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_icon_radio_check_shortcut, 0|(gdextension.SizeObject<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeBool<<16), &struct {
@@ -1661,6 +1700,9 @@ func (self class) AddIconRadioCheckShortcut(texture [1]gdclass.Texture2D, shortc
 		id       int64
 		global   bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetShortcut(shortcut[0])[0])), id, global})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
+	runtime.KeepAlive(shortcut[0].Anchor())
 }
 func (self class) AddSubmenuItem(label String.Readable, submenu String.Readable, id int64) { //gd:PopupMenu.add_submenu_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_submenu_item, 0|(gdextension.SizeString<<4)|(gdextension.SizeString<<8)|(gdextension.SizeInt<<12), &struct {
@@ -1668,6 +1710,9 @@ func (self class) AddSubmenuItem(label String.Readable, submenu String.Readable,
 		submenu gdextension.String
 		id      int64
 	}{pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalString(submenu)), id})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(submenu)
 }
 func (self class) AddSubmenuNodeItem(label String.Readable, submenu [1]gdclass.PopupMenu, id int64) { //gd:PopupMenu.add_submenu_node_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_submenu_node_item, 0|(gdextension.SizeString<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeInt<<12), &struct {
@@ -1675,114 +1720,142 @@ func (self class) AddSubmenuNodeItem(label String.Readable, submenu [1]gdclass.P
 		submenu gdextension.Object
 		id      int64
 	}{pointers.Get(gd.InternalString(label)), gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetPopupMenu(submenu[0])[0])), id})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(submenu[0].Anchor())
 }
 func (self class) SetItemText(index int64, text String.Readable) { //gd:PopupMenu.set_item_text
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_text, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8), &struct {
 		index int64
 		text  gdextension.String
 	}{index, pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
 }
 func (self class) SetItemTextDirection(index int64, direction Control.TextDirection) { //gd:PopupMenu.set_item_text_direction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_text_direction, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index     int64
 		direction Control.TextDirection
 	}{index, direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemLanguage(index int64, language String.Readable) { //gd:PopupMenu.set_item_language
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_language, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8), &struct {
 		index    int64
 		language gdextension.String
 	}{index, pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(language)
 }
 func (self class) SetItemAutoTranslateMode(index int64, mode Node.AutoTranslateMode) { //gd:PopupMenu.set_item_auto_translate_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_auto_translate_mode, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		mode  Node.AutoTranslateMode
 	}{index, mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemIcon(index int64, icon [1]gdclass.Texture2D) { //gd:PopupMenu.set_item_icon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_icon, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8), &struct {
 		index int64
 		icon  gdextension.Object
 	}{index, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(icon[0].Anchor())
 }
 func (self class) SetItemIconMaxWidth(index int64, width int64) { //gd:PopupMenu.set_item_icon_max_width
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_icon_max_width, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		width int64
 	}{index, width})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemIconModulate(index int64, modulate Color.RGBA) { //gd:PopupMenu.set_item_icon_modulate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_icon_modulate, 0|(gdextension.SizeInt<<4)|(gdextension.SizeColor<<8), &struct {
 		index    int64
 		modulate Color.RGBA
 	}{index, modulate})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemChecked(index int64, checked bool) { //gd:PopupMenu.set_item_checked
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_checked, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		index   int64
 		checked bool
 	}{index, checked})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemId(index int64, id int64) { //gd:PopupMenu.set_item_id
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_id, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		id    int64
 	}{index, id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemAccelerator(index int64, accel Input.Key) { //gd:PopupMenu.set_item_accelerator
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_accelerator, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		accel Input.Key
 	}{index, accel})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemMetadata(index int64, metadata variant.Any) { //gd:PopupMenu.set_item_metadata
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_metadata, 0|(gdextension.SizeInt<<4)|(gdextension.SizeVariant<<8), &struct {
 		index    int64
 		metadata gdextension.Variant
 	}{index, gdextension.Variant(pointers.Get(gd.InternalVariant(metadata)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(metadata)
 }
 func (self class) SetItemDisabled(index int64, disabled bool) { //gd:PopupMenu.set_item_disabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_disabled, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		index    int64
 		disabled bool
 	}{index, disabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemSubmenu(index int64, submenu String.Readable) { //gd:PopupMenu.set_item_submenu
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_submenu, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8), &struct {
 		index   int64
 		submenu gdextension.String
 	}{index, pointers.Get(gd.InternalString(submenu))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(submenu)
 }
 func (self class) SetItemSubmenuNode(index int64, submenu [1]gdclass.PopupMenu) { //gd:PopupMenu.set_item_submenu_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_submenu_node, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8), &struct {
 		index   int64
 		submenu gdextension.Object
 	}{index, gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetPopupMenu(submenu[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(submenu[0].Anchor())
 }
 func (self class) SetItemAsSeparator(index int64, enable bool) { //gd:PopupMenu.set_item_as_separator
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_as_separator, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		index  int64
 		enable bool
 	}{index, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemAsCheckable(index int64, enable bool) { //gd:PopupMenu.set_item_as_checkable
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_as_checkable, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		index  int64
 		enable bool
 	}{index, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemAsRadioCheckable(index int64, enable bool) { //gd:PopupMenu.set_item_as_radio_checkable
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_as_radio_checkable, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		index  int64
 		enable bool
 	}{index, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemTooltip(index int64, tooltip String.Readable) { //gd:PopupMenu.set_item_tooltip
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_tooltip, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8), &struct {
 		index   int64
 		tooltip gdextension.String
 	}{index, pointers.Get(gd.InternalString(tooltip))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tooltip)
 }
 func (self class) SetItemShortcut(index int64, shortcut [1]gdclass.Shortcut, global bool) { //gd:PopupMenu.set_item_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_shortcut, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeBool<<12), &struct {
@@ -1790,292 +1863,359 @@ func (self class) SetItemShortcut(index int64, shortcut [1]gdclass.Shortcut, glo
 		shortcut gdextension.Object
 		global   bool
 	}{index, gdextension.Object(gdreference.GetObject(gdclass.GetShortcut(shortcut[0])[0])), global})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shortcut[0].Anchor())
 }
 func (self class) SetItemIndent(index int64, indent int64) { //gd:PopupMenu.set_item_indent
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_indent, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index  int64
 		indent int64
 	}{index, indent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemMultistate(index int64, state int64) { //gd:PopupMenu.set_item_multistate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_multistate, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index int64
 		state int64
 	}{index, state})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemMultistateMax(index int64, max_states int64) { //gd:PopupMenu.set_item_multistate_max
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_multistate_max, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index      int64
 		max_states int64
 	}{index, max_states})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemShortcutDisabled(index int64, disabled bool) { //gd:PopupMenu.set_item_shortcut_disabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_shortcut_disabled, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		index    int64
 		disabled bool
 	}{index, disabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemIndex(index int64, target_index int64) { //gd:PopupMenu.set_item_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_index, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		index        int64
 		target_index int64
 	}{index, target_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ToggleItemChecked(index int64) { //gd:PopupMenu.toggle_item_checked
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.toggle_item_checked, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ToggleItemMultistate(index int64) { //gd:PopupMenu.toggle_item_multistate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.toggle_item_multistate, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemText(index int64) String.Readable { //gd:PopupMenu.get_item_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemTextDirection(index int64) Control.TextDirection { //gd:PopupMenu.get_item_text_direction
 	var r_ret = noescape.Call[Control.TextDirection](gd.ObjectChecked(self.AsObject()), methods.get_item_text_direction, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemLanguage(index int64) String.Readable { //gd:PopupMenu.get_item_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_language, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemAutoTranslateMode(index int64) Node.AutoTranslateMode { //gd:PopupMenu.get_item_auto_translate_mode
 	var r_ret = noescape.Call[Node.AutoTranslateMode](gd.ObjectChecked(self.AsObject()), methods.get_item_auto_translate_mode, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemIcon(index int64) [1]gdclass.Texture2D { //gd:PopupMenu.get_item_icon
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_item_icon, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetItemIconMaxWidth(index int64) int64 { //gd:PopupMenu.get_item_icon_max_width
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_icon_max_width, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemIconModulate(index int64) Color.RGBA { //gd:PopupMenu.get_item_icon_modulate
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_item_icon_modulate, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsItemChecked(index int64) bool { //gd:PopupMenu.is_item_checked
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_item_checked, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemId(index int64) int64 { //gd:PopupMenu.get_item_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_id, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemIndex(id int64) int64 { //gd:PopupMenu.get_item_index
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_index, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemAccelerator(index int64) Input.Key { //gd:PopupMenu.get_item_accelerator
 	var r_ret = noescape.Call[Input.Key](gd.ObjectChecked(self.AsObject()), methods.get_item_accelerator, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemMetadata(index int64) variant.Any { //gd:PopupMenu.get_item_metadata
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_item_metadata, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) IsItemDisabled(index int64) bool { //gd:PopupMenu.is_item_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_item_disabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemSubmenu(index int64) String.Readable { //gd:PopupMenu.get_item_submenu
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_submenu, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemSubmenuNode(index int64) [1]gdclass.PopupMenu { //gd:PopupMenu.get_item_submenu_node
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_item_submenu_node, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.PopupMenu{gdclass.NewPopupMenu(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) IsItemSeparator(index int64) bool { //gd:PopupMenu.is_item_separator
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_item_separator, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsItemCheckable(index int64) bool { //gd:PopupMenu.is_item_checkable
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_item_checkable, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsItemRadioCheckable(index int64) bool { //gd:PopupMenu.is_item_radio_checkable
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_item_radio_checkable, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsItemShortcutDisabled(index int64) bool { //gd:PopupMenu.is_item_shortcut_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_item_shortcut_disabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemTooltip(index int64) String.Readable { //gd:PopupMenu.get_item_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_tooltip, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetItemShortcut(index int64) [1]gdclass.Shortcut { //gd:PopupMenu.get_item_shortcut
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_item_shortcut, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Shortcut{gdclass.NewShortcut(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetItemIndent(index int64) int64 { //gd:PopupMenu.get_item_indent
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_indent, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemMultistateMax(index int64) int64 { //gd:PopupMenu.get_item_multistate_max
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_multistate_max, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetItemMultistate(index int64) int64 { //gd:PopupMenu.get_item_multistate
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_multistate, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFocusedItem(index int64) { //gd:PopupMenu.set_focused_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_focused_item, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFocusedItem() int64 { //gd:PopupMenu.get_focused_item
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_focused_item, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetItemCount(count int64) { //gd:PopupMenu.set_item_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemCount() int64 { //gd:PopupMenu.get_item_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ScrollToItem(index int64) { //gd:PopupMenu.scroll_to_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.scroll_to_item, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveItem(index int64) { //gd:PopupMenu.remove_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_item, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddSeparator(label String.Readable, id int64) { //gd:PopupMenu.add_separator
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_separator, 0|(gdextension.SizeString<<4)|(gdextension.SizeInt<<8), &struct {
 		label gdextension.String
 		id    int64
 	}{pointers.Get(gd.InternalString(label)), id})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label)
 }
 func (self class) Clear(free_submenus bool) { //gd:PopupMenu.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0|(gdextension.SizeBool<<4), &struct{ free_submenus bool }{free_submenus})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetHideOnItemSelection(enable bool) { //gd:PopupMenu.set_hide_on_item_selection
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hide_on_item_selection, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHideOnItemSelection() bool { //gd:PopupMenu.is_hide_on_item_selection
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hide_on_item_selection, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHideOnCheckableItemSelection(enable bool) { //gd:PopupMenu.set_hide_on_checkable_item_selection
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hide_on_checkable_item_selection, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHideOnCheckableItemSelection() bool { //gd:PopupMenu.is_hide_on_checkable_item_selection
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hide_on_checkable_item_selection, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHideOnStateItemSelection(enable bool) { //gd:PopupMenu.set_hide_on_state_item_selection
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hide_on_state_item_selection, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHideOnStateItemSelection() bool { //gd:PopupMenu.is_hide_on_state_item_selection
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hide_on_state_item_selection, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSubmenuPopupDelay(seconds float64) { //gd:PopupMenu.set_submenu_popup_delay
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_submenu_popup_delay, 0|(gdextension.SizeFloat<<4), &struct{ seconds float64 }{seconds})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSubmenuPopupDelay() float64 { //gd:PopupMenu.get_submenu_popup_delay
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_submenu_popup_delay, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAllowSearch(allow bool) { //gd:PopupMenu.set_allow_search
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_allow_search, 0|(gdextension.SizeBool<<4), &struct{ allow bool }{allow})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAllowSearch() bool { //gd:PopupMenu.get_allow_search
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_allow_search, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsSystemMenu() bool { //gd:PopupMenu.is_system_menu
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_system_menu, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSystemMenu(system_menu_id NativeMenu.SystemMenus) { //gd:PopupMenu.set_system_menu
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_system_menu, 0|(gdextension.SizeInt<<4), &struct{ system_menu_id NativeMenu.SystemMenus }{system_menu_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSystemMenu() NativeMenu.SystemMenus { //gd:PopupMenu.get_system_menu
 	var r_ret = jumponly.Call[NativeMenu.SystemMenus](gd.ObjectChecked(self.AsObject()), methods.get_system_menu, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSearchBarEnabled(enabled bool) { //gd:PopupMenu.set_search_bar_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_search_bar_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSearchBarEnabled() bool { //gd:PopupMenu.is_search_bar_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_search_bar_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSearchBarMinItemCount(count int64) { //gd:PopupMenu.set_search_bar_min_item_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_search_bar_min_item_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSearchBarMinItemCount() int64 { //gd:PopupMenu.get_search_bar_min_item_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_search_bar_min_item_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSearchBarFuzzySearchEnabled(enabled bool) { //gd:PopupMenu.set_search_bar_fuzzy_search_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_search_bar_fuzzy_search_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSearchBarFuzzySearchEnabled() bool { //gd:PopupMenu.is_search_bar_fuzzy_search_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_search_bar_fuzzy_search_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSearchBarFuzzySearchMaxMisses(max_misses int64) { //gd:PopupMenu.set_search_bar_fuzzy_search_max_misses
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_search_bar_fuzzy_search_max_misses, 0|(gdextension.SizeInt<<4), &struct{ max_misses int64 }{max_misses})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSearchBarFuzzySearchMaxMisses() int64 { //gd:PopupMenu.get_search_bar_fuzzy_search_max_misses
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_search_bar_fuzzy_search_max_misses, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShrinkHeight(shrink bool) { //gd:PopupMenu.set_shrink_height
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shrink_height, 0|(gdextension.SizeBool<<4), &struct{ shrink bool }{shrink})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShrinkHeight() bool { //gd:PopupMenu.get_shrink_height
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_shrink_height, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShrinkWidth(shrink bool) { //gd:PopupMenu.set_shrink_width
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shrink_width, 0|(gdextension.SizeBool<<4), &struct{ shrink bool }{shrink})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShrinkWidth() bool { //gd:PopupMenu.get_shrink_width
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_shrink_width, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2151,18 +2291,18 @@ func (self class) MenuChanged() Signal.Any {
 func (o class) AsPopupMenu() Advanced                 { return Advanced(o) }
 func (o Instance) AsPopupMenu() Instance              { return o }
 func (o *Extension[T]) AsPopupMenu() Instance         { return o.Super() }
-func (o class) AsPopup() Popup.Advanced               { return Popup.Advanced{gdclass.NewPopup(o[0].AsObject()[0])} }
+func (o class) AsPopup() Popup.Advanced               { return *(*Popup.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPopup() Popup.Instance       { return o.Super().AsPopup() }
-func (o Instance) AsPopup() Popup.Instance            { return Popup.Instance{gdclass.NewPopup(o[0].AsObject()[0])} }
-func (o class) AsWindow() Window.Advanced             { return Window.Advanced{gdclass.NewWindow(o[0].AsObject()[0])} }
+func (o Instance) AsPopup() Popup.Instance            { return *(*Popup.Instance)(ie.As(&o)) }
+func (o class) AsWindow() Window.Advanced             { return *(*Window.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsWindow() Window.Instance     { return o.Super().AsWindow() }
-func (o Instance) AsWindow() Window.Instance          { return Window.Instance{gdclass.NewWindow(o[0].AsObject()[0])} }
-func (o class) AsViewport() Viewport.Advanced         { return Viewport.Advanced{gdclass.NewViewport(o[0].AsObject()[0])} }
+func (o Instance) AsWindow() Window.Instance          { return *(*Window.Instance)(ie.As(&o)) }
+func (o class) AsViewport() Viewport.Advanced         { return *(*Viewport.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsViewport() Viewport.Instance { return o.Super().AsViewport() }
-func (o Instance) AsViewport() Viewport.Instance      { return Viewport.Instance{gdclass.NewViewport(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                 { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsViewport() Viewport.Instance      { return *(*Viewport.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                 { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance         { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance              { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance              { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

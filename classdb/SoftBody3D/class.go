@@ -17,6 +17,7 @@ Note: It's recommended to use Jolt Physics when using [SoftBody3D] instead of th
 package SoftBody3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -26,6 +27,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -56,6 +58,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -324,7 +329,7 @@ func (self Instance) IsPointPinned(point_index int) bool { //gd:SoftBody3D.is_po
 type Advanced = class
 type class [1]gdclass.SoftBody3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSoftBody3D(obj[0])
@@ -339,7 +344,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -546,22 +551,27 @@ func (self Instance) SetDisableMode(value DisableMode) Instance { //gd:SoftBody3
 
 func (self class) GetPhysicsRid() RID.Any { //gd:SoftBody3D.get_physics_rid
 	var r_ret = jumponly.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_physics_rid, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollisionMask(collision_mask int64) { //gd:SoftBody3D.set_collision_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_mask, 0|(gdextension.SizeInt<<4), &struct{ collision_mask int64 }{collision_mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionMask() int64 { //gd:SoftBody3D.get_collision_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollisionLayer(collision_layer int64) { //gd:SoftBody3D.set_collision_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_layer, 0|(gdextension.SizeInt<<4), &struct{ collision_layer int64 }{collision_layer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionLayer() int64 { //gd:SoftBody3D.get_collision_layer
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_layer, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -570,9 +580,11 @@ func (self class) SetCollisionMaskValue(layer_number int64, value bool) { //gd:S
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionMaskValue(layer_number int64) bool { //gd:SoftBody3D.get_collision_mask_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_collision_mask_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -581,97 +593,124 @@ func (self class) SetCollisionLayerValue(layer_number int64, value bool) { //gd:
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionLayerValue(layer_number int64) bool { //gd:SoftBody3D.get_collision_layer_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_collision_layer_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetParentCollisionIgnore(parent_collision_ignore Path.ToNode) { //gd:SoftBody3D.set_parent_collision_ignore
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_parent_collision_ignore, 0|(gdextension.SizeNodePath<<4), &struct{ parent_collision_ignore gdextension.NodePath }{pointers.Get(gd.InternalNodePath(parent_collision_ignore))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(parent_collision_ignore)
 }
 func (self class) GetParentCollisionIgnore() Path.ToNode { //gd:SoftBody3D.get_parent_collision_ignore
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_parent_collision_ignore, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetDisableMode(mode DisableMode) { //gd:SoftBody3D.set_disable_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_disable_mode, 0|(gdextension.SizeInt<<4), &struct{ mode DisableMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDisableMode() DisableMode { //gd:SoftBody3D.get_disable_mode
 	var r_ret = jumponly.Call[DisableMode](gd.ObjectChecked(self.AsObject()), methods.get_disable_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCollisionExceptions() Array.Contains[[1]gdclass.PhysicsBody3D] { //gd:SoftBody3D.get_collision_exceptions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_collision_exceptions, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.PhysicsBody3D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AddCollisionExceptionWith(body [1]gdclass.Node) { //gd:SoftBody3D.add_collision_exception_with
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_collision_exception_with, 0|(gdextension.SizeObject<<4), &struct{ body gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode(body[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(body[0].Anchor())
 }
 func (self class) RemoveCollisionExceptionWith(body [1]gdclass.Node) { //gd:SoftBody3D.remove_collision_exception_with
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_collision_exception_with, 0|(gdextension.SizeObject<<4), &struct{ body gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode(body[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(body[0].Anchor())
 }
 func (self class) SetSimulationPrecision(simulation_precision int64) { //gd:SoftBody3D.set_simulation_precision
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_simulation_precision, 0|(gdextension.SizeInt<<4), &struct{ simulation_precision int64 }{simulation_precision})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSimulationPrecision() int64 { //gd:SoftBody3D.get_simulation_precision
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_simulation_precision, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTotalMass(mass float64) { //gd:SoftBody3D.set_total_mass
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_total_mass, 0|(gdextension.SizeFloat<<4), &struct{ mass float64 }{mass})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTotalMass() float64 { //gd:SoftBody3D.get_total_mass
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_total_mass, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLinearStiffness(linear_stiffness float64) { //gd:SoftBody3D.set_linear_stiffness
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_linear_stiffness, 0|(gdextension.SizeFloat<<4), &struct{ linear_stiffness float64 }{linear_stiffness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLinearStiffness() float64 { //gd:SoftBody3D.get_linear_stiffness
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_linear_stiffness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShrinkingFactor(shrinking_factor float64) { //gd:SoftBody3D.set_shrinking_factor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shrinking_factor, 0|(gdextension.SizeFloat<<4), &struct{ shrinking_factor float64 }{shrinking_factor})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShrinkingFactor() float64 { //gd:SoftBody3D.get_shrinking_factor
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_shrinking_factor, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPressureCoefficient(pressure_coefficient float64) { //gd:SoftBody3D.set_pressure_coefficient
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pressure_coefficient, 0|(gdextension.SizeFloat<<4), &struct{ pressure_coefficient float64 }{pressure_coefficient})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPressureCoefficient() float64 { //gd:SoftBody3D.get_pressure_coefficient
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_pressure_coefficient, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDampingCoefficient(damping_coefficient float64) { //gd:SoftBody3D.set_damping_coefficient
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_damping_coefficient, 0|(gdextension.SizeFloat<<4), &struct{ damping_coefficient float64 }{damping_coefficient})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDampingCoefficient() float64 { //gd:SoftBody3D.get_damping_coefficient
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_damping_coefficient, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragCoefficient(drag_coefficient float64) { //gd:SoftBody3D.set_drag_coefficient
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_coefficient, 0|(gdextension.SizeFloat<<4), &struct{ drag_coefficient float64 }{drag_coefficient})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDragCoefficient() float64 { //gd:SoftBody3D.get_drag_coefficient
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_drag_coefficient, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPointTransform(point_index int64) Vector3.XYZ { //gd:SoftBody3D.get_point_transform
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_point_transform, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ point_index int64 }{point_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -680,18 +719,22 @@ func (self class) ApplyImpulse(point_index int64, impulse Vector3.XYZ) { //gd:So
 		point_index int64
 		impulse     Vector3.XYZ
 	}{point_index, impulse})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ApplyForce(point_index int64, force Vector3.XYZ) { //gd:SoftBody3D.apply_force
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.apply_force, 0|(gdextension.SizeInt<<4)|(gdextension.SizeVector3<<8), &struct {
 		point_index int64
 		force       Vector3.XYZ
 	}{point_index, force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ApplyCentralImpulse(impulse Vector3.XYZ) { //gd:SoftBody3D.apply_central_impulse
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.apply_central_impulse, 0|(gdextension.SizeVector3<<4), &struct{ impulse Vector3.XYZ }{impulse})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ApplyCentralForce(force Vector3.XYZ) { //gd:SoftBody3D.apply_central_force
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.apply_central_force, 0|(gdextension.SizeVector3<<4), &struct{ force Vector3.XYZ }{force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPointPinned(point_index int64, pinned bool, attachment_path Path.ToNode, insert_at int64) { //gd:SoftBody3D.set_point_pinned
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_point_pinned, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8)|(gdextension.SizeNodePath<<12)|(gdextension.SizeInt<<16), &struct {
@@ -700,17 +743,22 @@ func (self class) SetPointPinned(point_index int64, pinned bool, attachment_path
 		attachment_path gdextension.NodePath
 		insert_at       int64
 	}{point_index, pinned, pointers.Get(gd.InternalNodePath(attachment_path)), insert_at})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(attachment_path)
 }
 func (self class) IsPointPinned(point_index int64) bool { //gd:SoftBody3D.is_point_pinned
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_point_pinned, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ point_index int64 }{point_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRayPickable(ray_pickable bool) { //gd:SoftBody3D.set_ray_pickable
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ray_pickable, 0|(gdextension.SizeBool<<4), &struct{ ray_pickable bool }{ray_pickable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRayPickable() bool { //gd:SoftBody3D.is_ray_pickable
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_ray_pickable, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -718,38 +766,38 @@ func (o class) AsSoftBody3D() Advanced         { return Advanced(o) }
 func (o Instance) AsSoftBody3D() Instance      { return o }
 func (o *Extension[T]) AsSoftBody3D() Instance { return o.Super() }
 func (o class) AsMeshInstance3D() MeshInstance3D.Advanced {
-	return MeshInstance3D.Advanced{gdclass.NewMeshInstance3D(o[0].AsObject()[0])}
+	return *(*MeshInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsMeshInstance3D() MeshInstance3D.Instance {
 	return o.Super().AsMeshInstance3D()
 }
 func (o Instance) AsMeshInstance3D() MeshInstance3D.Instance {
-	return MeshInstance3D.Instance{gdclass.NewMeshInstance3D(o[0].AsObject()[0])}
+	return *(*MeshInstance3D.Instance)(ie.As(&o))
 }
 func (o class) AsGeometryInstance3D() GeometryInstance3D.Advanced {
-	return GeometryInstance3D.Advanced{gdclass.NewGeometryInstance3D(o[0].AsObject()[0])}
+	return *(*GeometryInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsGeometryInstance3D() GeometryInstance3D.Instance {
 	return o.Super().AsGeometryInstance3D()
 }
 func (o Instance) AsGeometryInstance3D() GeometryInstance3D.Instance {
-	return GeometryInstance3D.Instance{gdclass.NewGeometryInstance3D(o[0].AsObject()[0])}
+	return *(*GeometryInstance3D.Instance)(ie.As(&o))
 }
 func (o class) AsVisualInstance3D() VisualInstance3D.Advanced {
-	return VisualInstance3D.Advanced{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualInstance3D() VisualInstance3D.Instance {
 	return o.Super().AsVisualInstance3D()
 }
 func (o Instance) AsVisualInstance3D() VisualInstance3D.Instance {
-	return VisualInstance3D.Instance{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

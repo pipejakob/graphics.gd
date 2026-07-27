@@ -160,6 +160,19 @@ func GetObject(obj Object) gdextension.Object {
 	return raw
 }
 
+// Anchor returns the garbage-collected allocation that holds obj's engine-side
+// lifetime open, for passing to [runtime.KeepAlive]. For references created off
+// the main thread that is the sentinel carrying the [runtime.AddCleanup] which
+// queues the free, so keeping it alive keeps the cleanup from running.
+//
+// Every caller that takes a raw pointer out of an [Object] with [GetObject] and
+// records it somewhere the collector cannot see — the cross-thread ring, an
+// argument pack — must keep the anchor alive until the record has been made.
+// The wrapper is dead the moment its pointer has been extracted, so without
+// this the collector is free to run the cleanup, and the queued free then
+// overtakes the very call that was about to be enqueued behind it.
+func (obj Object) Anchor() unsafe.Pointer { return unsafe.Pointer(obj.sentinel) }
+
 // SetObject sets the underlying engine pointer for a [TypeStatic]
 // [Object] created with [NewObject].
 func SetObject(obj Object, val gdextension.Object) {

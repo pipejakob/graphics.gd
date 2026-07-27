@@ -6,6 +6,7 @@ Result object tracking the asynchronous result of an OpenXR Future object, you c
 package OpenXRFutureResult
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -39,6 +40,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -163,7 +167,7 @@ func (self Instance) GetResultValue() any { //gd:OpenXRFutureResult.get_result_v
 type Advanced = class
 type class [1]gdclass.OpenXRFutureResult
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRFutureResult(obj[0])
@@ -178,7 +182,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -203,22 +207,28 @@ func New() Instance {
 
 func (self class) GetStatus() ResultStatus { //gd:OpenXRFutureResult.get_status
 	var r_ret = jumponly.Call[ResultStatus](gd.ObjectChecked(self.AsObject()), methods.get_status, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFuture() int64 { //gd:OpenXRFutureResult.get_future
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_future, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) CancelFuture() { //gd:OpenXRFutureResult.cancel_future
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.cancel_future, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetResultValue(result_value variant.Any) { //gd:OpenXRFutureResult.set_result_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_result_value, 0|(gdextension.SizeVariant<<4), &struct{ result_value gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(result_value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(result_value)
 }
 func (self class) GetResultValue() variant.Any { //gd:OpenXRFutureResult.get_result_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_result_value, gdextension.SizeVariant, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }

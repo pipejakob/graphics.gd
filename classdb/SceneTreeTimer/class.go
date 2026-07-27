@@ -36,6 +36,7 @@ Note: The timer is processed after all of the nodes in the current frame, i.e. n
 package SceneTreeTimer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -69,6 +70,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -150,7 +154,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.SceneTreeTimer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSceneTreeTimer(obj[0])
@@ -165,7 +169,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -203,9 +207,11 @@ func (self Instance) SetTimeLeft(value Float.X) Instance { //gd:SceneTreeTimer.t
 
 func (self class) SetTimeLeft(time float64) { //gd:SceneTreeTimer.set_time_left
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_time_left, 0|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTimeLeft() float64 { //gd:SceneTreeTimer.get_time_left
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_time_left, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

@@ -24,6 +24,7 @@ This is an abstract class, so to get the currently active [TextServer] instance,
 package TextServer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -64,6 +65,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -2593,7 +2597,7 @@ func (self Instance) ParseStructuredText(parser_type StructuredTextParser, args 
 type Advanced = class
 type class [1]gdclass.TextServer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTextServer(obj[0])
@@ -2608,7 +2612,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -2633,79 +2637,100 @@ func New() Instance {
 
 func (self class) HasFeature(feature Feature) bool { //gd:TextServer.has_feature
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_feature, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ feature Feature }{feature})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetName() String.Readable { //gd:TextServer.get_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetFeatures() int64 { //gd:TextServer.get_features
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_features, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) LoadSupportData(filename String.Readable) bool { //gd:TextServer.load_support_data
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.load_support_data, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ filename gdextension.String }{pointers.Get(gd.InternalString(filename))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(filename)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSupportDataFilename() String.Readable { //gd:TextServer.get_support_data_filename
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_support_data_filename, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSupportDataInfo() String.Readable { //gd:TextServer.get_support_data_info
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_support_data_info, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SaveSupportData(filename String.Readable) bool { //gd:TextServer.save_support_data
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.save_support_data, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ filename gdextension.String }{pointers.Get(gd.InternalString(filename))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(filename)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSupportData() Packed.Bytes { //gd:TextServer.get_support_data
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_support_data, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) IsLocaleUsingSupportData(locale String.Readable) bool { //gd:TextServer.is_locale_using_support_data
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_locale_using_support_data, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ locale gdextension.String }{pointers.Get(gd.InternalString(locale))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(locale)
 	var ret = r_ret
 	return ret
 }
 func (self class) IsLocaleRightToLeft(locale String.Readable) bool { //gd:TextServer.is_locale_right_to_left
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_locale_right_to_left, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ locale gdextension.String }{pointers.Get(gd.InternalString(locale))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(locale)
 	var ret = r_ret
 	return ret
 }
 func (self class) NameToTag(name String.Readable) int64 { //gd:TextServer.name_to_tag
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.name_to_tag, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) TagToName(tag int64) String.Readable { //gd:TextServer.tag_to_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.tag_to_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ tag int64 }{tag})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) Has(rid RID.Any) bool { //gd:TextServer.has
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ rid RID.Any }{rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FreeRid(rid RID.Any) { //gd:TextServer.free_rid
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.free_rid, 0|(gdextension.SizeRID<<4), &struct{ rid RID.Any }{rid})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CreateFont() RID.Any { //gd:TextServer.create_font
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.create_font, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) CreateFontLinkedVariation(font_rid RID.Any) RID.Any { //gd:TextServer.create_font_linked_variation
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.create_font_linked_variation, gdextension.SizeRID|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2714,20 +2739,25 @@ func (self class) FontSetData(font_rid RID.Any, data Packed.Bytes) { //gd:TextSe
 		font_rid RID.Any
 		data     gdextension.PackedArray[byte]
 	}{font_rid, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 }
 func (self class) FontSetFaceIndex(font_rid RID.Any, face_index int64) { //gd:TextServer.font_set_face_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_set_face_index, 0|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8), &struct {
 		font_rid   RID.Any
 		face_index int64
 	}{font_rid, face_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetFaceIndex(font_rid RID.Any) int64 { //gd:TextServer.font_get_face_index
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_face_index, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FontGetFaceCount(font_rid RID.Any) int64 { //gd:TextServer.font_get_face_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_face_count, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2736,9 +2766,11 @@ func (self class) FontSetStyle(font_rid RID.Any, style FontStyle) { //gd:TextSer
 		font_rid RID.Any
 		style    FontStyle
 	}{font_rid, style})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetStyle(font_rid RID.Any) FontStyle { //gd:TextServer.font_get_style
 	var r_ret = noescape.Call[FontStyle](gd.ObjectChecked(self.AsObject()), methods.font_get_style, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2747,14 +2779,18 @@ func (self class) FontSetName(font_rid RID.Any, name String.Readable) { //gd:Tex
 		font_rid RID.Any
 		name     gdextension.String
 	}{font_rid, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) FontGetName(font_rid RID.Any) String.Readable { //gd:TextServer.font_get_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.font_get_name, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) FontGetOtNameStrings(font_rid RID.Any) Dictionary.Any { //gd:TextServer.font_get_ot_name_strings
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.font_get_ot_name_strings, gdextension.SizeDictionary|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -2763,9 +2799,12 @@ func (self class) FontSetStyleName(font_rid RID.Any, name String.Readable) { //g
 		font_rid RID.Any
 		name     gdextension.String
 	}{font_rid, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) FontGetStyleName(font_rid RID.Any) String.Readable { //gd:TextServer.font_get_style_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.font_get_style_name, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -2774,9 +2813,11 @@ func (self class) FontSetWeight(font_rid RID.Any, weight int64) { //gd:TextServe
 		font_rid RID.Any
 		weight   int64
 	}{font_rid, weight})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetWeight(font_rid RID.Any) int64 { //gd:TextServer.font_get_weight
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_weight, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2785,9 +2826,11 @@ func (self class) FontSetStretch(font_rid RID.Any, weight int64) { //gd:TextServ
 		font_rid RID.Any
 		weight   int64
 	}{font_rid, weight})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetStretch(font_rid RID.Any) int64 { //gd:TextServer.font_get_stretch
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_stretch, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2796,9 +2839,11 @@ func (self class) FontSetAntialiasing(font_rid RID.Any, antialiasing FontAntiali
 		font_rid     RID.Any
 		antialiasing FontAntialiasing
 	}{font_rid, antialiasing})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetAntialiasing(font_rid RID.Any) FontAntialiasing { //gd:TextServer.font_get_antialiasing
 	var r_ret = noescape.Call[FontAntialiasing](gd.ObjectChecked(self.AsObject()), methods.font_get_antialiasing, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2807,9 +2852,11 @@ func (self class) FontSetDisableEmbeddedBitmaps(font_rid RID.Any, disable_embedd
 		font_rid                 RID.Any
 		disable_embedded_bitmaps bool
 	}{font_rid, disable_embedded_bitmaps})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetDisableEmbeddedBitmaps(font_rid RID.Any) bool { //gd:TextServer.font_get_disable_embedded_bitmaps
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.font_get_disable_embedded_bitmaps, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2818,9 +2865,11 @@ func (self class) FontSetGenerateMipmaps(font_rid RID.Any, generate_mipmaps bool
 		font_rid         RID.Any
 		generate_mipmaps bool
 	}{font_rid, generate_mipmaps})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetGenerateMipmaps(font_rid RID.Any) bool { //gd:TextServer.font_get_generate_mipmaps
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.font_get_generate_mipmaps, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2829,9 +2878,11 @@ func (self class) FontSetMultichannelSignedDistanceField(font_rid RID.Any, msdf 
 		font_rid RID.Any
 		msdf     bool
 	}{font_rid, msdf})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontIsMultichannelSignedDistanceField(font_rid RID.Any) bool { //gd:TextServer.font_is_multichannel_signed_distance_field
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.font_is_multichannel_signed_distance_field, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2840,9 +2891,11 @@ func (self class) FontSetMsdfPixelRange(font_rid RID.Any, msdf_pixel_range int64
 		font_rid         RID.Any
 		msdf_pixel_range int64
 	}{font_rid, msdf_pixel_range})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetMsdfPixelRange(font_rid RID.Any) int64 { //gd:TextServer.font_get_msdf_pixel_range
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_msdf_pixel_range, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2851,9 +2904,11 @@ func (self class) FontSetMsdfSize(font_rid RID.Any, msdf_size int64) { //gd:Text
 		font_rid  RID.Any
 		msdf_size int64
 	}{font_rid, msdf_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetMsdfSize(font_rid RID.Any) int64 { //gd:TextServer.font_get_msdf_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_msdf_size, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2862,9 +2917,11 @@ func (self class) FontSetFixedSize(font_rid RID.Any, fixed_size int64) { //gd:Te
 		font_rid   RID.Any
 		fixed_size int64
 	}{font_rid, fixed_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetFixedSize(font_rid RID.Any) int64 { //gd:TextServer.font_get_fixed_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_fixed_size, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2873,9 +2930,11 @@ func (self class) FontSetFixedSizeScaleMode(font_rid RID.Any, fixed_size_scale_m
 		font_rid              RID.Any
 		fixed_size_scale_mode FixedSizeScaleMode
 	}{font_rid, fixed_size_scale_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetFixedSizeScaleMode(font_rid RID.Any) FixedSizeScaleMode { //gd:TextServer.font_get_fixed_size_scale_mode
 	var r_ret = noescape.Call[FixedSizeScaleMode](gd.ObjectChecked(self.AsObject()), methods.font_get_fixed_size_scale_mode, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2884,23 +2943,28 @@ func (self class) FontSetAllowSystemFallback(font_rid RID.Any, allow_system_fall
 		font_rid              RID.Any
 		allow_system_fallback bool
 	}{font_rid, allow_system_fallback})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontIsAllowSystemFallback(font_rid RID.Any) bool { //gd:TextServer.font_is_allow_system_fallback
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.font_is_allow_system_fallback, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FontClearSystemFallbackCache() { //gd:TextServer.font_clear_system_fallback_cache
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_clear_system_fallback_cache, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontSetForceAutohinter(font_rid RID.Any, force_autohinter bool) { //gd:TextServer.font_set_force_autohinter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_set_force_autohinter, 0|(gdextension.SizeRID<<4)|(gdextension.SizeBool<<8), &struct {
 		font_rid         RID.Any
 		force_autohinter bool
 	}{font_rid, force_autohinter})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontIsForceAutohinter(font_rid RID.Any) bool { //gd:TextServer.font_is_force_autohinter
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.font_is_force_autohinter, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2909,14 +2973,17 @@ func (self class) FontSetModulateColorGlyphs(font_rid RID.Any, modulate bool) { 
 		font_rid RID.Any
 		modulate bool
 	}{font_rid, modulate})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontIsModulateColorGlyphs(font_rid RID.Any) bool { //gd:TextServer.font_is_modulate_color_glyphs
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.font_is_modulate_color_glyphs, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FontGetPaletteCount(font_rid RID.Any) int64 { //gd:TextServer.font_get_palette_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_palette_count, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2925,6 +2992,7 @@ func (self class) FontGetPaletteName(font_rid RID.Any, index int64) String.Reada
 		font_rid RID.Any
 		index    int64
 	}{font_rid, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -2933,6 +3001,7 @@ func (self class) FontGetPaletteColors(font_rid RID.Any, index int64) Packed.Arr
 		font_rid RID.Any
 		index    int64
 	}{font_rid, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
@@ -2941,14 +3010,18 @@ func (self class) FontSetPaletteCustomColors(font_rid RID.Any, colors Packed.Arr
 		font_rid RID.Any
 		colors   gdextension.PackedArray[Color.RGBA]
 	}{font_rid, pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](colors))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(colors)
 }
 func (self class) FontGetPaletteCustomColors(font_rid RID.Any) Packed.Array[Color.RGBA] { //gd:TextServer.font_get_palette_custom_colors
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.font_get_palette_custom_colors, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) FontGetUsedPalette(font_rid RID.Any) int64 { //gd:TextServer.font_get_used_palette
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_used_palette, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2957,15 +3030,18 @@ func (self class) FontSetUsedPalette(font_rid RID.Any, index int64) { //gd:TextS
 		font_rid RID.Any
 		index    int64
 	}{font_rid, index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontSetHinting(font_rid RID.Any, hinting Hinting) { //gd:TextServer.font_set_hinting
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_set_hinting, 0|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8), &struct {
 		font_rid RID.Any
 		hinting  Hinting
 	}{font_rid, hinting})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetHinting(font_rid RID.Any) Hinting { //gd:TextServer.font_get_hinting
 	var r_ret = noescape.Call[Hinting](gd.ObjectChecked(self.AsObject()), methods.font_get_hinting, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2974,9 +3050,11 @@ func (self class) FontSetSubpixelPositioning(font_rid RID.Any, subpixel_position
 		font_rid             RID.Any
 		subpixel_positioning SubpixelPositioning
 	}{font_rid, subpixel_positioning})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetSubpixelPositioning(font_rid RID.Any) SubpixelPositioning { //gd:TextServer.font_get_subpixel_positioning
 	var r_ret = noescape.Call[SubpixelPositioning](gd.ObjectChecked(self.AsObject()), methods.font_get_subpixel_positioning, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2985,9 +3063,11 @@ func (self class) FontSetKeepRoundingRemainders(font_rid RID.Any, keep_rounding_
 		font_rid                 RID.Any
 		keep_rounding_remainders bool
 	}{font_rid, keep_rounding_remainders})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetKeepRoundingRemainders(font_rid RID.Any) bool { //gd:TextServer.font_get_keep_rounding_remainders
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.font_get_keep_rounding_remainders, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2996,9 +3076,11 @@ func (self class) FontSetEmbolden(font_rid RID.Any, strength float64) { //gd:Tex
 		font_rid RID.Any
 		strength float64
 	}{font_rid, strength})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetEmbolden(font_rid RID.Any) float64 { //gd:TextServer.font_get_embolden
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.font_get_embolden, gdextension.SizeFloat|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3008,12 +3090,14 @@ func (self class) FontSetSpacing(font_rid RID.Any, spacing SpacingType, value in
 		spacing  SpacingType
 		value    int64
 	}{font_rid, spacing, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetSpacing(font_rid RID.Any, spacing SpacingType) int64 { //gd:TextServer.font_get_spacing
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_spacing, gdextension.SizeInt|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8), &struct {
 		font_rid RID.Any
 		spacing  SpacingType
 	}{font_rid, spacing})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3022,9 +3106,11 @@ func (self class) FontSetBaselineOffset(font_rid RID.Any, baseline_offset float6
 		font_rid        RID.Any
 		baseline_offset float64
 	}{font_rid, baseline_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetBaselineOffset(font_rid RID.Any) float64 { //gd:TextServer.font_get_baseline_offset
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.font_get_baseline_offset, gdextension.SizeFloat|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3033,9 +3119,11 @@ func (self class) FontSetTransform(font_rid RID.Any, transform Transform2D.Origi
 		font_rid  RID.Any
 		transform Transform2D.OriginXY
 	}{font_rid, transform})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetTransform(font_rid RID.Any) Transform2D.OriginXY { //gd:TextServer.font_get_transform
 	var r_ret = noescape.Call[Transform2D.OriginXY](gd.ObjectChecked(self.AsObject()), methods.font_get_transform, gdextension.SizeTransform2D|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3044,9 +3132,12 @@ func (self class) FontSetVariationCoordinates(font_rid RID.Any, variation_coordi
 		font_rid              RID.Any
 		variation_coordinates gdextension.Dictionary
 	}{font_rid, pointers.Get(gd.InternalDictionary(variation_coordinates))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(variation_coordinates)
 }
 func (self class) FontGetVariationCoordinates(font_rid RID.Any) Dictionary.Any { //gd:TextServer.font_get_variation_coordinates
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.font_get_variation_coordinates, gdextension.SizeDictionary|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -3055,28 +3146,34 @@ func (self class) FontSetOversampling(font_rid RID.Any, oversampling float64) { 
 		font_rid     RID.Any
 		oversampling float64
 	}{font_rid, oversampling})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetOversampling(font_rid RID.Any) float64 { //gd:TextServer.font_get_oversampling
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.font_get_oversampling, gdextension.SizeFloat|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FontGetSizeCacheList(font_rid RID.Any) Array.Contains[Vector2i.XY] { //gd:TextServer.font_get_size_cache_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.font_get_size_cache_list, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) FontClearSizeCache(font_rid RID.Any) { //gd:TextServer.font_clear_size_cache
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_clear_size_cache, 0|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontRemoveSizeCache(font_rid RID.Any, size Vector2i.XY) { //gd:TextServer.font_remove_size_cache
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_remove_size_cache, 0|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8), &struct {
 		font_rid RID.Any
 		size     Vector2i.XY
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetSizeCacheInfo(font_rid RID.Any) Array.Contains[Dictionary.Any] { //gd:TextServer.font_get_size_cache_info
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.font_get_size_cache_info, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -3086,12 +3183,14 @@ func (self class) FontSetAscent(font_rid RID.Any, size int64, ascent float64) { 
 		size     int64
 		ascent   float64
 	}{font_rid, size, ascent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetAscent(font_rid RID.Any, size int64) float64 { //gd:TextServer.font_get_ascent
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.font_get_ascent, gdextension.SizeFloat|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8), &struct {
 		font_rid RID.Any
 		size     int64
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3101,12 +3200,14 @@ func (self class) FontSetDescent(font_rid RID.Any, size int64, descent float64) 
 		size     int64
 		descent  float64
 	}{font_rid, size, descent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetDescent(font_rid RID.Any, size int64) float64 { //gd:TextServer.font_get_descent
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.font_get_descent, gdextension.SizeFloat|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8), &struct {
 		font_rid RID.Any
 		size     int64
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3116,12 +3217,14 @@ func (self class) FontSetUnderlinePosition(font_rid RID.Any, size int64, underli
 		size               int64
 		underline_position float64
 	}{font_rid, size, underline_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetUnderlinePosition(font_rid RID.Any, size int64) float64 { //gd:TextServer.font_get_underline_position
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.font_get_underline_position, gdextension.SizeFloat|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8), &struct {
 		font_rid RID.Any
 		size     int64
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3131,12 +3234,14 @@ func (self class) FontSetUnderlineThickness(font_rid RID.Any, size int64, underl
 		size                int64
 		underline_thickness float64
 	}{font_rid, size, underline_thickness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetUnderlineThickness(font_rid RID.Any, size int64) float64 { //gd:TextServer.font_get_underline_thickness
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.font_get_underline_thickness, gdextension.SizeFloat|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8), &struct {
 		font_rid RID.Any
 		size     int64
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3146,12 +3251,14 @@ func (self class) FontSetScale(font_rid RID.Any, size int64, scale float64) { //
 		size     int64
 		scale    float64
 	}{font_rid, size, scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetScale(font_rid RID.Any, size int64) float64 { //gd:TextServer.font_get_scale
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.font_get_scale, gdextension.SizeFloat|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8), &struct {
 		font_rid RID.Any
 		size     int64
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3160,6 +3267,7 @@ func (self class) FontGetTextureCount(font_rid RID.Any, size Vector2i.XY) int64 
 		font_rid RID.Any
 		size     Vector2i.XY
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3168,6 +3276,7 @@ func (self class) FontClearTextures(font_rid RID.Any, size Vector2i.XY) { //gd:T
 		font_rid RID.Any
 		size     Vector2i.XY
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontRemoveTexture(font_rid RID.Any, size Vector2i.XY, texture_index int64) { //gd:TextServer.font_remove_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_remove_texture, 0|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3175,6 +3284,7 @@ func (self class) FontRemoveTexture(font_rid RID.Any, size Vector2i.XY, texture_
 		size          Vector2i.XY
 		texture_index int64
 	}{font_rid, size, texture_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontSetTextureImage(font_rid RID.Any, size Vector2i.XY, texture_index int64, image [1]gdclass.Image) { //gd:TextServer.font_set_texture_image
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_set_texture_image, 0|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeObject<<16), &struct {
@@ -3183,6 +3293,8 @@ func (self class) FontSetTextureImage(font_rid RID.Any, size Vector2i.XY, textur
 		texture_index int64
 		image         gdextension.Object
 	}{font_rid, size, texture_index, gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (self class) FontGetTextureImage(font_rid RID.Any, size Vector2i.XY, texture_index int64) [1]gdclass.Image { //gd:TextServer.font_get_texture_image
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.font_get_texture_image, gdextension.SizeObject|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3190,6 +3302,7 @@ func (self class) FontGetTextureImage(font_rid RID.Any, size Vector2i.XY, textur
 		size          Vector2i.XY
 		texture_index int64
 	}{font_rid, size, texture_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Image{gdclass.NewImage(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -3200,6 +3313,8 @@ func (self class) FontSetTextureOffsets(font_rid RID.Any, size Vector2i.XY, text
 		texture_index int64
 		offset        gdextension.PackedArray[int32]
 	}{font_rid, size, texture_index, pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](offset))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(offset)
 }
 func (self class) FontGetTextureOffsets(font_rid RID.Any, size Vector2i.XY, texture_index int64) Packed.Array[int32] { //gd:TextServer.font_get_texture_offsets
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.font_get_texture_offsets, gdextension.SizePackedArray|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3207,6 +3322,7 @@ func (self class) FontGetTextureOffsets(font_rid RID.Any, size Vector2i.XY, text
 		size          Vector2i.XY
 		texture_index int64
 	}{font_rid, size, texture_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -3215,6 +3331,7 @@ func (self class) FontGetGlyphList(font_rid RID.Any, size Vector2i.XY) Packed.Ar
 		font_rid RID.Any
 		size     Vector2i.XY
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -3223,6 +3340,7 @@ func (self class) FontClearGlyphs(font_rid RID.Any, size Vector2i.XY) { //gd:Tex
 		font_rid RID.Any
 		size     Vector2i.XY
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontRemoveGlyph(font_rid RID.Any, size Vector2i.XY, glyph int64) { //gd:TextServer.font_remove_glyph
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_remove_glyph, 0|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3230,6 +3348,7 @@ func (self class) FontRemoveGlyph(font_rid RID.Any, size Vector2i.XY, glyph int6
 		size     Vector2i.XY
 		glyph    int64
 	}{font_rid, size, glyph})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetGlyphAdvance(font_rid RID.Any, size int64, glyph int64) Vector2.XY { //gd:TextServer.font_get_glyph_advance
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.font_get_glyph_advance, gdextension.SizeVector2|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3237,6 +3356,7 @@ func (self class) FontGetGlyphAdvance(font_rid RID.Any, size int64, glyph int64)
 		size     int64
 		glyph    int64
 	}{font_rid, size, glyph})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3247,6 +3367,7 @@ func (self class) FontSetGlyphAdvance(font_rid RID.Any, size int64, glyph int64,
 		glyph    int64
 		advance  Vector2.XY
 	}{font_rid, size, glyph, advance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetGlyphOffset(font_rid RID.Any, size Vector2i.XY, glyph int64) Vector2.XY { //gd:TextServer.font_get_glyph_offset
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.font_get_glyph_offset, gdextension.SizeVector2|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3254,6 +3375,7 @@ func (self class) FontGetGlyphOffset(font_rid RID.Any, size Vector2i.XY, glyph i
 		size     Vector2i.XY
 		glyph    int64
 	}{font_rid, size, glyph})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3264,6 +3386,7 @@ func (self class) FontSetGlyphOffset(font_rid RID.Any, size Vector2i.XY, glyph i
 		glyph    int64
 		offset   Vector2.XY
 	}{font_rid, size, glyph, offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetGlyphSize(font_rid RID.Any, size Vector2i.XY, glyph int64) Vector2.XY { //gd:TextServer.font_get_glyph_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.font_get_glyph_size, gdextension.SizeVector2|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3271,6 +3394,7 @@ func (self class) FontGetGlyphSize(font_rid RID.Any, size Vector2i.XY, glyph int
 		size     Vector2i.XY
 		glyph    int64
 	}{font_rid, size, glyph})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3281,6 +3405,7 @@ func (self class) FontSetGlyphSize(font_rid RID.Any, size Vector2i.XY, glyph int
 		glyph    int64
 		gl_size  Vector2.XY
 	}{font_rid, size, glyph, gl_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetGlyphUvRect(font_rid RID.Any, size Vector2i.XY, glyph int64) Rect2.PositionSize { //gd:TextServer.font_get_glyph_uv_rect
 	var r_ret = noescape.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.font_get_glyph_uv_rect, gdextension.SizeRect2|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3288,6 +3413,7 @@ func (self class) FontGetGlyphUvRect(font_rid RID.Any, size Vector2i.XY, glyph i
 		size     Vector2i.XY
 		glyph    int64
 	}{font_rid, size, glyph})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3298,6 +3424,7 @@ func (self class) FontSetGlyphUvRect(font_rid RID.Any, size Vector2i.XY, glyph i
 		glyph    int64
 		uv_rect  Rect2.PositionSize
 	}{font_rid, size, glyph, uv_rect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetGlyphTextureIdx(font_rid RID.Any, size Vector2i.XY, glyph int64) int64 { //gd:TextServer.font_get_glyph_texture_idx
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.font_get_glyph_texture_idx, gdextension.SizeInt|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3305,6 +3432,7 @@ func (self class) FontGetGlyphTextureIdx(font_rid RID.Any, size Vector2i.XY, gly
 		size     Vector2i.XY
 		glyph    int64
 	}{font_rid, size, glyph})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3315,6 +3443,7 @@ func (self class) FontSetGlyphTextureIdx(font_rid RID.Any, size Vector2i.XY, gly
 		glyph       int64
 		texture_idx int64
 	}{font_rid, size, glyph, texture_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetGlyphTextureRid(font_rid RID.Any, size Vector2i.XY, glyph int64) RID.Any { //gd:TextServer.font_get_glyph_texture_rid
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.font_get_glyph_texture_rid, gdextension.SizeRID|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3322,6 +3451,7 @@ func (self class) FontGetGlyphTextureRid(font_rid RID.Any, size Vector2i.XY, gly
 		size     Vector2i.XY
 		glyph    int64
 	}{font_rid, size, glyph})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3331,6 +3461,7 @@ func (self class) FontGetGlyphTextureSize(font_rid RID.Any, size Vector2i.XY, gl
 		size     Vector2i.XY
 		glyph    int64
 	}{font_rid, size, glyph})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3340,6 +3471,7 @@ func (self class) FontGetGlyphContours(font RID.Any, size int64, index int64) Di
 		size  int64
 		index int64
 	}{font, size, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -3348,6 +3480,7 @@ func (self class) FontGetKerningList(font_rid RID.Any, size int64) Array.Contain
 		font_rid RID.Any
 		size     int64
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -3356,6 +3489,7 @@ func (self class) FontClearKerningMap(font_rid RID.Any, size int64) { //gd:TextS
 		font_rid RID.Any
 		size     int64
 	}{font_rid, size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontRemoveKerning(font_rid RID.Any, size int64, glyph_pair Vector2i.XY) { //gd:TextServer.font_remove_kerning
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_remove_kerning, 0|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeVector2i<<12), &struct {
@@ -3363,6 +3497,7 @@ func (self class) FontRemoveKerning(font_rid RID.Any, size int64, glyph_pair Vec
 		size       int64
 		glyph_pair Vector2i.XY
 	}{font_rid, size, glyph_pair})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontSetKerning(font_rid RID.Any, size int64, glyph_pair Vector2i.XY, kerning Vector2.XY) { //gd:TextServer.font_set_kerning
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_set_kerning, 0|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeVector2i<<12)|(gdextension.SizeVector2<<16), &struct {
@@ -3371,6 +3506,7 @@ func (self class) FontSetKerning(font_rid RID.Any, size int64, glyph_pair Vector
 		glyph_pair Vector2i.XY
 		kerning    Vector2.XY
 	}{font_rid, size, glyph_pair, kerning})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontGetKerning(font_rid RID.Any, size int64, glyph_pair Vector2i.XY) Vector2.XY { //gd:TextServer.font_get_kerning
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.font_get_kerning, gdextension.SizeVector2|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeVector2i<<12), &struct {
@@ -3378,6 +3514,7 @@ func (self class) FontGetKerning(font_rid RID.Any, size int64, glyph_pair Vector
 		size       int64
 		glyph_pair Vector2i.XY
 	}{font_rid, size, glyph_pair})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3388,6 +3525,7 @@ func (self class) FontGetGlyphIndex(font_rid RID.Any, size int64, char int64, va
 		char               int64
 		variation_selector int64
 	}{font_rid, size, char, variation_selector})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3397,6 +3535,7 @@ func (self class) FontGetCharFromGlyphIndex(font_rid RID.Any, size int64, glyph_
 		size        int64
 		glyph_index int64
 	}{font_rid, size, glyph_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3405,16 +3544,19 @@ func (self class) FontHasChar(font_rid RID.Any, char int64) bool { //gd:TextServ
 		font_rid RID.Any
 		char     int64
 	}{font_rid, char})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FontGetSupportedChars(font_rid RID.Any) String.Readable { //gd:TextServer.font_get_supported_chars
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.font_get_supported_chars, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) FontGetSupportedGlyphs(font_rid RID.Any) Packed.Array[int32] { //gd:TextServer.font_get_supported_glyphs
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.font_get_supported_glyphs, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -3425,6 +3567,7 @@ func (self class) FontRenderRange(font_rid RID.Any, size Vector2i.XY, start int6
 		start    int64
 		end      int64
 	}{font_rid, size, start, end})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontRenderGlyph(font_rid RID.Any, size Vector2i.XY, index int64) { //gd:TextServer.font_render_glyph
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_render_glyph, 0|(gdextension.SizeRID<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3432,6 +3575,7 @@ func (self class) FontRenderGlyph(font_rid RID.Any, size Vector2i.XY, index int6
 		size     Vector2i.XY
 		index    int64
 	}{font_rid, size, index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontDrawGlyph(font_rid RID.Any, canvas RID.Any, size int64, pos Vector2.XY, index int64, color Color.RGBA, oversampling float64) { //gd:TextServer.font_draw_glyph
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_draw_glyph, 0|(gdextension.SizeRID<<4)|(gdextension.SizeRID<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeVector2<<16)|(gdextension.SizeInt<<20)|(gdextension.SizeColor<<24)|(gdextension.SizeFloat<<28), &struct {
@@ -3443,6 +3587,7 @@ func (self class) FontDrawGlyph(font_rid RID.Any, canvas RID.Any, size int64, po
 		color        Color.RGBA
 		oversampling float64
 	}{font_rid, canvas, size, pos, index, color, oversampling})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontDrawGlyphOutline(font_rid RID.Any, canvas RID.Any, size int64, outline_size int64, pos Vector2.XY, index int64, color Color.RGBA, oversampling float64) { //gd:TextServer.font_draw_glyph_outline
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_draw_glyph_outline, 0|(gdextension.SizeRID<<4)|(gdextension.SizeRID<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeVector2<<20)|(gdextension.SizeInt<<24)|(gdextension.SizeColor<<28)|(gdextension.SizeFloat<<32), &struct {
@@ -3455,12 +3600,15 @@ func (self class) FontDrawGlyphOutline(font_rid RID.Any, canvas RID.Any, size in
 		color        Color.RGBA
 		oversampling float64
 	}{font_rid, canvas, size, outline_size, pos, index, color, oversampling})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FontIsLanguageSupported(font_rid RID.Any, language String.Readable) bool { //gd:TextServer.font_is_language_supported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.font_is_language_supported, gdextension.SizeBool|(gdextension.SizeRID<<4)|(gdextension.SizeString<<8), &struct {
 		font_rid RID.Any
 		language gdextension.String
 	}{font_rid, pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(language)
 	var ret = r_ret
 	return ret
 }
@@ -3470,12 +3618,16 @@ func (self class) FontSetLanguageSupportOverride(font_rid RID.Any, language Stri
 		language  gdextension.String
 		supported bool
 	}{font_rid, pointers.Get(gd.InternalString(language)), supported})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(language)
 }
 func (self class) FontGetLanguageSupportOverride(font_rid RID.Any, language String.Readable) bool { //gd:TextServer.font_get_language_support_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.font_get_language_support_override, gdextension.SizeBool|(gdextension.SizeRID<<4)|(gdextension.SizeString<<8), &struct {
 		font_rid RID.Any
 		language gdextension.String
 	}{font_rid, pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(language)
 	var ret = r_ret
 	return ret
 }
@@ -3484,9 +3636,12 @@ func (self class) FontRemoveLanguageSupportOverride(font_rid RID.Any, language S
 		font_rid RID.Any
 		language gdextension.String
 	}{font_rid, pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(language)
 }
 func (self class) FontGetLanguageSupportOverrides(font_rid RID.Any) Packed.Strings { //gd:TextServer.font_get_language_support_overrides
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.font_get_language_support_overrides, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -3495,6 +3650,8 @@ func (self class) FontIsScriptSupported(font_rid RID.Any, script String.Readable
 		font_rid RID.Any
 		script   gdextension.String
 	}{font_rid, pointers.Get(gd.InternalString(script))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(script)
 	var ret = r_ret
 	return ret
 }
@@ -3504,12 +3661,16 @@ func (self class) FontSetScriptSupportOverride(font_rid RID.Any, script String.R
 		script    gdextension.String
 		supported bool
 	}{font_rid, pointers.Get(gd.InternalString(script)), supported})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(script)
 }
 func (self class) FontGetScriptSupportOverride(font_rid RID.Any, script String.Readable) bool { //gd:TextServer.font_get_script_support_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.font_get_script_support_override, gdextension.SizeBool|(gdextension.SizeRID<<4)|(gdextension.SizeString<<8), &struct {
 		font_rid RID.Any
 		script   gdextension.String
 	}{font_rid, pointers.Get(gd.InternalString(script))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(script)
 	var ret = r_ret
 	return ret
 }
@@ -3518,9 +3679,12 @@ func (self class) FontRemoveScriptSupportOverride(font_rid RID.Any, script Strin
 		font_rid RID.Any
 		script   gdextension.String
 	}{font_rid, pointers.Get(gd.InternalString(script))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(script)
 }
 func (self class) FontGetScriptSupportOverrides(font_rid RID.Any) Packed.Strings { //gd:TextServer.font_get_script_support_overrides
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.font_get_script_support_overrides, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -3529,35 +3693,43 @@ func (self class) FontSetOpentypeFeatureOverrides(font_rid RID.Any, overrides Di
 		font_rid  RID.Any
 		overrides gdextension.Dictionary
 	}{font_rid, pointers.Get(gd.InternalDictionary(overrides))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(overrides)
 }
 func (self class) FontGetOpentypeFeatureOverrides(font_rid RID.Any) Dictionary.Any { //gd:TextServer.font_get_opentype_feature_overrides
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.font_get_opentype_feature_overrides, gdextension.SizeDictionary|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) FontSupportedFeatureList(font_rid RID.Any) Dictionary.Any { //gd:TextServer.font_supported_feature_list
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.font_supported_feature_list, gdextension.SizeDictionary|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) FontSupportedVariationList(font_rid RID.Any) Dictionary.Any { //gd:TextServer.font_supported_variation_list
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.font_supported_variation_list, gdextension.SizeDictionary|(gdextension.SizeRID<<4), &struct{ font_rid RID.Any }{font_rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) FontGetGlobalOversampling() float64 { //gd:TextServer.font_get_global_oversampling
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.font_get_global_oversampling, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FontSetGlobalOversampling(oversampling float64) { //gd:TextServer.font_set_global_oversampling
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.font_set_global_oversampling, 0|(gdextension.SizeFloat<<4), &struct{ oversampling float64 }{oversampling})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHexCodeBoxSize(size int64, index int64) Vector2.XY { //gd:TextServer.get_hex_code_box_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_hex_code_box_size, gdextension.SizeVector2|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		size  int64
 		index int64
 	}{size, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3569,20 +3741,24 @@ func (self class) DrawHexCodeBox(canvas RID.Any, size int64, pos Vector2.XY, ind
 		index  int64
 		color  Color.RGBA
 	}{canvas, size, pos, index, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CreateShapedText(direction Direction, orientation Orientation) RID.Any { //gd:TextServer.create_shaped_text
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.create_shaped_text, gdextension.SizeRID|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		direction   Direction
 		orientation int64
 	}{direction, int64(orientation)})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextClear(rid RID.Any) { //gd:TextServer.shaped_text_clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.shaped_text_clear, 0|(gdextension.SizeRID<<4), &struct{ rid RID.Any }{rid})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapedTextDuplicate(rid RID.Any) RID.Any { //gd:TextServer.shaped_text_duplicate
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.shaped_text_duplicate, gdextension.SizeRID|(gdextension.SizeRID<<4), &struct{ rid RID.Any }{rid})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3591,14 +3767,17 @@ func (self class) ShapedTextSetDirection(shaped RID.Any, direction Direction) { 
 		shaped    RID.Any
 		direction Direction
 	}{shaped, direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapedTextGetDirection(shaped RID.Any) Direction { //gd:TextServer.shaped_text_get_direction
 	var r_ret = noescape.Call[Direction](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_direction, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetInferredDirection(shaped RID.Any) Direction { //gd:TextServer.shaped_text_get_inferred_direction
 	var r_ret = noescape.Call[Direction](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_inferred_direction, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3607,15 +3786,20 @@ func (self class) ShapedTextSetBidiOverride(shaped RID.Any, override Array.Any) 
 		shaped   RID.Any
 		override gdextension.Array
 	}{shaped, pointers.Get(gd.InternalArray(override))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(override)
 }
 func (self class) ShapedTextSetCustomPunctuation(shaped RID.Any, punct String.Readable) { //gd:TextServer.shaped_text_set_custom_punctuation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.shaped_text_set_custom_punctuation, 0|(gdextension.SizeRID<<4)|(gdextension.SizeString<<8), &struct {
 		shaped RID.Any
 		punct  gdextension.String
 	}{shaped, pointers.Get(gd.InternalString(punct))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(punct)
 }
 func (self class) ShapedTextGetCustomPunctuation(shaped RID.Any) String.Readable { //gd:TextServer.shaped_text_get_custom_punctuation
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_custom_punctuation, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -3624,9 +3808,11 @@ func (self class) ShapedTextSetCustomEllipsis(shaped RID.Any, char int64) { //gd
 		shaped RID.Any
 		char   int64
 	}{shaped, char})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapedTextGetCustomEllipsis(shaped RID.Any) int64 { //gd:TextServer.shaped_text_get_custom_ellipsis
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_custom_ellipsis, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3635,9 +3821,11 @@ func (self class) ShapedTextSetOrientation(shaped RID.Any, orientation Orientati
 		shaped      RID.Any
 		orientation int64
 	}{shaped, int64(orientation)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapedTextGetOrientation(shaped RID.Any) Orientation { //gd:TextServer.shaped_text_get_orientation
 	var r_ret = noescape.Call[Orientation](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_orientation, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3646,9 +3834,11 @@ func (self class) ShapedTextSetPreserveInvalid(shaped RID.Any, enabled bool) { /
 		shaped  RID.Any
 		enabled bool
 	}{shaped, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapedTextGetPreserveInvalid(shaped RID.Any) bool { //gd:TextServer.shaped_text_get_preserve_invalid
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_preserve_invalid, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3657,9 +3847,11 @@ func (self class) ShapedTextSetPreserveControl(shaped RID.Any, enabled bool) { /
 		shaped  RID.Any
 		enabled bool
 	}{shaped, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapedTextGetPreserveControl(shaped RID.Any) bool { //gd:TextServer.shaped_text_get_preserve_control
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_preserve_control, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3669,12 +3861,14 @@ func (self class) ShapedTextSetSpacing(shaped RID.Any, spacing SpacingType, valu
 		spacing SpacingType
 		value   int64
 	}{shaped, spacing, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapedTextGetSpacing(shaped RID.Any, spacing SpacingType) int64 { //gd:TextServer.shaped_text_get_spacing
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_spacing, gdextension.SizeInt|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8), &struct {
 		shaped  RID.Any
 		spacing SpacingType
 	}{shaped, spacing})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3688,6 +3882,12 @@ func (self class) ShapedTextAddString(shaped RID.Any, text String.Readable, font
 		language          gdextension.String
 		meta              gdextension.Variant
 	}{shaped, pointers.Get(gd.InternalString(text)), pointers.Get(gd.InternalArray(fonts)), size, pointers.Get(gd.InternalDictionary(opentype_features)), pointers.Get(gd.InternalString(language)), gdextension.Variant(pointers.Get(gd.InternalVariant(meta)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
+	runtime.KeepAlive(fonts)
+	runtime.KeepAlive(opentype_features)
+	runtime.KeepAlive(language)
+	runtime.KeepAlive(meta)
 	var ret = r_ret
 	return ret
 }
@@ -3700,6 +3900,8 @@ func (self class) ShapedTextAddObject(shaped RID.Any, key variant.Any, size Vect
 		length       int64
 		baseline     float64
 	}{shaped, gdextension.Variant(pointers.Get(gd.InternalVariant(key))), size, inline_align, length, baseline})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
@@ -3711,6 +3913,8 @@ func (self class) ShapedTextResizeObject(shaped RID.Any, key variant.Any, size V
 		inline_align GUI.InlineAlignment
 		baseline     float64
 	}{shaped, gdextension.Variant(pointers.Get(gd.InternalVariant(key))), size, inline_align, baseline})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
@@ -3719,16 +3923,20 @@ func (self class) ShapedTextHasObject(shaped RID.Any, key variant.Any) bool { //
 		shaped RID.Any
 		key    gdextension.Variant
 	}{shaped, gdextension.Variant(pointers.Get(gd.InternalVariant(key)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedGetText(shaped RID.Any) String.Readable { //gd:TextServer.shaped_get_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.shaped_get_text, gdextension.SizeString|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) ShapedGetSpanCount(shaped RID.Any) int64 { //gd:TextServer.shaped_get_span_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shaped_get_span_count, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3737,6 +3945,7 @@ func (self class) ShapedGetSpanMeta(shaped RID.Any, index int64) variant.Any { /
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -3745,6 +3954,7 @@ func (self class) ShapedGetSpanEmbeddedObject(shaped RID.Any, index int64) varia
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -3753,6 +3963,7 @@ func (self class) ShapedGetSpanText(shaped RID.Any, index int64) String.Readable
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -3761,6 +3972,7 @@ func (self class) ShapedGetSpanObject(shaped RID.Any, index int64) variant.Any {
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -3772,9 +3984,13 @@ func (self class) ShapedSetSpanUpdateFont(shaped RID.Any, index int64, fonts Arr
 		size              int64
 		opentype_features gdextension.Dictionary
 	}{shaped, index, pointers.Get(gd.InternalArray(fonts)), size, pointers.Get(gd.InternalDictionary(opentype_features))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(fonts)
+	runtime.KeepAlive(opentype_features)
 }
 func (self class) ShapedGetRunCount(shaped RID.Any) int64 { //gd:TextServer.shaped_get_run_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shaped_get_run_count, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3783,6 +3999,7 @@ func (self class) ShapedGetRunText(shaped RID.Any, index int64) String.Readable 
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -3791,6 +4008,7 @@ func (self class) ShapedGetRunRange(shaped RID.Any, index int64) Vector2i.XY { /
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3799,6 +4017,7 @@ func (self class) ShapedGetRunGlyphRange(shaped RID.Any, index int64) Vector2i.X
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3807,6 +4026,7 @@ func (self class) ShapedGetRunFontRid(shaped RID.Any, index int64) RID.Any { //g
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3815,6 +4035,7 @@ func (self class) ShapedGetRunFontSize(shaped RID.Any, index int64) int64 { //gd
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3823,6 +4044,7 @@ func (self class) ShapedGetRunLanguage(shaped RID.Any, index int64) String.Reada
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -3831,6 +4053,7 @@ func (self class) ShapedGetRunDirection(shaped RID.Any, index int64) Direction {
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3839,6 +4062,7 @@ func (self class) ShapedGetRunObject(shaped RID.Any, index int64) variant.Any { 
 		shaped RID.Any
 		index  int64
 	}{shaped, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -3848,11 +4072,13 @@ func (self class) ShapedTextSubstr(shaped RID.Any, start int64, length int64) RI
 		start  int64
 		length int64
 	}{shaped, start, length})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetParent(shaped RID.Any) RID.Any { //gd:TextServer.shaped_text_get_parent
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_parent, gdextension.SizeRID|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3862,6 +4088,7 @@ func (self class) ShapedTextFitToWidth(shaped RID.Any, width float64, justificat
 		width               float64
 		justification_flags JustificationFlag
 	}{shaped, width, justification_flags})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3870,41 +4097,50 @@ func (self class) ShapedTextTabAlign(shaped RID.Any, tab_stops Packed.Array[floa
 		shaped    RID.Any
 		tab_stops gdextension.PackedArray[float32]
 	}{shaped, pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](tab_stops))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tab_stops)
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextShape(shaped RID.Any) bool { //gd:TextServer.shaped_text_shape
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.shaped_text_shape, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextIsReady(shaped RID.Any) bool { //gd:TextServer.shaped_text_is_ready
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.shaped_text_is_ready, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextHasVisibleChars(shaped RID.Any) bool { //gd:TextServer.shaped_text_has_visible_chars
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.shaped_text_has_visible_chars, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetGlyphs(shaped RID.Any) Array.Contains[Dictionary.Any] { //gd:TextServer.shaped_text_get_glyphs
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_glyphs, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ShapedTextSortLogical(shaped RID.Any) Array.Contains[Dictionary.Any] { //gd:TextServer.shaped_text_sort_logical
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.shaped_text_sort_logical, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ShapedTextGetGlyphCount(shaped RID.Any) int64 { //gd:TextServer.shaped_text_get_glyph_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_glyph_count, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetRange(shaped RID.Any) Vector2i.XY { //gd:TextServer.shaped_text_get_range
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_range, gdextension.SizeVector2i|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3916,6 +4152,8 @@ func (self class) ShapedTextGetLineBreaksAdv(shaped RID.Any, width Packed.Array[
 		once        bool
 		break_flags LineBreakFlag
 	}{shaped, pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](width)), start, once, break_flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(width)
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -3926,6 +4164,7 @@ func (self class) ShapedTextGetLineBreaks(shaped RID.Any, width float64, start i
 		start       int64
 		break_flags LineBreakFlag
 	}{shaped, width, start, break_flags})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -3935,26 +4174,31 @@ func (self class) ShapedTextGetWordBreaks(shaped RID.Any, grapheme_flags Graphem
 		grapheme_flags      GraphemeFlag
 		skip_grapheme_flags GraphemeFlag
 	}{shaped, grapheme_flags, skip_grapheme_flags})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ShapedTextGetTrimPos(shaped RID.Any) int64 { //gd:TextServer.shaped_text_get_trim_pos
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_trim_pos, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetEllipsisPos(shaped RID.Any) int64 { //gd:TextServer.shaped_text_get_ellipsis_pos
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_ellipsis_pos, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetEllipsisGlyphs(shaped RID.Any) Array.Contains[Dictionary.Any] { //gd:TextServer.shaped_text_get_ellipsis_glyphs
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_ellipsis_glyphs, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ShapedTextGetEllipsisGlyphCount(shaped RID.Any) int64 { //gd:TextServer.shaped_text_get_ellipsis_glyph_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_ellipsis_glyph_count, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3964,9 +4208,11 @@ func (self class) ShapedTextOverrunTrimToWidth(shaped RID.Any, width float64, ov
 		width              float64
 		overrun_trim_flags TextOverrunFlag
 	}{shaped, width, overrun_trim_flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapedTextGetObjects(shaped RID.Any) Array.Any { //gd:TextServer.shaped_text_get_objects
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_objects, gdextension.SizeArray|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -3975,6 +4221,8 @@ func (self class) ShapedTextGetObjectRect(shaped RID.Any, key variant.Any) Rect2
 		shaped RID.Any
 		key    gdextension.Variant
 	}{shaped, gdextension.Variant(pointers.Get(gd.InternalVariant(key)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
@@ -3983,6 +4231,8 @@ func (self class) ShapedTextGetObjectRange(shaped RID.Any, key variant.Any) Vect
 		shaped RID.Any
 		key    gdextension.Variant
 	}{shaped, gdextension.Variant(pointers.Get(gd.InternalVariant(key)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
@@ -3991,36 +4241,44 @@ func (self class) ShapedTextGetObjectGlyph(shaped RID.Any, key variant.Any) int6
 		shaped RID.Any
 		key    gdextension.Variant
 	}{shaped, gdextension.Variant(pointers.Get(gd.InternalVariant(key)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetSize(shaped RID.Any) Vector2.XY { //gd:TextServer.shaped_text_get_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_size, gdextension.SizeVector2|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetAscent(shaped RID.Any) float64 { //gd:TextServer.shaped_text_get_ascent
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_ascent, gdextension.SizeFloat|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetDescent(shaped RID.Any) float64 { //gd:TextServer.shaped_text_get_descent
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_descent, gdextension.SizeFloat|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetWidth(shaped RID.Any) float64 { //gd:TextServer.shaped_text_get_width
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_width, gdextension.SizeFloat|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetUnderlinePosition(shaped RID.Any) float64 { //gd:TextServer.shaped_text_get_underline_position
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_underline_position, gdextension.SizeFloat|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetUnderlineThickness(shaped RID.Any) float64 { //gd:TextServer.shaped_text_get_underline_thickness
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_underline_thickness, gdextension.SizeFloat|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4029,6 +4287,7 @@ func (self class) ShapedTextGetCarets(shaped RID.Any, position int64) Dictionary
 		shaped   RID.Any
 		position int64
 	}{shaped, position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -4038,6 +4297,7 @@ func (self class) ShapedTextGetSelection(shaped RID.Any, start int64, end int64)
 		start  int64
 		end    int64
 	}{shaped, start, end})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -4046,6 +4306,7 @@ func (self class) ShapedTextHitTestGrapheme(shaped RID.Any, coords float64) int6
 		shaped RID.Any
 		coords float64
 	}{shaped, coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4054,6 +4315,7 @@ func (self class) ShapedTextHitTestPosition(shaped RID.Any, coords float64) int6
 		shaped RID.Any
 		coords float64
 	}{shaped, coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4062,6 +4324,7 @@ func (self class) ShapedTextGetGraphemeBounds(shaped RID.Any, pos int64) Vector2
 		shaped RID.Any
 		pos    int64
 	}{shaped, pos})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4070,6 +4333,7 @@ func (self class) ShapedTextNextGraphemePos(shaped RID.Any, pos int64) int64 { /
 		shaped RID.Any
 		pos    int64
 	}{shaped, pos})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4078,11 +4342,13 @@ func (self class) ShapedTextPrevGraphemePos(shaped RID.Any, pos int64) int64 { /
 		shaped RID.Any
 		pos    int64
 	}{shaped, pos})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShapedTextGetCharacterBreaks(shaped RID.Any) Packed.Array[int32] { //gd:TextServer.shaped_text_get_character_breaks
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_character_breaks, gdextension.SizePackedArray|(gdextension.SizeRID<<4), &struct{ shaped RID.Any }{shaped})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -4091,6 +4357,7 @@ func (self class) ShapedTextNextCharacterPos(shaped RID.Any, pos int64) int64 { 
 		shaped RID.Any
 		pos    int64
 	}{shaped, pos})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4099,6 +4366,7 @@ func (self class) ShapedTextPrevCharacterPos(shaped RID.Any, pos int64) int64 { 
 		shaped RID.Any
 		pos    int64
 	}{shaped, pos})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4107,6 +4375,7 @@ func (self class) ShapedTextClosestCharacterPos(shaped RID.Any, pos int64) int64
 		shaped RID.Any
 		pos    int64
 	}{shaped, pos})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4120,6 +4389,7 @@ func (self class) ShapedTextDraw(shaped RID.Any, canvas RID.Any, pos Vector2.XY,
 		color        Color.RGBA
 		oversampling float64
 	}{shaped, canvas, pos, clip_l, clip_r, color, oversampling})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapedTextDrawOutline(shaped RID.Any, canvas RID.Any, pos Vector2.XY, clip_l float64, clip_r float64, outline_size int64, color Color.RGBA, oversampling float64) { //gd:TextServer.shaped_text_draw_outline
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.shaped_text_draw_outline, 0|(gdextension.SizeRID<<4)|(gdextension.SizeRID<<8)|(gdextension.SizeVector2<<12)|(gdextension.SizeFloat<<16)|(gdextension.SizeFloat<<20)|(gdextension.SizeInt<<24)|(gdextension.SizeColor<<28)|(gdextension.SizeFloat<<32), &struct {
@@ -4132,6 +4402,7 @@ func (self class) ShapedTextDrawOutline(shaped RID.Any, canvas RID.Any, pos Vect
 		color        Color.RGBA
 		oversampling float64
 	}{shaped, canvas, pos, clip_l, clip_r, outline_size, color, oversampling})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapedTextGetDominantDirectionInRange(shaped RID.Any, start int64, end int64) Direction { //gd:TextServer.shaped_text_get_dominant_direction_in_range
 	var r_ret = noescape.Call[Direction](gd.ObjectChecked(self.AsObject()), methods.shaped_text_get_dominant_direction_in_range, gdextension.SizeInt|(gdextension.SizeRID<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -4139,6 +4410,7 @@ func (self class) ShapedTextGetDominantDirectionInRange(shaped RID.Any, start in
 		start  int64
 		end    int64
 	}{shaped, start, end})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4147,6 +4419,9 @@ func (self class) FormatNumber(number String.Readable, language String.Readable)
 		number   gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(number)), pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(number)
+	runtime.KeepAlive(language)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -4155,11 +4430,16 @@ func (self class) ParseNumber(number String.Readable, language String.Readable) 
 		number   gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(number)), pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(number)
+	runtime.KeepAlive(language)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) PercentSign(language String.Readable) String.Readable { //gd:TextServer.percent_sign
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.percent_sign, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ language gdextension.String }{pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(language)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -4169,6 +4449,9 @@ func (self class) StringGetWordBreaks(s String.Readable, language String.Readabl
 		language       gdextension.String
 		chars_per_line int64
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalString(language)), chars_per_line})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(s)
+	runtime.KeepAlive(language)
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -4177,6 +4460,9 @@ func (self class) StringGetCharacterBreaks(s String.Readable, language String.Re
 		s        gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(s)
+	runtime.KeepAlive(language)
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -4185,26 +4471,36 @@ func (self class) IsConfusable(s String.Readable, dict Packed.Strings) int64 { /
 		s    gdextension.String
 		dict gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalPackedStrings(dict))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(s)
+	runtime.KeepAlive(dict)
 	var ret = r_ret
 	return ret
 }
 func (self class) SpoofCheck(s String.Readable) bool { //gd:TextServer.spoof_check
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.spoof_check, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ s gdextension.String }{pointers.Get(gd.InternalString(s))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(s)
 	var ret = r_ret
 	return ret
 }
 func (self class) StripDiacritics(s String.Readable) String.Readable { //gd:TextServer.strip_diacritics
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.strip_diacritics, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ s gdextension.String }{pointers.Get(gd.InternalString(s))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(s)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsValidIdentifier(s String.Readable) bool { //gd:TextServer.is_valid_identifier
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_valid_identifier, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ s gdextension.String }{pointers.Get(gd.InternalString(s))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(s)
 	var ret = r_ret
 	return ret
 }
 func (self class) IsValidLetter(unicode int64) bool { //gd:TextServer.is_valid_letter
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_valid_letter, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ unicode int64 }{unicode})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4213,6 +4509,9 @@ func (self class) StringToUpper(s String.Readable, language String.Readable) Str
 		s        gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(s)
+	runtime.KeepAlive(language)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -4221,6 +4520,9 @@ func (self class) StringToLower(s String.Readable, language String.Readable) Str
 		s        gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(s)
+	runtime.KeepAlive(language)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -4229,6 +4531,9 @@ func (self class) StringToTitle(s String.Readable, language String.Readable) Str
 		s        gdextension.String
 		language gdextension.String
 	}{pointers.Get(gd.InternalString(s)), pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(s)
+	runtime.KeepAlive(language)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -4238,6 +4543,9 @@ func (self class) ParseStructuredText(parser_type StructuredTextParser, args Arr
 		args        gdextension.Array
 		text        gdextension.String
 	}{parser_type, pointers.Get(gd.InternalArray(args)), pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(args)
+	runtime.KeepAlive(text)
 	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }

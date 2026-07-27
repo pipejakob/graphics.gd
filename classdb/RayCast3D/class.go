@@ -21,6 +21,7 @@ To sweep over a region of 3D space, you can approximate the region with multiple
 package RayCast3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -30,6 +31,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -58,6 +60,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -324,7 +329,7 @@ func (self Instance) GetCollisionMaskValue(layer_number int) bool { //gd:RayCast
 type Advanced = class
 type class [1]gdclass.RayCast3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRayCast3D(obj[0])
@@ -339,7 +344,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -513,78 +518,99 @@ func (self Instance) SetDebugShapeThickness(value int) Instance { //gd:RayCast3D
 
 func (self class) SetEnabled(enabled bool) { //gd:RayCast3D.set_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEnabled() bool { //gd:RayCast3D.is_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTargetPosition(local_point Vector3.XYZ) { //gd:RayCast3D.set_target_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_target_position, 0|(gdextension.SizeVector3<<4), &struct{ local_point Vector3.XYZ }{local_point})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTargetPosition() Vector3.XYZ { //gd:RayCast3D.get_target_position
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_target_position, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsColliding() bool { //gd:RayCast3D.is_colliding
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_colliding, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ForceRaycastUpdate() { //gd:RayCast3D.force_raycast_update
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.force_raycast_update, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollider() [1]gdreference.Object { //gd:RayCast3D.get_collider
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_collider, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdreference.Object{gdreference.LetObject(r_ret)}
 	return ret
 }
 func (self class) GetColliderRid() RID.Any { //gd:RayCast3D.get_collider_rid
 	var r_ret = jumponly.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_collider_rid, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetColliderShape() int64 { //gd:RayCast3D.get_collider_shape
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collider_shape, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCollisionPoint() Vector3.XYZ { //gd:RayCast3D.get_collision_point
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_collision_point, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCollisionNormal() Vector3.XYZ { //gd:RayCast3D.get_collision_normal
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_collision_normal, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCollisionFaceIndex() int64 { //gd:RayCast3D.get_collision_face_index
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_face_index, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddExceptionRid(rid RID.Any) { //gd:RayCast3D.add_exception_rid
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_exception_rid, 0|(gdextension.SizeRID<<4), &struct{ rid RID.Any }{rid})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddException(node [1]gdclass.CollisionObject3D) { //gd:RayCast3D.add_exception
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_exception, 0|(gdextension.SizeObject<<4), &struct{ node gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetCollisionObject3D(node[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node[0].Anchor())
 }
 func (self class) RemoveExceptionRid(rid RID.Any) { //gd:RayCast3D.remove_exception_rid
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_exception_rid, 0|(gdextension.SizeRID<<4), &struct{ rid RID.Any }{rid})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveException(node [1]gdclass.CollisionObject3D) { //gd:RayCast3D.remove_exception
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_exception, 0|(gdextension.SizeObject<<4), &struct{ node gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCollisionObject3D(node[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node[0].Anchor())
 }
 func (self class) ClearExceptions() { //gd:RayCast3D.clear_exceptions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_exceptions, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCollisionMask(mask int64) { //gd:RayCast3D.set_collision_mask
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_mask, 0|(gdextension.SizeInt<<4), &struct{ mask int64 }{mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionMask() int64 { //gd:RayCast3D.get_collision_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -593,77 +619,93 @@ func (self class) SetCollisionMaskValue(layer_number int64, value bool) { //gd:R
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionMaskValue(layer_number int64) bool { //gd:RayCast3D.get_collision_mask_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_collision_mask_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetExcludeParentBody(mask bool) { //gd:RayCast3D.set_exclude_parent_body
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_exclude_parent_body, 0|(gdextension.SizeBool<<4), &struct{ mask bool }{mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetExcludeParentBody() bool { //gd:RayCast3D.get_exclude_parent_body
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_exclude_parent_body, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollideWithAreas(enable bool) { //gd:RayCast3D.set_collide_with_areas
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collide_with_areas, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCollideWithAreasEnabled() bool { //gd:RayCast3D.is_collide_with_areas_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_collide_with_areas_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollideWithBodies(enable bool) { //gd:RayCast3D.set_collide_with_bodies
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collide_with_bodies, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCollideWithBodiesEnabled() bool { //gd:RayCast3D.is_collide_with_bodies_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_collide_with_bodies_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHitFromInside(enable bool) { //gd:RayCast3D.set_hit_from_inside
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hit_from_inside, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHitFromInsideEnabled() bool { //gd:RayCast3D.is_hit_from_inside_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hit_from_inside_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHitBackFaces(enable bool) { //gd:RayCast3D.set_hit_back_faces
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hit_back_faces, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHitBackFacesEnabled() bool { //gd:RayCast3D.is_hit_back_faces_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hit_back_faces_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDebugShapeCustomColor(debug_shape_custom_color Color.RGBA) { //gd:RayCast3D.set_debug_shape_custom_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_debug_shape_custom_color, 0|(gdextension.SizeColor<<4), &struct{ debug_shape_custom_color Color.RGBA }{debug_shape_custom_color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDebugShapeCustomColor() Color.RGBA { //gd:RayCast3D.get_debug_shape_custom_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_debug_shape_custom_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDebugShapeThickness(debug_shape_thickness int64) { //gd:RayCast3D.set_debug_shape_thickness
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_debug_shape_thickness, 0|(gdextension.SizeInt<<4), &struct{ debug_shape_thickness int64 }{debug_shape_thickness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDebugShapeThickness() int64 { //gd:RayCast3D.get_debug_shape_thickness
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_debug_shape_thickness, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsRayCast3D() Advanced             { return Advanced(o) }
 func (o Instance) AsRayCast3D() Instance          { return o }
 func (o *Extension[T]) AsRayCast3D() Instance     { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

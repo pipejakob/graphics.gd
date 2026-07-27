@@ -17,6 +17,7 @@ Note: In Godot 3 and older, [Node3D] was named Spatial.
 package Node3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -26,6 +27,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -56,6 +58,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -676,7 +681,7 @@ func (self Instance) ToGlobal(local_point Vector3.XYZ) Vector3.XYZ { //gd:Node3D
 type Advanced = class
 type class [1]gdclass.Node3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNode3D(obj[0])
@@ -691,7 +696,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1031,174 +1036,219 @@ func (self Instance) SetVisibilityParent(value string) Instance { //gd:Node3D.vi
 
 func (self class) SetTransform(local Transform3D.BasisOrigin) { //gd:Node3D.set_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transform, 0|(gdextension.SizeTransform3D<<4), &struct{ local Transform3D.BasisOrigin }{gd.Transposed(local)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTransform() Transform3D.BasisOrigin { //gd:Node3D.get_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_transform, gdextension.SizeTransform3D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) SetPosition(position Vector3.XYZ) { //gd:Node3D.set_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_position, 0|(gdextension.SizeVector3<<4), &struct{ position Vector3.XYZ }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPosition() Vector3.XYZ { //gd:Node3D.get_position
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_position, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRotation(euler_radians Vector3.XYZ) { //gd:Node3D.set_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rotation, 0|(gdextension.SizeVector3<<4), &struct{ euler_radians Vector3.XYZ }{euler_radians})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRotation() Vector3.XYZ { //gd:Node3D.get_rotation
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_rotation, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRotationDegrees(euler_degrees Vector3.XYZ) { //gd:Node3D.set_rotation_degrees
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rotation_degrees, 0|(gdextension.SizeVector3<<4), &struct{ euler_degrees Vector3.XYZ }{euler_degrees})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRotationDegrees() Vector3.XYZ { //gd:Node3D.get_rotation_degrees
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_rotation_degrees, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRotationOrder(order Angle.Order) { //gd:Node3D.set_rotation_order
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rotation_order, 0|(gdextension.SizeInt<<4), &struct{ order Angle.Order }{order})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRotationOrder() Angle.Order { //gd:Node3D.get_rotation_order
 	var r_ret = noescape.Call[Angle.Order](gd.ObjectChecked(self.AsObject()), methods.get_rotation_order, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRotationEditMode(edit_mode RotationEditMode) { //gd:Node3D.set_rotation_edit_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rotation_edit_mode, 0|(gdextension.SizeInt<<4), &struct{ edit_mode RotationEditMode }{edit_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRotationEditMode() RotationEditMode { //gd:Node3D.get_rotation_edit_mode
 	var r_ret = noescape.Call[RotationEditMode](gd.ObjectChecked(self.AsObject()), methods.get_rotation_edit_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetScale(scale Vector3.XYZ) { //gd:Node3D.set_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scale, 0|(gdextension.SizeVector3<<4), &struct{ scale Vector3.XYZ }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScale() Vector3.XYZ { //gd:Node3D.get_scale
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_scale, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetQuaternion(quaternion Quaternion.IJKX) { //gd:Node3D.set_quaternion
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_quaternion, 0|(gdextension.SizeQuaternion<<4), &struct{ quaternion Quaternion.IJKX }{quaternion})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetQuaternion() Quaternion.IJKX { //gd:Node3D.get_quaternion
 	var r_ret = noescape.Call[Quaternion.IJKX](gd.ObjectChecked(self.AsObject()), methods.get_quaternion, gdextension.SizeQuaternion, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBasis(basis Basis.XYZ) { //gd:Node3D.set_basis
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_basis, 0|(gdextension.SizeBasis<<4), &struct{ basis Basis.XYZ }{Basis.Transposed(basis)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBasis() Basis.XYZ { //gd:Node3D.get_basis
 	var r_ret = noescape.Call[Basis.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_basis, gdextension.SizeBasis, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Basis.Transposed(r_ret)
 	return ret
 }
 func (self class) SetGlobalTransform(global Transform3D.BasisOrigin) { //gd:Node3D.set_global_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_global_transform, 0|(gdextension.SizeTransform3D<<4), &struct{ global Transform3D.BasisOrigin }{gd.Transposed(global)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlobalTransform() Transform3D.BasisOrigin { //gd:Node3D.get_global_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_global_transform, gdextension.SizeTransform3D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) GetGlobalTransformInterpolated() Transform3D.BasisOrigin { //gd:Node3D.get_global_transform_interpolated
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_global_transform_interpolated, gdextension.SizeTransform3D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) SetGlobalPosition(position Vector3.XYZ) { //gd:Node3D.set_global_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_global_position, 0|(gdextension.SizeVector3<<4), &struct{ position Vector3.XYZ }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlobalPosition() Vector3.XYZ { //gd:Node3D.get_global_position
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_global_position, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlobalBasis(basis Basis.XYZ) { //gd:Node3D.set_global_basis
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_global_basis, 0|(gdextension.SizeBasis<<4), &struct{ basis Basis.XYZ }{Basis.Transposed(basis)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlobalBasis() Basis.XYZ { //gd:Node3D.get_global_basis
 	var r_ret = noescape.Call[Basis.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_global_basis, gdextension.SizeBasis, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Basis.Transposed(r_ret)
 	return ret
 }
 func (self class) SetGlobalRotation(euler_radians Vector3.XYZ) { //gd:Node3D.set_global_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_global_rotation, 0|(gdextension.SizeVector3<<4), &struct{ euler_radians Vector3.XYZ }{euler_radians})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlobalRotation() Vector3.XYZ { //gd:Node3D.get_global_rotation
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_global_rotation, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlobalRotationDegrees(euler_degrees Vector3.XYZ) { //gd:Node3D.set_global_rotation_degrees
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_global_rotation_degrees, 0|(gdextension.SizeVector3<<4), &struct{ euler_degrees Vector3.XYZ }{euler_degrees})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlobalRotationDegrees() Vector3.XYZ { //gd:Node3D.get_global_rotation_degrees
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_global_rotation_degrees, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetParentNode3d() [1]gdclass.Node3D { //gd:Node3D.get_parent_node_3d
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_parent_node_3d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Node3D{gdclass.NewNode3D(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetIgnoreTransformNotification(enabled bool) { //gd:Node3D.set_ignore_transform_notification
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ignore_transform_notification, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAsTopLevel(enable bool) { //gd:Node3D.set_as_top_level
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_as_top_level, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSetAsTopLevel() bool { //gd:Node3D.is_set_as_top_level
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_set_as_top_level, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDisableScale(disable bool) { //gd:Node3D.set_disable_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_disable_scale, 0|(gdextension.SizeBool<<4), &struct{ disable bool }{disable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsScaleDisabled() bool { //gd:Node3D.is_scale_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_scale_disabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetWorld3d() [1]gdclass.World3D { //gd:Node3D.get_world_3d
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_world_3d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.World3D{gdclass.NewWorld3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) ForceUpdateTransform() { //gd:Node3D.force_update_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.force_update_transform, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetVisibilityParent(path Path.ToNode) { //gd:Node3D.set_visibility_parent
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visibility_parent, 0|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetVisibilityParent() Path.ToNode { //gd:Node3D.get_visibility_parent
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_visibility_parent, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) UpdateGizmos() { //gd:Node3D.update_gizmos
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update_gizmos, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddGizmo(gizmo [1]gdclass.Node3DGizmo) { //gd:Node3D.add_gizmo
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_gizmo, 0|(gdextension.SizeObject<<4), &struct{ gizmo gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode3DGizmo(gizmo[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(gizmo[0].Anchor())
 }
 func (self class) GetGizmos() Array.Contains[[1]gdclass.Node3DGizmo] { //gd:Node3D.get_gizmos
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_gizmos, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node3DGizmo](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClearGizmos() { //gd:Node3D.clear_gizmos
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_gizmos, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSubgizmoSelection(gizmo [1]gdclass.Node3DGizmo, id int64, transform Transform3D.BasisOrigin) { //gd:Node3D.set_subgizmo_selection
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_subgizmo_selection, 0|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeTransform3D<<12), &struct {
@@ -1206,42 +1256,54 @@ func (self class) SetSubgizmoSelection(gizmo [1]gdclass.Node3DGizmo, id int64, t
 		id        int64
 		transform Transform3D.BasisOrigin
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNode3DGizmo(gizmo[0])[0])), id, gd.Transposed(transform)})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(gizmo[0].Anchor())
 }
 func (self class) ClearSubgizmoSelection() { //gd:Node3D.clear_subgizmo_selection
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_subgizmo_selection, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetVisible(visible bool) { //gd:Node3D.set_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visible, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsVisible() bool { //gd:Node3D.is_visible
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsVisibleInTree() bool { //gd:Node3D.is_visible_in_tree
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_visible_in_tree, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Show() { //gd:Node3D.show
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.show, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Hide() { //gd:Node3D.hide
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.hide, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetNotifyLocalTransform(enable bool) { //gd:Node3D.set_notify_local_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_notify_local_transform, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLocalTransformNotificationEnabled() bool { //gd:Node3D.is_local_transform_notification_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_local_transform_notification_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNotifyTransform(enable bool) { //gd:Node3D.set_notify_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_notify_transform, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTransformNotificationEnabled() bool { //gd:Node3D.is_transform_notification_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_transform_notification_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1250,48 +1312,61 @@ func (self class) Rotate(axis Vector3.XYZ, angle float64) { //gd:Node3D.rotate
 		axis  Vector3.XYZ
 		angle float64
 	}{axis, angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GlobalRotate(axis Vector3.XYZ, angle float64) { //gd:Node3D.global_rotate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.global_rotate, 0|(gdextension.SizeVector3<<4)|(gdextension.SizeFloat<<8), &struct {
 		axis  Vector3.XYZ
 		angle float64
 	}{axis, angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GlobalScale(scale Vector3.XYZ) { //gd:Node3D.global_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.global_scale, 0|(gdextension.SizeVector3<<4), &struct{ scale Vector3.XYZ }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GlobalTranslate(offset Vector3.XYZ) { //gd:Node3D.global_translate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.global_translate, 0|(gdextension.SizeVector3<<4), &struct{ offset Vector3.XYZ }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RotateObjectLocal(axis Vector3.XYZ, angle float64) { //gd:Node3D.rotate_object_local
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.rotate_object_local, 0|(gdextension.SizeVector3<<4)|(gdextension.SizeFloat<<8), &struct {
 		axis  Vector3.XYZ
 		angle float64
 	}{axis, angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ScaleObjectLocal(scale Vector3.XYZ) { //gd:Node3D.scale_object_local
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.scale_object_local, 0|(gdextension.SizeVector3<<4), &struct{ scale Vector3.XYZ }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TranslateObjectLocal(offset Vector3.XYZ) { //gd:Node3D.translate_object_local
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.translate_object_local, 0|(gdextension.SizeVector3<<4), &struct{ offset Vector3.XYZ }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RotateX(angle float64) { //gd:Node3D.rotate_x
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.rotate_x, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RotateY(angle float64) { //gd:Node3D.rotate_y
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.rotate_y, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RotateZ(angle float64) { //gd:Node3D.rotate_z
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.rotate_z, 0|(gdextension.SizeFloat<<4), &struct{ angle float64 }{angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Translate(offset Vector3.XYZ) { //gd:Node3D.translate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.translate, 0|(gdextension.SizeVector3<<4), &struct{ offset Vector3.XYZ }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Orthonormalize() { //gd:Node3D.orthonormalize
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.orthonormalize, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetIdentity() { //gd:Node3D.set_identity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_identity, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) LookAt(target Vector3.XYZ, up Vector3.XYZ, use_model_front bool) { //gd:Node3D.look_at
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.look_at, 0|(gdextension.SizeVector3<<4)|(gdextension.SizeVector3<<8)|(gdextension.SizeBool<<12), &struct {
@@ -1299,6 +1374,7 @@ func (self class) LookAt(target Vector3.XYZ, up Vector3.XYZ, use_model_front boo
 		up              Vector3.XYZ
 		use_model_front bool
 	}{target, up, use_model_front})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) LookAtFromPosition(position Vector3.XYZ, target Vector3.XYZ, up Vector3.XYZ, use_model_front bool) { //gd:Node3D.look_at_from_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.look_at_from_position, 0|(gdextension.SizeVector3<<4)|(gdextension.SizeVector3<<8)|(gdextension.SizeVector3<<12)|(gdextension.SizeBool<<16), &struct {
@@ -1307,14 +1383,17 @@ func (self class) LookAtFromPosition(position Vector3.XYZ, target Vector3.XYZ, u
 		up              Vector3.XYZ
 		use_model_front bool
 	}{position, target, up, use_model_front})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ToLocal(global_point Vector3.XYZ) Vector3.XYZ { //gd:Node3D.to_local
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.to_local, gdextension.SizeVector3|(gdextension.SizeVector3<<4), &struct{ global_point Vector3.XYZ }{global_point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ToGlobal(local_point Vector3.XYZ) Vector3.XYZ { //gd:Node3D.to_global
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.to_global, gdextension.SizeVector3|(gdextension.SizeVector3<<4), &struct{ local_point Vector3.XYZ }{local_point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1343,9 +1422,9 @@ func (self class) VisibilityChanged() Signal.Any {
 func (o class) AsNode3D() Advanced            { return Advanced(o) }
 func (o Instance) AsNode3D() Instance         { return o }
 func (o *Extension[T]) AsNode3D() Instance    { return o.Super() }
-func (o class) AsNode() Node.Advanced         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced         { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance      { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

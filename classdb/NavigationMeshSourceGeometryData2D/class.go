@@ -6,6 +6,7 @@ Container for parsed source geometry data used in navigation mesh baking.
 package NavigationMeshSourceGeometryData2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -41,6 +42,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -207,7 +211,7 @@ func (self Instance) GetBounds() Rect2.PositionSize { //gd:NavigationMeshSourceG
 type Advanced = class
 type class [1]gdclass.NavigationMeshSourceGeometryData2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNavigationMeshSourceGeometryData2D(obj[0])
@@ -222,7 +226,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -277,75 +281,100 @@ func (self Instance) SetProjectedObstructions(value []ProjectedObstruction2D) In
 
 func (self class) Clear() { //gd:NavigationMeshSourceGeometryData2D.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasData() bool { //gd:NavigationMeshSourceGeometryData2D.has_data
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_data, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTraversableOutlines(traversable_outlines Array.Contains[Packed.Array[Vector2.XY]]) { //gd:NavigationMeshSourceGeometryData2D.set_traversable_outlines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_traversable_outlines, 0|(gdextension.SizeArray<<4), &struct{ traversable_outlines gdextension.Array }{pointers.Get(gd.InternalArray(traversable_outlines))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(traversable_outlines)
 }
 func (self class) GetTraversableOutlines() Array.Contains[Packed.Array[Vector2.XY]] { //gd:NavigationMeshSourceGeometryData2D.get_traversable_outlines
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_traversable_outlines, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetObstructionOutlines(obstruction_outlines Array.Contains[Packed.Array[Vector2.XY]]) { //gd:NavigationMeshSourceGeometryData2D.set_obstruction_outlines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_obstruction_outlines, 0|(gdextension.SizeArray<<4), &struct{ obstruction_outlines gdextension.Array }{pointers.Get(gd.InternalArray(obstruction_outlines))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obstruction_outlines)
 }
 func (self class) GetObstructionOutlines() Array.Contains[Packed.Array[Vector2.XY]] { //gd:NavigationMeshSourceGeometryData2D.get_obstruction_outlines
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_obstruction_outlines, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AppendTraversableOutlines(traversable_outlines Array.Contains[Packed.Array[Vector2.XY]]) { //gd:NavigationMeshSourceGeometryData2D.append_traversable_outlines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.append_traversable_outlines, 0|(gdextension.SizeArray<<4), &struct{ traversable_outlines gdextension.Array }{pointers.Get(gd.InternalArray(traversable_outlines))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(traversable_outlines)
 }
 func (self class) AppendObstructionOutlines(obstruction_outlines Array.Contains[Packed.Array[Vector2.XY]]) { //gd:NavigationMeshSourceGeometryData2D.append_obstruction_outlines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.append_obstruction_outlines, 0|(gdextension.SizeArray<<4), &struct{ obstruction_outlines gdextension.Array }{pointers.Get(gd.InternalArray(obstruction_outlines))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obstruction_outlines)
 }
 func (self class) AddTraversableOutline(shape_outline Packed.Array[Vector2.XY]) { //gd:NavigationMeshSourceGeometryData2D.add_traversable_outline
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_traversable_outline, 0|(gdextension.SizePackedArray<<4), &struct {
 		shape_outline gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](shape_outline))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shape_outline)
 }
 func (self class) AddObstructionOutline(shape_outline Packed.Array[Vector2.XY]) { //gd:NavigationMeshSourceGeometryData2D.add_obstruction_outline
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_obstruction_outline, 0|(gdextension.SizePackedArray<<4), &struct {
 		shape_outline gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](shape_outline))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shape_outline)
 }
 func (self class) Merge(other_geometry [1]gdclass.NavigationMeshSourceGeometryData2D) { //gd:NavigationMeshSourceGeometryData2D.merge
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.merge, 0|(gdextension.SizeObject<<4), &struct{ other_geometry gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMeshSourceGeometryData2D(other_geometry[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(other_geometry[0].Anchor())
 }
 func (self class) AddProjectedObstruction(vertices Packed.Array[Vector2.XY], carve bool) { //gd:NavigationMeshSourceGeometryData2D.add_projected_obstruction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_projected_obstruction, 0|(gdextension.SizePackedArray<<4)|(gdextension.SizeBool<<8), &struct {
 		vertices gdextension.PackedArray[Vector2.XY]
 		carve    bool
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](vertices)), carve})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertices)
 }
 func (self class) ClearProjectedObstructions() { //gd:NavigationMeshSourceGeometryData2D.clear_projected_obstructions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_projected_obstructions, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetProjectedObstructions(projected_obstructions Array.Any) { //gd:NavigationMeshSourceGeometryData2D.set_projected_obstructions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_projected_obstructions, 0|(gdextension.SizeArray<<4), &struct{ projected_obstructions gdextension.Array }{pointers.Get(gd.InternalArray(projected_obstructions))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(projected_obstructions)
 }
 func (self class) GetProjectedObstructions() Array.Any { //gd:NavigationMeshSourceGeometryData2D.get_projected_obstructions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_projected_obstructions, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBounds() Rect2.PositionSize { //gd:NavigationMeshSourceGeometryData2D.get_bounds
 	var r_ret = noescape.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_bounds, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsNavigationMeshSourceGeometryData2D() Advanced         { return Advanced(o) }
 func (o Instance) AsNavigationMeshSourceGeometryData2D() Instance      { return o }
 func (o *Extension[T]) AsNavigationMeshSourceGeometryData2D() Instance { return o.Super() }
-func (o class) AsResource() Resource.Advanced                          { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced                          { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance                  { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance                       { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance                       { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                                    { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                            { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                                 { return *(*ie.RC)(ie.As(&o)) }

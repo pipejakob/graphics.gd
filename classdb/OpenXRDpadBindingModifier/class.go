@@ -12,6 +12,7 @@ Note: If the DPad binding modifier extension is enabled, all dpad binding paths 
 package OpenXRDpadBindingModifier
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -50,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -147,7 +151,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.OpenXRDpadBindingModifier
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRDpadBindingModifier(obj[0])
@@ -162,7 +166,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -308,73 +312,95 @@ func (self Instance) SetOffHaptic(value OpenXRHapticBase.Instance) Instance { //
 
 func (self class) SetActionSet(action_set [1]gdclass.OpenXRActionSet) { //gd:OpenXRDpadBindingModifier.set_action_set
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_action_set, 0|(gdextension.SizeObject<<4), &struct{ action_set gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRActionSet(action_set[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action_set[0].Anchor())
 }
 func (self class) GetActionSet() [1]gdclass.OpenXRActionSet { //gd:OpenXRDpadBindingModifier.get_action_set
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_action_set, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OpenXRActionSet{gdclass.NewOpenXRActionSet(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetInputPath(input_path String.Readable) { //gd:OpenXRDpadBindingModifier.set_input_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_input_path, 0|(gdextension.SizeString<<4), &struct{ input_path gdextension.String }{pointers.Get(gd.InternalString(input_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(input_path)
 }
 func (self class) GetInputPath() String.Readable { //gd:OpenXRDpadBindingModifier.get_input_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_input_path, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetThreshold(threshold float64) { //gd:OpenXRDpadBindingModifier.set_threshold
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_threshold, 0|(gdextension.SizeFloat<<4), &struct{ threshold float64 }{threshold})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetThreshold() float64 { //gd:OpenXRDpadBindingModifier.get_threshold
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetThresholdReleased(threshold_released float64) { //gd:OpenXRDpadBindingModifier.set_threshold_released
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_threshold_released, 0|(gdextension.SizeFloat<<4), &struct{ threshold_released float64 }{threshold_released})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetThresholdReleased() float64 { //gd:OpenXRDpadBindingModifier.get_threshold_released
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_threshold_released, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCenterRegion(center_region float64) { //gd:OpenXRDpadBindingModifier.set_center_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_center_region, 0|(gdextension.SizeFloat<<4), &struct{ center_region float64 }{center_region})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCenterRegion() float64 { //gd:OpenXRDpadBindingModifier.get_center_region
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_center_region, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWedgeAngle(wedge_angle float64) { //gd:OpenXRDpadBindingModifier.set_wedge_angle
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_wedge_angle, 0|(gdextension.SizeFloat<<4), &struct{ wedge_angle float64 }{wedge_angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWedgeAngle() float64 { //gd:OpenXRDpadBindingModifier.get_wedge_angle
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_wedge_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIsSticky(is_sticky bool) { //gd:OpenXRDpadBindingModifier.set_is_sticky
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_is_sticky, 0|(gdextension.SizeBool<<4), &struct{ is_sticky bool }{is_sticky})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIsSticky() bool { //gd:OpenXRDpadBindingModifier.get_is_sticky
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_is_sticky, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOnHaptic(haptic [1]gdclass.OpenXRHapticBase) { //gd:OpenXRDpadBindingModifier.set_on_haptic
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_on_haptic, 0|(gdextension.SizeObject<<4), &struct{ haptic gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRHapticBase(haptic[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(haptic[0].Anchor())
 }
 func (self class) GetOnHaptic() [1]gdclass.OpenXRHapticBase { //gd:OpenXRDpadBindingModifier.get_on_haptic
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_on_haptic, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OpenXRHapticBase{gdclass.NewOpenXRHapticBase(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetOffHaptic(haptic [1]gdclass.OpenXRHapticBase) { //gd:OpenXRDpadBindingModifier.set_off_haptic
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_off_haptic, 0|(gdextension.SizeObject<<4), &struct{ haptic gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRHapticBase(haptic[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(haptic[0].Anchor())
 }
 func (self class) GetOffHaptic() [1]gdclass.OpenXRHapticBase { //gd:OpenXRDpadBindingModifier.get_off_haptic
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_off_haptic, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OpenXRHapticBase{gdclass.NewOpenXRHapticBase(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -382,26 +408,26 @@ func (o class) AsOpenXRDpadBindingModifier() Advanced         { return Advanced(
 func (o Instance) AsOpenXRDpadBindingModifier() Instance      { return o }
 func (o *Extension[T]) AsOpenXRDpadBindingModifier() Instance { return o.Super() }
 func (o class) AsOpenXRIPBindingModifier() OpenXRIPBindingModifier.Advanced {
-	return OpenXRIPBindingModifier.Advanced{gdclass.NewOpenXRIPBindingModifier(o[0].AsObject()[0])}
+	return *(*OpenXRIPBindingModifier.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRIPBindingModifier() OpenXRIPBindingModifier.Instance {
 	return o.Super().AsOpenXRIPBindingModifier()
 }
 func (o Instance) AsOpenXRIPBindingModifier() OpenXRIPBindingModifier.Instance {
-	return OpenXRIPBindingModifier.Instance{gdclass.NewOpenXRIPBindingModifier(o[0].AsObject()[0])}
+	return *(*OpenXRIPBindingModifier.Instance)(ie.As(&o))
 }
 func (o class) AsOpenXRBindingModifier() OpenXRBindingModifier.Advanced {
-	return OpenXRBindingModifier.Advanced{gdclass.NewOpenXRBindingModifier(o[0].AsObject()[0])}
+	return *(*OpenXRBindingModifier.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRBindingModifier() OpenXRBindingModifier.Instance {
 	return o.Super().AsOpenXRBindingModifier()
 }
 func (o Instance) AsOpenXRBindingModifier() OpenXRBindingModifier.Instance {
-	return OpenXRBindingModifier.Instance{gdclass.NewOpenXRBindingModifier(o[0].AsObject()[0])}
+	return *(*OpenXRBindingModifier.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

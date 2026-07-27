@@ -15,6 +15,7 @@ Note: For performance reasons, the [OnResource.Changed] signal is only emitted w
 package ShaderMaterial
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -51,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -160,7 +164,7 @@ func (self Instance) GetShaderParameter(param string) any { //gd:ShaderMaterial.
 type Advanced = class
 type class [1]gdclass.ShaderMaterial
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewShaderMaterial(obj[0])
@@ -175,7 +179,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -215,9 +219,12 @@ func (self Instance) SetShader(value Shader.Instance) Instance { //gd:ShaderMate
 
 func (self class) SetShader(shader [1]gdclass.Shader) { //gd:ShaderMaterial.set_shader
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shader, 0|(gdextension.SizeObject<<4), &struct{ shader gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetShader(shader[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shader[0].Anchor())
 }
 func (self class) GetShader() [1]gdclass.Shader { //gd:ShaderMaterial.get_shader
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_shader, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Shader{gdclass.NewShader(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -226,21 +233,26 @@ func (self class) SetShaderParameter(param String.Name, value variant.Any) { //g
 		param gdextension.StringName
 		value gdextension.Variant
 	}{pointers.Get(gd.InternalStringName(param)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(param)
+	runtime.KeepAlive(value)
 }
 func (self class) GetShaderParameter(param String.Name) variant.Any { //gd:ShaderMaterial.get_shader_parameter
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_shader_parameter, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ param gdextension.StringName }{pointers.Get(gd.InternalStringName(param))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(param)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (o class) AsShaderMaterial() Advanced            { return Advanced(o) }
 func (o Instance) AsShaderMaterial() Instance         { return o }
 func (o *Extension[T]) AsShaderMaterial() Instance    { return o.Super() }
-func (o class) AsMaterial() Material.Advanced         { return Material.Advanced{gdclass.NewMaterial(o[0].AsObject()[0])} }
+func (o class) AsMaterial() Material.Advanced         { return *(*Material.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsMaterial() Material.Instance { return o.Super().AsMaterial() }
-func (o Instance) AsMaterial() Material.Instance      { return Material.Instance{gdclass.NewMaterial(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsMaterial() Material.Instance      { return *(*Material.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

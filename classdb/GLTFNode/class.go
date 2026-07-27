@@ -12,6 +12,7 @@ glTF nodes generally exist inside of [GLTFState] which represents all data of a 
 package GLTFNode
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -203,7 +207,7 @@ func (self Instance) SetAdditionalData(extension_name string, additional_data an
 type Advanced = class
 type class [1]gdclass.GLTFNode
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGLTFNode(obj[0])
@@ -218,7 +222,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -446,94 +450,118 @@ func (self Instance) SetVisible(value bool) Instance { //gd:GLTFNode.visible
 
 func (self class) GetOriginalName() String.Readable { //gd:GLTFNode.get_original_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_original_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOriginalName(original_name String.Readable) { //gd:GLTFNode.set_original_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_original_name, 0|(gdextension.SizeString<<4), &struct{ original_name gdextension.String }{pointers.Get(gd.InternalString(original_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(original_name)
 }
 func (self class) GetParent() int64 { //gd:GLTFNode.get_parent
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_parent, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetParent(parent int64) { //gd:GLTFNode.set_parent
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_parent, 0|(gdextension.SizeInt<<4), &struct{ parent int64 }{parent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHeight() int64 { //gd:GLTFNode.get_height
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_height, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHeight(height int64) { //gd:GLTFNode.set_height
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_height, 0|(gdextension.SizeInt<<4), &struct{ height int64 }{height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetXform() Transform3D.BasisOrigin { //gd:GLTFNode.get_xform
 	var r_ret = jumponly.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_xform, gdextension.SizeTransform3D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) SetXform(xform Transform3D.BasisOrigin) { //gd:GLTFNode.set_xform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_xform, 0|(gdextension.SizeTransform3D<<4), &struct{ xform Transform3D.BasisOrigin }{gd.Transposed(xform)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMesh() int64 { //gd:GLTFNode.get_mesh
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_mesh, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMesh(mesh int64) { //gd:GLTFNode.set_mesh
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mesh, 0|(gdextension.SizeInt<<4), &struct{ mesh int64 }{mesh})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCamera() int64 { //gd:GLTFNode.get_camera
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_camera, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCamera(camera int64) { //gd:GLTFNode.set_camera
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_camera, 0|(gdextension.SizeInt<<4), &struct{ camera int64 }{camera})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkin() int64 { //gd:GLTFNode.get_skin
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_skin, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSkin(skin int64) { //gd:GLTFNode.set_skin
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_skin, 0|(gdextension.SizeInt<<4), &struct{ skin int64 }{skin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkeleton() int64 { //gd:GLTFNode.get_skeleton
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_skeleton, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSkeleton(skeleton int64) { //gd:GLTFNode.set_skeleton
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_skeleton, 0|(gdextension.SizeInt<<4), &struct{ skeleton int64 }{skeleton})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPosition() Vector3.XYZ { //gd:GLTFNode.get_position
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_position, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPosition(position Vector3.XYZ) { //gd:GLTFNode.set_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_position, 0|(gdextension.SizeVector3<<4), &struct{ position Vector3.XYZ }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRotation() Quaternion.IJKX { //gd:GLTFNode.get_rotation
 	var r_ret = noescape.Call[Quaternion.IJKX](gd.ObjectChecked(self.AsObject()), methods.get_rotation, gdextension.SizeQuaternion, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRotation(rotation Quaternion.IJKX) { //gd:GLTFNode.set_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rotation, 0|(gdextension.SizeQuaternion<<4), &struct{ rotation Quaternion.IJKX }{rotation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScale() Vector3.XYZ { //gd:GLTFNode.get_scale
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_scale, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetScale(scale Vector3.XYZ) { //gd:GLTFNode.set_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scale, 0|(gdextension.SizeVector3<<4), &struct{ scale Vector3.XYZ }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetChildren() Packed.Array[int32] { //gd:GLTFNode.get_children
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_children, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -541,28 +569,37 @@ func (self class) SetChildren(children Packed.Array[int32]) { //gd:GLTFNode.set_
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_children, 0|(gdextension.SizePackedArray<<4), &struct {
 		children gdextension.PackedArray[int32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](children))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(children)
 }
 func (self class) AppendChildIndex(child_index int64) { //gd:GLTFNode.append_child_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.append_child_index, 0|(gdextension.SizeInt<<4), &struct{ child_index int64 }{child_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLight() int64 { //gd:GLTFNode.get_light
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_light, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLight(light int64) { //gd:GLTFNode.set_light
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_light, 0|(gdextension.SizeInt<<4), &struct{ light int64 }{light})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVisible() bool { //gd:GLTFNode.get_visible
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVisible(visible bool) { //gd:GLTFNode.set_visible
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visible, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAdditionalData(extension_name String.Name) variant.Any { //gd:GLTFNode.get_additional_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_additional_data, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ extension_name gdextension.StringName }{pointers.Get(gd.InternalStringName(extension_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension_name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -571,21 +608,26 @@ func (self class) SetAdditionalData(extension_name String.Name, additional_data 
 		extension_name  gdextension.StringName
 		additional_data gdextension.Variant
 	}{pointers.Get(gd.InternalStringName(extension_name)), gdextension.Variant(pointers.Get(gd.InternalVariant(additional_data)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension_name)
+	runtime.KeepAlive(additional_data)
 }
 func (self class) GetSceneNodePath(gltf_state [1]gdclass.GLTFState, handle_skeletons bool) Path.ToNode { //gd:GLTFNode.get_scene_node_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_scene_node_path, gdextension.SizeNodePath|(gdextension.SizeObject<<4)|(gdextension.SizeBool<<8), &struct {
 		gltf_state       gdextension.Object
 		handle_skeletons bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetGLTFState(gltf_state[0])[0])), handle_skeletons})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(gltf_state[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (o class) AsGLTFNode() Advanced                  { return Advanced(o) }
 func (o Instance) AsGLTFNode() Instance               { return o }
 func (o *Extension[T]) AsGLTFNode() Instance          { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

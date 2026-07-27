@@ -10,6 +10,7 @@ package IP
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -18,6 +19,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -42,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -230,7 +235,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.IP
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewIP(obj[0])
@@ -245,7 +250,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) ResolveHostname(host String.Readable, ip_type Type) String.Readable { //gd:IP.resolve_hostname
@@ -254,6 +259,7 @@ func (self class) ResolveHostname(host String.Readable, ip_type Type) String.Rea
 		host    gdextension.String
 		ip_type Type
 	}{pointers.Get(gd.InternalString(host)), ip_type})
+	runtime.KeepAlive(host)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -263,6 +269,7 @@ func (self class) ResolveHostnameAddresses(host String.Readable, ip_type Type) P
 		host    gdextension.String
 		ip_type Type
 	}{pointers.Get(gd.InternalString(host)), ip_type})
+	runtime.KeepAlive(host)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -272,6 +279,7 @@ func (self class) ResolveHostnameQueueItem(host String.Readable, ip_type Type) i
 		host    gdextension.String
 		ip_type Type
 	}{pointers.Get(gd.InternalString(host)), ip_type})
+	runtime.KeepAlive(host)
 	var ret = r_ret
 	return ret
 }
@@ -312,6 +320,7 @@ func (self class) GetLocalInterfaces() Array.Contains[Dictionary.Any] { //gd:IP.
 func (self class) ClearCache(hostname String.Readable) { //gd:IP.clear_cache
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.clear_cache, 0|(gdextension.SizeString<<4), &struct{ hostname gdextension.String }{pointers.Get(gd.InternalString(hostname))})
+	runtime.KeepAlive(hostname)
 }
 
 func (self class) Virtual(name string) reflect.Value {

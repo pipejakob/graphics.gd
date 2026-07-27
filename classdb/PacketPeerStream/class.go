@@ -8,6 +8,7 @@ Note: When exporting to Android, make sure to enable the INTERNET permission in 
 package PacketPeerStream
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -128,7 +132,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.PacketPeerStream
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPacketPeerStream(obj[0])
@@ -143,7 +147,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -203,34 +207,41 @@ func (self Instance) SetStreamPeer(value StreamPeer.Instance) Instance { //gd:Pa
 
 func (self class) SetStreamPeer(peer [1]gdclass.StreamPeer) { //gd:PacketPeerStream.set_stream_peer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stream_peer, 0|(gdextension.SizeObject<<4), &struct{ peer gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetStreamPeer(peer[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(peer[0].Anchor())
 }
 func (self class) GetStreamPeer() [1]gdclass.StreamPeer { //gd:PacketPeerStream.get_stream_peer
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_stream_peer, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.StreamPeer{gdclass.NewStreamPeer(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetInputBufferMaxSize(max_size_bytes int64) { //gd:PacketPeerStream.set_input_buffer_max_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_input_buffer_max_size, 0|(gdextension.SizeInt<<4), &struct{ max_size_bytes int64 }{max_size_bytes})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetOutputBufferMaxSize(max_size_bytes int64) { //gd:PacketPeerStream.set_output_buffer_max_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_output_buffer_max_size, 0|(gdextension.SizeInt<<4), &struct{ max_size_bytes int64 }{max_size_bytes})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInputBufferMaxSize() int64 { //gd:PacketPeerStream.get_input_buffer_max_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_input_buffer_max_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOutputBufferMaxSize() int64 { //gd:PacketPeerStream.get_output_buffer_max_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_output_buffer_max_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsPacketPeerStream() Advanced              { return Advanced(o) }
 func (o Instance) AsPacketPeerStream() Instance           { return o }
 func (o *Extension[T]) AsPacketPeerStream() Instance      { return o.Super() }
-func (o class) AsPacketPeer() PacketPeer.Advanced         { return PacketPeer.Advanced{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o class) AsPacketPeer() PacketPeer.Advanced         { return *(*PacketPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPacketPeer() PacketPeer.Instance { return o.Super().AsPacketPeer() }
-func (o Instance) AsPacketPeer() PacketPeer.Instance      { return PacketPeer.Instance{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o Instance) AsPacketPeer() PacketPeer.Instance      { return *(*PacketPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

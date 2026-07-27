@@ -8,6 +8,7 @@ Note: When exporting to Android, make sure to enable the INTERNET permission in 
 package PacketPeer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -41,6 +42,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -214,7 +218,7 @@ func (self Instance) GetAvailablePacketCount() int { //gd:PacketPeer.get_availab
 type Advanced = class
 type class [1]gdclass.PacketPeer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPacketPeer(obj[0])
@@ -229,7 +233,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -272,6 +276,7 @@ func (self Instance) SetEncodeBufferMaxSize(value int) Instance { //gd:PacketPee
 
 func (self class) GetVar(allow_objects bool) variant.Any { //gd:PacketPeer.get_var
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_var, gdextension.SizeVariant|(gdextension.SizeBool<<4), &struct{ allow_objects bool }{allow_objects})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -280,36 +285,45 @@ func (self class) PutVar(v variant.Any, full_objects bool) Error.Code { //gd:Pac
 		v            gdextension.Variant
 		full_objects bool
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(v))), full_objects})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(v)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetPacket() Packed.Bytes { //gd:PacketPeer.get_packet
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_packet, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) PutPacket(buffer Packed.Bytes) Error.Code { //gd:PacketPeer.put_packet
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.put_packet, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ buffer gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetPacketError() Error.Code { //gd:PacketPeer.get_packet_error
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_packet_error, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetAvailablePacketCount() int64 { //gd:PacketPeer.get_available_packet_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_available_packet_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetEncodeBufferMaxSize() int64 { //gd:PacketPeer.get_encode_buffer_max_size
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_encode_buffer_max_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEncodeBufferMaxSize(max_size int64) { //gd:PacketPeer.set_encode_buffer_max_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_encode_buffer_max_size, 0|(gdextension.SizeInt<<4), &struct{ max_size int64 }{max_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsPacketPeer() Advanced         { return Advanced(o) }
 func (o Instance) AsPacketPeer() Instance      { return o }

@@ -31,6 +31,7 @@ Note: This class shouldn't be instantiated directly. Instead, access the singlet
 package EditorSettings
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -67,6 +68,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -433,7 +437,7 @@ func (self Instance) MarkSettingChanged(setting string) { //gd:EditorSettings.ma
 type Advanced = class
 type class [1]gdclass.EditorSettings
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorSettings(obj[0])
@@ -448,7 +452,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -473,6 +477,8 @@ func New() Instance {
 
 func (self class) HasSetting(name String.Readable) bool { //gd:EditorSettings.has_setting
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_setting, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -481,14 +487,21 @@ func (self class) SetSetting(name String.Readable, value variant.Any) { //gd:Edi
 		name  gdextension.String
 		value gdextension.Variant
 	}{pointers.Get(gd.InternalString(name)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(value)
 }
 func (self class) GetSetting(name String.Readable) variant.Any { //gd:EditorSettings.get_setting
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_setting, gdextension.SizeVariant|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Erase(property String.Readable) { //gd:EditorSettings.erase
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.erase, 0|(gdextension.SizeString<<4), &struct{ property gdextension.String }{pointers.Get(gd.InternalString(property))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(property)
 }
 func (self class) SetInitialValue(name String.Name, value variant.Any, update_current bool) { //gd:EditorSettings.set_initial_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_initial_value, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeVariant<<8)|(gdextension.SizeBool<<12), &struct {
@@ -496,9 +509,14 @@ func (self class) SetInitialValue(name String.Name, value variant.Any, update_cu
 		value          gdextension.Variant
 		update_current bool
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Variant(pointers.Get(gd.InternalVariant(value))), update_current})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(value)
 }
 func (self class) AddPropertyInfo(info Dictionary.Any) { //gd:EditorSettings.add_property_info
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_property_info, 0|(gdextension.SizeDictionary<<4), &struct{ info gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(info))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(info)
 }
 func (self class) SetProjectMetadata(section String.Readable, key String.Readable, data variant.Any) { //gd:EditorSettings.set_project_metadata
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_project_metadata, 0|(gdextension.SizeString<<4)|(gdextension.SizeString<<8)|(gdextension.SizeVariant<<12), &struct {
@@ -506,6 +524,10 @@ func (self class) SetProjectMetadata(section String.Readable, key String.Readabl
 		key     gdextension.String
 		data    gdextension.Variant
 	}{pointers.Get(gd.InternalString(section)), pointers.Get(gd.InternalString(key)), gdextension.Variant(pointers.Get(gd.InternalVariant(data)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(section)
+	runtime.KeepAlive(key)
+	runtime.KeepAlive(data)
 }
 func (self class) GetProjectMetadata(section String.Readable, key String.Readable, def variant.Any) variant.Any { //gd:EditorSettings.get_project_metadata
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_project_metadata, gdextension.SizeVariant|(gdextension.SizeString<<4)|(gdextension.SizeString<<8)|(gdextension.SizeVariant<<12), &struct {
@@ -513,6 +535,10 @@ func (self class) GetProjectMetadata(section String.Readable, key String.Readabl
 		key     gdextension.String
 		def     gdextension.Variant
 	}{pointers.Get(gd.InternalString(section)), pointers.Get(gd.InternalString(key)), gdextension.Variant(pointers.Get(gd.InternalVariant(def)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(section)
+	runtime.KeepAlive(key)
+	runtime.KeepAlive(def)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -520,9 +546,12 @@ func (self class) SetFavorites(dirs Packed.Strings) { //gd:EditorSettings.set_fa
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_favorites, 0|(gdextension.SizePackedArray<<4), &struct {
 		dirs gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(dirs))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(dirs)
 }
 func (self class) GetFavorites() Packed.Strings { //gd:EditorSettings.get_favorites
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_favorites, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -530,9 +559,12 @@ func (self class) SetRecentDirs(dirs Packed.Strings) { //gd:EditorSettings.set_r
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_recent_dirs, 0|(gdextension.SizePackedArray<<4), &struct {
 		dirs gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(dirs))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(dirs)
 }
 func (self class) GetRecentDirs() Packed.Strings { //gd:EditorSettings.get_recent_dirs
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_recent_dirs, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -541,51 +573,72 @@ func (self class) SetBuiltinActionOverride(name String.Readable, actions_list Ar
 		name         gdextension.String
 		actions_list gdextension.Array
 	}{pointers.Get(gd.InternalString(name)), pointers.Get(gd.InternalArray(actions_list))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(actions_list)
 }
 func (self class) AddShortcut(path String.Readable, shortcut [1]gdclass.Shortcut) { //gd:EditorSettings.add_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_shortcut, 0|(gdextension.SizeString<<4)|(gdextension.SizeObject<<8), &struct {
 		path     gdextension.String
 		shortcut gdextension.Object
 	}{pointers.Get(gd.InternalString(path)), gdextension.Object(gdreference.GetObject(gdclass.GetShortcut(shortcut[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(shortcut[0].Anchor())
 }
 func (self class) RemoveShortcut(path String.Readable) { //gd:EditorSettings.remove_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_shortcut, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) IsShortcut(path String.Readable, event [1]gdclass.InputEvent) bool { //gd:EditorSettings.is_shortcut
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_shortcut, gdextension.SizeBool|(gdextension.SizeString<<4)|(gdextension.SizeObject<<8), &struct {
 		path  gdextension.String
 		event gdextension.Object
 	}{pointers.Get(gd.InternalString(path)), gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(event[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasShortcut(path String.Readable) bool { //gd:EditorSettings.has_shortcut
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_shortcut, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetShortcut(path String.Readable) [1]gdclass.Shortcut { //gd:EditorSettings.get_shortcut
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_shortcut, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = [1]gdclass.Shortcut{gdclass.NewShortcut(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetShortcutList() Packed.Strings { //gd:EditorSettings.get_shortcut_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_shortcut_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) CheckChangedSettingsInGroup(setting_prefix String.Readable) bool { //gd:EditorSettings.check_changed_settings_in_group
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.check_changed_settings_in_group, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ setting_prefix gdextension.String }{pointers.Get(gd.InternalString(setting_prefix))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(setting_prefix)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetChangedSettings() Packed.Strings { //gd:EditorSettings.get_changed_settings
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_changed_settings, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) MarkSettingChanged(setting String.Readable) { //gd:EditorSettings.mark_setting_changed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.mark_setting_changed, 0|(gdextension.SizeString<<4), &struct{ setting gdextension.String }{pointers.Get(gd.InternalString(setting))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(setting)
 }
 
 /*
@@ -607,9 +660,9 @@ func (self class) SettingsChanged() Signal.Any {
 func (o class) AsEditorSettings() Advanced            { return Advanced(o) }
 func (o Instance) AsEditorSettings() Instance         { return o }
 func (o *Extension[T]) AsEditorSettings() Instance    { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

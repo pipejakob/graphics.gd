@@ -8,6 +8,7 @@ Class representing a torus [PrimitiveMesh].
 package TorusMesh
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -131,7 +135,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.TorusMesh
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTorusMesh(obj[0])
@@ -146,7 +150,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -223,50 +227,58 @@ func (self Instance) SetRingSegments(value int) Instance { //gd:TorusMesh.ring_s
 
 func (self class) SetInnerRadius(radius float64) { //gd:TorusMesh.set_inner_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_inner_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInnerRadius() float64 { //gd:TorusMesh.get_inner_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_inner_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOuterRadius(radius float64) { //gd:TorusMesh.set_outer_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_outer_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOuterRadius() float64 { //gd:TorusMesh.get_outer_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_outer_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRings(rings int64) { //gd:TorusMesh.set_rings
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rings, 0|(gdextension.SizeInt<<4), &struct{ rings int64 }{rings})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRings() int64 { //gd:TorusMesh.get_rings
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_rings, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRingSegments(rings int64) { //gd:TorusMesh.set_ring_segments
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ring_segments, 0|(gdextension.SizeInt<<4), &struct{ rings int64 }{rings})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRingSegments() int64 { //gd:TorusMesh.get_ring_segments
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_ring_segments, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsTorusMesh() Advanced                           { return Advanced(o) }
 func (o Instance) AsTorusMesh() Instance                        { return o }
 func (o *Extension[T]) AsTorusMesh() Instance                   { return o.Super() }
-func (o class) AsPrimitiveMesh() PrimitiveMesh.Advanced         { return PrimitiveMesh.Advanced{gdclass.NewPrimitiveMesh(o[0].AsObject()[0])} }
+func (o class) AsPrimitiveMesh() PrimitiveMesh.Advanced         { return *(*PrimitiveMesh.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPrimitiveMesh() PrimitiveMesh.Instance { return o.Super().AsPrimitiveMesh() }
 func (o Instance) AsPrimitiveMesh() PrimitiveMesh.Instance {
-	return PrimitiveMesh.Instance{gdclass.NewPrimitiveMesh(o[0].AsObject()[0])}
+	return *(*PrimitiveMesh.Instance)(ie.As(&o))
 }
-func (o class) AsMesh() Mesh.Advanced                 { return Mesh.Advanced{gdclass.NewMesh(o[0].AsObject()[0])} }
+func (o class) AsMesh() Mesh.Advanced                 { return *(*Mesh.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsMesh() Mesh.Instance         { return o.Super().AsMesh() }
-func (o Instance) AsMesh() Mesh.Instance              { return Mesh.Instance{gdclass.NewMesh(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsMesh() Mesh.Instance              { return *(*Mesh.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

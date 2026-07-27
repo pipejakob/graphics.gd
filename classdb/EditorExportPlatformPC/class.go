@@ -6,6 +6,7 @@ The base class for the desktop platform exporters. These include Windows and Lin
 package EditorExportPlatformPC
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -39,6 +40,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -117,7 +121,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.EditorExportPlatformPC
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorExportPlatformPC(obj[0])
@@ -132,7 +136,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -159,13 +163,13 @@ func (o class) AsEditorExportPlatformPC() Advanced         { return Advanced(o) 
 func (o Instance) AsEditorExportPlatformPC() Instance      { return o }
 func (o *Extension[T]) AsEditorExportPlatformPC() Instance { return o.Super() }
 func (o class) AsEditorExportPlatform() EditorExportPlatform.Advanced {
-	return EditorExportPlatform.Advanced{gdclass.NewEditorExportPlatform(o[0].AsObject()[0])}
+	return *(*EditorExportPlatform.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsEditorExportPlatform() EditorExportPlatform.Instance {
 	return o.Super().AsEditorExportPlatform()
 }
 func (o Instance) AsEditorExportPlatform() EditorExportPlatform.Instance {
-	return EditorExportPlatform.Instance{gdclass.NewEditorExportPlatform(o[0].AsObject()[0])}
+	return *(*EditorExportPlatform.Instance)(ie.As(&o))
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

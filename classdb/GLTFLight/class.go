@@ -6,6 +6,7 @@ Represents a light as defined by the KHR_lights_punctual glTF extension.
 package GLTFLight
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -180,7 +184,7 @@ func (self Instance) SetAdditionalData(extension_name string, additional_data an
 type Advanced = class
 type class [1]gdclass.GLTFLight
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGLTFLight(obj[0])
@@ -195,7 +199,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -315,74 +319,93 @@ func (self Instance) SetOuterConeAngle(value Angle.Radians) Instance { //gd:GLTF
 
 func (self class) FromNode(light_node [1]gdclass.Light3D) [1]gdclass.GLTFLight { //gd:GLTFLight.from_node
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.from_node, gdextension.SizeObject|(gdextension.SizeObject<<4), &struct{ light_node gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetLight3D(light_node[0])[0]))})
+	runtime.KeepAlive(light_node[0].Anchor())
 	var ret = [1]gdclass.GLTFLight{gdclass.NewGLTFLight(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) ToNode() [1]gdclass.Light3D { //gd:GLTFLight.to_node
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.to_node, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Light3D{gdclass.NewLight3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) FromDictionary(dictionary Dictionary.Any) [1]gdclass.GLTFLight { //gd:GLTFLight.from_dictionary
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.from_dictionary, gdextension.SizeObject|(gdextension.SizeDictionary<<4), &struct{ dictionary gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(dictionary))})
+	runtime.KeepAlive(dictionary)
 	var ret = [1]gdclass.GLTFLight{gdclass.NewGLTFLight(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) ToDictionary() Dictionary.Any { //gd:GLTFLight.to_dictionary
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.to_dictionary, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetColor() Color.RGBA { //gd:GLTFLight.get_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetColor(color Color.RGBA) { //gd:GLTFLight.set_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIntensity() float64 { //gd:GLTFLight.get_intensity
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_intensity, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIntensity(intensity float64) { //gd:GLTFLight.set_intensity
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_intensity, 0|(gdextension.SizeFloat<<4), &struct{ intensity float64 }{intensity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLightType() String.Readable { //gd:GLTFLight.get_light_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_light_type, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetLightType(light_type String.Readable) { //gd:GLTFLight.set_light_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_light_type, 0|(gdextension.SizeString<<4), &struct{ light_type gdextension.String }{pointers.Get(gd.InternalString(light_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(light_type)
 }
 func (self class) GetRange() float64 { //gd:GLTFLight.get_range
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_range, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRange(arange float64) { //gd:GLTFLight.set_range
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_range, 0|(gdextension.SizeFloat<<4), &struct{ arange float64 }{arange})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInnerConeAngle() float64 { //gd:GLTFLight.get_inner_cone_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_inner_cone_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInnerConeAngle(inner_cone_angle float64) { //gd:GLTFLight.set_inner_cone_angle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_inner_cone_angle, 0|(gdextension.SizeFloat<<4), &struct{ inner_cone_angle float64 }{inner_cone_angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOuterConeAngle() float64 { //gd:GLTFLight.get_outer_cone_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_outer_cone_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOuterConeAngle(outer_cone_angle float64) { //gd:GLTFLight.set_outer_cone_angle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_outer_cone_angle, 0|(gdextension.SizeFloat<<4), &struct{ outer_cone_angle float64 }{outer_cone_angle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAdditionalData(extension_name String.Name) variant.Any { //gd:GLTFLight.get_additional_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_additional_data, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ extension_name gdextension.StringName }{pointers.Get(gd.InternalStringName(extension_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension_name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -391,13 +414,16 @@ func (self class) SetAdditionalData(extension_name String.Name, additional_data 
 		extension_name  gdextension.StringName
 		additional_data gdextension.Variant
 	}{pointers.Get(gd.InternalStringName(extension_name)), gdextension.Variant(pointers.Get(gd.InternalVariant(additional_data)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension_name)
+	runtime.KeepAlive(additional_data)
 }
 func (o class) AsGLTFLight() Advanced                 { return Advanced(o) }
 func (o Instance) AsGLTFLight() Instance              { return o }
 func (o *Extension[T]) AsGLTFLight() Instance         { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

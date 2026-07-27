@@ -10,6 +10,7 @@ Note: This class shouldn't be instantiated directly. Instead, access the singlet
 package EditorFileSystem
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -19,6 +20,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -44,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -217,7 +222,7 @@ func (self Instance) ReimportFiles(files []string) { //gd:EditorFileSystem.reimp
 type Advanced = class
 type class [1]gdclass.EditorFileSystem
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorFileSystem(obj[0])
@@ -232,7 +237,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -257,40 +262,52 @@ func New() Instance {
 
 func (self class) GetFilesystem() [1]gdclass.EditorFileSystemDirectory { //gd:EditorFileSystem.get_filesystem
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_filesystem, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.EditorFileSystemDirectory{gdclass.NewEditorFileSystemDirectory(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) IsScanning() bool { //gd:EditorFileSystem.is_scanning
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_scanning, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsImporting() bool { //gd:EditorFileSystem.is_importing
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_importing, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetScanningProgress() float64 { //gd:EditorFileSystem.get_scanning_progress
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_scanning_progress, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Scan() { //gd:EditorFileSystem.scan
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.scan, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ScanSources() { //gd:EditorFileSystem.scan_sources
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.scan_sources, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) UpdateFile(path String.Readable) { //gd:EditorFileSystem.update_file
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update_file, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetFilesystemPath(path String.Readable) [1]gdclass.EditorFileSystemDirectory { //gd:EditorFileSystem.get_filesystem_path
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_filesystem_path, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = [1]gdclass.EditorFileSystemDirectory{gdclass.NewEditorFileSystemDirectory(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) GetFileType(path String.Readable) String.Readable { //gd:EditorFileSystem.get_file_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_file_type, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -298,6 +315,8 @@ func (self class) ReimportFiles(files Packed.Strings) { //gd:EditorFileSystem.re
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reimport_files, 0|(gdextension.SizePackedArray<<4), &struct {
 		files gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(files))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(files)
 }
 
 /*
@@ -399,9 +418,9 @@ func (self class) ResourcesReload() Signal.Any {
 func (o class) AsEditorFileSystem() Advanced         { return Advanced(o) }
 func (o Instance) AsEditorFileSystem() Instance      { return o }
 func (o *Extension[T]) AsEditorFileSystem() Instance { return o.Super() }
-func (o class) AsNode() Node.Advanced                { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced                { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance        { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance             { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance             { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

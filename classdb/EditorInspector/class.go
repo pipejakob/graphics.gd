@@ -20,6 +20,7 @@ Note: Unlike sections created from path-like property names, [EditorInspector] w
 package EditorInspector
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -29,6 +30,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -61,6 +63,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -214,7 +219,7 @@ func CreateDefaultInspector(filter_line_edit LineEdit.Instance) Instance { //gd:
 type Advanced = class
 type class [1]gdclass.EditorInspector
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorInspector(obj[0])
@@ -229,7 +234,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -254,25 +259,32 @@ func New() Instance {
 
 func (self class) Edit(obj [1]gdreference.Object) { //gd:EditorInspector.edit
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.edit, 0|(gdextension.SizeObject<<4), &struct{ obj gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetObject(obj[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
 }
 func (self class) GetSelectedPath() String.Readable { //gd:EditorInspector.get_selected_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_selected_path, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetEditedObject() [1]gdreference.Object { //gd:EditorInspector.get_edited_object
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_edited_object, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdreference.Object{gdreference.LetObject(r_ret)}
 	return ret
 }
 func (self class) CollapseAllFolding() { //gd:EditorInspector.collapse_all_folding
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.collapse_all_folding, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ExpandAllFolding() { //gd:EditorInspector.expand_all_folding
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.expand_all_folding, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ExpandRevertable() { //gd:EditorInspector.expand_revertable
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.expand_revertable, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) InstantiatePropertyEditor(obj [1]gdreference.Object, atype variant.Type, path String.Readable, hint ClassDB.PropertyHint, hint_text String.Readable, usage int64, wide bool) [1]gdclass.EditorProperty { //gd:EditorInspector.instantiate_property_editor
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.instantiate_property_editor, gdextension.SizeObject|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeString<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeString<<20)|(gdextension.SizeInt<<24)|(gdextension.SizeBool<<28), &struct {
@@ -284,11 +296,15 @@ func (self class) InstantiatePropertyEditor(obj [1]gdreference.Object, atype var
 		usage     int64
 		wide      bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetObject(obj[0])[0])), atype, pointers.Get(gd.InternalString(path)), hint, pointers.Get(gd.InternalString(hint_text)), usage, wide})
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(hint_text)
 	var ret = [1]gdclass.EditorProperty{gdclass.NewEditorProperty(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) CreateDefaultInspector(filter_line_edit [1]gdclass.LineEdit) [1]gdclass.EditorInspector { //gd:EditorInspector.create_default_inspector
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.create_default_inspector, gdextension.SizeObject|(gdextension.SizeObject<<4), &struct{ filter_line_edit gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetLineEdit(filter_line_edit[0])[0]))})
+	runtime.KeepAlive(filter_line_edit[0].Anchor())
 	var ret = [1]gdclass.EditorInspector{gdclass.NewEditorInspector(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -445,26 +461,26 @@ func (o class) AsEditorInspector() Advanced         { return Advanced(o) }
 func (o Instance) AsEditorInspector() Instance      { return o }
 func (o *Extension[T]) AsEditorInspector() Instance { return o.Super() }
 func (o class) AsScrollContainer() ScrollContainer.Advanced {
-	return ScrollContainer.Advanced{gdclass.NewScrollContainer(o[0].AsObject()[0])}
+	return *(*ScrollContainer.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsScrollContainer() ScrollContainer.Instance {
 	return o.Super().AsScrollContainer()
 }
 func (o Instance) AsScrollContainer() ScrollContainer.Instance {
-	return ScrollContainer.Instance{gdclass.NewScrollContainer(o[0].AsObject()[0])}
+	return *(*ScrollContainer.Instance)(ie.As(&o))
 }
-func (o class) AsContainer() Container.Advanced           { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o class) AsContainer() Container.Advanced           { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance   { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance        { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance        { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

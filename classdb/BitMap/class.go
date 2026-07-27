@@ -6,6 +6,7 @@ A two-dimensional array of boolean values, can be used to efficiently store a bi
 package BitMap
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -275,7 +279,7 @@ func (self MoreArgs) OpaqueToPolygons(rect Rect2i.PositionSize, epsilon Float.X)
 type Advanced = class
 type class [1]gdclass.BitMap
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewBitMap(obj[0])
@@ -290,7 +294,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -315,18 +319,22 @@ func New() Instance {
 
 func (self class) Create(size Vector2i.XY) { //gd:BitMap.create
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.create, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CreateFromImageAlpha(image [1]gdclass.Image, threshold float64) { //gd:BitMap.create_from_image_alpha
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.create_from_image_alpha, 0|(gdextension.SizeObject<<4)|(gdextension.SizeFloat<<8), &struct {
 		image     gdextension.Object
 		threshold float64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0])), threshold})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (self class) SetBitv(position Vector2i.XY, bit bool) { //gd:BitMap.set_bitv
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bitv, 0|(gdextension.SizeVector2i<<4)|(gdextension.SizeBool<<8), &struct {
 		position Vector2i.XY
 		bit      bool
 	}{position, bit})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetBit(x int64, y int64, bit bool) { //gd:BitMap.set_bit
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bit, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeBool<<12), &struct {
@@ -334,9 +342,11 @@ func (self class) SetBit(x int64, y int64, bit bool) { //gd:BitMap.set_bit
 		y   int64
 		bit bool
 	}{x, y, bit})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBitv(position Vector2i.XY) bool { //gd:BitMap.get_bitv
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_bitv, gdextension.SizeBool|(gdextension.SizeVector2i<<4), &struct{ position Vector2i.XY }{position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -345,6 +355,7 @@ func (self class) GetBit(x int64, y int64) bool { //gd:BitMap.get_bit
 		x int64
 		y int64
 	}{x, y})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -353,28 +364,34 @@ func (self class) SetBitRect(rect Rect2i.PositionSize, bit bool) { //gd:BitMap.s
 		rect Rect2i.PositionSize
 		bit  bool
 	}{rect, bit})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTrueBitCount() int64 { //gd:BitMap.get_true_bit_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_true_bit_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSize() Vector2i.XY { //gd:BitMap.get_size
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Resize(new_size Vector2i.XY) { //gd:BitMap.resize
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.resize, 0|(gdextension.SizeVector2i<<4), &struct{ new_size Vector2i.XY }{new_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GrowMask(pixels int64, rect Rect2i.PositionSize) { //gd:BitMap.grow_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.grow_mask, 0|(gdextension.SizeInt<<4)|(gdextension.SizeRect2i<<8), &struct {
 		pixels int64
 		rect   Rect2i.PositionSize
 	}{pixels, rect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ConvertToImage() [1]gdclass.Image { //gd:BitMap.convert_to_image
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.convert_to_image, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Image{gdclass.NewImage(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -383,15 +400,16 @@ func (self class) OpaqueToPolygons(rect Rect2i.PositionSize, epsilon float64) Ar
 		rect    Rect2i.PositionSize
 		epsilon float64
 	}{rect, epsilon})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Packed.Array[Vector2.XY]](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (o class) AsBitMap() Advanced                    { return Advanced(o) }
 func (o Instance) AsBitMap() Instance                 { return o }
 func (o *Extension[T]) AsBitMap() Instance            { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

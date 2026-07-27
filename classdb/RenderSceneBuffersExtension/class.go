@@ -6,6 +6,7 @@ This class allows for a RenderSceneBuffer implementation to be made in GDExtensi
 package RenderSceneBuffersExtension
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -40,6 +41,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -206,7 +210,7 @@ func (Instance) _set_use_debanding(impl func(ptr gdclass.Receiver, use_debanding
 type Advanced = class
 type class [1]gdclass.RenderSceneBuffersExtension
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRenderSceneBuffersExtension(obj[0])
@@ -221,7 +225,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -285,13 +289,13 @@ func (o class) AsRenderSceneBuffersExtension() Advanced         { return Advance
 func (o Instance) AsRenderSceneBuffersExtension() Instance      { return o }
 func (o *Extension[T]) AsRenderSceneBuffersExtension() Instance { return o.Super() }
 func (o class) AsRenderSceneBuffers() RenderSceneBuffers.Advanced {
-	return RenderSceneBuffers.Advanced{gdclass.NewRenderSceneBuffers(o[0].AsObject()[0])}
+	return *(*RenderSceneBuffers.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsRenderSceneBuffers() RenderSceneBuffers.Instance {
 	return o.Super().AsRenderSceneBuffers()
 }
 func (o Instance) AsRenderSceneBuffers() RenderSceneBuffers.Instance {
-	return RenderSceneBuffers.Instance{gdclass.NewRenderSceneBuffers(o[0].AsObject()[0])}
+	return *(*RenderSceneBuffers.Instance)(ie.As(&o))
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

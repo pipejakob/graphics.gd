@@ -6,6 +6,7 @@ Casts light in a 2D environment. A light is defined as a color, an energy value,
 package Light2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -15,6 +16,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -42,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -176,7 +181,7 @@ func (self Instance) GetHeight() Float.X { //gd:Light2D.get_height
 type Advanced = class
 type class [1]gdclass.Light2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewLight2D(obj[0])
@@ -191,7 +196,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -429,144 +434,176 @@ func (self Instance) SetShadowItemCullMask(value int) Instance { //gd:Light2D.sh
 
 func (self class) SetEnabled(enabled bool) { //gd:Light2D.set_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEnabled() bool { //gd:Light2D.is_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEditorOnly(editor_only bool) { //gd:Light2D.set_editor_only
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_editor_only, 0|(gdextension.SizeBool<<4), &struct{ editor_only bool }{editor_only})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEditorOnly() bool { //gd:Light2D.is_editor_only
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_editor_only, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetColor(color Color.RGBA) { //gd:Light2D.set_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetColor() Color.RGBA { //gd:Light2D.get_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnergy(energy float64) { //gd:Light2D.set_energy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_energy, 0|(gdextension.SizeFloat<<4), &struct{ energy float64 }{energy})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnergy() float64 { //gd:Light2D.get_energy
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_energy, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetZRangeMin(z int64) { //gd:Light2D.set_z_range_min
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_z_range_min, 0|(gdextension.SizeInt<<4), &struct{ z int64 }{z})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetZRangeMin() int64 { //gd:Light2D.get_z_range_min
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_z_range_min, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetZRangeMax(z int64) { //gd:Light2D.set_z_range_max
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_z_range_max, 0|(gdextension.SizeInt<<4), &struct{ z int64 }{z})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetZRangeMax() int64 { //gd:Light2D.get_z_range_max
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_z_range_max, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLayerRangeMin(layer int64) { //gd:Light2D.set_layer_range_min
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_layer_range_min, 0|(gdextension.SizeInt<<4), &struct{ layer int64 }{layer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLayerRangeMin() int64 { //gd:Light2D.get_layer_range_min
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_layer_range_min, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLayerRangeMax(layer int64) { //gd:Light2D.set_layer_range_max
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_layer_range_max, 0|(gdextension.SizeInt<<4), &struct{ layer int64 }{layer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLayerRangeMax() int64 { //gd:Light2D.get_layer_range_max
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_layer_range_max, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetItemCullMask(item_cull_mask int64) { //gd:Light2D.set_item_cull_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_cull_mask, 0|(gdextension.SizeInt<<4), &struct{ item_cull_mask int64 }{item_cull_mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemCullMask() int64 { //gd:Light2D.get_item_cull_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_cull_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetItemShadowCullMask(item_shadow_cull_mask int64) { //gd:Light2D.set_item_shadow_cull_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_shadow_cull_mask, 0|(gdextension.SizeInt<<4), &struct{ item_shadow_cull_mask int64 }{item_shadow_cull_mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemShadowCullMask() int64 { //gd:Light2D.get_item_shadow_cull_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_shadow_cull_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShadowEnabled(enabled bool) { //gd:Light2D.set_shadow_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shadow_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShadowEnabled() bool { //gd:Light2D.is_shadow_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_shadow_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShadowSmooth(smooth float64) { //gd:Light2D.set_shadow_smooth
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shadow_smooth, 0|(gdextension.SizeFloat<<4), &struct{ smooth float64 }{smooth})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShadowSmooth() float64 { //gd:Light2D.get_shadow_smooth
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_shadow_smooth, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShadowFilter(filter ShadowFilter) { //gd:Light2D.set_shadow_filter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shadow_filter, 0|(gdextension.SizeInt<<4), &struct{ filter ShadowFilter }{filter})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShadowFilter() ShadowFilter { //gd:Light2D.get_shadow_filter
 	var r_ret = jumponly.Call[ShadowFilter](gd.ObjectChecked(self.AsObject()), methods.get_shadow_filter, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShadowColor(shadow_color Color.RGBA) { //gd:Light2D.set_shadow_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shadow_color, 0|(gdextension.SizeColor<<4), &struct{ shadow_color Color.RGBA }{shadow_color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShadowColor() Color.RGBA { //gd:Light2D.get_shadow_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_shadow_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBlendMode(mode BlendMode) { //gd:Light2D.set_blend_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_blend_mode, 0|(gdextension.SizeInt<<4), &struct{ mode BlendMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBlendMode() BlendMode { //gd:Light2D.get_blend_mode
 	var r_ret = noescape.Call[BlendMode](gd.ObjectChecked(self.AsObject()), methods.get_blend_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHeight(height float64) { //gd:Light2D.set_height
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_height, 0|(gdextension.SizeFloat<<4), &struct{ height float64 }{height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHeight() float64 { //gd:Light2D.get_height
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_height, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsLight2D() Advanced                       { return Advanced(o) }
 func (o Instance) AsLight2D() Instance                    { return o }
 func (o *Extension[T]) AsLight2D() Instance               { return o.Super() }
-func (o class) AsNode2D() Node2D.Advanced                 { return Node2D.Advanced{gdclass.NewNode2D(o[0].AsObject()[0])} }
+func (o class) AsNode2D() Node2D.Advanced                 { return *(*Node2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode2D() Node2D.Instance         { return o.Super().AsNode2D() }
-func (o Instance) AsNode2D() Node2D.Instance              { return Node2D.Instance{gdclass.NewNode2D(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsNode2D() Node2D.Instance              { return *(*Node2D.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

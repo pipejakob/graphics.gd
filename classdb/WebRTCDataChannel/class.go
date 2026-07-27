@@ -3,6 +3,7 @@
 package WebRTCDataChannel
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -36,6 +37,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -220,7 +224,7 @@ func (self Instance) GetBufferedAmount() int { //gd:WebRTCDataChannel.get_buffer
 type Advanced = class
 type class [1]gdclass.WebRTCDataChannel
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewWebRTCDataChannel(obj[0])
@@ -235,7 +239,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -273,76 +277,90 @@ func (self Instance) SetWriteMode(value WriteMode) Instance { //gd:WebRTCDataCha
 
 func (self class) Poll() Error.Code { //gd:WebRTCDataChannel.poll
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.poll, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Close() { //gd:WebRTCDataChannel.close
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.close, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) WasStringPacket() bool { //gd:WebRTCDataChannel.was_string_packet
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.was_string_packet, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWriteMode(write_mode WriteMode) { //gd:WebRTCDataChannel.set_write_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_write_mode, 0|(gdextension.SizeInt<<4), &struct{ write_mode WriteMode }{write_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWriteMode() WriteMode { //gd:WebRTCDataChannel.get_write_mode
 	var r_ret = noescape.Call[WriteMode](gd.ObjectChecked(self.AsObject()), methods.get_write_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetReadyState() ChannelState { //gd:WebRTCDataChannel.get_ready_state
 	var r_ret = noescape.Call[ChannelState](gd.ObjectChecked(self.AsObject()), methods.get_ready_state, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLabel() String.Readable { //gd:WebRTCDataChannel.get_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_label, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsOrdered() bool { //gd:WebRTCDataChannel.is_ordered
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_ordered, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetId() int64 { //gd:WebRTCDataChannel.get_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMaxPacketLifeTime() int64 { //gd:WebRTCDataChannel.get_max_packet_life_time
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_packet_life_time, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMaxRetransmits() int64 { //gd:WebRTCDataChannel.get_max_retransmits
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_retransmits, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetProtocol() String.Readable { //gd:WebRTCDataChannel.get_protocol
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_protocol, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsNegotiated() bool { //gd:WebRTCDataChannel.is_negotiated
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_negotiated, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBufferedAmount() int64 { //gd:WebRTCDataChannel.get_buffered_amount
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_buffered_amount, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsWebRTCDataChannel() Advanced             { return Advanced(o) }
 func (o Instance) AsWebRTCDataChannel() Instance          { return o }
 func (o *Extension[T]) AsWebRTCDataChannel() Instance     { return o.Super() }
-func (o class) AsPacketPeer() PacketPeer.Advanced         { return PacketPeer.Advanced{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o class) AsPacketPeer() PacketPeer.Advanced         { return *(*PacketPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPacketPeer() PacketPeer.Instance { return o.Super().AsPacketPeer() }
-func (o Instance) AsPacketPeer() PacketPeer.Instance      { return PacketPeer.Instance{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o Instance) AsPacketPeer() PacketPeer.Instance      { return *(*PacketPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

@@ -6,6 +6,7 @@ A sequence of Ogg packets.
 package OggPacketSequence
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -40,6 +41,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -133,7 +137,7 @@ func (self Instance) GetLength() Float.X { //gd:OggPacketSequence.get_length
 type Advanced = class
 type class [1]gdclass.OggPacketSequence
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOggPacketSequence(obj[0])
@@ -148,7 +152,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -212,9 +216,12 @@ func (self Instance) SetSamplingRate(value Float.X) Instance { //gd:OggPacketSeq
 
 func (self class) SetPacketData(packet_data Array.Contains[Array.Any]) { //gd:OggPacketSequence.set_packet_data
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_packet_data, 0|(gdextension.SizeArray<<4), &struct{ packet_data gdextension.Array }{pointers.Get(gd.InternalArray(packet_data))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(packet_data)
 }
 func (self class) GetPacketData() Array.Contains[Array.Any] { //gd:OggPacketSequence.get_packet_data
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_packet_data, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Array.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -222,31 +229,37 @@ func (self class) SetPacketGranulePositions(granule_positions Packed.Array[int64
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_packet_granule_positions, 0|(gdextension.SizePackedArray<<4), &struct {
 		granule_positions gdextension.PackedArray[int64]
 	}{pointers.Get(gd.InternalPacked[gd.PackedInt64Array, int64](granule_positions))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(granule_positions)
 }
 func (self class) GetPacketGranulePositions() Packed.Array[int64] { //gd:OggPacketSequence.get_packet_granule_positions
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_packet_granule_positions, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) SetSamplingRate(sampling_rate float64) { //gd:OggPacketSequence.set_sampling_rate
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sampling_rate, 0|(gdextension.SizeFloat<<4), &struct{ sampling_rate float64 }{sampling_rate})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSamplingRate() float64 { //gd:OggPacketSequence.get_sampling_rate
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sampling_rate, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLength() float64 { //gd:OggPacketSequence.get_length
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsOggPacketSequence() Advanced         { return Advanced(o) }
 func (o Instance) AsOggPacketSequence() Instance      { return o }
 func (o *Extension[T]) AsOggPacketSequence() Instance { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

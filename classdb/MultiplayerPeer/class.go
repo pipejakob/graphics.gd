@@ -12,6 +12,7 @@ Note: When exporting to Android, make sure to enable the INTERNET permission in 
 package MultiplayerPeer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -253,7 +257,7 @@ func (self Instance) IsServerRelaySupported() bool { //gd:MultiplayerPeer.is_ser
 type Advanced = class
 type class [1]gdclass.MultiplayerPeer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMultiplayerPeer(obj[0])
@@ -268,7 +272,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -338,75 +342,92 @@ func (self Instance) SetTransferChannel(value int) Instance { //gd:MultiplayerPe
 
 func (self class) SetTransferChannel(channel int64) { //gd:MultiplayerPeer.set_transfer_channel
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transfer_channel, 0|(gdextension.SizeInt<<4), &struct{ channel int64 }{channel})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTransferChannel() int64 { //gd:MultiplayerPeer.get_transfer_channel
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_transfer_channel, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTransferMode(mode TransferMode) { //gd:MultiplayerPeer.set_transfer_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transfer_mode, 0|(gdextension.SizeInt<<4), &struct{ mode TransferMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTransferMode() TransferMode { //gd:MultiplayerPeer.get_transfer_mode
 	var r_ret = noescape.Call[TransferMode](gd.ObjectChecked(self.AsObject()), methods.get_transfer_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTargetPeer(id int64) { //gd:MultiplayerPeer.set_target_peer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_target_peer, 0|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPacketPeer() int64 { //gd:MultiplayerPeer.get_packet_peer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_packet_peer, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPacketChannel() int64 { //gd:MultiplayerPeer.get_packet_channel
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_packet_channel, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPacketMode() TransferMode { //gd:MultiplayerPeer.get_packet_mode
 	var r_ret = noescape.Call[TransferMode](gd.ObjectChecked(self.AsObject()), methods.get_packet_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Poll() { //gd:MultiplayerPeer.poll
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.poll, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Close() { //gd:MultiplayerPeer.close
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.close, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DisconnectPeer(peer int64, force bool) { //gd:MultiplayerPeer.disconnect_peer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.disconnect_peer, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8), &struct {
 		peer  int64
 		force bool
 	}{peer, force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConnectionStatus() ConnectionStatus { //gd:MultiplayerPeer.get_connection_status
 	var r_ret = noescape.Call[ConnectionStatus](gd.ObjectChecked(self.AsObject()), methods.get_connection_status, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetUniqueId() int64 { //gd:MultiplayerPeer.get_unique_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_unique_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GenerateUniqueId() int64 { //gd:MultiplayerPeer.generate_unique_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.generate_unique_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRefuseNewConnections(enable bool) { //gd:MultiplayerPeer.set_refuse_new_connections
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_refuse_new_connections, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRefusingNewConnections() bool { //gd:MultiplayerPeer.is_refusing_new_connections
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_refusing_new_connections, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsServerRelaySupported() bool { //gd:MultiplayerPeer.is_server_relay_supported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_server_relay_supported, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -446,9 +467,9 @@ func (self class) PeerDisconnected() Signal.Any {
 func (o class) AsMultiplayerPeer() Advanced               { return Advanced(o) }
 func (o Instance) AsMultiplayerPeer() Instance            { return o }
 func (o *Extension[T]) AsMultiplayerPeer() Instance       { return o.Super() }
-func (o class) AsPacketPeer() PacketPeer.Advanced         { return PacketPeer.Advanced{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o class) AsPacketPeer() PacketPeer.Advanced         { return *(*PacketPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPacketPeer() PacketPeer.Instance { return o.Super().AsPacketPeer() }
-func (o Instance) AsPacketPeer() PacketPeer.Instance      { return PacketPeer.Instance{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o Instance) AsPacketPeer() PacketPeer.Instance      { return *(*PacketPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

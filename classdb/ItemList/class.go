@@ -20,6 +20,7 @@ Incremental search: Like [PopupMenu] and [Tree], [ItemList] supports searching w
 package ItemList
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -29,6 +30,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -63,6 +65,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -732,7 +737,7 @@ func (self Instance) ForceUpdateListSize() { //gd:ItemList.force_update_list_siz
 type Advanced = class
 type class [1]gdclass.ItemList
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewItemList(obj[0])
@@ -747,7 +752,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1035,6 +1040,9 @@ func (self class) AddItem(text String.Readable, icon [1]gdclass.Texture2D, selec
 		icon       gdextension.Object
 		selectable bool
 	}{pointers.Get(gd.InternalString(text)), gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0])), selectable})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
+	runtime.KeepAlive(icon[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1043,6 +1051,8 @@ func (self class) AddIconItem(icon [1]gdclass.Texture2D, selectable bool) int64 
 		icon       gdextension.Object
 		selectable bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0])), selectable})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(icon[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1051,9 +1061,12 @@ func (self class) SetItemText(idx int64, text String.Readable) { //gd:ItemList.s
 		idx  int64
 		text gdextension.String
 	}{idx, pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
 }
 func (self class) GetItemText(idx int64) String.Readable { //gd:ItemList.get_item_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1062,9 +1075,12 @@ func (self class) SetItemIcon(idx int64, icon [1]gdclass.Texture2D) { //gd:ItemL
 		idx  int64
 		icon gdextension.Object
 	}{idx, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(icon[0].Anchor())
 }
 func (self class) GetItemIcon(idx int64) [1]gdclass.Texture2D { //gd:ItemList.get_item_icon
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_item_icon, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1073,9 +1089,11 @@ func (self class) SetItemTextDirection(idx int64, direction Control.TextDirectio
 		idx       int64
 		direction Control.TextDirection
 	}{idx, direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemTextDirection(idx int64) Control.TextDirection { //gd:ItemList.get_item_text_direction
 	var r_ret = noescape.Call[Control.TextDirection](gd.ObjectChecked(self.AsObject()), methods.get_item_text_direction, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1084,9 +1102,12 @@ func (self class) SetItemLanguage(idx int64, language String.Readable) { //gd:It
 		idx      int64
 		language gdextension.String
 	}{idx, pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(language)
 }
 func (self class) GetItemLanguage(idx int64) String.Readable { //gd:ItemList.get_item_language
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_language, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1095,9 +1116,11 @@ func (self class) SetItemAutoTranslateMode(idx int64, mode Node.AutoTranslateMod
 		idx  int64
 		mode Node.AutoTranslateMode
 	}{idx, mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemAutoTranslateMode(idx int64) Node.AutoTranslateMode { //gd:ItemList.get_item_auto_translate_mode
 	var r_ret = noescape.Call[Node.AutoTranslateMode](gd.ObjectChecked(self.AsObject()), methods.get_item_auto_translate_mode, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1106,9 +1129,11 @@ func (self class) SetItemIconTransposed(idx int64, transposed bool) { //gd:ItemL
 		idx        int64
 		transposed bool
 	}{idx, transposed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsItemIconTransposed(idx int64) bool { //gd:ItemList.is_item_icon_transposed
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_item_icon_transposed, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1117,9 +1142,11 @@ func (self class) SetItemIconRegion(idx int64, rect Rect2.PositionSize) { //gd:I
 		idx  int64
 		rect Rect2.PositionSize
 	}{idx, rect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemIconRegion(idx int64) Rect2.PositionSize { //gd:ItemList.get_item_icon_region
 	var r_ret = noescape.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_item_icon_region, gdextension.SizeRect2|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1128,9 +1155,11 @@ func (self class) SetItemIconModulate(idx int64, modulate Color.RGBA) { //gd:Ite
 		idx      int64
 		modulate Color.RGBA
 	}{idx, modulate})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemIconModulate(idx int64) Color.RGBA { //gd:ItemList.get_item_icon_modulate
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_item_icon_modulate, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1139,9 +1168,11 @@ func (self class) SetItemSelectable(idx int64, selectable bool) { //gd:ItemList.
 		idx        int64
 		selectable bool
 	}{idx, selectable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsItemSelectable(idx int64) bool { //gd:ItemList.is_item_selectable
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_item_selectable, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1150,9 +1181,11 @@ func (self class) SetItemDisabled(idx int64, disabled bool) { //gd:ItemList.set_
 		idx      int64
 		disabled bool
 	}{idx, disabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsItemDisabled(idx int64) bool { //gd:ItemList.is_item_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_item_disabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1161,9 +1194,12 @@ func (self class) SetItemMetadata(idx int64, metadata variant.Any) { //gd:ItemLi
 		idx      int64
 		metadata gdextension.Variant
 	}{idx, gdextension.Variant(pointers.Get(gd.InternalVariant(metadata)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(metadata)
 }
 func (self class) GetItemMetadata(idx int64) variant.Any { //gd:ItemList.get_item_metadata
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_item_metadata, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -1172,9 +1208,11 @@ func (self class) SetItemCustomBgColor(idx int64, custom_bg_color Color.RGBA) { 
 		idx             int64
 		custom_bg_color Color.RGBA
 	}{idx, custom_bg_color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemCustomBgColor(idx int64) Color.RGBA { //gd:ItemList.get_item_custom_bg_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_item_custom_bg_color, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1183,9 +1221,11 @@ func (self class) SetItemCustomFgColor(idx int64, custom_fg_color Color.RGBA) { 
 		idx             int64
 		custom_fg_color Color.RGBA
 	}{idx, custom_fg_color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemCustomFgColor(idx int64) Color.RGBA { //gd:ItemList.get_item_custom_fg_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_item_custom_fg_color, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1194,6 +1234,7 @@ func (self class) GetItemRect(idx int64, expand bool) Rect2.PositionSize { //gd:
 		idx    int64
 		expand bool
 	}{idx, expand})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1202,9 +1243,11 @@ func (self class) SetItemTooltipEnabled(idx int64, enable bool) { //gd:ItemList.
 		idx    int64
 		enable bool
 	}{idx, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsItemTooltipEnabled(idx int64) bool { //gd:ItemList.is_item_tooltip_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_item_tooltip_enabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1213,9 +1256,12 @@ func (self class) SetItemTooltip(idx int64, tooltip String.Readable) { //gd:Item
 		idx     int64
 		tooltip gdextension.String
 	}{idx, pointers.Get(gd.InternalString(tooltip))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tooltip)
 }
 func (self class) GetItemTooltip(idx int64) String.Readable { //gd:ItemList.get_item_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_item_tooltip, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1224,20 +1270,25 @@ func (self class) Select(idx int64, single bool) { //gd:ItemList.select_
 		idx    int64
 		single bool
 	}{idx, single})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Deselect(idx int64) { //gd:ItemList.deselect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.deselect, 0|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DeselectAll() { //gd:ItemList.deselect_all
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.deselect_all, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSelected(idx int64) bool { //gd:ItemList.is_selected
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_selected, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSelectedItems() Packed.Array[int32] { //gd:ItemList.get_selected_items
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_selected_items, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -1246,130 +1297,163 @@ func (self class) MoveItem(from_idx int64, to_idx int64) { //gd:ItemList.move_it
 		from_idx int64
 		to_idx   int64
 	}{from_idx, to_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetItemCount(count int64) { //gd:ItemList.set_item_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_item_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetItemCount() int64 { //gd:ItemList.get_item_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_item_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RemoveItem(idx int64) { //gd:ItemList.remove_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_item, 0|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Clear() { //gd:ItemList.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SortItemsByText() { //gd:ItemList.sort_items_by_text
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.sort_items_by_text, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetFixedColumnWidth(width int64) { //gd:ItemList.set_fixed_column_width
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fixed_column_width, 0|(gdextension.SizeInt<<4), &struct{ width int64 }{width})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFixedColumnWidth() int64 { //gd:ItemList.get_fixed_column_width
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_fixed_column_width, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSameColumnWidth(enable bool) { //gd:ItemList.set_same_column_width
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_same_column_width, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSameColumnWidth() bool { //gd:ItemList.is_same_column_width
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_same_column_width, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxTextLines(lines int64) { //gd:ItemList.set_max_text_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_text_lines, 0|(gdextension.SizeInt<<4), &struct{ lines int64 }{lines})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxTextLines() int64 { //gd:ItemList.get_max_text_lines
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_text_lines, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxColumns(amount int64) { //gd:ItemList.set_max_columns
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_columns, 0|(gdextension.SizeInt<<4), &struct{ amount int64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxColumns() int64 { //gd:ItemList.get_max_columns
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_columns, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSelectMode(mode SelectMode) { //gd:ItemList.set_select_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_select_mode, 0|(gdextension.SizeInt<<4), &struct{ mode SelectMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSelectMode() SelectMode { //gd:ItemList.get_select_mode
 	var r_ret = jumponly.Call[SelectMode](gd.ObjectChecked(self.AsObject()), methods.get_select_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIconMode(mode IconMode) { //gd:ItemList.set_icon_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_icon_mode, 0|(gdextension.SizeInt<<4), &struct{ mode IconMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIconMode() IconMode { //gd:ItemList.get_icon_mode
 	var r_ret = jumponly.Call[IconMode](gd.ObjectChecked(self.AsObject()), methods.get_icon_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFixedIconSize(size Vector2i.XY) { //gd:ItemList.set_fixed_icon_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fixed_icon_size, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFixedIconSize() Vector2i.XY { //gd:ItemList.get_fixed_icon_size
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_fixed_icon_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIconScale(scale float64) { //gd:ItemList.set_icon_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_icon_scale, 0|(gdextension.SizeFloat<<4), &struct{ scale float64 }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIconScale() float64 { //gd:ItemList.get_icon_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_icon_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAllowRmbSelect(allow bool) { //gd:ItemList.set_allow_rmb_select
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_allow_rmb_select, 0|(gdextension.SizeBool<<4), &struct{ allow bool }{allow})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAllowRmbSelect() bool { //gd:ItemList.get_allow_rmb_select
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_allow_rmb_select, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAllowReselect(allow bool) { //gd:ItemList.set_allow_reselect
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_allow_reselect, 0|(gdextension.SizeBool<<4), &struct{ allow bool }{allow})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAllowReselect() bool { //gd:ItemList.get_allow_reselect
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_allow_reselect, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAllowSearch(allow bool) { //gd:ItemList.set_allow_search
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_allow_search, 0|(gdextension.SizeBool<<4), &struct{ allow bool }{allow})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAllowSearch() bool { //gd:ItemList.get_allow_search
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_allow_search, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoWidth(enable bool) { //gd:ItemList.set_auto_width
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_width, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasAutoWidth() bool { //gd:ItemList.has_auto_width
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_auto_width, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoHeight(enable bool) { //gd:ItemList.set_auto_height
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_height, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasAutoHeight() bool { //gd:ItemList.has_auto_height
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_auto_height, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsAnythingSelected() bool { //gd:ItemList.is_anything_selected
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_anything_selected, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1378,62 +1462,76 @@ func (self class) GetItemAtPosition(position Vector2.XY, exact bool) int64 { //g
 		position Vector2.XY
 		exact    bool
 	}{position, exact})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) EnsureCurrentIsVisible() { //gd:ItemList.ensure_current_is_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.ensure_current_is_visible, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CenterOnCurrent(center_verically bool, center_horizontally bool) { //gd:ItemList.center_on_current
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.center_on_current, 0|(gdextension.SizeBool<<4)|(gdextension.SizeBool<<8), &struct {
 		center_verically    bool
 		center_horizontally bool
 	}{center_verically, center_horizontally})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVScrollBar() [1]gdclass.VScrollBar { //gd:ItemList.get_v_scroll_bar
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_v_scroll_bar, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.VScrollBar{gdclass.NewVScrollBar(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) GetHScrollBar() [1]gdclass.HScrollBar { //gd:ItemList.get_h_scroll_bar
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_h_scroll_bar, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.HScrollBar{gdclass.NewHScrollBar(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) SetScrollHintMode(scroll_hint_mode ScrollHintMode) { //gd:ItemList.set_scroll_hint_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scroll_hint_mode, 0|(gdextension.SizeInt<<4), &struct{ scroll_hint_mode ScrollHintMode }{scroll_hint_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScrollHintMode() ScrollHintMode { //gd:ItemList.get_scroll_hint_mode
 	var r_ret = jumponly.Call[ScrollHintMode](gd.ObjectChecked(self.AsObject()), methods.get_scroll_hint_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTileScrollHint(tile_scroll_hint bool) { //gd:ItemList.set_tile_scroll_hint
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tile_scroll_hint, 0|(gdextension.SizeBool<<4), &struct{ tile_scroll_hint bool }{tile_scroll_hint})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsScrollHintTiled() bool { //gd:ItemList.is_scroll_hint_tiled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_scroll_hint_tiled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextOverrunBehavior(overrun_behavior TextServer.OverrunBehavior) { //gd:ItemList.set_text_overrun_behavior
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_text_overrun_behavior, 0|(gdextension.SizeInt<<4), &struct{ overrun_behavior TextServer.OverrunBehavior }{overrun_behavior})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextOverrunBehavior() TextServer.OverrunBehavior { //gd:ItemList.get_text_overrun_behavior
 	var r_ret = jumponly.Call[TextServer.OverrunBehavior](gd.ObjectChecked(self.AsObject()), methods.get_text_overrun_behavior, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWraparoundItems(enable bool) { //gd:ItemList.set_wraparound_items
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_wraparound_items, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasWraparoundItems() bool { //gd:ItemList.has_wraparound_items
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_wraparound_items, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ForceUpdateListSize() { //gd:ItemList.force_update_list_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.force_update_list_size, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -1527,15 +1625,15 @@ func (self class) ItemActivated() Signal.Any {
 func (o class) AsItemList() Advanced                      { return Advanced(o) }
 func (o Instance) AsItemList() Instance                   { return o }
 func (o *Extension[T]) AsItemList() Instance              { return o.Super() }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

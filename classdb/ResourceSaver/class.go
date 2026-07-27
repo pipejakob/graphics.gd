@@ -11,6 +11,7 @@ package ResourceSaver
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -19,6 +20,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -44,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -190,7 +195,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.ResourceSaver
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewResourceSaver(obj[0])
@@ -205,7 +210,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) Save(resource [1]gdclass.Resource, path String.Readable, flags SaverFlags) Error.Code { //gd:ResourceSaver.save
@@ -215,6 +220,8 @@ func (self class) Save(resource [1]gdclass.Resource, path String.Readable, flags
 		path     gdextension.String
 		flags    SaverFlags
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetResource(resource[0])[0])), pointers.Get(gd.InternalString(path)), flags})
+	runtime.KeepAlive(resource[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -224,12 +231,14 @@ func (self class) SetUid(resource String.Readable, uid int64) Error.Code { //gd:
 		resource gdextension.String
 		uid      int64
 	}{pointers.Get(gd.InternalString(resource)), uid})
+	runtime.KeepAlive(resource)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetRecognizedExtensions(atype [1]gdclass.Resource) Packed.Strings { //gd:ResourceSaver.get_recognized_extensions
 	once.Do(singleton)
 	var r_ret = noescape.CallThreadSafe[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.get_recognized_extensions, gdextension.SizePackedArray|(gdextension.SizeObject<<4), &struct{ atype gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetResource(atype[0])[0]))})
+	runtime.KeepAlive(atype[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -239,10 +248,12 @@ func (self class) AddResourceFormatSaver(format_saver [1]gdclass.ResourceFormatS
 		format_saver gdextension.Object
 		at_front     bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetResourceFormatSaver(format_saver[0])[0])), at_front})
+	runtime.KeepAlive(format_saver[0].Anchor())
 }
 func (self class) RemoveResourceFormatSaver(format_saver [1]gdclass.ResourceFormatSaver) { //gd:ResourceSaver.remove_resource_format_saver
 	once.Do(singleton)
 	noescape.CallThreadSafe[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.remove_resource_format_saver, 0|(gdextension.SizeObject<<4), &struct{ format_saver gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetResourceFormatSaver(format_saver[0])[0]))})
+	runtime.KeepAlive(format_saver[0].Anchor())
 }
 func (self class) GetResourceIdForPath(path String.Readable, generate bool) int64 { //gd:ResourceSaver.get_resource_id_for_path
 	once.Do(singleton)
@@ -250,6 +261,7 @@ func (self class) GetResourceIdForPath(path String.Readable, generate bool) int6
 		path     gdextension.String
 		generate bool
 	}{pointers.Get(gd.InternalString(path)), generate})
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }

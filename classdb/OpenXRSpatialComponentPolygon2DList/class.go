@@ -8,6 +8,7 @@ Object for storing the queries 2D polygon result data when calling [OpenXRSpatia
 package OpenXRSpatialComponentPolygon2DList
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -137,7 +141,7 @@ func (self Instance) GetVertices(snapshot RID.SpatialSnapshot, index int) []Vect
 type Advanced = class
 type class [1]gdclass.OpenXRSpatialComponentPolygon2DList
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRSpatialComponentPolygon2DList(obj[0])
@@ -152,7 +156,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -177,6 +181,7 @@ func New() Instance {
 
 func (self class) GetTransform(index int64) Transform3D.BasisOrigin { //gd:OpenXRSpatialComponentPolygon2DList.get_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_transform, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
@@ -185,6 +190,7 @@ func (self class) GetVertices(snapshot RID.Any, index int64) Packed.Array[Vector
 		snapshot RID.Any
 		index    int64
 	}{snapshot, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -192,13 +198,13 @@ func (o class) AsOpenXRSpatialComponentPolygon2DList() Advanced         { return
 func (o Instance) AsOpenXRSpatialComponentPolygon2DList() Instance      { return o }
 func (o *Extension[T]) AsOpenXRSpatialComponentPolygon2DList() Instance { return o.Super() }
 func (o class) AsOpenXRSpatialComponentData() OpenXRSpatialComponentData.Advanced {
-	return OpenXRSpatialComponentData.Advanced{gdclass.NewOpenXRSpatialComponentData(o[0].AsObject()[0])}
+	return *(*OpenXRSpatialComponentData.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRSpatialComponentData() OpenXRSpatialComponentData.Instance {
 	return o.Super().AsOpenXRSpatialComponentData()
 }
 func (o Instance) AsOpenXRSpatialComponentData() OpenXRSpatialComponentData.Instance {
-	return OpenXRSpatialComponentData.Instance{gdclass.NewOpenXRSpatialComponentData(o[0].AsObject()[0])}
+	return *(*OpenXRSpatialComponentData.Instance)(ie.As(&o))
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

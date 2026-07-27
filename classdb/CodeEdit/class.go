@@ -11,6 +11,7 @@ Note: Regardless of locale, [CodeEdit] will by default always use left-to-right 
 package CodeEdit
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -50,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1021,7 +1026,7 @@ func (self Instance) DuplicateLines() { //gd:CodeEdit.duplicate_lines
 type Advanced = class
 type class [1]gdclass.CodeEdit
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCodeEdit(obj[0])
@@ -1036,7 +1041,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1415,64 +1420,81 @@ func (class) _filter_code_completion_candidates(impl func(ptr gdclass.Receiver, 
 
 func (self class) SetIndentSize(size int64) { //gd:CodeEdit.set_indent_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_indent_size, 0|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIndentSize() int64 { //gd:CodeEdit.get_indent_size
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_indent_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIndentUsingSpaces(use_spaces bool) { //gd:CodeEdit.set_indent_using_spaces
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_indent_using_spaces, 0|(gdextension.SizeBool<<4), &struct{ use_spaces bool }{use_spaces})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsIndentUsingSpaces() bool { //gd:CodeEdit.is_indent_using_spaces
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_indent_using_spaces, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoIndentEnabled(enable bool) { //gd:CodeEdit.set_auto_indent_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_indent_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAutoIndentEnabled() bool { //gd:CodeEdit.is_auto_indent_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_auto_indent_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoIndentPrefixes(prefixes Array.Contains[String.Readable]) { //gd:CodeEdit.set_auto_indent_prefixes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_indent_prefixes, 0|(gdextension.SizeArray<<4), &struct{ prefixes gdextension.Array }{pointers.Get(gd.InternalArray(prefixes))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(prefixes)
 }
 func (self class) GetAutoIndentPrefixes() Array.Contains[String.Readable] { //gd:CodeEdit.get_auto_indent_prefixes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_auto_indent_prefixes, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[String.Readable](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) DoIndent() { //gd:CodeEdit.do_indent
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.do_indent, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IndentLines() { //gd:CodeEdit.indent_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.indent_lines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) UnindentLines() { //gd:CodeEdit.unindent_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.unindent_lines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ConvertIndent(from_line int64, to_line int64) { //gd:CodeEdit.convert_indent
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.convert_indent, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		from_line int64
 		to_line   int64
 	}{from_line, to_line})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAutoBraceCompletionEnabled(enable bool) { //gd:CodeEdit.set_auto_brace_completion_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_brace_completion_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAutoBraceCompletionEnabled() bool { //gd:CodeEdit.is_auto_brace_completion_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_auto_brace_completion_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHighlightMatchingBracesEnabled(enable bool) { //gd:CodeEdit.set_highlight_matching_braces_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_highlight_matching_braces_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHighlightMatchingBracesEnabled() bool { //gd:CodeEdit.is_highlight_matching_braces_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_highlight_matching_braces_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1481,51 +1503,69 @@ func (self class) AddAutoBraceCompletionPair(start_key String.Readable, end_key 
 		start_key gdextension.String
 		end_key   gdextension.String
 	}{pointers.Get(gd.InternalString(start_key)), pointers.Get(gd.InternalString(end_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_key)
+	runtime.KeepAlive(end_key)
 }
 func (self class) SetAutoBraceCompletionPairs(pairs Dictionary.Any) { //gd:CodeEdit.set_auto_brace_completion_pairs
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_brace_completion_pairs, 0|(gdextension.SizeDictionary<<4), &struct{ pairs gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(pairs))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(pairs)
 }
 func (self class) GetAutoBraceCompletionPairs() Dictionary.Any { //gd:CodeEdit.get_auto_brace_completion_pairs
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_auto_brace_completion_pairs, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) HasAutoBraceCompletionOpenKey(open_key String.Readable) bool { //gd:CodeEdit.has_auto_brace_completion_open_key
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_auto_brace_completion_open_key, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ open_key gdextension.String }{pointers.Get(gd.InternalString(open_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(open_key)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasAutoBraceCompletionCloseKey(close_key String.Readable) bool { //gd:CodeEdit.has_auto_brace_completion_close_key
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_auto_brace_completion_close_key, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ close_key gdextension.String }{pointers.Get(gd.InternalString(close_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(close_key)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetAutoBraceCompletionCloseKey(open_key String.Readable) String.Readable { //gd:CodeEdit.get_auto_brace_completion_close_key
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_auto_brace_completion_close_key, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ open_key gdextension.String }{pointers.Get(gd.InternalString(open_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(open_key)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetDrawBreakpointsGutter(enable bool) { //gd:CodeEdit.set_draw_breakpoints_gutter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_draw_breakpoints_gutter, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDrawingBreakpointsGutter() bool { //gd:CodeEdit.is_drawing_breakpoints_gutter
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_drawing_breakpoints_gutter, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDrawBookmarksGutter(enable bool) { //gd:CodeEdit.set_draw_bookmarks_gutter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_draw_bookmarks_gutter, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDrawingBookmarksGutter() bool { //gd:CodeEdit.is_drawing_bookmarks_gutter
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_drawing_bookmarks_gutter, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDrawExecutingLinesGutter(enable bool) { //gd:CodeEdit.set_draw_executing_lines_gutter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_draw_executing_lines_gutter, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDrawingExecutingLinesGutter() bool { //gd:CodeEdit.is_drawing_executing_lines_gutter
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_drawing_executing_lines_gutter, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1534,17 +1574,21 @@ func (self class) SetLineAsBreakpoint(line int64, breakpointed bool) { //gd:Code
 		line         int64
 		breakpointed bool
 	}{line, breakpointed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLineBreakpointed(line int64) bool { //gd:CodeEdit.is_line_breakpointed
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_line_breakpointed, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearBreakpointedLines() { //gd:CodeEdit.clear_breakpointed_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_breakpointed_lines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBreakpointedLines() Packed.Array[int32] { //gd:CodeEdit.get_breakpointed_lines
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_breakpointed_lines, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -1553,17 +1597,21 @@ func (self class) SetLineAsBookmarked(line int64, bookmarked bool) { //gd:CodeEd
 		line       int64
 		bookmarked bool
 	}{line, bookmarked})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLineBookmarked(line int64) bool { //gd:CodeEdit.is_line_bookmarked
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_line_bookmarked, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearBookmarkedLines() { //gd:CodeEdit.clear_bookmarked_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_bookmarked_lines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBookmarkedLines() Packed.Array[int32] { //gd:CodeEdit.get_bookmarked_lines
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_bookmarked_lines, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -1572,103 +1620,129 @@ func (self class) SetLineAsExecuting(line int64, executing bool) { //gd:CodeEdit
 		line      int64
 		executing bool
 	}{line, executing})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLineExecuting(line int64) bool { //gd:CodeEdit.is_line_executing
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_line_executing, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearExecutingLines() { //gd:CodeEdit.clear_executing_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_executing_lines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetExecutingLines() Packed.Array[int32] { //gd:CodeEdit.get_executing_lines
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_executing_lines, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) SetDrawLineNumbers(enable bool) { //gd:CodeEdit.set_draw_line_numbers
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_draw_line_numbers, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDrawLineNumbersEnabled() bool { //gd:CodeEdit.is_draw_line_numbers_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_draw_line_numbers_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLineNumbersZeroPadded(enable bool) { //gd:CodeEdit.set_line_numbers_zero_padded
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_line_numbers_zero_padded, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLineNumbersZeroPadded() bool { //gd:CodeEdit.is_line_numbers_zero_padded
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_line_numbers_zero_padded, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLineNumbersMinDigits(count int64) { //gd:CodeEdit.set_line_numbers_min_digits
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_line_numbers_min_digits, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLineNumbersMinDigits() int64 { //gd:CodeEdit.get_line_numbers_min_digits
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_line_numbers_min_digits, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDrawFoldGutter(enable bool) { //gd:CodeEdit.set_draw_fold_gutter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_draw_fold_gutter, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDrawingFoldGutter() bool { //gd:CodeEdit.is_drawing_fold_gutter
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_drawing_fold_gutter, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLineFoldingEnabled(enabled bool) { //gd:CodeEdit.set_line_folding_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_line_folding_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLineFoldingEnabled() bool { //gd:CodeEdit.is_line_folding_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_line_folding_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) CanFoldLine(line int64) bool { //gd:CodeEdit.can_fold_line
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.can_fold_line, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FoldLine(line int64) { //gd:CodeEdit.fold_line
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.fold_line, 0|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) UnfoldLine(line int64) { //gd:CodeEdit.unfold_line
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.unfold_line, 0|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FoldAllLines() { //gd:CodeEdit.fold_all_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.fold_all_lines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) UnfoldAllLines() { //gd:CodeEdit.unfold_all_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.unfold_all_lines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ToggleFoldableLine(line int64) { //gd:CodeEdit.toggle_foldable_line
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.toggle_foldable_line, 0|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ToggleFoldableLinesAtCarets() { //gd:CodeEdit.toggle_foldable_lines_at_carets
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.toggle_foldable_lines_at_carets, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLineFolded(line int64) bool { //gd:CodeEdit.is_line_folded
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_line_folded, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFoldedLines() Array.Contains[int64] { //gd:CodeEdit.get_folded_lines
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_folded_lines, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[int64](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) CreateCodeRegion() { //gd:CodeEdit.create_code_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.create_code_region, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCodeRegionStartTag() String.Readable { //gd:CodeEdit.get_code_region_start_tag
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_code_region_start_tag, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetCodeRegionEndTag() String.Readable { //gd:CodeEdit.get_code_region_end_tag
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_code_region_end_tag, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1677,14 +1751,19 @@ func (self class) SetCodeRegionTags(start String.Readable, end String.Readable) 
 		start gdextension.String
 		end   gdextension.String
 	}{pointers.Get(gd.InternalString(start)), pointers.Get(gd.InternalString(end))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start)
+	runtime.KeepAlive(end)
 }
 func (self class) IsLineCodeRegionStart(line int64) bool { //gd:CodeEdit.is_line_code_region_start
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_line_code_region_start, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsLineCodeRegionEnd(line int64) bool { //gd:CodeEdit.is_line_code_region_end
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_line_code_region_end, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ line int64 }{line})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1694,23 +1773,34 @@ func (self class) AddStringDelimiter(start_key String.Readable, end_key String.R
 		end_key   gdextension.String
 		line_only bool
 	}{pointers.Get(gd.InternalString(start_key)), pointers.Get(gd.InternalString(end_key)), line_only})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_key)
+	runtime.KeepAlive(end_key)
 }
 func (self class) RemoveStringDelimiter(start_key String.Readable) { //gd:CodeEdit.remove_string_delimiter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_string_delimiter, 0|(gdextension.SizeString<<4), &struct{ start_key gdextension.String }{pointers.Get(gd.InternalString(start_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_key)
 }
 func (self class) HasStringDelimiter(start_key String.Readable) bool { //gd:CodeEdit.has_string_delimiter
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_string_delimiter, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ start_key gdextension.String }{pointers.Get(gd.InternalString(start_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_key)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStringDelimiters(string_delimiters Array.Contains[String.Readable]) { //gd:CodeEdit.set_string_delimiters
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_string_delimiters, 0|(gdextension.SizeArray<<4), &struct{ string_delimiters gdextension.Array }{pointers.Get(gd.InternalArray(string_delimiters))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(string_delimiters)
 }
 func (self class) ClearStringDelimiters() { //gd:CodeEdit.clear_string_delimiters
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_string_delimiters, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStringDelimiters() Array.Contains[String.Readable] { //gd:CodeEdit.get_string_delimiters
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_string_delimiters, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[String.Readable](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -1719,6 +1809,7 @@ func (self class) IsInString(line int64, column int64) int64 { //gd:CodeEdit.is_
 		line   int64
 		column int64
 	}{line, column})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1728,23 +1819,34 @@ func (self class) AddCommentDelimiter(start_key String.Readable, end_key String.
 		end_key   gdextension.String
 		line_only bool
 	}{pointers.Get(gd.InternalString(start_key)), pointers.Get(gd.InternalString(end_key)), line_only})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_key)
+	runtime.KeepAlive(end_key)
 }
 func (self class) RemoveCommentDelimiter(start_key String.Readable) { //gd:CodeEdit.remove_comment_delimiter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_comment_delimiter, 0|(gdextension.SizeString<<4), &struct{ start_key gdextension.String }{pointers.Get(gd.InternalString(start_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_key)
 }
 func (self class) HasCommentDelimiter(start_key String.Readable) bool { //gd:CodeEdit.has_comment_delimiter
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_comment_delimiter, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ start_key gdextension.String }{pointers.Get(gd.InternalString(start_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(start_key)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCommentDelimiters(comment_delimiters Array.Contains[String.Readable]) { //gd:CodeEdit.set_comment_delimiters
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_comment_delimiters, 0|(gdextension.SizeArray<<4), &struct{ comment_delimiters gdextension.Array }{pointers.Get(gd.InternalArray(comment_delimiters))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(comment_delimiters)
 }
 func (self class) ClearCommentDelimiters() { //gd:CodeEdit.clear_comment_delimiters
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_comment_delimiters, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCommentDelimiters() Array.Contains[String.Readable] { //gd:CodeEdit.get_comment_delimiters
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_comment_delimiters, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[String.Readable](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -1753,16 +1855,19 @@ func (self class) IsInComment(line int64, column int64) int64 { //gd:CodeEdit.is
 		line   int64
 		column int64
 	}{line, column})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDelimiterStartKey(delimiter_index int64) String.Readable { //gd:CodeEdit.get_delimiter_start_key
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_delimiter_start_key, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ delimiter_index int64 }{delimiter_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDelimiterEndKey(delimiter_index int64) String.Readable { //gd:CodeEdit.get_delimiter_end_key
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_delimiter_end_key, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ delimiter_index int64 }{delimiter_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1771,6 +1876,7 @@ func (self class) GetDelimiterStartPosition(line int64, column int64) Vector2.XY
 		line   int64
 		column int64
 	}{line, column})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1779,22 +1885,28 @@ func (self class) GetDelimiterEndPosition(line int64, column int64) Vector2.XY {
 		line   int64
 		column int64
 	}{line, column})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCodeHint(code_hint String.Readable) { //gd:CodeEdit.set_code_hint
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_code_hint, 0|(gdextension.SizeString<<4), &struct{ code_hint gdextension.String }{pointers.Get(gd.InternalString(code_hint))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(code_hint)
 }
 func (self class) SetCodeHintDrawBelow(draw_below bool) { //gd:CodeEdit.set_code_hint_draw_below
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_code_hint_draw_below, 0|(gdextension.SizeBool<<4), &struct{ draw_below bool }{draw_below})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextForCodeCompletion() String.Readable { //gd:CodeEdit.get_text_for_code_completion
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text_for_code_completion, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) RequestCodeCompletion(force bool) { //gd:CodeEdit.request_code_completion
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.request_code_completion, 0|(gdextension.SizeBool<<4), &struct{ force bool }{force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddCodeCompletionOption(atype CodeCompletionKind, display_text String.Readable, insert_text String.Readable, text_color Color.RGBA, icon [1]gdclass.Resource, value variant.Any, location int64) { //gd:CodeEdit.add_code_completion_option
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_code_completion_option, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8)|(gdextension.SizeString<<12)|(gdextension.SizeColor<<16)|(gdextension.SizeObject<<20)|(gdextension.SizeVariant<<24)|(gdextension.SizeInt<<28), &struct {
@@ -1806,68 +1918,91 @@ func (self class) AddCodeCompletionOption(atype CodeCompletionKind, display_text
 		value        gdextension.Variant
 		location     int64
 	}{atype, pointers.Get(gd.InternalString(display_text)), pointers.Get(gd.InternalString(insert_text)), text_color, gdextension.Object(gdreference.GetObject(gdclass.GetResource(icon[0])[0])), gdextension.Variant(pointers.Get(gd.InternalVariant(value))), location})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(display_text)
+	runtime.KeepAlive(insert_text)
+	runtime.KeepAlive(icon[0].Anchor())
+	runtime.KeepAlive(value)
 }
 func (self class) UpdateCodeCompletionOptions(force bool) { //gd:CodeEdit.update_code_completion_options
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update_code_completion_options, 0|(gdextension.SizeBool<<4), &struct{ force bool }{force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCodeCompletionOptions() Array.Contains[Dictionary.Any] { //gd:CodeEdit.get_code_completion_options
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_code_completion_options, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetCodeCompletionOption(index int64) Dictionary.Any { //gd:CodeEdit.get_code_completion_option
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_code_completion_option, gdextension.SizeDictionary|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetCodeCompletionSelectedIndex() int64 { //gd:CodeEdit.get_code_completion_selected_index
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_code_completion_selected_index, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCodeCompletionSelectedIndex(index int64) { //gd:CodeEdit.set_code_completion_selected_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_code_completion_selected_index, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ConfirmCodeCompletion(replace bool) { //gd:CodeEdit.confirm_code_completion
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.confirm_code_completion, 0|(gdextension.SizeBool<<4), &struct{ replace bool }{replace})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CancelCodeCompletion() { //gd:CodeEdit.cancel_code_completion
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.cancel_code_completion, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCodeCompletionEnabled(enable bool) { //gd:CodeEdit.set_code_completion_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_code_completion_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCodeCompletionEnabled() bool { //gd:CodeEdit.is_code_completion_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_code_completion_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCodeCompletionPrefixes(prefixes Array.Contains[String.Readable]) { //gd:CodeEdit.set_code_completion_prefixes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_code_completion_prefixes, 0|(gdextension.SizeArray<<4), &struct{ prefixes gdextension.Array }{pointers.Get(gd.InternalArray(prefixes))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(prefixes)
 }
 func (self class) GetCodeCompletionPrefixes() Array.Contains[String.Readable] { //gd:CodeEdit.get_code_completion_prefixes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_code_completion_prefixes, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[String.Readable](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetLineLengthGuidelines(guideline_columns Array.Contains[int64]) { //gd:CodeEdit.set_line_length_guidelines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_line_length_guidelines, 0|(gdextension.SizeArray<<4), &struct{ guideline_columns gdextension.Array }{pointers.Get(gd.InternalArray(guideline_columns))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(guideline_columns)
 }
 func (self class) GetLineLengthGuidelines() Array.Contains[int64] { //gd:CodeEdit.get_line_length_guidelines
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_line_length_guidelines, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[int64](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetSymbolLookupOnClickEnabled(enable bool) { //gd:CodeEdit.set_symbol_lookup_on_click_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_symbol_lookup_on_click_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSymbolLookupOnClickEnabled() bool { //gd:CodeEdit.is_symbol_lookup_on_click_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_symbol_lookup_on_click_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetTextForSymbolLookup() String.Readable { //gd:CodeEdit.get_text_for_symbol_lookup
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_text_for_symbol_lookup, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1876,37 +2011,48 @@ func (self class) GetTextWithCursorChar(line int64, column int64) String.Readabl
 		line   int64
 		column int64
 	}{line, column})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetSymbolLookupWordAsValid(valid bool) { //gd:CodeEdit.set_symbol_lookup_word_as_valid
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_symbol_lookup_word_as_valid, 0|(gdextension.SizeBool<<4), &struct{ valid bool }{valid})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSymbolTooltipOnHoverEnabled(enable bool) { //gd:CodeEdit.set_symbol_tooltip_on_hover_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_symbol_tooltip_on_hover_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSymbolTooltipOnHoverEnabled() bool { //gd:CodeEdit.is_symbol_tooltip_on_hover_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_symbol_tooltip_on_hover_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) MoveLinesUp() { //gd:CodeEdit.move_lines_up
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_lines_up, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MoveLinesDown() { //gd:CodeEdit.move_lines_down
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_lines_down, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DeleteLines() { //gd:CodeEdit.delete_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.delete_lines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) JoinLines(line_ending String.Readable) { //gd:CodeEdit.join_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.join_lines, 0|(gdextension.SizeString<<4), &struct{ line_ending gdextension.String }{pointers.Get(gd.InternalString(line_ending))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(line_ending)
 }
 func (self class) DuplicateSelection() { //gd:CodeEdit.duplicate_selection
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.duplicate_selection, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DuplicateLines() { //gd:CodeEdit.duplicate_lines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.duplicate_lines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -2006,18 +2152,18 @@ func (self class) SymbolHovered() Signal.Any {
 func (o class) AsCodeEdit() Advanced                      { return Advanced(o) }
 func (o Instance) AsCodeEdit() Instance                   { return o }
 func (o *Extension[T]) AsCodeEdit() Instance              { return o.Super() }
-func (o class) AsTextEdit() TextEdit.Advanced             { return TextEdit.Advanced{gdclass.NewTextEdit(o[0].AsObject()[0])} }
+func (o class) AsTextEdit() TextEdit.Advanced             { return *(*TextEdit.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTextEdit() TextEdit.Instance     { return o.Super().AsTextEdit() }
-func (o Instance) AsTextEdit() TextEdit.Instance          { return TextEdit.Instance{gdclass.NewTextEdit(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsTextEdit() TextEdit.Instance          { return *(*TextEdit.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

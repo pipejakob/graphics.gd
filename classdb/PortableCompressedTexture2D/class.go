@@ -14,6 +14,7 @@ This resource is intended to be created from code.
 package PortableCompressedTexture2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -52,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -207,7 +211,7 @@ func IsKeepingAllCompressedBuffers() bool { //gd:PortableCompressedTexture2D.is_
 type Advanced = class
 type class [1]gdclass.PortableCompressedTexture2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPortableCompressedTexture2D(obj[0])
@@ -222,7 +226,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -282,25 +286,32 @@ func (self class) CreateFromImage(image [1]gdclass.Image, compression_mode Compr
 		normal_map       bool
 		lossy_quality    float64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0])), compression_mode, normal_map, lossy_quality})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (self class) GetCompressionMode() CompressionMode { //gd:PortableCompressedTexture2D.get_compression_mode
 	var r_ret = jumponly.Call[CompressionMode](gd.ObjectChecked(self.AsObject()), methods.get_compression_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSizeOverride(size Vector2.XY) { //gd:PortableCompressedTexture2D.set_size_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size_override, 0|(gdextension.SizeVector2<<4), &struct{ size Vector2.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSizeOverride() Vector2.XY { //gd:PortableCompressedTexture2D.get_size_override
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_size_override, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetKeepCompressedBuffer(keep bool) { //gd:PortableCompressedTexture2D.set_keep_compressed_buffer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_keep_compressed_buffer, 0|(gdextension.SizeBool<<4), &struct{ keep bool }{keep})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsKeepingCompressedBuffer() bool { //gd:PortableCompressedTexture2D.is_keeping_compressed_buffer
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_keeping_compressed_buffer, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -309,6 +320,7 @@ func (self class) SetBasisuCompressorParams(uastc_level int64, rdo_quality_loss 
 		uastc_level      int64
 		rdo_quality_loss float64
 	}{uastc_level, rdo_quality_loss})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetKeepAllCompressedBuffers(keep bool) { //gd:PortableCompressedTexture2D.set_keep_all_compressed_buffers
 	jumponly.CallStatic[struct{}](methods.set_keep_all_compressed_buffers, 0|(gdextension.SizeBool<<4), &struct{ keep bool }{keep})
@@ -321,15 +333,15 @@ func (self class) IsKeepingAllCompressedBuffers() bool { //gd:PortableCompressed
 func (o class) AsPortableCompressedTexture2D() Advanced         { return Advanced(o) }
 func (o Instance) AsPortableCompressedTexture2D() Instance      { return o }
 func (o *Extension[T]) AsPortableCompressedTexture2D() Instance { return o.Super() }
-func (o class) AsTexture2D() Texture2D.Advanced                 { return Texture2D.Advanced{gdclass.NewTexture2D(o[0].AsObject()[0])} }
+func (o class) AsTexture2D() Texture2D.Advanced                 { return *(*Texture2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture2D() Texture2D.Instance         { return o.Super().AsTexture2D() }
-func (o Instance) AsTexture2D() Texture2D.Instance              { return Texture2D.Instance{gdclass.NewTexture2D(o[0].AsObject()[0])} }
-func (o class) AsTexture() Texture.Advanced                     { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o Instance) AsTexture2D() Texture2D.Instance              { return *(*Texture2D.Instance)(ie.As(&o)) }
+func (o class) AsTexture() Texture.Advanced                     { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance             { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance                  { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced                   { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance                  { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced                   { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance           { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance                { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance                { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                             { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                     { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                          { return *(*ie.RC)(ie.As(&o)) }

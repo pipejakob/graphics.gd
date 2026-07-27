@@ -10,6 +10,7 @@ Base class for audio streams. Audio streams are used for sound effects and music
 package AudioStream
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -413,7 +417,7 @@ func (self Instance) IsMetaStream() bool { //gd:AudioStream.is_meta_stream
 type Advanced = class
 type class [1]gdclass.AudioStream
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioStream(obj[0])
@@ -428,7 +432,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -543,31 +547,37 @@ func (class) _get_bar_beats(impl func(ptr gdclass.Receiver) int64) (cb gd.Extens
 
 func (self class) GetLength() float64 { //gd:AudioStream.get_length
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsMonophonic() bool { //gd:AudioStream.is_monophonic
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_monophonic, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) InstantiatePlayback() [1]gdclass.AudioStreamPlayback { //gd:AudioStream.instantiate_playback
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.instantiate_playback, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.AudioStreamPlayback{gdclass.NewAudioStreamPlayback(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) CanBeSampled() bool { //gd:AudioStream.can_be_sampled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.can_be_sampled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GenerateSample() [1]gdclass.AudioSample { //gd:AudioStream.generate_sample
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.generate_sample, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.AudioSample{gdclass.NewAudioSample(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) IsMetaStream() bool { //gd:AudioStream.is_meta_stream
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_meta_stream, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -591,9 +601,9 @@ func (self class) ParameterListChanged() Signal.Any {
 func (o class) AsAudioStream() Advanced               { return Advanced(o) }
 func (o Instance) AsAudioStream() Instance            { return o }
 func (o *Extension[T]) AsAudioStream() Instance       { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

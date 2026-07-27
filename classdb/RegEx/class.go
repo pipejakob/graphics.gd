@@ -112,6 +112,7 @@ Tip: You can use [Regexr] to test regular expressions online.
 package RegEx
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -146,6 +147,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -375,7 +379,7 @@ func (self Instance) GetNames() []string { //gd:RegEx.get_names
 type Advanced = class
 type class [1]gdclass.RegEx
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRegEx(obj[0])
@@ -390,7 +394,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -418,17 +422,21 @@ func (self class) CreateFromString(pattern String.Readable, show_error bool) [1]
 		pattern    gdextension.String
 		show_error bool
 	}{pointers.Get(gd.InternalString(pattern)), show_error})
+	runtime.KeepAlive(pattern)
 	var ret = [1]gdclass.RegEx{gdclass.NewRegEx(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) Clear() { //gd:RegEx.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Compile(pattern String.Readable, show_error bool) Error.Code { //gd:RegEx.compile
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.compile, gdextension.SizeInt|(gdextension.SizeString<<4)|(gdextension.SizeBool<<8), &struct {
 		pattern    gdextension.String
 		show_error bool
 	}{pointers.Get(gd.InternalString(pattern)), show_error})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(pattern)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -438,6 +446,8 @@ func (self class) Search(subject String.Readable, offset int64, end int64) [1]gd
 		offset  int64
 		end     int64
 	}{pointers.Get(gd.InternalString(subject)), offset, end})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(subject)
 	var ret = [1]gdclass.RegExMatch{gdclass.NewRegExMatch(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -447,6 +457,8 @@ func (self class) SearchAll(subject String.Readable, offset int64, end int64) Ar
 		offset  int64
 		end     int64
 	}{pointers.Get(gd.InternalString(subject)), offset, end})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(subject)
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.RegExMatch](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -458,26 +470,33 @@ func (self class) Sub(subject String.Readable, replacement String.Readable, all 
 		offset      int64
 		end         int64
 	}{pointers.Get(gd.InternalString(subject)), pointers.Get(gd.InternalString(replacement)), all, offset, end})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(subject)
+	runtime.KeepAlive(replacement)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsValid() bool { //gd:RegEx.is_valid
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_valid, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPattern() String.Readable { //gd:RegEx.get_pattern
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_pattern, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetGroupCount() int64 { //gd:RegEx.get_group_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_group_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetNames() Packed.Strings { //gd:RegEx.get_names
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_names, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }

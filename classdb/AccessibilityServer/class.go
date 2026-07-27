@@ -4,6 +4,7 @@ package AccessibilityServer
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -12,6 +13,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -39,6 +41,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -768,7 +773,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.AccessibilityServer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAccessibilityServer(obj[0])
@@ -783,7 +788,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) IsSupported() bool { //gd:AccessibilityServer.is_supported
@@ -839,6 +844,7 @@ func (self class) ElementSetMeta(id RID.Any, meta variant.Any) { //gd:Accessibil
 		id   RID.Any
 		meta gdextension.Variant
 	}{id, gdextension.Variant(pointers.Get(gd.InternalVariant(meta)))})
+	runtime.KeepAlive(meta)
 }
 func (self class) ElementGetMeta(id RID.Any) variant.Any { //gd:AccessibilityServer.element_get_meta
 	once.Do(singleton)
@@ -884,6 +890,7 @@ func (self class) UpdateSetName(id RID.Any, name String.Readable) { //gd:Accessi
 		id   RID.Any
 		name gdextension.String
 	}{id, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) UpdateSetBrailleLabel(id RID.Any, name String.Readable) { //gd:AccessibilityServer.update_set_braille_label
 	once.Do(singleton)
@@ -891,6 +898,7 @@ func (self class) UpdateSetBrailleLabel(id RID.Any, name String.Readable) { //gd
 		id   RID.Any
 		name gdextension.String
 	}{id, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) UpdateSetBrailleRoleDescription(id RID.Any, description String.Readable) { //gd:AccessibilityServer.update_set_braille_role_description
 	once.Do(singleton)
@@ -898,6 +906,7 @@ func (self class) UpdateSetBrailleRoleDescription(id RID.Any, description String
 		id          RID.Any
 		description gdextension.String
 	}{id, pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(description)
 }
 func (self class) UpdateSetExtraInfo(id RID.Any, name String.Readable) { //gd:AccessibilityServer.update_set_extra_info
 	once.Do(singleton)
@@ -905,6 +914,7 @@ func (self class) UpdateSetExtraInfo(id RID.Any, name String.Readable) { //gd:Ac
 		id   RID.Any
 		name gdextension.String
 	}{id, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) UpdateSetDescription(id RID.Any, description String.Readable) { //gd:AccessibilityServer.update_set_description
 	once.Do(singleton)
@@ -912,6 +922,7 @@ func (self class) UpdateSetDescription(id RID.Any, description String.Readable) 
 		id          RID.Any
 		description gdextension.String
 	}{id, pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(description)
 }
 func (self class) UpdateSetValue(id RID.Any, value String.Readable) { //gd:AccessibilityServer.update_set_value
 	once.Do(singleton)
@@ -919,6 +930,7 @@ func (self class) UpdateSetValue(id RID.Any, value String.Readable) { //gd:Acces
 		id    RID.Any
 		value gdextension.String
 	}{id, pointers.Get(gd.InternalString(value))})
+	runtime.KeepAlive(value)
 }
 func (self class) UpdateSetTooltip(id RID.Any, tooltip String.Readable) { //gd:AccessibilityServer.update_set_tooltip
 	once.Do(singleton)
@@ -926,6 +938,7 @@ func (self class) UpdateSetTooltip(id RID.Any, tooltip String.Readable) { //gd:A
 		id      RID.Any
 		tooltip gdextension.String
 	}{id, pointers.Get(gd.InternalString(tooltip))})
+	runtime.KeepAlive(tooltip)
 }
 func (self class) UpdateSetBounds(id RID.Any, rect Rect2.PositionSize) { //gd:AccessibilityServer.update_set_bounds
 	once.Do(singleton)
@@ -1046,6 +1059,7 @@ func (self class) UpdateAddAction(id RID.Any, action AccessibilityAction, callab
 		action   AccessibilityAction
 		callable gdextension.Callable
 	}{id, action, pointers.Get(gd.InternalCallable(callable))})
+	runtime.KeepAlive(callable)
 }
 func (self class) UpdateAddCustomAction(id RID.Any, action_id int64, action_description String.Readable) { //gd:AccessibilityServer.update_add_custom_action
 	once.Do(singleton)
@@ -1054,6 +1068,7 @@ func (self class) UpdateAddCustomAction(id RID.Any, action_id int64, action_desc
 		action_id          int64
 		action_description gdextension.String
 	}{id, action_id, pointers.Get(gd.InternalString(action_description))})
+	runtime.KeepAlive(action_description)
 }
 func (self class) UpdateSetTableRowCount(id RID.Any, count int64) { //gd:AccessibilityServer.update_set_table_row_count
 	once.Do(singleton)
@@ -1248,6 +1263,7 @@ func (self class) UpdateSetClassname(id RID.Any, classname String.Readable) { //
 		id        RID.Any
 		classname gdextension.String
 	}{id, pointers.Get(gd.InternalString(classname))})
+	runtime.KeepAlive(classname)
 }
 func (self class) UpdateSetPlaceholder(id RID.Any, placeholder String.Readable) { //gd:AccessibilityServer.update_set_placeholder
 	once.Do(singleton)
@@ -1255,6 +1271,7 @@ func (self class) UpdateSetPlaceholder(id RID.Any, placeholder String.Readable) 
 		id          RID.Any
 		placeholder gdextension.String
 	}{id, pointers.Get(gd.InternalString(placeholder))})
+	runtime.KeepAlive(placeholder)
 }
 func (self class) UpdateSetLanguage(id RID.Any, language String.Readable) { //gd:AccessibilityServer.update_set_language
 	once.Do(singleton)
@@ -1262,6 +1279,7 @@ func (self class) UpdateSetLanguage(id RID.Any, language String.Readable) { //gd
 		id       RID.Any
 		language gdextension.String
 	}{id, pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(language)
 }
 func (self class) UpdateSetTextOrientation(id RID.Any, vertical bool) { //gd:AccessibilityServer.update_set_text_orientation
 	once.Do(singleton)
@@ -1283,6 +1301,7 @@ func (self class) UpdateSetShortcut(id RID.Any, shortcut String.Readable) { //gd
 		id       RID.Any
 		shortcut gdextension.String
 	}{id, pointers.Get(gd.InternalString(shortcut))})
+	runtime.KeepAlive(shortcut)
 }
 func (self class) UpdateSetUrl(id RID.Any, url String.Readable) { //gd:AccessibilityServer.update_set_url
 	once.Do(singleton)
@@ -1290,6 +1309,7 @@ func (self class) UpdateSetUrl(id RID.Any, url String.Readable) { //gd:Accessibi
 		id  RID.Any
 		url gdextension.String
 	}{id, pointers.Get(gd.InternalString(url))})
+	runtime.KeepAlive(url)
 }
 func (self class) UpdateSetRoleDescription(id RID.Any, description String.Readable) { //gd:AccessibilityServer.update_set_role_description
 	once.Do(singleton)
@@ -1297,6 +1317,7 @@ func (self class) UpdateSetRoleDescription(id RID.Any, description String.Readab
 		id          RID.Any
 		description gdextension.String
 	}{id, pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(description)
 }
 func (self class) UpdateSetStateDescription(id RID.Any, description String.Readable) { //gd:AccessibilityServer.update_set_state_description
 	once.Do(singleton)
@@ -1304,6 +1325,7 @@ func (self class) UpdateSetStateDescription(id RID.Any, description String.Reada
 		id          RID.Any
 		description gdextension.String
 	}{id, pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(description)
 }
 func (self class) UpdateSetColorValue(id RID.Any, color Color.RGBA) { //gd:AccessibilityServer.update_set_color_value
 	once.Do(singleton)

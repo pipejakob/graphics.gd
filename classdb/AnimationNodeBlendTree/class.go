@@ -14,6 +14,7 @@ An [AnimationNodeOutput] node named output is created by default.
 package AnimationNodeBlendTree
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -51,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -235,7 +239,7 @@ func (self Instance) GetNodePosition(name string) Vector2.XY { //gd:AnimationNod
 type Advanced = class
 type class [1]gdclass.AnimationNodeBlendTree
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimationNodeBlendTree(obj[0])
@@ -250,7 +254,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -292,23 +296,35 @@ func (self class) AddNode(name String.Name, node [1]gdclass.AnimationNode, posit
 		node     gdextension.Object
 		position Vector2.XY
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetAnimationNode(node[0])[0])), position})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(node[0].Anchor())
 }
 func (self class) GetNode(name String.Name) [1]gdclass.AnimationNode { //gd:AnimationNodeBlendTree.get_node
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_node, gdextension.SizeObject|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = [1]gdclass.AnimationNode{gdclass.NewAnimationNode(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) RemoveNode(name String.Name) { //gd:AnimationNodeBlendTree.remove_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_node, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RenameNode(name String.Name, new_name String.Name) { //gd:AnimationNodeBlendTree.rename_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.rename_node, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name     gdextension.StringName
 		new_name gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(new_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(new_name)
 }
 func (self class) HasNode(name String.Name) bool { //gd:AnimationNodeBlendTree.has_node
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_node, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -318,15 +334,21 @@ func (self class) ConnectNode(input_node String.Name, input_index int64, output_
 		input_index int64
 		output_node gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(input_node)), input_index, pointers.Get(gd.InternalStringName(output_node))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(input_node)
+	runtime.KeepAlive(output_node)
 }
 func (self class) DisconnectNode(input_node String.Name, input_index int64) { //gd:AnimationNodeBlendTree.disconnect_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.disconnect_node, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeInt<<8), &struct {
 		input_node  gdextension.StringName
 		input_index int64
 	}{pointers.Get(gd.InternalStringName(input_node)), input_index})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(input_node)
 }
 func (self class) GetNodeList() Array.Contains[String.Name] { //gd:AnimationNodeBlendTree.get_node_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_node_list, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -335,17 +357,23 @@ func (self class) SetNodePosition(name String.Name, position Vector2.XY) { //gd:
 		name     gdextension.StringName
 		position Vector2.XY
 	}{pointers.Get(gd.InternalStringName(name)), position})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetNodePosition(name String.Name) Vector2.XY { //gd:AnimationNodeBlendTree.get_node_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_node_position, gdextension.SizeVector2|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGraphOffset(offset Vector2.XY) { //gd:AnimationNodeBlendTree.set_graph_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_graph_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGraphOffset() Vector2.XY { //gd:AnimationNodeBlendTree.get_graph_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_graph_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -370,22 +398,22 @@ func (o class) AsAnimationNodeBlendTree() Advanced         { return Advanced(o) 
 func (o Instance) AsAnimationNodeBlendTree() Instance      { return o }
 func (o *Extension[T]) AsAnimationNodeBlendTree() Instance { return o.Super() }
 func (o class) AsAnimationRootNode() AnimationRootNode.Advanced {
-	return AnimationRootNode.Advanced{gdclass.NewAnimationRootNode(o[0].AsObject()[0])}
+	return *(*AnimationRootNode.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsAnimationRootNode() AnimationRootNode.Instance {
 	return o.Super().AsAnimationRootNode()
 }
 func (o Instance) AsAnimationRootNode() AnimationRootNode.Instance {
-	return AnimationRootNode.Instance{gdclass.NewAnimationRootNode(o[0].AsObject()[0])}
+	return *(*AnimationRootNode.Instance)(ie.As(&o))
 }
-func (o class) AsAnimationNode() AnimationNode.Advanced         { return AnimationNode.Advanced{gdclass.NewAnimationNode(o[0].AsObject()[0])} }
+func (o class) AsAnimationNode() AnimationNode.Advanced         { return *(*AnimationNode.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAnimationNode() AnimationNode.Instance { return o.Super().AsAnimationNode() }
 func (o Instance) AsAnimationNode() AnimationNode.Instance {
-	return AnimationNode.Instance{gdclass.NewAnimationNode(o[0].AsObject()[0])}
+	return *(*AnimationNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

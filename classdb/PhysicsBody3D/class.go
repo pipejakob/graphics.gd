@@ -10,6 +10,7 @@ Warning: With a non-uniform scale, this node will likely not behave as expected.
 package PhysicsBody3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -19,6 +20,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -49,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -265,7 +270,7 @@ func (self Instance) RemoveCollisionExceptionWith(body Node.Instance) { //gd:Phy
 type Advanced = class
 type class [1]gdclass.PhysicsBody3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPhysicsBody3D(obj[0])
@@ -280,7 +285,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -389,6 +394,7 @@ func (self class) MoveAndCollide(motion Vector3.XYZ, test_only bool, safe_margin
 		recovery_as_collision bool
 		max_collisions        int64
 	}{motion, test_only, safe_margin, recovery_as_collision, max_collisions})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.KinematicCollision3D{gdclass.NewKinematicCollision3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -401,11 +407,14 @@ func (self class) TestMove(from Transform3D.BasisOrigin, motion Vector3.XYZ, col
 		recovery_as_collision bool
 		max_collisions        int64
 	}{gd.Transposed(from), motion, gdextension.Object(gdreference.GetObject(gdclass.GetKinematicCollision3D(collision[0])[0])), safe_margin, recovery_as_collision, max_collisions})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(collision[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetGravity() Vector3.XYZ { //gd:PhysicsBody3D.get_gravity
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_gravity, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -414,41 +423,48 @@ func (self class) SetAxisLock(axis PhysicsServer3D.BodyAxis, lock bool) { //gd:P
 		axis PhysicsServer3D.BodyAxis
 		lock bool
 	}{axis, lock})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAxisLock(axis PhysicsServer3D.BodyAxis) bool { //gd:PhysicsBody3D.get_axis_lock
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_axis_lock, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ axis PhysicsServer3D.BodyAxis }{axis})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCollisionExceptions() Array.Contains[[1]gdclass.PhysicsBody3D] { //gd:PhysicsBody3D.get_collision_exceptions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_collision_exceptions, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.PhysicsBody3D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) AddCollisionExceptionWith(body [1]gdclass.Node) { //gd:PhysicsBody3D.add_collision_exception_with
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_collision_exception_with, 0|(gdextension.SizeObject<<4), &struct{ body gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode(body[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(body[0].Anchor())
 }
 func (self class) RemoveCollisionExceptionWith(body [1]gdclass.Node) { //gd:PhysicsBody3D.remove_collision_exception_with
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_collision_exception_with, 0|(gdextension.SizeObject<<4), &struct{ body gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode(body[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(body[0].Anchor())
 }
 func (o class) AsPhysicsBody3D() Advanced         { return Advanced(o) }
 func (o Instance) AsPhysicsBody3D() Instance      { return o }
 func (o *Extension[T]) AsPhysicsBody3D() Instance { return o.Super() }
 func (o class) AsCollisionObject3D() CollisionObject3D.Advanced {
-	return CollisionObject3D.Advanced{gdclass.NewCollisionObject3D(o[0].AsObject()[0])}
+	return *(*CollisionObject3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsCollisionObject3D() CollisionObject3D.Instance {
 	return o.Super().AsCollisionObject3D()
 }
 func (o Instance) AsCollisionObject3D() CollisionObject3D.Instance {
-	return CollisionObject3D.Instance{gdclass.NewCollisionObject3D(o[0].AsObject()[0])}
+	return *(*CollisionObject3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

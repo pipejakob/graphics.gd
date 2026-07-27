@@ -3,6 +3,7 @@
 package StatusIndicator
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -12,6 +13,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -39,6 +41,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -136,7 +141,7 @@ func (self Instance) GetRect() Rect2.PositionSize { //gd:StatusIndicator.get_rec
 type Advanced = class
 type class [1]gdclass.StatusIndicator
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewStatusIndicator(obj[0])
@@ -151,7 +156,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -233,38 +238,50 @@ func (self Instance) SetVisible(value bool) Instance { //gd:StatusIndicator.visi
 
 func (self class) SetTooltip(tooltip String.Readable) { //gd:StatusIndicator.set_tooltip
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tooltip, 0|(gdextension.SizeString<<4), &struct{ tooltip gdextension.String }{pointers.Get(gd.InternalString(tooltip))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tooltip)
 }
 func (self class) GetTooltip() String.Readable { //gd:StatusIndicator.get_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tooltip, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetIcon(texture [1]gdclass.Texture2D) { //gd:StatusIndicator.set_icon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_icon, 0|(gdextension.SizeObject<<4), &struct{ texture gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetIcon() [1]gdclass.Texture2D { //gd:StatusIndicator.get_icon
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_icon, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetVisible(visible bool) { //gd:StatusIndicator.set_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visible, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsVisible() bool { //gd:StatusIndicator.is_visible
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMenu(menu Path.ToNode) { //gd:StatusIndicator.set_menu
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_menu, 0|(gdextension.SizeNodePath<<4), &struct{ menu gdextension.NodePath }{pointers.Get(gd.InternalNodePath(menu))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(menu)
 }
 func (self class) GetMenu() Path.ToNode { //gd:StatusIndicator.get_menu
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_menu, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) GetRect() Rect2.PositionSize { //gd:StatusIndicator.get_rect
 	var r_ret = noescape.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_rect, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -288,9 +305,9 @@ func (self class) Pressed() Signal.Any {
 func (o class) AsStatusIndicator() Advanced         { return Advanced(o) }
 func (o Instance) AsStatusIndicator() Instance      { return o }
 func (o *Extension[T]) AsStatusIndicator() Instance { return o.Super() }
-func (o class) AsNode() Node.Advanced               { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced               { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance       { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance            { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance            { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

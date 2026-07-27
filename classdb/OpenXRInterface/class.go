@@ -8,6 +8,7 @@ Due to the needs of OpenXR this interface works slightly different than other pl
 package OpenXRInterface
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -344,7 +348,7 @@ func (self Instance) SetGpuLevel(level PerfSettingsLevel) Instance { //gd:OpenXR
 type Advanced = class
 type class [1]gdclass.OpenXRInterface
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRInterface(obj[0])
@@ -359,7 +363,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -485,66 +489,82 @@ func (self Instance) SetVrsStrength(value Float.X) Instance { //gd:OpenXRInterfa
 
 func (self class) GetSessionState() SessionState { //gd:OpenXRInterface.get_session_state
 	var r_ret = noescape.Call[SessionState](gd.ObjectChecked(self.AsObject()), methods.get_session_state, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsUserPresenceSupported() bool { //gd:OpenXRInterface.is_user_presence_supported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_user_presence_supported, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsUserPresent() bool { //gd:OpenXRInterface.is_user_present
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_user_present, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDisplayRefreshRate() float64 { //gd:OpenXRInterface.get_display_refresh_rate
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_display_refresh_rate, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDisplayRefreshRate(refresh_rate float64) { //gd:OpenXRInterface.set_display_refresh_rate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_display_refresh_rate, 0|(gdextension.SizeFloat<<4), &struct{ refresh_rate float64 }{refresh_rate})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRenderTargetSizeMultiplier() float64 { //gd:OpenXRInterface.get_render_target_size_multiplier
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_render_target_size_multiplier, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRenderTargetSizeMultiplier(multiplier float64) { //gd:OpenXRInterface.set_render_target_size_multiplier
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_render_target_size_multiplier, 0|(gdextension.SizeFloat<<4), &struct{ multiplier float64 }{multiplier})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFoveationSupported() bool { //gd:OpenXRInterface.is_foveation_supported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_foveation_supported, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFoveationLevel() int64 { //gd:OpenXRInterface.get_foveation_level
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_foveation_level, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFoveationLevel(foveation_level int64) { //gd:OpenXRInterface.set_foveation_level
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_foveation_level, 0|(gdextension.SizeInt<<4), &struct{ foveation_level int64 }{foveation_level})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFoveationDynamic() bool { //gd:OpenXRInterface.get_foveation_dynamic
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_foveation_dynamic, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFoveationDynamic(foveation_dynamic bool) { //gd:OpenXRInterface.set_foveation_dynamic
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_foveation_dynamic, 0|(gdextension.SizeBool<<4), &struct{ foveation_dynamic bool }{foveation_dynamic})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFoveationWithSubsampledImages() bool { //gd:OpenXRInterface.get_foveation_with_subsampled_images
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_foveation_with_subsampled_images, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFoveationWithSubsampledImages(enabled bool) { //gd:OpenXRInterface.set_foveation_with_subsampled_images
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_foveation_with_subsampled_images, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsActionSetActive(name String.Readable) bool { //gd:OpenXRInterface.is_action_set_active
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_action_set_active, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -553,14 +573,18 @@ func (self class) SetActionSetActive(name String.Readable, active bool) { //gd:O
 		name   gdextension.String
 		active bool
 	}{pointers.Get(gd.InternalString(name)), active})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetActionSets() Array.Any { //gd:OpenXRInterface.get_action_sets
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_action_sets, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetAvailableDisplayRefreshRates() Array.Any { //gd:OpenXRInterface.get_available_display_refresh_rates
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_available_display_refresh_rates, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -569,14 +593,17 @@ func (self class) SetMotionRange(hand Hand, motion_range HandMotionRange) { //gd
 		hand         Hand
 		motion_range HandMotionRange
 	}{hand, motion_range})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMotionRange(hand Hand) HandMotionRange { //gd:OpenXRInterface.get_motion_range
 	var r_ret = noescape.Call[HandMotionRange](gd.ObjectChecked(self.AsObject()), methods.get_motion_range, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ hand Hand }{hand})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetHandTrackingSource(hand Hand) HandTrackedSource { //gd:OpenXRInterface.get_hand_tracking_source
 	var r_ret = noescape.Call[HandTrackedSource](gd.ObjectChecked(self.AsObject()), methods.get_hand_tracking_source, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ hand Hand }{hand})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -585,6 +612,7 @@ func (self class) GetHandJointFlags(hand Hand, joint HandJoints) HandJointFlags 
 		hand  Hand
 		joint HandJoints
 	}{hand, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -593,6 +621,7 @@ func (self class) GetHandJointRotation(hand Hand, joint HandJoints) Quaternion.I
 		hand  Hand
 		joint HandJoints
 	}{hand, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -601,6 +630,7 @@ func (self class) GetHandJointPosition(hand Hand, joint HandJoints) Vector3.XYZ 
 		hand  Hand
 		joint HandJoints
 	}{hand, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -609,6 +639,7 @@ func (self class) GetHandJointRadius(hand Hand, joint HandJoints) float64 { //gd
 		hand  Hand
 		joint HandJoints
 	}{hand, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -617,6 +648,7 @@ func (self class) GetHandJointLinearVelocity(hand Hand, joint HandJoints) Vector
 		hand  Hand
 		joint HandJoints
 	}{hand, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -625,45 +657,55 @@ func (self class) GetHandJointAngularVelocity(hand Hand, joint HandJoints) Vecto
 		hand  Hand
 		joint HandJoints
 	}{hand, joint})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsHandTrackingSupported() bool { //gd:OpenXRInterface.is_hand_tracking_supported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hand_tracking_supported, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsHandInteractionSupported() bool { //gd:OpenXRInterface.is_hand_interaction_supported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hand_interaction_supported, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsEyeGazeInteractionSupported() bool { //gd:OpenXRInterface.is_eye_gaze_interaction_supported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_eye_gaze_interaction_supported, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVrsMinRadius() float64 { //gd:OpenXRInterface.get_vrs_min_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_vrs_min_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVrsMinRadius(radius float64) { //gd:OpenXRInterface.set_vrs_min_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vrs_min_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVrsStrength() float64 { //gd:OpenXRInterface.get_vrs_strength
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_vrs_strength, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVrsStrength(strength float64) { //gd:OpenXRInterface.set_vrs_strength
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vrs_strength, 0|(gdextension.SizeFloat<<4), &struct{ strength float64 }{strength})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCpuLevel(level PerfSettingsLevel) { //gd:OpenXRInterface.set_cpu_level
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cpu_level, 0|(gdextension.SizeInt<<4), &struct{ level PerfSettingsLevel }{level})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetGpuLevel(level PerfSettingsLevel) { //gd:OpenXRInterface.set_gpu_level
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_gpu_level, 0|(gdextension.SizeInt<<4), &struct{ level PerfSettingsLevel }{level})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -865,9 +907,9 @@ func (self class) UserPresenceChanged() Signal.Any {
 func (o class) AsOpenXRInterface() Advanced                 { return Advanced(o) }
 func (o Instance) AsOpenXRInterface() Instance              { return o }
 func (o *Extension[T]) AsOpenXRInterface() Instance         { return o.Super() }
-func (o class) AsXRInterface() XRInterface.Advanced         { return XRInterface.Advanced{gdclass.NewXRInterface(o[0].AsObject()[0])} }
+func (o class) AsXRInterface() XRInterface.Advanced         { return *(*XRInterface.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRInterface() XRInterface.Instance { return o.Super().AsXRInterface() }
-func (o Instance) AsXRInterface() XRInterface.Instance      { return XRInterface.Instance{gdclass.NewXRInterface(o[0].AsObject()[0])} }
+func (o Instance) AsXRInterface() XRInterface.Instance      { return *(*XRInterface.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

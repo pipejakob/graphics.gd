@@ -13,6 +13,7 @@ Note that "global pose" below refers to the overall transform of the bone with r
 package Skeleton3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -22,6 +23,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -52,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -659,7 +664,7 @@ func (self Instance) PhysicalBonesRemoveCollisionException(exception RID.Body3D)
 type Advanced = class
 type class [1]gdclass.Skeleton3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSkeleton3D(obj[0])
@@ -674,7 +679,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -760,16 +765,21 @@ func (self Instance) SetAnimatePhysicalBones(value bool) Instance { //gd:Skeleto
 
 func (self class) AddBone(name String.Readable) int64 { //gd:Skeleton3D.add_bone
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.add_bone, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) FindBone(name String.Readable) int64 { //gd:Skeleton3D.find_bone
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.find_bone, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBoneName(bone_idx int64) String.Readable { //gd:Skeleton3D.get_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -778,17 +788,22 @@ func (self class) SetBoneName(bone_idx int64, name String.Readable) { //gd:Skele
 		bone_idx int64
 		name     gdextension.String
 	}{bone_idx, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetBoneMeta(bone_idx int64, key String.Name) variant.Any { //gd:Skeleton3D.get_bone_meta
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_bone_meta, gdextension.SizeVariant|(gdextension.SizeInt<<4)|(gdextension.SizeStringName<<8), &struct {
 		bone_idx int64
 		key      gdextension.StringName
 	}{bone_idx, pointers.Get(gd.InternalStringName(key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetBoneMetaList(bone_idx int64) Array.Contains[String.Name] { //gd:Skeleton3D.get_bone_meta_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_bone_meta_list, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -797,6 +812,8 @@ func (self class) HasBoneMeta(bone_idx int64, key String.Name) bool { //gd:Skele
 		bone_idx int64
 		key      gdextension.StringName
 	}{bone_idx, pointers.Get(gd.InternalStringName(key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
@@ -806,14 +823,19 @@ func (self class) SetBoneMeta(bone_idx int64, key String.Name, value variant.Any
 		key      gdextension.StringName
 		value    gdextension.Variant
 	}{bone_idx, pointers.Get(gd.InternalStringName(key)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(key)
+	runtime.KeepAlive(value)
 }
 func (self class) GetConcatenatedBoneNames() String.Name { //gd:Skeleton3D.get_concatenated_bone_names
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_concatenated_bone_names, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetBoneParent(bone_idx int64) int64 { //gd:Skeleton3D.get_bone_parent
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_bone_parent, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -822,32 +844,39 @@ func (self class) SetBoneParent(bone_idx int64, parent_idx int64) { //gd:Skeleto
 		bone_idx   int64
 		parent_idx int64
 	}{bone_idx, parent_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneCount() int64 { //gd:Skeleton3D.get_bone_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_bone_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVersion() int64 { //gd:Skeleton3D.get_version
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_version, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) UnparentBoneAndRest(bone_idx int64) { //gd:Skeleton3D.unparent_bone_and_rest
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.unparent_bone_and_rest, 0|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneChildren(bone_idx int64) Packed.Array[int32] { //gd:Skeleton3D.get_bone_children
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_bone_children, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetParentlessBones() Packed.Array[int32] { //gd:Skeleton3D.get_parentless_bones
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_parentless_bones, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) GetBoneRest(bone_idx int64) Transform3D.BasisOrigin { //gd:Skeleton3D.get_bone_rest
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_bone_rest, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
@@ -856,30 +885,38 @@ func (self class) SetBoneRest(bone_idx int64, rest Transform3D.BasisOrigin) { //
 		bone_idx int64
 		rest     Transform3D.BasisOrigin
 	}{bone_idx, gd.Transposed(rest)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneGlobalRest(bone_idx int64) Transform3D.BasisOrigin { //gd:Skeleton3D.get_bone_global_rest
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_bone_global_rest, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) CreateSkinFromRestTransforms() [1]gdclass.Skin { //gd:Skeleton3D.create_skin_from_rest_transforms
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.create_skin_from_rest_transforms, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Skin{gdclass.NewSkin(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) RegisterSkin(skin [1]gdclass.Skin) [1]gdclass.SkinReference { //gd:Skeleton3D.register_skin
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.register_skin, gdextension.SizeObject|(gdextension.SizeObject<<4), &struct{ skin gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetSkin(skin[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(skin[0].Anchor())
 	var ret = [1]gdclass.SkinReference{gdclass.NewSkinReference(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) LocalizeRests() { //gd:Skeleton3D.localize_rests
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.localize_rests, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearBones() { //gd:Skeleton3D.clear_bones
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_bones, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBonePose(bone_idx int64) Transform3D.BasisOrigin { //gd:Skeleton3D.get_bone_pose
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_bone_pose, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
@@ -888,48 +925,58 @@ func (self class) SetBonePose(bone_idx int64, pose Transform3D.BasisOrigin) { //
 		bone_idx int64
 		pose     Transform3D.BasisOrigin
 	}{bone_idx, gd.Transposed(pose)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetBonePosePosition(bone_idx int64, position Vector3.XYZ) { //gd:Skeleton3D.set_bone_pose_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_pose_position, 0|(gdextension.SizeInt<<4)|(gdextension.SizeVector3<<8), &struct {
 		bone_idx int64
 		position Vector3.XYZ
 	}{bone_idx, position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetBonePoseRotation(bone_idx int64, rotation Quaternion.IJKX) { //gd:Skeleton3D.set_bone_pose_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_pose_rotation, 0|(gdextension.SizeInt<<4)|(gdextension.SizeQuaternion<<8), &struct {
 		bone_idx int64
 		rotation Quaternion.IJKX
 	}{bone_idx, rotation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetBonePoseScale(bone_idx int64, scale Vector3.XYZ) { //gd:Skeleton3D.set_bone_pose_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_pose_scale, 0|(gdextension.SizeInt<<4)|(gdextension.SizeVector3<<8), &struct {
 		bone_idx int64
 		scale    Vector3.XYZ
 	}{bone_idx, scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBonePosePosition(bone_idx int64) Vector3.XYZ { //gd:Skeleton3D.get_bone_pose_position
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_bone_pose_position, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBonePoseRotation(bone_idx int64) Quaternion.IJKX { //gd:Skeleton3D.get_bone_pose_rotation
 	var r_ret = noescape.Call[Quaternion.IJKX](gd.ObjectChecked(self.AsObject()), methods.get_bone_pose_rotation, gdextension.SizeQuaternion|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBonePoseScale(bone_idx int64) Vector3.XYZ { //gd:Skeleton3D.get_bone_pose_scale
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_bone_pose_scale, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ResetBonePose(bone_idx int64) { //gd:Skeleton3D.reset_bone_pose
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset_bone_pose, 0|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ResetBonePoses() { //gd:Skeleton3D.reset_bone_poses
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset_bone_poses, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsBoneEnabled(bone_idx int64) bool { //gd:Skeleton3D.is_bone_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_bone_enabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -938,9 +985,11 @@ func (self class) SetBoneEnabled(bone_idx int64, enabled bool) { //gd:Skeleton3D
 		bone_idx int64
 		enabled  bool
 	}{bone_idx, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneGlobalPose(bone_idx int64) Transform3D.BasisOrigin { //gd:Skeleton3D.get_bone_global_pose
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_bone_global_pose, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
@@ -949,42 +998,53 @@ func (self class) SetBoneGlobalPose(bone_idx int64, pose Transform3D.BasisOrigin
 		bone_idx int64
 		pose     Transform3D.BasisOrigin
 	}{bone_idx, gd.Transposed(pose)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ForceUpdateAllBoneTransforms() { //gd:Skeleton3D.force_update_all_bone_transforms
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.force_update_all_bone_transforms, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ForceUpdateBoneChildTransform(bone_idx int64) { //gd:Skeleton3D.force_update_bone_child_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.force_update_bone_child_transform, 0|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetMotionScale(motion_scale float64) { //gd:Skeleton3D.set_motion_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_motion_scale, 0|(gdextension.SizeFloat<<4), &struct{ motion_scale float64 }{motion_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMotionScale() float64 { //gd:Skeleton3D.get_motion_scale
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_motion_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShowRestOnly(enabled bool) { //gd:Skeleton3D.set_show_rest_only
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_rest_only, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShowRestOnly() bool { //gd:Skeleton3D.is_show_rest_only
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_show_rest_only, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetModifierCallbackModeProcess(mode ModifierCallbackModeProcess) { //gd:Skeleton3D.set_modifier_callback_mode_process
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_modifier_callback_mode_process, 0|(gdextension.SizeInt<<4), &struct{ mode ModifierCallbackModeProcess }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetModifierCallbackModeProcess() ModifierCallbackModeProcess { //gd:Skeleton3D.get_modifier_callback_mode_process
 	var r_ret = jumponly.Call[ModifierCallbackModeProcess](gd.ObjectChecked(self.AsObject()), methods.get_modifier_callback_mode_process, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Advance(delta float64) { //gd:Skeleton3D.advance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.advance, 0|(gdextension.SizeFloat<<4), &struct{ delta float64 }{delta})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearBonesGlobalPoseOverride() { //gd:Skeleton3D.clear_bones_global_pose_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_bones_global_pose_override, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetBoneGlobalPoseOverride(bone_idx int64, pose Transform3D.BasisOrigin, amount float64, persistent bool) { //gd:Skeleton3D.set_bone_global_pose_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_global_pose_override, 0|(gdextension.SizeInt<<4)|(gdextension.SizeTransform3D<<8)|(gdextension.SizeFloat<<12)|(gdextension.SizeBool<<16), &struct {
@@ -993,36 +1053,46 @@ func (self class) SetBoneGlobalPoseOverride(bone_idx int64, pose Transform3D.Bas
 		amount     float64
 		persistent bool
 	}{bone_idx, gd.Transposed(pose), amount, persistent})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneGlobalPoseOverride(bone_idx int64) Transform3D.BasisOrigin { //gd:Skeleton3D.get_bone_global_pose_override
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_bone_global_pose_override, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) GetBoneGlobalPoseNoOverride(bone_idx int64) Transform3D.BasisOrigin { //gd:Skeleton3D.get_bone_global_pose_no_override
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_bone_global_pose_no_override, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) SetAnimatePhysicalBones(enabled bool) { //gd:Skeleton3D.set_animate_physical_bones
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_animate_physical_bones, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAnimatePhysicalBones() bool { //gd:Skeleton3D.get_animate_physical_bones
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_animate_physical_bones, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) PhysicalBonesStopSimulation() { //gd:Skeleton3D.physical_bones_stop_simulation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.physical_bones_stop_simulation, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PhysicalBonesStartSimulation(bones Array.Contains[String.Name]) { //gd:Skeleton3D.physical_bones_start_simulation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.physical_bones_start_simulation, 0|(gdextension.SizeArray<<4), &struct{ bones gdextension.Array }{pointers.Get(gd.InternalArray(bones))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bones)
 }
 func (self class) PhysicalBonesAddCollisionException(exception RID.Any) { //gd:Skeleton3D.physical_bones_add_collision_exception
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.physical_bones_add_collision_exception, 0|(gdextension.SizeRID<<4), &struct{ exception RID.Any }{exception})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PhysicalBonesRemoveCollisionException(exception RID.Any) { //gd:Skeleton3D.physical_bones_remove_collision_exception
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.physical_bones_remove_collision_exception, 0|(gdextension.SizeRID<<4), &struct{ exception RID.Any }{exception})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -1143,12 +1213,12 @@ func (self class) ShowRestOnlyChanged() Signal.Any {
 func (o class) AsSkeleton3D() Advanced            { return Advanced(o) }
 func (o Instance) AsSkeleton3D() Instance         { return o }
 func (o *Extension[T]) AsSkeleton3D() Instance    { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

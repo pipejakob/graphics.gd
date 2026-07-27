@@ -9,6 +9,7 @@
 package JSONRPC
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -17,6 +18,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -40,6 +42,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -236,7 +241,7 @@ func (self MoreArgs) MakeResponseError(code int, message string, id any) Respons
 type Advanced = class
 type class [1]gdclass.JSONRPC
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewJSONRPC(obj[0])
@@ -251,7 +256,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -279,17 +284,24 @@ func (self class) SetMethod(name String.Readable, callback Callable.Function) { 
 		name     gdextension.String
 		callback gdextension.Callable
 	}{pointers.Get(gd.InternalString(name)), pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(callback)
 }
 func (self class) ProcessAction(action variant.Any, recurse bool) variant.Any { //gd:JSONRPC.process_action
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.process_action, gdextension.SizeVariant|(gdextension.SizeVariant<<4)|(gdextension.SizeBool<<8), &struct {
 		action  gdextension.Variant
 		recurse bool
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(action))), recurse})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) ProcessString(action String.Readable) String.Readable { //gd:JSONRPC.process_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.process_string, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ action gdextension.String }{pointers.Get(gd.InternalString(action))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -299,6 +311,10 @@ func (self class) MakeRequest(method String.Readable, params variant.Any, id var
 		params gdextension.Variant
 		id     gdextension.Variant
 	}{pointers.Get(gd.InternalString(method)), gdextension.Variant(pointers.Get(gd.InternalVariant(params))), gdextension.Variant(pointers.Get(gd.InternalVariant(id)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(method)
+	runtime.KeepAlive(params)
+	runtime.KeepAlive(id)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -307,6 +323,9 @@ func (self class) MakeResponse(result variant.Any, id variant.Any) Dictionary.An
 		result gdextension.Variant
 		id     gdextension.Variant
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(result))), gdextension.Variant(pointers.Get(gd.InternalVariant(id)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(result)
+	runtime.KeepAlive(id)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -315,6 +334,9 @@ func (self class) MakeNotification(method String.Readable, params variant.Any) D
 		method gdextension.String
 		params gdextension.Variant
 	}{pointers.Get(gd.InternalString(method)), gdextension.Variant(pointers.Get(gd.InternalVariant(params)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(method)
+	runtime.KeepAlive(params)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -324,6 +346,9 @@ func (self class) MakeResponseError(code int64, message String.Readable, id vari
 		message gdextension.String
 		id      gdextension.Variant
 	}{code, pointers.Get(gd.InternalString(message)), gdextension.Variant(pointers.Get(gd.InternalVariant(id)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(message)
+	runtime.KeepAlive(id)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }

@@ -49,6 +49,7 @@ Note: Theme items are not [Object] properties. This means you can't access their
 package Control
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -58,6 +59,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -93,6 +95,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -2476,7 +2481,7 @@ func (self Instance) IsLayoutRtl() bool { //gd:Control.is_layout_rtl
 type Advanced = class
 type class [1]gdclass.Control
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewControl(obj[0])
@@ -2491,7 +2496,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -3651,37 +3656,45 @@ func (class) _gui_input(impl func(ptr gdclass.Receiver, event [1]gdclass.InputEv
 
 func (self class) AcceptEvent() { //gd:Control.accept_event
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.accept_event, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaximumSize() Vector2.XY { //gd:Control.get_maximum_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_maximum_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCombinedMaximumSize() Vector2.XY { //gd:Control.get_combined_maximum_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_combined_maximum_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMinimumSize() Vector2.XY { //gd:Control.get_minimum_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_minimum_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCombinedMinimumSize() Vector2.XY { //gd:Control.get_combined_minimum_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_combined_minimum_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPropagateMaximumSize(enable bool) { //gd:Control.set_propagate_maximum_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_propagate_maximum_size, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPropagatingMaximumSize() bool { //gd:Control.is_propagating_maximum_size
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_propagating_maximum_size, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBoundMinimumSize() Vector2.XY { //gd:Control.get_bound_minimum_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_bound_minimum_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3690,6 +3703,7 @@ func (self class) SetAnchorsPreset(preset LayoutPreset, keep_offsets bool) { //g
 		preset       LayoutPreset
 		keep_offsets bool
 	}{preset, keep_offsets})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetOffsetsPreset(preset LayoutPreset, resize_mode LayoutPresetMode, margin int64) { //gd:Control.set_offsets_preset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offsets_preset, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3697,6 +3711,7 @@ func (self class) SetOffsetsPreset(preset LayoutPreset, resize_mode LayoutPreset
 		resize_mode LayoutPresetMode
 		margin      int64
 	}{preset, resize_mode, margin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAnchorsAndOffsetsPreset(preset LayoutPreset, resize_mode LayoutPresetMode, margin int64) { //gd:Control.set_anchors_and_offsets_preset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_anchors_and_offsets_preset, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3704,6 +3719,7 @@ func (self class) SetAnchorsAndOffsetsPreset(preset LayoutPreset, resize_mode La
 		resize_mode LayoutPresetMode
 		margin      int64
 	}{preset, resize_mode, margin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAnchor(side Rect2.Side, anchor float64, keep_offset bool, push_opposite_anchor bool) { //gd:Control.set_anchor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_anchor, 0|(gdextension.SizeInt<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeBool<<16), &struct {
@@ -3712,9 +3728,11 @@ func (self class) SetAnchor(side Rect2.Side, anchor float64, keep_offset bool, p
 		keep_offset          bool
 		push_opposite_anchor bool
 	}{side, anchor, keep_offset, push_opposite_anchor})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAnchor(side Rect2.Side) float64 { //gd:Control.get_anchor
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_anchor, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ side Rect2.Side }{side})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3723,9 +3741,11 @@ func (self class) SetOffset(side Rect2.Side, offset float64) { //gd:Control.set_
 		side   Rect2.Side
 		offset float64
 	}{side, offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffset(offset Rect2.Side) float64 { //gd:Control.get_offset
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_offset, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ offset Rect2.Side }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3736,356 +3756,458 @@ func (self class) SetAnchorAndOffset(side Rect2.Side, anchor float64, offset flo
 		offset               float64
 		push_opposite_anchor bool
 	}{side, anchor, offset, push_opposite_anchor})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetBegin(position Vector2.XY) { //gd:Control.set_begin
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_begin, 0|(gdextension.SizeVector2<<4), &struct{ position Vector2.XY }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetEnd(position Vector2.XY) { //gd:Control.set_end
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_end, 0|(gdextension.SizeVector2<<4), &struct{ position Vector2.XY }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPosition(position Vector2.XY, keep_offsets bool) { //gd:Control.set_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_position, 0|(gdextension.SizeVector2<<4)|(gdextension.SizeBool<<8), &struct {
 		position     Vector2.XY
 		keep_offsets bool
 	}{position, keep_offsets})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSize(size Vector2.XY, keep_offsets bool) { //gd:Control.set_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size, 0|(gdextension.SizeVector2<<4)|(gdextension.SizeBool<<8), &struct {
 		size         Vector2.XY
 		keep_offsets bool
 	}{size, keep_offsets})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ResetSize() { //gd:Control.reset_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset_size, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCustomMaximumSize(size Vector2.XY) { //gd:Control.set_custom_maximum_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_custom_maximum_size, 0|(gdextension.SizeVector2<<4), &struct{ size Vector2.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCustomMinimumSize(size Vector2.XY) { //gd:Control.set_custom_minimum_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_custom_minimum_size, 0|(gdextension.SizeVector2<<4), &struct{ size Vector2.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetGlobalPosition(position Vector2.XY, keep_offsets bool) { //gd:Control.set_global_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_global_position, 0|(gdextension.SizeVector2<<4)|(gdextension.SizeBool<<8), &struct {
 		position     Vector2.XY
 		keep_offsets bool
 	}{position, keep_offsets})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetRotation(radians float64) { //gd:Control.set_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rotation, 0|(gdextension.SizeFloat<<4), &struct{ radians float64 }{radians})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetRotationDegrees(degrees float64) { //gd:Control.set_rotation_degrees
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rotation_degrees, 0|(gdextension.SizeFloat<<4), &struct{ degrees float64 }{degrees})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetScale(scale Vector2.XY) { //gd:Control.set_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scale, 0|(gdextension.SizeVector2<<4), &struct{ scale Vector2.XY }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPivotOffset(pivot_offset Vector2.XY) { //gd:Control.set_pivot_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pivot_offset, 0|(gdextension.SizeVector2<<4), &struct{ pivot_offset Vector2.XY }{pivot_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPivotOffsetRatio(ratio Vector2.XY) { //gd:Control.set_pivot_offset_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pivot_offset_ratio, 0|(gdextension.SizeVector2<<4), &struct{ ratio Vector2.XY }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBegin() Vector2.XY { //gd:Control.get_begin
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_begin, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetEnd() Vector2.XY { //gd:Control.get_end
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_end, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPosition() Vector2.XY { //gd:Control.get_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_position, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSize() Vector2.XY { //gd:Control.get_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRotation() float64 { //gd:Control.get_rotation
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_rotation, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRotationDegrees() float64 { //gd:Control.get_rotation_degrees
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_rotation_degrees, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetScale() Vector2.XY { //gd:Control.get_scale
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_scale, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPivotOffset() Vector2.XY { //gd:Control.get_pivot_offset
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_pivot_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPivotOffsetRatio() Vector2.XY { //gd:Control.get_pivot_offset_ratio
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_pivot_offset_ratio, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCombinedPivotOffset() Vector2.XY { //gd:Control.get_combined_pivot_offset
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_combined_pivot_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCustomMaximumSize() Vector2.XY { //gd:Control.get_custom_maximum_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_custom_maximum_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCustomMinimumSize() Vector2.XY { //gd:Control.get_custom_minimum_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_custom_minimum_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetParentAreaSize() Vector2.XY { //gd:Control.get_parent_area_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_parent_area_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetGlobalPosition() Vector2.XY { //gd:Control.get_global_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_global_position, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetScreenPosition() Vector2.XY { //gd:Control.get_screen_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_screen_position, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRect() Rect2.PositionSize { //gd:Control.get_rect
 	var r_ret = noescape.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_rect, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetGlobalRect() Rect2.PositionSize { //gd:Control.get_global_rect
 	var r_ret = noescape.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_global_rect, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFocusMode(mode FocusMode) { //gd:Control.set_focus_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_focus_mode, 0|(gdextension.SizeInt<<4), &struct{ mode FocusMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFocusMode() FocusMode { //gd:Control.get_focus_mode
 	var r_ret = noescape.Call[FocusMode](gd.ObjectChecked(self.AsObject()), methods.get_focus_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFocusModeWithOverride() FocusMode { //gd:Control.get_focus_mode_with_override
 	var r_ret = noescape.Call[FocusMode](gd.ObjectChecked(self.AsObject()), methods.get_focus_mode_with_override, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFocusBehaviorRecursive(focus_behavior_recursive FocusBehaviorRecursive) { //gd:Control.set_focus_behavior_recursive
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_focus_behavior_recursive, 0|(gdextension.SizeInt<<4), &struct{ focus_behavior_recursive FocusBehaviorRecursive }{focus_behavior_recursive})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFocusBehaviorRecursive() FocusBehaviorRecursive { //gd:Control.get_focus_behavior_recursive
 	var r_ret = noescape.Call[FocusBehaviorRecursive](gd.ObjectChecked(self.AsObject()), methods.get_focus_behavior_recursive, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasFocus(ignore_hidden_focus bool) bool { //gd:Control.has_focus
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_focus, gdextension.SizeBool|(gdextension.SizeBool<<4), &struct{ ignore_hidden_focus bool }{ignore_hidden_focus})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GrabFocus(hide_focus bool) { //gd:Control.grab_focus
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.grab_focus, 0|(gdextension.SizeBool<<4), &struct{ hide_focus bool }{hide_focus})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ReleaseFocus() { //gd:Control.release_focus
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.release_focus, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FindPrevValidFocus() [1]gdclass.Control { //gd:Control.find_prev_valid_focus
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.find_prev_valid_focus, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Control{gdclass.NewControl(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) FindNextValidFocus() [1]gdclass.Control { //gd:Control.find_next_valid_focus
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.find_next_valid_focus, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Control{gdclass.NewControl(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) FindValidFocusNeighbor(side Rect2.Side) [1]gdclass.Control { //gd:Control.find_valid_focus_neighbor
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.find_valid_focus_neighbor, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ side Rect2.Side }{side})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Control{gdclass.NewControl(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetHSizeFlags(flags SizeFlags) { //gd:Control.set_h_size_flags
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_h_size_flags, 0|(gdextension.SizeInt<<4), &struct{ flags SizeFlags }{flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHSizeFlags() SizeFlags { //gd:Control.get_h_size_flags
 	var r_ret = noescape.Call[SizeFlags](gd.ObjectChecked(self.AsObject()), methods.get_h_size_flags, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStretchRatio(ratio float64) { //gd:Control.set_stretch_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stretch_ratio, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStretchRatio() float64 { //gd:Control.get_stretch_ratio
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_stretch_ratio, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVSizeFlags(flags SizeFlags) { //gd:Control.set_v_size_flags
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_v_size_flags, 0|(gdextension.SizeInt<<4), &struct{ flags SizeFlags }{flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVSizeFlags() SizeFlags { //gd:Control.get_v_size_flags
 	var r_ret = noescape.Call[SizeFlags](gd.ObjectChecked(self.AsObject()), methods.get_v_size_flags, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffsetTransformEnabled(enabled bool) { //gd:Control.set_offset_transform_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset_transform_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsOffsetTransformEnabled() bool { //gd:Control.is_offset_transform_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_offset_transform_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffsetTransformPosition(offset Vector2.XY) { //gd:Control.set_offset_transform_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset_transform_position, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffsetTransformPosition() Vector2.XY { //gd:Control.get_offset_transform_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset_transform_position, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffsetTransformPositionRatio(offset Vector2.XY) { //gd:Control.set_offset_transform_position_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset_transform_position_ratio, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffsetTransformPositionRatio() Vector2.XY { //gd:Control.get_offset_transform_position_ratio
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset_transform_position_ratio, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffsetTransformScale(scale Vector2.XY) { //gd:Control.set_offset_transform_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset_transform_scale, 0|(gdextension.SizeVector2<<4), &struct{ scale Vector2.XY }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffsetTransformScale() Vector2.XY { //gd:Control.get_offset_transform_scale
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset_transform_scale, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffsetTransformRotation(rotation float64) { //gd:Control.set_offset_transform_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset_transform_rotation, 0|(gdextension.SizeFloat<<4), &struct{ rotation float64 }{rotation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffsetTransformRotation() float64 { //gd:Control.get_offset_transform_rotation
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_offset_transform_rotation, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffsetTransformPivot(pivot Vector2.XY) { //gd:Control.set_offset_transform_pivot
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset_transform_pivot, 0|(gdextension.SizeVector2<<4), &struct{ pivot Vector2.XY }{pivot})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffsetTransformPivot() Vector2.XY { //gd:Control.get_offset_transform_pivot
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset_transform_pivot, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffsetTransformPivotRatio(pivot Vector2.XY) { //gd:Control.set_offset_transform_pivot_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset_transform_pivot_ratio, 0|(gdextension.SizeVector2<<4), &struct{ pivot Vector2.XY }{pivot})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffsetTransformPivotRatio() Vector2.XY { //gd:Control.get_offset_transform_pivot_ratio
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset_transform_pivot_ratio, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffsetTransformVisualOnly(enabled bool) { //gd:Control.set_offset_transform_visual_only
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset_transform_visual_only, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsOffsetTransformVisualOnly() bool { //gd:Control.is_offset_transform_visual_only
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_offset_transform_visual_only, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTheme(theme [1]gdclass.Theme) { //gd:Control.set_theme
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_theme, 0|(gdextension.SizeObject<<4), &struct{ theme gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTheme(theme[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme[0].Anchor())
 }
 func (self class) GetTheme() [1]gdclass.Theme { //gd:Control.get_theme
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_theme, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Theme{gdclass.NewTheme(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetThemeTypeVariation(theme_type String.Name) { //gd:Control.set_theme_type_variation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_theme_type_variation, 0|(gdextension.SizeStringName<<4), &struct{ theme_type gdextension.StringName }{pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetThemeTypeVariation() String.Name { //gd:Control.get_theme_type_variation
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_theme_type_variation, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) BeginBulkThemeOverride() { //gd:Control.begin_bulk_theme_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.begin_bulk_theme_override, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) EndBulkThemeOverride() { //gd:Control.end_bulk_theme_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.end_bulk_theme_override, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddThemeIconOverride(name String.Name, texture [1]gdclass.Texture2D) { //gd:Control.add_theme_icon_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_icon_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeObject<<8), &struct {
 		name    gdextension.StringName
 		texture gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) AddThemeStyleboxOverride(name String.Name, stylebox [1]gdclass.StyleBox) { //gd:Control.add_theme_stylebox_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_stylebox_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeObject<<8), &struct {
 		name     gdextension.StringName
 		stylebox gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetStyleBox(stylebox[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(stylebox[0].Anchor())
 }
 func (self class) AddThemeFontOverride(name String.Name, font [1]gdclass.Font) { //gd:Control.add_theme_font_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_font_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeObject<<8), &struct {
 		name gdextension.StringName
 		font gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetFont(font[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(font[0].Anchor())
 }
 func (self class) AddThemeFontSizeOverride(name String.Name, font_size int64) { //gd:Control.add_theme_font_size_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_font_size_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeInt<<8), &struct {
 		name      gdextension.StringName
 		font_size int64
 	}{pointers.Get(gd.InternalStringName(name)), font_size})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) AddThemeColorOverride(name String.Name, color Color.RGBA) { //gd:Control.add_theme_color_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_color_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeColor<<8), &struct {
 		name  gdextension.StringName
 		color Color.RGBA
 	}{pointers.Get(gd.InternalStringName(name)), color})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) AddThemeConstantOverride(name String.Name, constant int64) { //gd:Control.add_theme_constant_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_theme_constant_override, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeInt<<8), &struct {
 		name     gdextension.StringName
 		constant int64
 	}{pointers.Get(gd.InternalStringName(name)), constant})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeIconOverride(name String.Name) { //gd:Control.remove_theme_icon_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_icon_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeStyleboxOverride(name String.Name) { //gd:Control.remove_theme_stylebox_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_stylebox_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeFontOverride(name String.Name) { //gd:Control.remove_theme_font_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_font_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeFontSizeOverride(name String.Name) { //gd:Control.remove_theme_font_size_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_font_size_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeColorOverride(name String.Name) { //gd:Control.remove_theme_color_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_color_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveThemeConstantOverride(name String.Name) { //gd:Control.remove_theme_constant_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_theme_constant_override, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetThemeIcon(name String.Name, theme_type String.Name) [1]gdclass.Texture2D { //gd:Control.get_theme_icon
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_theme_icon, gdextension.SizeObject|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -4094,6 +4216,9 @@ func (self class) GetThemeStylebox(name String.Name, theme_type String.Name) [1]
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = [1]gdclass.StyleBox{gdclass.NewStyleBox(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -4102,6 +4227,9 @@ func (self class) GetThemeFont(name String.Name, theme_type String.Name) [1]gdcl
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = [1]gdclass.Font{gdclass.NewFont(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -4110,6 +4238,9 @@ func (self class) GetThemeFontSize(name String.Name, theme_type String.Name) int
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -4118,6 +4249,9 @@ func (self class) GetThemeColor(name String.Name, theme_type String.Name) Color.
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -4126,36 +4260,51 @@ func (self class) GetThemeConstant(name String.Name, theme_type String.Name) int
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeIconOverride(name String.Name) bool { //gd:Control.has_theme_icon_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_icon_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeStyleboxOverride(name String.Name) bool { //gd:Control.has_theme_stylebox_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_stylebox_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeFontOverride(name String.Name) bool { //gd:Control.has_theme_font_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_font_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeFontSizeOverride(name String.Name) bool { //gd:Control.has_theme_font_size_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_font_size_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeColorOverride(name String.Name) bool { //gd:Control.has_theme_color_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_color_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasThemeConstantOverride(name String.Name) bool { //gd:Control.has_theme_constant_override
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_theme_constant_override, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -4164,6 +4313,9 @@ func (self class) HasThemeIcon(name String.Name, theme_type String.Name) bool { 
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -4172,6 +4324,9 @@ func (self class) HasThemeStylebox(name String.Name, theme_type String.Name) boo
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -4180,6 +4335,9 @@ func (self class) HasThemeFont(name String.Name, theme_type String.Name) bool { 
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -4188,6 +4346,9 @@ func (self class) HasThemeFontSize(name String.Name, theme_type String.Name) boo
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -4196,6 +4357,9 @@ func (self class) HasThemeColor(name String.Name, theme_type String.Name) bool {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -4204,84 +4368,107 @@ func (self class) HasThemeConstant(name String.Name, theme_type String.Name) boo
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetThemeDefaultBaseScale() float64 { //gd:Control.get_theme_default_base_scale
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_theme_default_base_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetThemeDefaultFont() [1]gdclass.Font { //gd:Control.get_theme_default_font
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_theme_default_font, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Font{gdclass.NewFont(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetThemeDefaultFontSize() int64 { //gd:Control.get_theme_default_font_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_theme_default_font_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetParentControl() [1]gdclass.Control { //gd:Control.get_parent_control
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_parent_control, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Control{gdclass.NewControl(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetHGrowDirection(direction GrowDirection) { //gd:Control.set_h_grow_direction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_h_grow_direction, 0|(gdextension.SizeInt<<4), &struct{ direction GrowDirection }{direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHGrowDirection() GrowDirection { //gd:Control.get_h_grow_direction
 	var r_ret = noescape.Call[GrowDirection](gd.ObjectChecked(self.AsObject()), methods.get_h_grow_direction, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVGrowDirection(direction GrowDirection) { //gd:Control.set_v_grow_direction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_v_grow_direction, 0|(gdextension.SizeInt<<4), &struct{ direction GrowDirection }{direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVGrowDirection() GrowDirection { //gd:Control.get_v_grow_direction
 	var r_ret = noescape.Call[GrowDirection](gd.ObjectChecked(self.AsObject()), methods.get_v_grow_direction, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTooltipAutoTranslateMode(mode Node.AutoTranslateMode) { //gd:Control.set_tooltip_auto_translate_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tooltip_auto_translate_mode, 0|(gdextension.SizeInt<<4), &struct{ mode Node.AutoTranslateMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTooltipAutoTranslateMode() Node.AutoTranslateMode { //gd:Control.get_tooltip_auto_translate_mode
 	var r_ret = noescape.Call[Node.AutoTranslateMode](gd.ObjectChecked(self.AsObject()), methods.get_tooltip_auto_translate_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTooltipText(hint String.Readable) { //gd:Control.set_tooltip_text
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tooltip_text, 0|(gdextension.SizeString<<4), &struct{ hint gdextension.String }{pointers.Get(gd.InternalString(hint))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(hint)
 }
 func (self class) GetTooltipText() String.Readable { //gd:Control.get_tooltip_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tooltip_text, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTooltip(at_position Vector2.XY) String.Readable { //gd:Control.get_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tooltip, gdextension.SizeString|(gdextension.SizeVector2<<4), &struct{ at_position Vector2.XY }{at_position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTranslationContext(context String.Name) { //gd:Control.set_translation_context
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_translation_context, 0|(gdextension.SizeStringName<<4), &struct{ context gdextension.StringName }{pointers.Get(gd.InternalStringName(context))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
 }
 func (self class) GetTranslationContext() String.Name { //gd:Control.get_translation_context
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_translation_context, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetDefaultCursorShape(shape CursorShape) { //gd:Control.set_default_cursor_shape
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_cursor_shape, 0|(gdextension.SizeInt<<4), &struct{ shape CursorShape }{shape})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDefaultCursorShape() CursorShape { //gd:Control.get_default_cursor_shape
 	var r_ret = noescape.Call[CursorShape](gd.ObjectChecked(self.AsObject()), methods.get_default_cursor_shape, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCursorShape(at_position Vector2.XY) CursorShape { //gd:Control.get_cursor_shape
 	var r_ret = noescape.Call[CursorShape](gd.ObjectChecked(self.AsObject()), methods.get_cursor_shape, gdextension.SizeInt|(gdextension.SizeVector2<<4), &struct{ at_position Vector2.XY }{at_position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4290,25 +4477,34 @@ func (self class) SetFocusNeighbor(side Rect2.Side, neighbor Path.ToNode) { //gd
 		side     Rect2.Side
 		neighbor gdextension.NodePath
 	}{side, pointers.Get(gd.InternalNodePath(neighbor))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(neighbor)
 }
 func (self class) GetFocusNeighbor(side Rect2.Side) Path.ToNode { //gd:Control.get_focus_neighbor
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_focus_neighbor, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ side Rect2.Side }{side})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetFocusNext(next Path.ToNode) { //gd:Control.set_focus_next
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_focus_next, 0|(gdextension.SizeNodePath<<4), &struct{ next gdextension.NodePath }{pointers.Get(gd.InternalNodePath(next))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(next)
 }
 func (self class) GetFocusNext() Path.ToNode { //gd:Control.get_focus_next
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_focus_next, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetFocusPrevious(previous Path.ToNode) { //gd:Control.set_focus_previous
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_focus_previous, 0|(gdextension.SizeNodePath<<4), &struct{ previous gdextension.NodePath }{pointers.Get(gd.InternalNodePath(previous))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(previous)
 }
 func (self class) GetFocusPrevious() Path.ToNode { //gd:Control.get_focus_previous
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_focus_previous, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
@@ -4317,26 +4513,37 @@ func (self class) ForceDrag(data variant.Any, preview [1]gdclass.Control) { //gd
 		data    gdextension.Variant
 		preview gdextension.Object
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(data))), gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetControl(preview[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
+	runtime.KeepAlive(preview[0].Anchor())
 }
 func (self class) AccessibilityDrag() { //gd:Control.accessibility_drag
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.accessibility_drag, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AccessibilityDrop() { //gd:Control.accessibility_drop
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.accessibility_drop, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAccessibilityName(name String.Readable) { //gd:Control.set_accessibility_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accessibility_name, 0|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetAccessibilityName() String.Readable { //gd:Control.get_accessibility_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityDescription(description String.Readable) { //gd:Control.set_accessibility_description
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accessibility_description, 0|(gdextension.SizeString<<4), &struct{ description gdextension.String }{pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(description)
 }
 func (self class) GetAccessibilityDescription() String.Readable { //gd:Control.get_accessibility_description
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_description, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -4344,83 +4551,107 @@ func (self class) SetAccessibilityLive(mode AccessibilityServer.AccessibilityLiv
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accessibility_live, 0|(gdextension.SizeInt<<4), &struct {
 		mode AccessibilityServer.AccessibilityLiveMode
 	}{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAccessibilityLive() AccessibilityServer.AccessibilityLiveMode { //gd:Control.get_accessibility_live
 	var r_ret = jumponly.Call[AccessibilityServer.AccessibilityLiveMode](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_live, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAccessibilityControlsNodes(node_path Array.Contains[Path.ToNode]) { //gd:Control.set_accessibility_controls_nodes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accessibility_controls_nodes, 0|(gdextension.SizeArray<<4), &struct{ node_path gdextension.Array }{pointers.Get(gd.InternalArray(node_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node_path)
 }
 func (self class) GetAccessibilityControlsNodes() Array.Contains[Path.ToNode] { //gd:Control.get_accessibility_controls_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_controls_nodes, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityDescribedByNodes(node_path Array.Contains[Path.ToNode]) { //gd:Control.set_accessibility_described_by_nodes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accessibility_described_by_nodes, 0|(gdextension.SizeArray<<4), &struct{ node_path gdextension.Array }{pointers.Get(gd.InternalArray(node_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node_path)
 }
 func (self class) GetAccessibilityDescribedByNodes() Array.Contains[Path.ToNode] { //gd:Control.get_accessibility_described_by_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_described_by_nodes, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityLabeledByNodes(node_path Array.Contains[Path.ToNode]) { //gd:Control.set_accessibility_labeled_by_nodes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accessibility_labeled_by_nodes, 0|(gdextension.SizeArray<<4), &struct{ node_path gdextension.Array }{pointers.Get(gd.InternalArray(node_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node_path)
 }
 func (self class) GetAccessibilityLabeledByNodes() Array.Contains[Path.ToNode] { //gd:Control.get_accessibility_labeled_by_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_labeled_by_nodes, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetAccessibilityFlowToNodes(node_path Array.Contains[Path.ToNode]) { //gd:Control.set_accessibility_flow_to_nodes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accessibility_flow_to_nodes, 0|(gdextension.SizeArray<<4), &struct{ node_path gdextension.Array }{pointers.Get(gd.InternalArray(node_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node_path)
 }
 func (self class) GetAccessibilityFlowToNodes() Array.Contains[Path.ToNode] { //gd:Control.get_accessibility_flow_to_nodes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_accessibility_flow_to_nodes, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetMouseFilter(filter MouseFilter) { //gd:Control.set_mouse_filter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mouse_filter, 0|(gdextension.SizeInt<<4), &struct{ filter MouseFilter }{filter})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMouseFilter() MouseFilter { //gd:Control.get_mouse_filter
 	var r_ret = noescape.Call[MouseFilter](gd.ObjectChecked(self.AsObject()), methods.get_mouse_filter, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMouseFilterWithOverride() MouseFilter { //gd:Control.get_mouse_filter_with_override
 	var r_ret = noescape.Call[MouseFilter](gd.ObjectChecked(self.AsObject()), methods.get_mouse_filter_with_override, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMouseBehaviorRecursive(mouse_behavior_recursive MouseBehaviorRecursive) { //gd:Control.set_mouse_behavior_recursive
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mouse_behavior_recursive, 0|(gdextension.SizeInt<<4), &struct{ mouse_behavior_recursive MouseBehaviorRecursive }{mouse_behavior_recursive})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMouseBehaviorRecursive() MouseBehaviorRecursive { //gd:Control.get_mouse_behavior_recursive
 	var r_ret = noescape.Call[MouseBehaviorRecursive](gd.ObjectChecked(self.AsObject()), methods.get_mouse_behavior_recursive, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetForcePassScrollEvents(force_pass_scroll_events bool) { //gd:Control.set_force_pass_scroll_events
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_force_pass_scroll_events, 0|(gdextension.SizeBool<<4), &struct{ force_pass_scroll_events bool }{force_pass_scroll_events})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsForcePassScrollEvents() bool { //gd:Control.is_force_pass_scroll_events
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_force_pass_scroll_events, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetClipContents(enable bool) { //gd:Control.set_clip_contents
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_clip_contents, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsClippingContents() bool { //gd:Control.is_clipping_contents
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_clipping_contents, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GrabClickFocus() { //gd:Control.grab_click_focus
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.grab_click_focus, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetDragForwarding(drag_func Callable.Function, can_drop_func Callable.Function, drop_func Callable.Function) { //gd:Control.set_drag_forwarding
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_forwarding, 0|(gdextension.SizeCallable<<4)|(gdextension.SizeCallable<<8)|(gdextension.SizeCallable<<12), &struct {
@@ -4428,58 +4659,78 @@ func (self class) SetDragForwarding(drag_func Callable.Function, can_drop_func C
 		can_drop_func gdextension.Callable
 		drop_func     gdextension.Callable
 	}{pointers.Get(gd.InternalCallable(drag_func)), pointers.Get(gd.InternalCallable(can_drop_func)), pointers.Get(gd.InternalCallable(drop_func))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(drag_func)
+	runtime.KeepAlive(can_drop_func)
+	runtime.KeepAlive(drop_func)
 }
 func (self class) SetDragPreview(control [1]gdclass.Control) { //gd:Control.set_drag_preview
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_preview, 0|(gdextension.SizeObject<<4), &struct{ control gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetControl(control[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(control[0].Anchor())
 }
 func (self class) IsDragSuccessful() bool { //gd:Control.is_drag_successful
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_drag_successful, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) WarpMouse(position Vector2.XY) { //gd:Control.warp_mouse
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.warp_mouse, 0|(gdextension.SizeVector2<<4), &struct{ position Vector2.XY }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetShortcutContext(node [1]gdclass.Node) { //gd:Control.set_shortcut_context
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shortcut_context, 0|(gdextension.SizeObject<<4), &struct{ node gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode(node[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node[0].Anchor())
 }
 func (self class) GetShortcutContext() [1]gdclass.Node { //gd:Control.get_shortcut_context
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_shortcut_context, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Node{gdclass.NewNode(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) UpdateMaximumSize() { //gd:Control.update_maximum_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update_maximum_size, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) UpdateMinimumSize() { //gd:Control.update_minimum_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update_minimum_size, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetLayoutDirection(direction LayoutDirection) { //gd:Control.set_layout_direction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_layout_direction, 0|(gdextension.SizeInt<<4), &struct{ direction LayoutDirection }{direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLayoutDirection() LayoutDirection { //gd:Control.get_layout_direction
 	var r_ret = noescape.Call[LayoutDirection](gd.ObjectChecked(self.AsObject()), methods.get_layout_direction, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsLayoutRtl() bool { //gd:Control.is_layout_rtl
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_layout_rtl, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoTranslate(enable bool) { //gd:Control.set_auto_translate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_translate, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAutoTranslating() bool { //gd:Control.is_auto_translating
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_auto_translating, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLocalizeNumeralSystem(enable bool) { //gd:Control.set_localize_numeral_system
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_localize_numeral_system, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLocalizingNumeralSystem() bool { //gd:Control.is_localizing_numeral_system
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_localizing_numeral_system, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -4664,12 +4915,12 @@ func (self class) ThemeChanged() Signal.Any {
 func (o class) AsControl() Advanced                       { return Advanced(o) }
 func (o Instance) AsControl() Instance                    { return o }
 func (o *Extension[T]) AsControl() Instance               { return o.Super() }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

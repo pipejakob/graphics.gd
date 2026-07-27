@@ -34,6 +34,7 @@ Note: If there is a rotation greater than 180 degrees with constrained axes, fli
 package ConvertTransformModifier3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -70,6 +72,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -349,7 +354,7 @@ func (self Instance) IsAdditive(index int) bool { //gd:ConvertTransformModifier3
 type Advanced = class
 type class [1]gdclass.ConvertTransformModifier3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewConvertTransformModifier3D(obj[0])
@@ -364,7 +369,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -392,9 +397,11 @@ func (self class) SetApplyTransformMode(index int64, transform_mode TransformMod
 		index          int64
 		transform_mode TransformMode
 	}{index, transform_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetApplyTransformMode(index int64) TransformMode { //gd:ConvertTransformModifier3D.get_apply_transform_mode
 	var r_ret = noescape.Call[TransformMode](gd.ObjectChecked(self.AsObject()), methods.get_apply_transform_mode, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -403,9 +410,11 @@ func (self class) SetApplyAxis(index int64, axis Vector3.Axis) { //gd:ConvertTra
 		index int64
 		axis  Vector3.Axis
 	}{index, axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetApplyAxis(index int64) Vector3.Axis { //gd:ConvertTransformModifier3D.get_apply_axis
 	var r_ret = noescape.Call[Vector3.Axis](gd.ObjectChecked(self.AsObject()), methods.get_apply_axis, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -414,9 +423,11 @@ func (self class) SetApplyRangeMin(index int64, range_min float64) { //gd:Conver
 		index     int64
 		range_min float64
 	}{index, range_min})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetApplyRangeMin(index int64) float64 { //gd:ConvertTransformModifier3D.get_apply_range_min
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_apply_range_min, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -425,9 +436,11 @@ func (self class) SetApplyRangeMax(index int64, range_max float64) { //gd:Conver
 		index     int64
 		range_max float64
 	}{index, range_max})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetApplyRangeMax(index int64) float64 { //gd:ConvertTransformModifier3D.get_apply_range_max
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_apply_range_max, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -436,9 +449,11 @@ func (self class) SetReferenceTransformMode(index int64, transform_mode Transfor
 		index          int64
 		transform_mode TransformMode
 	}{index, transform_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetReferenceTransformMode(index int64) TransformMode { //gd:ConvertTransformModifier3D.get_reference_transform_mode
 	var r_ret = noescape.Call[TransformMode](gd.ObjectChecked(self.AsObject()), methods.get_reference_transform_mode, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -447,9 +462,11 @@ func (self class) SetReferenceAxis(index int64, axis Vector3.Axis) { //gd:Conver
 		index int64
 		axis  Vector3.Axis
 	}{index, axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetReferenceAxis(index int64) Vector3.Axis { //gd:ConvertTransformModifier3D.get_reference_axis
 	var r_ret = noescape.Call[Vector3.Axis](gd.ObjectChecked(self.AsObject()), methods.get_reference_axis, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -458,9 +475,11 @@ func (self class) SetReferenceRangeMin(index int64, range_min float64) { //gd:Co
 		index     int64
 		range_min float64
 	}{index, range_min})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetReferenceRangeMin(index int64) float64 { //gd:ConvertTransformModifier3D.get_reference_range_min
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_reference_range_min, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -469,9 +488,11 @@ func (self class) SetReferenceRangeMax(index int64, range_max float64) { //gd:Co
 		index     int64
 		range_max float64
 	}{index, range_max})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetReferenceRangeMax(index int64) float64 { //gd:ConvertTransformModifier3D.get_reference_range_max
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_reference_range_max, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -480,9 +501,11 @@ func (self class) SetRelative(index int64, enabled bool) { //gd:ConvertTransform
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRelative(index int64) bool { //gd:ConvertTransformModifier3D.is_relative
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_relative, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -491,9 +514,11 @@ func (self class) SetAdditive(index int64, enabled bool) { //gd:ConvertTransform
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAdditive(index int64) bool { //gd:ConvertTransformModifier3D.is_additive
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_additive, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -501,29 +526,29 @@ func (o class) AsConvertTransformModifier3D() Advanced         { return Advanced
 func (o Instance) AsConvertTransformModifier3D() Instance      { return o }
 func (o *Extension[T]) AsConvertTransformModifier3D() Instance { return o.Super() }
 func (o class) AsBoneConstraint3D() BoneConstraint3D.Advanced {
-	return BoneConstraint3D.Advanced{gdclass.NewBoneConstraint3D(o[0].AsObject()[0])}
+	return *(*BoneConstraint3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsBoneConstraint3D() BoneConstraint3D.Instance {
 	return o.Super().AsBoneConstraint3D()
 }
 func (o Instance) AsBoneConstraint3D() BoneConstraint3D.Instance {
-	return BoneConstraint3D.Instance{gdclass.NewBoneConstraint3D(o[0].AsObject()[0])}
+	return *(*BoneConstraint3D.Instance)(ie.As(&o))
 }
 func (o class) AsSkeletonModifier3D() SkeletonModifier3D.Advanced {
-	return SkeletonModifier3D.Advanced{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
 	return o.Super().AsSkeletonModifier3D()
 }
 func (o Instance) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
-	return SkeletonModifier3D.Instance{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

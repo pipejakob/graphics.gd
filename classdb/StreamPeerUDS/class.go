@@ -8,6 +8,7 @@ Note: UNIX Domain Sockets are only available on UNIX-like systems (Linux, macOS,
 package StreamPeerUDS
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -148,7 +152,7 @@ func (self Instance) GetConnectedPath() string { //gd:StreamPeerUDS.get_connecte
 type Advanced = class
 type class [1]gdclass.StreamPeerUDS
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewStreamPeerUDS(obj[0])
@@ -163,7 +167,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -188,16 +192,21 @@ func New() Instance {
 
 func (self class) Bind(path String.Readable) Error.Code { //gd:StreamPeerUDS.bind
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.bind, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) ConnectToHost(path String.Readable) Error.Code { //gd:StreamPeerUDS.connect_to_host
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.connect_to_host, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetConnectedPath() String.Readable { //gd:StreamPeerUDS.get_connected_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_connected_path, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -205,17 +214,17 @@ func (o class) AsStreamPeerUDS() Advanced         { return Advanced(o) }
 func (o Instance) AsStreamPeerUDS() Instance      { return o }
 func (o *Extension[T]) AsStreamPeerUDS() Instance { return o.Super() }
 func (o class) AsStreamPeerSocket() StreamPeerSocket.Advanced {
-	return StreamPeerSocket.Advanced{gdclass.NewStreamPeerSocket(o[0].AsObject()[0])}
+	return *(*StreamPeerSocket.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsStreamPeerSocket() StreamPeerSocket.Instance {
 	return o.Super().AsStreamPeerSocket()
 }
 func (o Instance) AsStreamPeerSocket() StreamPeerSocket.Instance {
-	return StreamPeerSocket.Instance{gdclass.NewStreamPeerSocket(o[0].AsObject()[0])}
+	return *(*StreamPeerSocket.Instance)(ie.As(&o))
 }
-func (o class) AsStreamPeer() StreamPeer.Advanced         { return StreamPeer.Advanced{gdclass.NewStreamPeer(o[0].AsObject()[0])} }
+func (o class) AsStreamPeer() StreamPeer.Advanced         { return *(*StreamPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsStreamPeer() StreamPeer.Instance { return o.Super().AsStreamPeer() }
-func (o Instance) AsStreamPeer() StreamPeer.Instance      { return StreamPeer.Instance{gdclass.NewStreamPeer(o[0].AsObject()[0])} }
+func (o Instance) AsStreamPeer() StreamPeer.Instance      { return *(*StreamPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

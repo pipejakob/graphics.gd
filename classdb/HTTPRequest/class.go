@@ -106,6 +106,7 @@ Note: [HTTPRequest] nodes will automatically handle decompression of response bo
 package HTTPRequest
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -115,6 +116,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -141,6 +143,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -383,7 +388,7 @@ func (self Instance) SetHttpsProxy(host string, port int) Instance { //gd:HTTPRe
 type Advanced = class
 type class [1]gdclass.HTTPRequest
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewHTTPRequest(obj[0])
@@ -398,7 +403,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -537,6 +542,10 @@ func (self class) Request(url String.Readable, custom_headers Packed.Strings, me
 		method         HTTPClient.Method
 		request_data   gdextension.String
 	}{pointers.Get(gd.InternalString(url)), pointers.Get(gd.InternalPackedStrings(custom_headers)), method, pointers.Get(gd.InternalString(request_data))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(url)
+	runtime.KeepAlive(custom_headers)
+	runtime.KeepAlive(request_data)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -547,83 +556,108 @@ func (self class) RequestRaw(url String.Readable, custom_headers Packed.Strings,
 		method           HTTPClient.Method
 		request_data_raw gdextension.PackedArray[byte]
 	}{pointers.Get(gd.InternalString(url)), pointers.Get(gd.InternalPackedStrings(custom_headers)), method, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](request_data_raw.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(url)
+	runtime.KeepAlive(custom_headers)
+	runtime.KeepAlive(request_data_raw)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) CancelRequest() { //gd:HTTPRequest.cancel_request
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.cancel_request, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTlsOptions(client_options [1]gdclass.TLSOptions) { //gd:HTTPRequest.set_tls_options
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tls_options, 0|(gdextension.SizeObject<<4), &struct{ client_options gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTLSOptions(client_options[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(client_options[0].Anchor())
 }
 func (self class) GetHttpClientStatus() HTTPClient.Status { //gd:HTTPRequest.get_http_client_status
 	var r_ret = noescape.Call[HTTPClient.Status](gd.ObjectChecked(self.AsObject()), methods.get_http_client_status, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseThreads(enable bool) { //gd:HTTPRequest.set_use_threads
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_threads, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingThreads() bool { //gd:HTTPRequest.is_using_threads
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_threads, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAcceptGzip(enable bool) { //gd:HTTPRequest.set_accept_gzip
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_accept_gzip, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAcceptingGzip() bool { //gd:HTTPRequest.is_accepting_gzip
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_accepting_gzip, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBodySizeLimit(bytes int64) { //gd:HTTPRequest.set_body_size_limit
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_body_size_limit, 0|(gdextension.SizeInt<<4), &struct{ bytes int64 }{bytes})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBodySizeLimit() int64 { //gd:HTTPRequest.get_body_size_limit
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_body_size_limit, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxRedirects(amount int64) { //gd:HTTPRequest.set_max_redirects
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_redirects, 0|(gdextension.SizeInt<<4), &struct{ amount int64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxRedirects() int64 { //gd:HTTPRequest.get_max_redirects
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_redirects, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDownloadFile(path String.Readable) { //gd:HTTPRequest.set_download_file
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_download_file, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetDownloadFile() String.Readable { //gd:HTTPRequest.get_download_file
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_download_file, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDownloadedBytes() int64 { //gd:HTTPRequest.get_downloaded_bytes
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_downloaded_bytes, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBodySize() int64 { //gd:HTTPRequest.get_body_size
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_body_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTimeout(timeout float64) { //gd:HTTPRequest.set_timeout
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_timeout, 0|(gdextension.SizeFloat<<4), &struct{ timeout float64 }{timeout})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTimeout() float64 { //gd:HTTPRequest.get_timeout
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_timeout, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDownloadChunkSize(chunk_size int64) { //gd:HTTPRequest.set_download_chunk_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_download_chunk_size, 0|(gdextension.SizeInt<<4), &struct{ chunk_size int64 }{chunk_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDownloadChunkSize() int64 { //gd:HTTPRequest.get_download_chunk_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_download_chunk_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -632,12 +666,16 @@ func (self class) SetHttpProxy(host String.Readable, port int64) { //gd:HTTPRequ
 		host gdextension.String
 		port int64
 	}{pointers.Get(gd.InternalString(host)), port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
 }
 func (self class) SetHttpsProxy(host String.Readable, port int64) { //gd:HTTPRequest.set_https_proxy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_https_proxy, 0|(gdextension.SizeString<<4)|(gdextension.SizeInt<<8), &struct {
 		host gdextension.String
 		port int64
 	}{pointers.Get(gd.InternalString(host)), port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
 }
 
 /*
@@ -659,9 +697,9 @@ func (self class) RequestCompleted() Signal.Any {
 func (o class) AsHTTPRequest() Advanced         { return Advanced(o) }
 func (o Instance) AsHTTPRequest() Instance      { return o }
 func (o *Extension[T]) AsHTTPRequest() Instance { return o.Super() }
-func (o class) AsNode() Node.Advanced           { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced           { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance   { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance        { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance        { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

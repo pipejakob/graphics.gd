@@ -9,6 +9,7 @@ An audio stream that can play back sub-streams in sequence. Streams can be added
 package AudioStreamPlaylist
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -141,7 +145,7 @@ func (self Instance) GetBpm() Float.X { //gd:AudioStreamPlaylist.get_bpm
 type Advanced = class
 type class [1]gdclass.AudioStreamPlaylist
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioStreamPlaylist(obj[0])
@@ -156,7 +160,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -873,14 +877,17 @@ func (self Instance) SetStream63(value AudioStream.Instance) Instance { //gd:Aud
 
 func (self class) SetStreamCount(stream_count int64) { //gd:AudioStreamPlaylist.set_stream_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stream_count, 0|(gdextension.SizeInt<<4), &struct{ stream_count int64 }{stream_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStreamCount() int64 { //gd:AudioStreamPlaylist.get_stream_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_stream_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBpm() float64 { //gd:AudioStreamPlaylist.get_bpm
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_bpm, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -889,45 +896,54 @@ func (self class) SetListStream(stream_index int64, audio_stream [1]gdclass.Audi
 		stream_index int64
 		audio_stream gdextension.Object
 	}{stream_index, gdextension.Object(gdreference.GetObject(gdclass.GetAudioStream(audio_stream[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(audio_stream[0].Anchor())
 }
 func (self class) GetListStream(stream_index int64) [1]gdclass.AudioStream { //gd:AudioStreamPlaylist.get_list_stream
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_list_stream, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ stream_index int64 }{stream_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.AudioStream{gdclass.NewAudioStream(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetShuffle(shuffle bool) { //gd:AudioStreamPlaylist.set_shuffle
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shuffle, 0|(gdextension.SizeBool<<4), &struct{ shuffle bool }{shuffle})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShuffle() bool { //gd:AudioStreamPlaylist.get_shuffle
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_shuffle, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFadeTime(dec float64) { //gd:AudioStreamPlaylist.set_fade_time
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fade_time, 0|(gdextension.SizeFloat<<4), &struct{ dec float64 }{dec})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFadeTime() float64 { //gd:AudioStreamPlaylist.get_fade_time
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fade_time, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLoop(loop bool) { //gd:AudioStreamPlaylist.set_loop
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_loop, 0|(gdextension.SizeBool<<4), &struct{ loop bool }{loop})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasLoop() bool { //gd:AudioStreamPlaylist.has_loop
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_loop, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAudioStreamPlaylist() Advanced             { return Advanced(o) }
 func (o Instance) AsAudioStreamPlaylist() Instance          { return o }
 func (o *Extension[T]) AsAudioStreamPlaylist() Instance     { return o.Super() }
-func (o class) AsAudioStream() AudioStream.Advanced         { return AudioStream.Advanced{gdclass.NewAudioStream(o[0].AsObject()[0])} }
+func (o class) AsAudioStream() AudioStream.Advanced         { return *(*AudioStream.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAudioStream() AudioStream.Instance { return o.Super().AsAudioStream() }
-func (o Instance) AsAudioStream() AudioStream.Instance      { return AudioStream.Instance{gdclass.NewAudioStream(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsAudioStream() AudioStream.Instance      { return *(*AudioStream.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

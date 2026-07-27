@@ -6,6 +6,7 @@ Performs a lookup operation on the texture provided as a uniform for the shader.
 package VisualShaderNodeTextureParameter
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -131,7 +135,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.VisualShaderNodeTextureParameter
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVisualShaderNodeTextureParameter(obj[0])
@@ -146,7 +150,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -236,41 +240,51 @@ func (self Instance) SetTextureSource(value TextureSource) Instance { //gd:Visua
 
 func (self class) SetTextureType(atype TextureType) { //gd:VisualShaderNodeTextureParameter.set_texture_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_type, 0|(gdextension.SizeInt<<4), &struct{ atype TextureType }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureType() TextureType { //gd:VisualShaderNodeTextureParameter.get_texture_type
 	var r_ret = jumponly.Call[TextureType](gd.ObjectChecked(self.AsObject()), methods.get_texture_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetColorDefault(color ColorDefault) { //gd:VisualShaderNodeTextureParameter.set_color_default
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color_default, 0|(gdextension.SizeInt<<4), &struct{ color ColorDefault }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetColorDefault() ColorDefault { //gd:VisualShaderNodeTextureParameter.get_color_default
 	var r_ret = jumponly.Call[ColorDefault](gd.ObjectChecked(self.AsObject()), methods.get_color_default, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextureFilter(filter TextureFilter) { //gd:VisualShaderNodeTextureParameter.set_texture_filter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_filter, 0|(gdextension.SizeInt<<4), &struct{ filter TextureFilter }{filter})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureFilter() TextureFilter { //gd:VisualShaderNodeTextureParameter.get_texture_filter
 	var r_ret = jumponly.Call[TextureFilter](gd.ObjectChecked(self.AsObject()), methods.get_texture_filter, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextureRepeat(repeat TextureRepeat) { //gd:VisualShaderNodeTextureParameter.set_texture_repeat
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_repeat, 0|(gdextension.SizeInt<<4), &struct{ repeat TextureRepeat }{repeat})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureRepeat() TextureRepeat { //gd:VisualShaderNodeTextureParameter.get_texture_repeat
 	var r_ret = jumponly.Call[TextureRepeat](gd.ObjectChecked(self.AsObject()), methods.get_texture_repeat, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextureSource(source TextureSource) { //gd:VisualShaderNodeTextureParameter.set_texture_source
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_source, 0|(gdextension.SizeInt<<4), &struct{ source TextureSource }{source})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureSource() TextureSource { //gd:VisualShaderNodeTextureParameter.get_texture_source
 	var r_ret = jumponly.Call[TextureSource](gd.ObjectChecked(self.AsObject()), methods.get_texture_source, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -278,26 +292,26 @@ func (o class) AsVisualShaderNodeTextureParameter() Advanced         { return Ad
 func (o Instance) AsVisualShaderNodeTextureParameter() Instance      { return o }
 func (o *Extension[T]) AsVisualShaderNodeTextureParameter() Instance { return o.Super() }
 func (o class) AsVisualShaderNodeParameter() VisualShaderNodeParameter.Advanced {
-	return VisualShaderNodeParameter.Advanced{gdclass.NewVisualShaderNodeParameter(o[0].AsObject()[0])}
+	return *(*VisualShaderNodeParameter.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualShaderNodeParameter() VisualShaderNodeParameter.Instance {
 	return o.Super().AsVisualShaderNodeParameter()
 }
 func (o Instance) AsVisualShaderNodeParameter() VisualShaderNodeParameter.Instance {
-	return VisualShaderNodeParameter.Instance{gdclass.NewVisualShaderNodeParameter(o[0].AsObject()[0])}
+	return *(*VisualShaderNodeParameter.Instance)(ie.As(&o))
 }
 func (o class) AsVisualShaderNode() VisualShaderNode.Advanced {
-	return VisualShaderNode.Advanced{gdclass.NewVisualShaderNode(o[0].AsObject()[0])}
+	return *(*VisualShaderNode.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualShaderNode() VisualShaderNode.Instance {
 	return o.Super().AsVisualShaderNode()
 }
 func (o Instance) AsVisualShaderNode() VisualShaderNode.Instance {
-	return VisualShaderNode.Instance{gdclass.NewVisualShaderNode(o[0].AsObject()[0])}
+	return *(*VisualShaderNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

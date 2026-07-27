@@ -12,6 +12,7 @@ To use [EditorNode3DGizmoPlugin], register it using the [EditorPlugin.AddNode3dG
 package EditorNode3DGizmoPlugin
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -54,6 +55,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -755,7 +759,7 @@ func Get(peer EditorNode3DGizmo.Instance) Instance { //gd:EditorNode3DGizmo.get_
 type Advanced = class
 type class [1]gdclass.EditorNode3DGizmoPlugin
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorNode3DGizmoPlugin(obj[0])
@@ -770,7 +774,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1031,6 +1035,8 @@ func (self class) CreateMaterial(name String.Readable, color Color.RGBA, billboa
 		on_top           bool
 		use_vertex_color bool
 	}{pointers.Get(gd.InternalString(name)), color, billboard, on_top, use_vertex_color})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) CreateIconMaterial(name String.Readable, texture [1]gdclass.Texture2D, on_top bool, color Color.RGBA) { //gd:EditorNode3DGizmoPlugin.create_icon_material
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.create_icon_material, 0|(gdextension.SizeString<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeColor<<16), &struct {
@@ -1039,6 +1045,9 @@ func (self class) CreateIconMaterial(name String.Readable, texture [1]gdclass.Te
 		on_top  bool
 		color   Color.RGBA
 	}{pointers.Get(gd.InternalString(name)), gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), on_top, color})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) CreateHandleMaterial(name String.Readable, billboard bool, texture [1]gdclass.Texture2D) { //gd:EditorNode3DGizmoPlugin.create_handle_material
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.create_handle_material, 0|(gdextension.SizeString<<4)|(gdextension.SizeBool<<8)|(gdextension.SizeObject<<12), &struct {
@@ -1046,27 +1055,36 @@ func (self class) CreateHandleMaterial(name String.Readable, billboard bool, tex
 		billboard bool
 		texture   gdextension.Object
 	}{pointers.Get(gd.InternalString(name)), billboard, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) AddMaterial(name String.Readable, material [1]gdclass.StandardMaterial3D) { //gd:EditorNode3DGizmoPlugin.add_material
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_material, 0|(gdextension.SizeString<<4)|(gdextension.SizeObject<<8), &struct {
 		name     gdextension.String
 		material gdextension.Object
 	}{pointers.Get(gd.InternalString(name)), gdextension.Object(gdreference.GetObject(gdclass.GetStandardMaterial3D(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) GetMaterial(name String.Readable, gizmo [1]gdclass.EditorNode3DGizmo) [1]gdclass.StandardMaterial3D { //gd:EditorNode3DGizmoPlugin.get_material
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_material, gdextension.SizeObject|(gdextension.SizeString<<4)|(gdextension.SizeObject<<8), &struct {
 		name  gdextension.String
 		gizmo gdextension.Object
 	}{pointers.Get(gd.InternalString(name)), gdextension.Object(gdreference.GetObject(gdclass.GetEditorNode3DGizmo(gizmo[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(gizmo[0].Anchor())
 	var ret = [1]gdclass.StandardMaterial3D{gdclass.NewStandardMaterial3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsEditorNode3DGizmoPlugin() Advanced         { return Advanced(o) }
 func (o Instance) AsEditorNode3DGizmoPlugin() Instance      { return o }
 func (o *Extension[T]) AsEditorNode3DGizmoPlugin() Instance { return o.Super() }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

@@ -13,6 +13,7 @@ Note: ENet only uses UDP, not TCP. When forwarding the server port to make your 
 package ENetMultiplayerPeer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -221,7 +225,7 @@ func (self Instance) GetPeer(id int) ENetPacketPeer.Instance { //gd:ENetMultipla
 type Advanced = class
 type class [1]gdclass.ENetMultiplayerPeer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewENetMultiplayerPeer(obj[0])
@@ -236,7 +240,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -278,6 +282,7 @@ func (self class) CreateServer(port int64, max_clients int64, max_channels int64
 		in_bandwidth  int64
 		out_bandwidth int64
 	}{port, max_clients, max_channels, in_bandwidth, out_bandwidth})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -290,11 +295,14 @@ func (self class) CreateClient(address String.Readable, port int64, channel_coun
 		out_bandwidth int64
 		local_port    int64
 	}{pointers.Get(gd.InternalString(address)), port, channel_count, in_bandwidth, out_bandwidth, local_port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(address)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) CreateMesh(unique_id int64) Error.Code { //gd:ENetMultiplayerPeer.create_mesh
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.create_mesh, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ unique_id int64 }{unique_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -303,19 +311,25 @@ func (self class) AddMeshPeer(peer_id int64, host [1]gdclass.ENetConnection) Err
 		peer_id int64
 		host    gdextension.Object
 	}{peer_id, gdextension.Object(gdreference.GetObject(gdclass.GetENetConnection(host[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) SetBindIp(ip String.Readable) { //gd:ENetMultiplayerPeer.set_bind_ip
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bind_ip, 0|(gdextension.SizeString<<4), &struct{ ip gdextension.String }{pointers.Get(gd.InternalString(ip))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(ip)
 }
 func (self class) GetHost() [1]gdclass.ENetConnection { //gd:ENetMultiplayerPeer.get_host
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_host, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.ENetConnection{gdclass.NewENetConnection(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetPeer(id int64) [1]gdclass.ENetPacketPeer { //gd:ENetMultiplayerPeer.get_peer
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_peer, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.ENetPacketPeer{gdclass.NewENetPacketPeer(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -323,17 +337,17 @@ func (o class) AsENetMultiplayerPeer() Advanced         { return Advanced(o) }
 func (o Instance) AsENetMultiplayerPeer() Instance      { return o }
 func (o *Extension[T]) AsENetMultiplayerPeer() Instance { return o.Super() }
 func (o class) AsMultiplayerPeer() MultiplayerPeer.Advanced {
-	return MultiplayerPeer.Advanced{gdclass.NewMultiplayerPeer(o[0].AsObject()[0])}
+	return *(*MultiplayerPeer.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsMultiplayerPeer() MultiplayerPeer.Instance {
 	return o.Super().AsMultiplayerPeer()
 }
 func (o Instance) AsMultiplayerPeer() MultiplayerPeer.Instance {
-	return MultiplayerPeer.Instance{gdclass.NewMultiplayerPeer(o[0].AsObject()[0])}
+	return *(*MultiplayerPeer.Instance)(ie.As(&o))
 }
-func (o class) AsPacketPeer() PacketPeer.Advanced         { return PacketPeer.Advanced{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o class) AsPacketPeer() PacketPeer.Advanced         { return *(*PacketPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPacketPeer() PacketPeer.Instance { return o.Super().AsPacketPeer() }
-func (o Instance) AsPacketPeer() PacketPeer.Instance      { return PacketPeer.Instance{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o Instance) AsPacketPeer() PacketPeer.Instance      { return *(*PacketPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

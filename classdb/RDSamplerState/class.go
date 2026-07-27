@@ -8,6 +8,7 @@ This object is used by [RenderingDevice].
 package RDSamplerState
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -151,7 +155,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.RDSamplerState
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDSamplerState(obj[0])
@@ -166,7 +170,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -401,121 +405,151 @@ func (self Instance) SetUnnormalizedUvw(value bool) Instance { //gd:RDSamplerSta
 
 func (self class) SetMagFilter(p_member Rendering.SamplerFilter) { //gd:RDSamplerState.set_mag_filter
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mag_filter, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.SamplerFilter }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMagFilter() Rendering.SamplerFilter { //gd:RDSamplerState.get_mag_filter
 	var r_ret = jumponly.Call[Rendering.SamplerFilter](gd.ObjectChecked(self.AsObject()), methods.get_mag_filter, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinFilter(p_member Rendering.SamplerFilter) { //gd:RDSamplerState.set_min_filter
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min_filter, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.SamplerFilter }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMinFilter() Rendering.SamplerFilter { //gd:RDSamplerState.get_min_filter
 	var r_ret = jumponly.Call[Rendering.SamplerFilter](gd.ObjectChecked(self.AsObject()), methods.get_min_filter, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMipFilter(p_member Rendering.SamplerFilter) { //gd:RDSamplerState.set_mip_filter
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mip_filter, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.SamplerFilter }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMipFilter() Rendering.SamplerFilter { //gd:RDSamplerState.get_mip_filter
 	var r_ret = jumponly.Call[Rendering.SamplerFilter](gd.ObjectChecked(self.AsObject()), methods.get_mip_filter, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRepeatU(p_member Rendering.SamplerRepeatMode) { //gd:RDSamplerState.set_repeat_u
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_repeat_u, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.SamplerRepeatMode }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRepeatU() Rendering.SamplerRepeatMode { //gd:RDSamplerState.get_repeat_u
 	var r_ret = jumponly.Call[Rendering.SamplerRepeatMode](gd.ObjectChecked(self.AsObject()), methods.get_repeat_u, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRepeatV(p_member Rendering.SamplerRepeatMode) { //gd:RDSamplerState.set_repeat_v
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_repeat_v, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.SamplerRepeatMode }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRepeatV() Rendering.SamplerRepeatMode { //gd:RDSamplerState.get_repeat_v
 	var r_ret = jumponly.Call[Rendering.SamplerRepeatMode](gd.ObjectChecked(self.AsObject()), methods.get_repeat_v, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRepeatW(p_member Rendering.SamplerRepeatMode) { //gd:RDSamplerState.set_repeat_w
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_repeat_w, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.SamplerRepeatMode }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRepeatW() Rendering.SamplerRepeatMode { //gd:RDSamplerState.get_repeat_w
 	var r_ret = jumponly.Call[Rendering.SamplerRepeatMode](gd.ObjectChecked(self.AsObject()), methods.get_repeat_w, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLodBias(p_member float64) { //gd:RDSamplerState.set_lod_bias
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_lod_bias, 0|(gdextension.SizeFloat<<4), &struct{ p_member float64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLodBias() float64 { //gd:RDSamplerState.get_lod_bias
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_lod_bias, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseAnisotropy(p_member bool) { //gd:RDSamplerState.set_use_anisotropy
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_anisotropy, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseAnisotropy() bool { //gd:RDSamplerState.get_use_anisotropy
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_anisotropy, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAnisotropyMax(p_member float64) { //gd:RDSamplerState.set_anisotropy_max
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_anisotropy_max, 0|(gdextension.SizeFloat<<4), &struct{ p_member float64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAnisotropyMax() float64 { //gd:RDSamplerState.get_anisotropy_max
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_anisotropy_max, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnableCompare(p_member bool) { //gd:RDSamplerState.set_enable_compare
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_compare, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableCompare() bool { //gd:RDSamplerState.get_enable_compare
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enable_compare, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCompareOp(p_member Rendering.CompareOperator) { //gd:RDSamplerState.set_compare_op
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_compare_op, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.CompareOperator }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCompareOp() Rendering.CompareOperator { //gd:RDSamplerState.get_compare_op
 	var r_ret = jumponly.Call[Rendering.CompareOperator](gd.ObjectChecked(self.AsObject()), methods.get_compare_op, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinLod(p_member float64) { //gd:RDSamplerState.set_min_lod
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min_lod, 0|(gdextension.SizeFloat<<4), &struct{ p_member float64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMinLod() float64 { //gd:RDSamplerState.get_min_lod
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_min_lod, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxLod(p_member float64) { //gd:RDSamplerState.set_max_lod
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_lod, 0|(gdextension.SizeFloat<<4), &struct{ p_member float64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxLod() float64 { //gd:RDSamplerState.get_max_lod
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_max_lod, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBorderColor(p_member Rendering.SamplerBorderColor) { //gd:RDSamplerState.set_border_color
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_border_color, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.SamplerBorderColor }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBorderColor() Rendering.SamplerBorderColor { //gd:RDSamplerState.get_border_color
 	var r_ret = jumponly.Call[Rendering.SamplerBorderColor](gd.ObjectChecked(self.AsObject()), methods.get_border_color, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUnnormalizedUvw(p_member bool) { //gd:RDSamplerState.set_unnormalized_uvw
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_unnormalized_uvw, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUnnormalizedUvw() bool { //gd:RDSamplerState.get_unnormalized_uvw
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_unnormalized_uvw, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

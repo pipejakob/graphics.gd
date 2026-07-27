@@ -15,6 +15,7 @@ By default the skeleton hand bones are repositioned to match the size of the tra
 package OpenXRHand
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -24,6 +25,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -49,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -138,7 +143,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.OpenXRHand
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRHand(obj[0])
@@ -153,7 +158,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -247,53 +252,64 @@ func (self Instance) SetBoneUpdate(value BoneUpdate) Instance { //gd:OpenXRHand.
 
 func (self class) SetHand(hand Hands) { //gd:OpenXRHand.set_hand
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hand, 0|(gdextension.SizeInt<<4), &struct{ hand Hands }{hand})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHand() Hands { //gd:OpenXRHand.get_hand
 	var r_ret = jumponly.Call[Hands](gd.ObjectChecked(self.AsObject()), methods.get_hand, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHandSkeleton(hand_skeleton Path.ToNode) { //gd:OpenXRHand.set_hand_skeleton
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hand_skeleton, 0|(gdextension.SizeNodePath<<4), &struct{ hand_skeleton gdextension.NodePath }{pointers.Get(gd.InternalNodePath(hand_skeleton))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(hand_skeleton)
 }
 func (self class) GetHandSkeleton() Path.ToNode { //gd:OpenXRHand.get_hand_skeleton
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_hand_skeleton, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetMotionRange(motion_range MotionRange) { //gd:OpenXRHand.set_motion_range
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_motion_range, 0|(gdextension.SizeInt<<4), &struct{ motion_range MotionRange }{motion_range})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMotionRange() MotionRange { //gd:OpenXRHand.get_motion_range
 	var r_ret = jumponly.Call[MotionRange](gd.ObjectChecked(self.AsObject()), methods.get_motion_range, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSkeletonRig(skeleton_rig SkeletonRig) { //gd:OpenXRHand.set_skeleton_rig
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_skeleton_rig, 0|(gdextension.SizeInt<<4), &struct{ skeleton_rig SkeletonRig }{skeleton_rig})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkeletonRig() SkeletonRig { //gd:OpenXRHand.get_skeleton_rig
 	var r_ret = jumponly.Call[SkeletonRig](gd.ObjectChecked(self.AsObject()), methods.get_skeleton_rig, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBoneUpdate(bone_update BoneUpdate) { //gd:OpenXRHand.set_bone_update
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_update, 0|(gdextension.SizeInt<<4), &struct{ bone_update BoneUpdate }{bone_update})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneUpdate() BoneUpdate { //gd:OpenXRHand.get_bone_update
 	var r_ret = jumponly.Call[BoneUpdate](gd.ObjectChecked(self.AsObject()), methods.get_bone_update, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsOpenXRHand() Advanced            { return Advanced(o) }
 func (o Instance) AsOpenXRHand() Instance         { return o }
 func (o *Extension[T]) AsOpenXRHand() Instance    { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

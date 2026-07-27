@@ -11,6 +11,7 @@ A [Translation] consists of messages. A message is identified by its context and
 package Translation
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -340,7 +344,7 @@ func (self Instance) GetMessageCount() int { //gd:Translation.get_message_count
 type Advanced = class
 type class [1]gdclass.Translation
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTranslation(obj[0])
@@ -355,7 +359,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -446,9 +450,12 @@ func (class) _get_message(impl func(ptr gdclass.Receiver, src_message String.Nam
 
 func (self class) SetLocale(locale String.Readable) { //gd:Translation.set_locale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_locale, 0|(gdextension.SizeString<<4), &struct{ locale gdextension.String }{pointers.Get(gd.InternalString(locale))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(locale)
 }
 func (self class) GetLocale() String.Readable { //gd:Translation.get_locale
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_locale, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -458,6 +465,10 @@ func (self class) AddMessage(src_message String.Name, xlated_message String.Name
 		xlated_message gdextension.StringName
 		context        gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(src_message)), pointers.Get(gd.InternalStringName(xlated_message)), pointers.Get(gd.InternalStringName(context))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src_message)
+	runtime.KeepAlive(xlated_message)
+	runtime.KeepAlive(context)
 }
 func (self class) AddPluralMessage(src_message String.Name, xlated_messages Packed.Strings, context String.Name) { //gd:Translation.add_plural_message
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_plural_message, 0|(gdextension.SizeStringName<<4)|(gdextension.SizePackedArray<<8)|(gdextension.SizeStringName<<12), &struct {
@@ -465,12 +476,19 @@ func (self class) AddPluralMessage(src_message String.Name, xlated_messages Pack
 		xlated_messages gdextension.PackedArray[gdextension.String]
 		context         gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(src_message)), pointers.Get(gd.InternalPackedStrings(xlated_messages)), pointers.Get(gd.InternalStringName(context))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src_message)
+	runtime.KeepAlive(xlated_messages)
+	runtime.KeepAlive(context)
 }
 func (self class) GetMessage(src_message String.Name, context String.Name) String.Name { //gd:Translation.get_message
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_message, gdextension.SizeStringName|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		src_message gdextension.StringName
 		context     gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(src_message)), pointers.Get(gd.InternalStringName(context))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src_message)
+	runtime.KeepAlive(context)
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -481,6 +499,10 @@ func (self class) GetPluralMessage(src_message String.Name, src_plural_message S
 		n                  int64
 		context            gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(src_message)), pointers.Get(gd.InternalStringName(src_plural_message)), n, pointers.Get(gd.InternalStringName(context))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src_message)
+	runtime.KeepAlive(src_plural_message)
+	runtime.KeepAlive(context)
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -489,36 +511,45 @@ func (self class) EraseMessage(src_message String.Name, context String.Name) { /
 		src_message gdextension.StringName
 		context     gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(src_message)), pointers.Get(gd.InternalStringName(context))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src_message)
+	runtime.KeepAlive(context)
 }
 func (self class) GetMessageList() Packed.Strings { //gd:Translation.get_message_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_message_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetTranslatedMessageList() Packed.Strings { //gd:Translation.get_translated_message_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_translated_message_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetMessageCount() int64 { //gd:Translation.get_message_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_message_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPluralRulesOverride(rules String.Readable) { //gd:Translation.set_plural_rules_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_plural_rules_override, 0|(gdextension.SizeString<<4), &struct{ rules gdextension.String }{pointers.Get(gd.InternalString(rules))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(rules)
 }
 func (self class) GetPluralRulesOverride() String.Readable { //gd:Translation.get_plural_rules_override
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_plural_rules_override, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (o class) AsTranslation() Advanced               { return Advanced(o) }
 func (o Instance) AsTranslation() Instance            { return o }
 func (o *Extension[T]) AsTranslation() Instance       { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

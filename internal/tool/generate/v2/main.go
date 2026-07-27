@@ -212,6 +212,7 @@ func generateImports(file io.Writer, class gdjson.Class, singleton bool) {
 		fmt.Fprintln(file, `import "sync"`)
 	}
 	fmt.Fprintln(file, `import "reflect"`)
+	fmt.Fprintln(file, `import "runtime"`)
 	fmt.Fprintln(file, `import "slices"`)
 	fmt.Fprintln(file, `import "graphics.gd/internal/pointers"`)
 	fmt.Fprintln(file, `import "graphics.gd/internal/callframe"`)
@@ -237,6 +238,7 @@ func generateImports(file io.Writer, class gdjson.Class, singleton bool) {
 	fmt.Fprintln(file, "var _ gd.String")
 	fmt.Fprintln(file, "var _ RefCounted.Instance")
 	fmt.Fprintln(file, "var _ reflect.Type")
+	fmt.Fprintln(file, "type _ runtime.Cleanup")
 	fmt.Fprintln(file, "var _ callframe.Frame")
 	fmt.Fprintln(file, "var _ = pointers.Cycle")
 	fmt.Fprintln(file, "var _ = Array.Nil")

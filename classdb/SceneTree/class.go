@@ -13,6 +13,7 @@ You can also use the [SceneTree] to organize your nodes into groups: every node 
 package SceneTree
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -22,6 +23,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -52,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -593,7 +598,7 @@ func Get(peer Node.Instance) Instance { //gd:Node.get_tree
 type Advanced = class
 type class [1]gdclass.SceneTree
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSceneTree(obj[0])
@@ -608,7 +613,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -832,77 +837,97 @@ func (self Instance) SetPhysicsInterpolation(value bool) Instance { //gd:SceneTr
 
 func (self class) GetRoot() [1]gdclass.Window { //gd:SceneTree.get_root
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_root, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Window{gdclass.NewWindow(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) HasGroup(name String.Name) bool { //gd:SceneTree.has_group
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_group, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) IsAccessibilityEnabled() bool { //gd:SceneTree.is_accessibility_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_accessibility_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsAccessibilitySupported() bool { //gd:SceneTree.is_accessibility_supported
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_accessibility_supported, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsAutoAcceptQuit() bool { //gd:SceneTree.is_auto_accept_quit
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_auto_accept_quit, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoAcceptQuit(enabled bool) { //gd:SceneTree.set_auto_accept_quit
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_auto_accept_quit, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsQuitOnGoBack() bool { //gd:SceneTree.is_quit_on_go_back
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_quit_on_go_back, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetQuitOnGoBack(enabled bool) { //gd:SceneTree.set_quit_on_go_back
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_quit_on_go_back, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetDebugCollisionsHint(enable bool) { //gd:SceneTree.set_debug_collisions_hint
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_debug_collisions_hint, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDebuggingCollisionsHint() bool { //gd:SceneTree.is_debugging_collisions_hint
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_debugging_collisions_hint, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDebugPathsHint(enable bool) { //gd:SceneTree.set_debug_paths_hint
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_debug_paths_hint, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDebuggingPathsHint() bool { //gd:SceneTree.is_debugging_paths_hint
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_debugging_paths_hint, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDebugNavigationHint(enable bool) { //gd:SceneTree.set_debug_navigation_hint
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_debug_navigation_hint, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDebuggingNavigationHint() bool { //gd:SceneTree.is_debugging_navigation_hint
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_debugging_navigation_hint, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEditedSceneRoot(scene [1]gdclass.Node) { //gd:SceneTree.set_edited_scene_root
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_edited_scene_root, 0|(gdextension.SizeObject<<4), &struct{ scene gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetNode(scene[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(scene[0].Anchor())
 }
 func (self class) GetEditedSceneRoot() [1]gdclass.Node { //gd:SceneTree.get_edited_scene_root
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_edited_scene_root, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Node{gdclass.NewNode(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetPause(enable bool) { //gd:SceneTree.set_pause
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pause, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPaused() bool { //gd:SceneTree.is_paused
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_paused, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -913,50 +938,72 @@ func (self class) CreateTimer(time_sec float64, process_always bool, process_in_
 		process_in_physics bool
 		ignore_time_scale  bool
 	}{time_sec, process_always, process_in_physics, ignore_time_scale})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.SceneTreeTimer{gdclass.NewSceneTreeTimer(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) CreateTween() [1]gdclass.Tween { //gd:SceneTree.create_tween
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.create_tween, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Tween{gdclass.NewTween(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetProcessedTweens() Array.Contains[[1]gdclass.Tween] { //gd:SceneTree.get_processed_tweens
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_processed_tweens, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.Tween](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetNodeCount() int64 { //gd:SceneTree.get_node_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_node_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFrame() int64 { //gd:SceneTree.get_frame
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_frame, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Quit(exit_code int64) { //gd:SceneTree.quit
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.quit, 0|(gdextension.SizeInt<<4), &struct{ exit_code int64 }{exit_code})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPhysicsInterpolationEnabled(enabled bool) { //gd:SceneTree.set_physics_interpolation_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_physics_interpolation_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPhysicsInterpolationEnabled() bool { //gd:SceneTree.is_physics_interpolation_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_physics_interpolation_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) QueueDelete(obj [1]gdreference.Object) { //gd:SceneTree.queue_delete
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.queue_delete, 0|(gdextension.SizeObject<<4), &struct{ obj gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetObject(obj[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
 }
 func (self class) CallGroupFlags(flags int64, group String.Name, method String.Name, args ...gd.Variant) { //gd:SceneTree.call_group_flags
-	var fixed = [...]gdextension.Variant{gdextension.Variant(pointers.Get(gd.NewVariant(flags))), gdextension.Variant(pointers.Get(gd.NewVariant(group))), gdextension.Variant(pointers.Get(gd.NewVariant(method)))}
-	var dynamic []gdextension.Variant
+	var fixed = [...]gd.Variant{gd.NewVariant(flags), gd.NewVariant(group), gd.NewVariant(method)}
+	var dynamic []gd.Variant
 	for _, arg := range args {
-		dynamic = append(dynamic, gdextension.Variant(pointers.Get(gd.NewVariant(arg))))
+		dynamic = append(dynamic, gd.NewVariant(arg))
 	}
-	ret, err := noescape.MethodForClass(methods.call_group_flags).Call(gd.ObjectChecked(self.AsObject()), append(fixed[:], dynamic...)...)
+	var packed = make([]gdextension.Variant, 0, len(fixed)+len(dynamic))
+	for _, arg := range fixed {
+		packed = append(packed, gdextension.Variant(pointers.Get(arg)))
+	}
+	for _, arg := range dynamic {
+		packed = append(packed, gdextension.Variant(pointers.Get(arg)))
+	}
+	ret, err := noescape.MethodForClass(methods.call_group_flags).Call(gd.ObjectChecked(self.AsObject()), packed...)
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group)
+	runtime.KeepAlive(method)
+	runtime.KeepAlive(fixed)
+	runtime.KeepAlive(dynamic)
 	if err != nil {
 		panic(err)
 	}
@@ -969,6 +1016,8 @@ func (self class) NotifyGroupFlags(call_flags int64, group String.Name, notifica
 		group        gdextension.StringName
 		notification int64
 	}{call_flags, pointers.Get(gd.InternalStringName(group)), notification})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group)
 }
 func (self class) SetGroupFlags(call_flags int64, group String.Name, property String.Readable, value variant.Any) { //gd:SceneTree.set_group_flags
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_group_flags, 0|(gdextension.SizeInt<<4)|(gdextension.SizeStringName<<8)|(gdextension.SizeString<<12)|(gdextension.SizeVariant<<16), &struct {
@@ -977,14 +1026,30 @@ func (self class) SetGroupFlags(call_flags int64, group String.Name, property St
 		property   gdextension.String
 		value      gdextension.Variant
 	}{call_flags, pointers.Get(gd.InternalStringName(group)), pointers.Get(gd.InternalString(property)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group)
+	runtime.KeepAlive(property)
+	runtime.KeepAlive(value)
 }
 func (self class) CallGroup(group String.Name, method String.Name, args ...gd.Variant) { //gd:SceneTree.call_group
-	var fixed = [...]gdextension.Variant{gdextension.Variant(pointers.Get(gd.NewVariant(group))), gdextension.Variant(pointers.Get(gd.NewVariant(method)))}
-	var dynamic []gdextension.Variant
+	var fixed = [...]gd.Variant{gd.NewVariant(group), gd.NewVariant(method)}
+	var dynamic []gd.Variant
 	for _, arg := range args {
-		dynamic = append(dynamic, gdextension.Variant(pointers.Get(gd.NewVariant(arg))))
+		dynamic = append(dynamic, gd.NewVariant(arg))
 	}
-	ret, err := noescape.MethodForClass(methods.call_group).Call(gd.ObjectChecked(self.AsObject()), append(fixed[:], dynamic...)...)
+	var packed = make([]gdextension.Variant, 0, len(fixed)+len(dynamic))
+	for _, arg := range fixed {
+		packed = append(packed, gdextension.Variant(pointers.Get(arg)))
+	}
+	for _, arg := range dynamic {
+		packed = append(packed, gdextension.Variant(pointers.Get(arg)))
+	}
+	ret, err := noescape.MethodForClass(methods.call_group).Call(gd.ObjectChecked(self.AsObject()), packed...)
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group)
+	runtime.KeepAlive(method)
+	runtime.KeepAlive(fixed)
+	runtime.KeepAlive(dynamic)
 	if err != nil {
 		panic(err)
 	}
@@ -996,6 +1061,8 @@ func (self class) NotifyGroup(group String.Name, notification int64) { //gd:Scen
 		group        gdextension.StringName
 		notification int64
 	}{pointers.Get(gd.InternalStringName(group)), notification})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group)
 }
 func (self class) SetGroup(group String.Name, property String.Readable, value variant.Any) { //gd:SceneTree.set_group
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_group, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeString<<8)|(gdextension.SizeVariant<<12), &struct {
@@ -1003,69 +1070,97 @@ func (self class) SetGroup(group String.Name, property String.Readable, value va
 		property gdextension.String
 		value    gdextension.Variant
 	}{pointers.Get(gd.InternalStringName(group)), pointers.Get(gd.InternalString(property)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group)
+	runtime.KeepAlive(property)
+	runtime.KeepAlive(value)
 }
 func (self class) GetNodesInGroup(group String.Name) Array.Contains[[1]gdclass.Node] { //gd:SceneTree.get_nodes_in_group
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_nodes_in_group, gdextension.SizeArray|(gdextension.SizeStringName<<4), &struct{ group gdextension.StringName }{pointers.Get(gd.InternalStringName(group))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group)
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetFirstNodeInGroup(group String.Name) [1]gdclass.Node { //gd:SceneTree.get_first_node_in_group
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_first_node_in_group, gdextension.SizeObject|(gdextension.SizeStringName<<4), &struct{ group gdextension.StringName }{pointers.Get(gd.InternalStringName(group))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group)
 	var ret = [1]gdclass.Node{gdclass.NewNode(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) GetNodeCountInGroup(group String.Name) int64 { //gd:SceneTree.get_node_count_in_group
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_node_count_in_group, gdextension.SizeInt|(gdextension.SizeStringName<<4), &struct{ group gdextension.StringName }{pointers.Get(gd.InternalStringName(group))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCurrentScene(child_node [1]gdclass.Node) { //gd:SceneTree.set_current_scene
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_current_scene, 0|(gdextension.SizeObject<<4), &struct{ child_node gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetNode(child_node[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(child_node[0].Anchor())
 }
 func (self class) GetCurrentScene() [1]gdclass.Node { //gd:SceneTree.get_current_scene
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_current_scene, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Node{gdclass.NewNode(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) ChangeSceneToFile(path String.Readable) Error.Code { //gd:SceneTree.change_scene_to_file
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.change_scene_to_file, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) ChangeSceneToPacked(packed_scene [1]gdclass.PackedScene) Error.Code { //gd:SceneTree.change_scene_to_packed
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.change_scene_to_packed, gdextension.SizeInt|(gdextension.SizeObject<<4), &struct{ packed_scene gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetPackedScene(packed_scene[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(packed_scene[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) ChangeSceneToNode(node [1]gdclass.Node) Error.Code { //gd:SceneTree.change_scene_to_node
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.change_scene_to_node, gdextension.SizeInt|(gdextension.SizeObject<<4), &struct{ node gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode(node[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) ReloadCurrentScene() Error.Code { //gd:SceneTree.reload_current_scene
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.reload_current_scene, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) UnloadCurrentScene() { //gd:SceneTree.unload_current_scene
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.unload_current_scene, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetMultiplayer(multiplayer [1]gdclass.MultiplayerAPI, root_path Path.ToNode) { //gd:SceneTree.set_multiplayer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_multiplayer, 0|(gdextension.SizeObject<<4)|(gdextension.SizeNodePath<<8), &struct {
 		multiplayer gdextension.Object
 		root_path   gdextension.NodePath
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetMultiplayerAPI(multiplayer[0])[0])), pointers.Get(gd.InternalNodePath(root_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(multiplayer[0].Anchor())
+	runtime.KeepAlive(root_path)
 }
 func (self class) GetMultiplayer(for_path Path.ToNode) [1]gdclass.MultiplayerAPI { //gd:SceneTree.get_multiplayer
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_multiplayer, gdextension.SizeObject|(gdextension.SizeNodePath<<4), &struct{ for_path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(for_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(for_path)
 	var ret = [1]gdclass.MultiplayerAPI{gdclass.NewMultiplayerAPI(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetMultiplayerPollEnabled(enabled bool) { //gd:SceneTree.set_multiplayer_poll_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_multiplayer_poll_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsMultiplayerPollEnabled() bool { //gd:SceneTree.is_multiplayer_poll_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_multiplayer_poll_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1229,9 +1324,9 @@ func (self class) PhysicsFrame() Signal.Any {
 func (o class) AsSceneTree() Advanced                 { return Advanced(o) }
 func (o Instance) AsSceneTree() Instance              { return o }
 func (o *Extension[T]) AsSceneTree() Instance         { return o.Super() }
-func (o class) AsMainLoop() MainLoop.Advanced         { return MainLoop.Advanced{gdclass.NewMainLoop(o[0].AsObject()[0])} }
+func (o class) AsMainLoop() MainLoop.Advanced         { return *(*MainLoop.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsMainLoop() MainLoop.Instance { return o.Super().AsMainLoop() }
-func (o Instance) AsMainLoop() MainLoop.Instance      { return MainLoop.Instance{gdclass.NewMainLoop(o[0].AsObject()[0])} }
+func (o Instance) AsMainLoop() MainLoop.Instance      { return *(*MainLoop.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

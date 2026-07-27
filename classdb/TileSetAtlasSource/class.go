@@ -19,6 +19,7 @@ As TileData properties are stored directly in the TileSetAtlasSource resource, t
 package TileSetAtlasSource
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -59,6 +60,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -503,7 +507,7 @@ func (self Instance) GetRuntimeTileTextureRegion(atlas_coords Vector2i.XY, frame
 type Advanced = class
 type class [1]gdclass.TileSetAtlasSource
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTileSetAtlasSource(obj[0])
@@ -518,7 +522,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -610,41 +614,52 @@ func (self Instance) SetUseTexturePadding(value bool) Instance { //gd:TileSetAtl
 
 func (self class) SetTexture(texture [1]gdclass.Texture2D) { //gd:TileSetAtlasSource.set_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture, 0|(gdextension.SizeObject<<4), &struct{ texture gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetTexture() [1]gdclass.Texture2D { //gd:TileSetAtlasSource.get_texture
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetMargins(margins Vector2i.XY) { //gd:TileSetAtlasSource.set_margins
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_margins, 0|(gdextension.SizeVector2i<<4), &struct{ margins Vector2i.XY }{margins})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMargins() Vector2i.XY { //gd:TileSetAtlasSource.get_margins
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_margins, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSeparation(separation Vector2i.XY) { //gd:TileSetAtlasSource.set_separation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_separation, 0|(gdextension.SizeVector2i<<4), &struct{ separation Vector2i.XY }{separation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSeparation() Vector2i.XY { //gd:TileSetAtlasSource.get_separation
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_separation, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextureRegionSize(texture_region_size Vector2i.XY) { //gd:TileSetAtlasSource.set_texture_region_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_region_size, 0|(gdextension.SizeVector2i<<4), &struct{ texture_region_size Vector2i.XY }{texture_region_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureRegionSize() Vector2i.XY { //gd:TileSetAtlasSource.get_texture_region_size
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_texture_region_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseTexturePadding(use_texture_padding bool) { //gd:TileSetAtlasSource.set_use_texture_padding
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_texture_padding, 0|(gdextension.SizeBool<<4), &struct{ use_texture_padding bool }{use_texture_padding})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseTexturePadding() bool { //gd:TileSetAtlasSource.get_use_texture_padding
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_texture_padding, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -653,9 +668,11 @@ func (self class) CreateTile(atlas_coords Vector2i.XY, size Vector2i.XY) { //gd:
 		atlas_coords Vector2i.XY
 		size         Vector2i.XY
 	}{atlas_coords, size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveTile(atlas_coords Vector2i.XY) { //gd:TileSetAtlasSource.remove_tile
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_tile, 0|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MoveTileInAtlas(atlas_coords Vector2i.XY, new_atlas_coords Vector2i.XY, new_size Vector2i.XY) { //gd:TileSetAtlasSource.move_tile_in_atlas
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_tile_in_atlas, 0|(gdextension.SizeVector2i<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeVector2i<<12), &struct {
@@ -663,9 +680,11 @@ func (self class) MoveTileInAtlas(atlas_coords Vector2i.XY, new_atlas_coords Vec
 		new_atlas_coords Vector2i.XY
 		new_size         Vector2i.XY
 	}{atlas_coords, new_atlas_coords, new_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileSizeInAtlas(atlas_coords Vector2i.XY) Vector2i.XY { //gd:TileSetAtlasSource.get_tile_size_in_atlas
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_tile_size_in_atlas, gdextension.SizeVector2i|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -678,6 +697,7 @@ func (self class) HasRoomForTile(atlas_coords Vector2i.XY, size Vector2i.XY, ani
 		frames_count         int64
 		ignored_tile         Vector2i.XY
 	}{atlas_coords, size, animation_columns, animation_separation, frames_count, ignored_tile})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -688,30 +708,37 @@ func (self class) GetTilesToBeRemovedOnChange(texture [1]gdclass.Texture2D, marg
 		separation          Vector2i.XY
 		texture_region_size Vector2i.XY
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0])), margins, separation, texture_region_size})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) GetTileAtCoords(atlas_coords Vector2i.XY) Vector2i.XY { //gd:TileSetAtlasSource.get_tile_at_coords
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_tile_at_coords, gdextension.SizeVector2i|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasTilesOutsideTexture() bool { //gd:TileSetAtlasSource.has_tiles_outside_texture
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_tiles_outside_texture, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearTilesOutsideTexture() { //gd:TileSetAtlasSource.clear_tiles_outside_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_tiles_outside_texture, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTileAnimationColumns(atlas_coords Vector2i.XY, frame_columns int64) { //gd:TileSetAtlasSource.set_tile_animation_columns
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tile_animation_columns, 0|(gdextension.SizeVector2i<<4)|(gdextension.SizeInt<<8), &struct {
 		atlas_coords  Vector2i.XY
 		frame_columns int64
 	}{atlas_coords, frame_columns})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileAnimationColumns(atlas_coords Vector2i.XY) int64 { //gd:TileSetAtlasSource.get_tile_animation_columns
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_tile_animation_columns, gdextension.SizeInt|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -720,9 +747,11 @@ func (self class) SetTileAnimationSeparation(atlas_coords Vector2i.XY, separatio
 		atlas_coords Vector2i.XY
 		separation   Vector2i.XY
 	}{atlas_coords, separation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileAnimationSeparation(atlas_coords Vector2i.XY) Vector2i.XY { //gd:TileSetAtlasSource.get_tile_animation_separation
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_tile_animation_separation, gdextension.SizeVector2i|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -731,9 +760,11 @@ func (self class) SetTileAnimationSpeed(atlas_coords Vector2i.XY, speed float64)
 		atlas_coords Vector2i.XY
 		speed        float64
 	}{atlas_coords, speed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileAnimationSpeed(atlas_coords Vector2i.XY) float64 { //gd:TileSetAtlasSource.get_tile_animation_speed
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tile_animation_speed, gdextension.SizeFloat|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -742,9 +773,11 @@ func (self class) SetTileAnimationMode(atlas_coords Vector2i.XY, mode TileAnimat
 		atlas_coords Vector2i.XY
 		mode         TileAnimationMode
 	}{atlas_coords, mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileAnimationMode(atlas_coords Vector2i.XY) TileAnimationMode { //gd:TileSetAtlasSource.get_tile_animation_mode
 	var r_ret = noescape.Call[TileAnimationMode](gd.ObjectChecked(self.AsObject()), methods.get_tile_animation_mode, gdextension.SizeInt|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -753,9 +786,11 @@ func (self class) SetTileAnimationFramesCount(atlas_coords Vector2i.XY, frames_c
 		atlas_coords Vector2i.XY
 		frames_count int64
 	}{atlas_coords, frames_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileAnimationFramesCount(atlas_coords Vector2i.XY) int64 { //gd:TileSetAtlasSource.get_tile_animation_frames_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_tile_animation_frames_count, gdextension.SizeInt|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -765,17 +800,20 @@ func (self class) SetTileAnimationFrameDuration(atlas_coords Vector2i.XY, frame_
 		frame_index  int64
 		duration     float64
 	}{atlas_coords, frame_index, duration})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileAnimationFrameDuration(atlas_coords Vector2i.XY, frame_index int64) float64 { //gd:TileSetAtlasSource.get_tile_animation_frame_duration
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tile_animation_frame_duration, gdextension.SizeFloat|(gdextension.SizeVector2i<<4)|(gdextension.SizeInt<<8), &struct {
 		atlas_coords Vector2i.XY
 		frame_index  int64
 	}{atlas_coords, frame_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetTileAnimationTotalDuration(atlas_coords Vector2i.XY) float64 { //gd:TileSetAtlasSource.get_tile_animation_total_duration
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tile_animation_total_duration, gdextension.SizeFloat|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -784,6 +822,7 @@ func (self class) CreateAlternativeTile(atlas_coords Vector2i.XY, alternative_id
 		atlas_coords            Vector2i.XY
 		alternative_id_override int64
 	}{atlas_coords, alternative_id_override})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -792,6 +831,7 @@ func (self class) RemoveAlternativeTile(atlas_coords Vector2i.XY, alternative_ti
 		atlas_coords     Vector2i.XY
 		alternative_tile int64
 	}{atlas_coords, alternative_tile})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAlternativeTileId(atlas_coords Vector2i.XY, alternative_tile int64, new_id int64) { //gd:TileSetAtlasSource.set_alternative_tile_id
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_alternative_tile_id, 0|(gdextension.SizeVector2i<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -799,9 +839,11 @@ func (self class) SetAlternativeTileId(atlas_coords Vector2i.XY, alternative_til
 		alternative_tile int64
 		new_id           int64
 	}{atlas_coords, alternative_tile, new_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNextAlternativeTileId(atlas_coords Vector2i.XY) int64 { //gd:TileSetAtlasSource.get_next_alternative_tile_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_next_alternative_tile_id, gdextension.SizeInt|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -810,11 +852,13 @@ func (self class) GetTileData(atlas_coords Vector2i.XY, alternative_tile int64) 
 		atlas_coords     Vector2i.XY
 		alternative_tile int64
 	}{atlas_coords, alternative_tile})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.TileData{gdclass.NewTileData(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) GetAtlasGridSize() Vector2i.XY { //gd:TileSetAtlasSource.get_atlas_grid_size
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_atlas_grid_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -823,11 +867,13 @@ func (self class) GetTileTextureRegion(atlas_coords Vector2i.XY, frame_ int64) R
 		atlas_coords Vector2i.XY
 		frame_       int64
 	}{atlas_coords, frame_})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRuntimeTexture() [1]gdclass.Texture2D { //gd:TileSetAtlasSource.get_runtime_texture
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_runtime_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -836,20 +882,21 @@ func (self class) GetRuntimeTileTextureRegion(atlas_coords Vector2i.XY, frame_ i
 		atlas_coords Vector2i.XY
 		frame_       int64
 	}{atlas_coords, frame_})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsTileSetAtlasSource() Advanced                  { return Advanced(o) }
 func (o Instance) AsTileSetAtlasSource() Instance               { return o }
 func (o *Extension[T]) AsTileSetAtlasSource() Instance          { return o.Super() }
-func (o class) AsTileSetSource() TileSetSource.Advanced         { return TileSetSource.Advanced{gdclass.NewTileSetSource(o[0].AsObject()[0])} }
+func (o class) AsTileSetSource() TileSetSource.Advanced         { return *(*TileSetSource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTileSetSource() TileSetSource.Instance { return o.Super().AsTileSetSource() }
 func (o Instance) AsTileSetSource() TileSetSource.Instance {
-	return TileSetSource.Instance{gdclass.NewTileSetSource(o[0].AsObject()[0])}
+	return *(*TileSetSource.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

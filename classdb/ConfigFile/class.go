@@ -70,6 +70,7 @@ Note: The file extension given to a ConfigFile does not have any impact on its f
 package ConfigFile
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -102,6 +103,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -359,7 +363,7 @@ func (self Instance) Clear() { //gd:ConfigFile.clear
 type Advanced = class
 type class [1]gdclass.ConfigFile
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewConfigFile(obj[0])
@@ -374,7 +378,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -403,6 +407,10 @@ func (self class) SetValue(section String.Readable, key String.Readable, value v
 		key     gdextension.String
 		value   gdextension.Variant
 	}{pointers.Get(gd.InternalString(section)), pointers.Get(gd.InternalString(key)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(section)
+	runtime.KeepAlive(key)
+	runtime.KeepAlive(value)
 }
 func (self class) GetValue(section String.Readable, key String.Readable, def variant.Any) variant.Any { //gd:ConfigFile.get_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_value, gdextension.SizeVariant|(gdextension.SizeString<<4)|(gdextension.SizeString<<8)|(gdextension.SizeVariant<<12), &struct {
@@ -410,11 +418,17 @@ func (self class) GetValue(section String.Readable, key String.Readable, def var
 		key     gdextension.String
 		def     gdextension.Variant
 	}{pointers.Get(gd.InternalString(section)), pointers.Get(gd.InternalString(key)), gdextension.Variant(pointers.Get(gd.InternalVariant(def)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(section)
+	runtime.KeepAlive(key)
+	runtime.KeepAlive(def)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) HasSection(section String.Readable) bool { //gd:ConfigFile.has_section
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_section, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ section gdextension.String }{pointers.Get(gd.InternalString(section))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(section)
 	var ret = r_ret
 	return ret
 }
@@ -423,45 +437,63 @@ func (self class) HasSectionKey(section String.Readable, key String.Readable) bo
 		section gdextension.String
 		key     gdextension.String
 	}{pointers.Get(gd.InternalString(section)), pointers.Get(gd.InternalString(key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(section)
+	runtime.KeepAlive(key)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSections() Packed.Strings { //gd:ConfigFile.get_sections
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_sections, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetSectionKeys(section String.Readable) Packed.Strings { //gd:ConfigFile.get_section_keys
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_section_keys, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ section gdextension.String }{pointers.Get(gd.InternalString(section))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(section)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) EraseSection(section String.Readable) { //gd:ConfigFile.erase_section
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.erase_section, 0|(gdextension.SizeString<<4), &struct{ section gdextension.String }{pointers.Get(gd.InternalString(section))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(section)
 }
 func (self class) EraseSectionKey(section String.Readable, key String.Readable) { //gd:ConfigFile.erase_section_key
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.erase_section_key, 0|(gdextension.SizeString<<4)|(gdextension.SizeString<<8), &struct {
 		section gdextension.String
 		key     gdextension.String
 	}{pointers.Get(gd.InternalString(section)), pointers.Get(gd.InternalString(key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(section)
+	runtime.KeepAlive(key)
 }
 func (self class) Load(path String.Readable) Error.Code { //gd:ConfigFile.load
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Parse(data String.Readable) Error.Code { //gd:ConfigFile.parse
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.parse, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ data gdextension.String }{pointers.Get(gd.InternalString(data))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Save(path String.Readable) Error.Code { //gd:ConfigFile.save
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.save, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) EncodeToText() String.Readable { //gd:ConfigFile.encode_to_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.encode_to_text, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -470,6 +502,9 @@ func (self class) LoadEncrypted(path String.Readable, key Packed.Bytes) Error.Co
 		path gdextension.String
 		key  gdextension.PackedArray[byte]
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](key.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(key)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -478,6 +513,9 @@ func (self class) LoadEncryptedPass(path String.Readable, password String.Readab
 		path     gdextension.String
 		password gdextension.String
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalString(password))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(password)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -486,6 +524,9 @@ func (self class) SaveEncrypted(path String.Readable, key Packed.Bytes) Error.Co
 		path gdextension.String
 		key  gdextension.PackedArray[byte]
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](key.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(key)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -494,11 +535,15 @@ func (self class) SaveEncryptedPass(path String.Readable, password String.Readab
 		path     gdextension.String
 		password gdextension.String
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalString(password))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(password)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Clear() { //gd:ConfigFile.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsConfigFile() Advanced         { return Advanced(o) }
 func (o Instance) AsConfigFile() Instance      { return o }

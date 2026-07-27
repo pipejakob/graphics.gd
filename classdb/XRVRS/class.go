@@ -6,6 +6,7 @@ This class is used by various XR interfaces to generate VRS textures that can be
 package XRVRS
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -15,6 +16,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -40,6 +42,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -135,7 +140,7 @@ func (self Instance) MakeVrsTexture(target_size Vector2.XY, eye_foci []Vector2.X
 type Advanced = class
 type class [1]gdclass.XRVRS
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewXRVRS(obj[0])
@@ -150,7 +155,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -214,33 +219,41 @@ func (self Instance) SetVrsRenderRegion(value Rect2i.PositionSize) Instance { //
 
 func (self class) GetVrsMinRadius() float64 { //gd:XRVRS.get_vrs_min_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_vrs_min_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVrsMinRadius(radius float64) { //gd:XRVRS.set_vrs_min_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vrs_min_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVrsStrength() float64 { //gd:XRVRS.get_vrs_strength
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_vrs_strength, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVrsStrength(strength float64) { //gd:XRVRS.set_vrs_strength
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vrs_strength, 0|(gdextension.SizeFloat<<4), &struct{ strength float64 }{strength})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVrsRenderRegion() Rect2i.PositionSize { //gd:XRVRS.get_vrs_render_region
 	var r_ret = jumponly.Call[Rect2i.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_vrs_render_region, gdextension.SizeRect2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVrsRenderRegion(render_region Rect2i.PositionSize) { //gd:XRVRS.set_vrs_render_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vrs_render_region, 0|(gdextension.SizeRect2i<<4), &struct{ render_region Rect2i.PositionSize }{render_region})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MakeVrsTexture(target_size Vector2.XY, eye_foci Packed.Array[Vector2.XY]) RID.Any { //gd:XRVRS.make_vrs_texture
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.make_vrs_texture, gdextension.SizeRID|(gdextension.SizeVector2<<4)|(gdextension.SizePackedArray<<8), &struct {
 		target_size Vector2.XY
 		eye_foci    gdextension.PackedArray[Vector2.XY]
 	}{target_size, pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](eye_foci))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(eye_foci)
 	var ret = r_ret
 	return ret
 }

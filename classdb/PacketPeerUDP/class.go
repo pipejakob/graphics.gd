@@ -49,6 +49,7 @@ Note: When exporting to Android, make sure to enable the INTERNET permission in 
 package PacketPeerUDP
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -83,6 +84,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -353,7 +357,7 @@ func (self Instance) LeaveMulticastGroup(multicast_address string, interface_nam
 type Advanced = class
 type class [1]gdclass.PacketPeerUDP
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPacketPeerUDP(obj[0])
@@ -368,7 +372,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -397,19 +401,24 @@ func (self class) Bind(port int64, bind_address String.Readable, recv_buf_size i
 		bind_address  gdextension.String
 		recv_buf_size int64
 	}{port, pointers.Get(gd.InternalString(bind_address)), recv_buf_size})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bind_address)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Close() { //gd:PacketPeerUDP.close
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.close, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Wait() Error.Code { //gd:PacketPeerUDP.wait
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.wait, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) IsBound() bool { //gd:PacketPeerUDP.is_bound
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_bound, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -418,26 +427,32 @@ func (self class) ConnectToHost(host String.Readable, port int64) Error.Code { /
 		host gdextension.String
 		port int64
 	}{pointers.Get(gd.InternalString(host)), port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) IsSocketConnected() bool { //gd:PacketPeerUDP.is_socket_connected
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_socket_connected, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPacketIp() String.Readable { //gd:PacketPeerUDP.get_packet_ip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_packet_ip, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetPacketPort() int64 { //gd:PacketPeerUDP.get_packet_port
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_packet_port, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLocalPort() int64 { //gd:PacketPeerUDP.get_local_port
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_local_port, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -446,17 +461,23 @@ func (self class) SetDestAddress(host String.Readable, port int64) Error.Code { 
 		host gdextension.String
 		port int64
 	}{pointers.Get(gd.InternalString(host)), port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) SetBroadcastEnabled(enabled bool) { //gd:PacketPeerUDP.set_broadcast_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_broadcast_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) JoinMulticastGroup(multicast_address String.Readable, interface_name String.Readable) Error.Code { //gd:PacketPeerUDP.join_multicast_group
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.join_multicast_group, gdextension.SizeInt|(gdextension.SizeString<<4)|(gdextension.SizeString<<8), &struct {
 		multicast_address gdextension.String
 		interface_name    gdextension.String
 	}{pointers.Get(gd.InternalString(multicast_address)), pointers.Get(gd.InternalString(interface_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(multicast_address)
+	runtime.KeepAlive(interface_name)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -465,15 +486,18 @@ func (self class) LeaveMulticastGroup(multicast_address String.Readable, interfa
 		multicast_address gdextension.String
 		interface_name    gdextension.String
 	}{pointers.Get(gd.InternalString(multicast_address)), pointers.Get(gd.InternalString(interface_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(multicast_address)
+	runtime.KeepAlive(interface_name)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (o class) AsPacketPeerUDP() Advanced                 { return Advanced(o) }
 func (o Instance) AsPacketPeerUDP() Instance              { return o }
 func (o *Extension[T]) AsPacketPeerUDP() Instance         { return o.Super() }
-func (o class) AsPacketPeer() PacketPeer.Advanced         { return PacketPeer.Advanced{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o class) AsPacketPeer() PacketPeer.Advanced         { return *(*PacketPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPacketPeer() PacketPeer.Instance { return o.Super().AsPacketPeer() }
-func (o Instance) AsPacketPeer() PacketPeer.Instance      { return PacketPeer.Instance{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o Instance) AsPacketPeer() PacketPeer.Instance      { return *(*PacketPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

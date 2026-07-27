@@ -9,6 +9,7 @@ Stores information about joystick motions. One [InputEventJoypadMotion] represen
 package InputEventJoypadMotion
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -128,7 +132,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.InputEventJoypadMotion
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputEventJoypadMotion(obj[0])
@@ -143,7 +147,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -194,29 +198,33 @@ func (self Instance) SetAxisValue(value Float.X) Instance { //gd:InputEventJoypa
 
 func (self class) SetAxis(axis Input.JoyAxis) { //gd:InputEventJoypadMotion.set_axis
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_axis, 0|(gdextension.SizeInt<<4), &struct{ axis Input.JoyAxis }{axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAxis() Input.JoyAxis { //gd:InputEventJoypadMotion.get_axis
 	var r_ret = jumponly.Call[Input.JoyAxis](gd.ObjectChecked(self.AsObject()), methods.get_axis, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAxisValue(axis_value float64) { //gd:InputEventJoypadMotion.set_axis_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_axis_value, 0|(gdextension.SizeFloat<<4), &struct{ axis_value float64 }{axis_value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAxisValue() float64 { //gd:InputEventJoypadMotion.get_axis_value
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_axis_value, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsInputEventJoypadMotion() Advanced         { return Advanced(o) }
 func (o Instance) AsInputEventJoypadMotion() Instance      { return o }
 func (o *Extension[T]) AsInputEventJoypadMotion() Instance { return o.Super() }
-func (o class) AsInputEvent() InputEvent.Advanced          { return InputEvent.Advanced{gdclass.NewInputEvent(o[0].AsObject()[0])} }
+func (o class) AsInputEvent() InputEvent.Advanced          { return *(*InputEvent.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsInputEvent() InputEvent.Instance  { return o.Super().AsInputEvent() }
-func (o Instance) AsInputEvent() InputEvent.Instance       { return InputEvent.Instance{gdclass.NewInputEvent(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced              { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsInputEvent() InputEvent.Instance       { return *(*InputEvent.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced              { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance      { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance           { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance           { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                        { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }

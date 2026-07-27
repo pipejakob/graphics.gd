@@ -8,6 +8,7 @@ GridMapEditorPlugin provides access to the [GridMap] editor functionality.
 package GridMapEditorPlugin
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -16,6 +17,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -44,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -218,7 +223,7 @@ func (self Instance) GetSelectedPaletteItem() int { //gd:GridMapEditorPlugin.get
 type Advanced = class
 type class [1]gdclass.GridMapEditorPlugin
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGridMapEditorPlugin(obj[0])
@@ -233,7 +238,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -258,6 +263,7 @@ func New() Instance {
 
 func (self class) GetCurrentGridMap() [1]gdclass.GridMap { //gd:GridMapEditorPlugin.get_current_grid_map
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_current_grid_map, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.GridMap{gdclass.NewGridMap(gdreference.LetObject(r_ret))}
 	return ret
 }
@@ -266,42 +272,49 @@ func (self class) SetSelection(begin Vector3i.XYZ, end Vector3i.XYZ) { //gd:Grid
 		begin Vector3i.XYZ
 		end   Vector3i.XYZ
 	}{begin, end})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearSelection() { //gd:GridMapEditorPlugin.clear_selection
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_selection, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSelection() AABB.PositionSize { //gd:GridMapEditorPlugin.get_selection
 	var r_ret = noescape.Call[AABB.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_selection, gdextension.SizeAABB, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasSelection() bool { //gd:GridMapEditorPlugin.has_selection
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_selection, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSelectedCells() Array.Any { //gd:GridMapEditorPlugin.get_selected_cells
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_selected_cells, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetSelectedPaletteItem(item int64) { //gd:GridMapEditorPlugin.set_selected_palette_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_selected_palette_item, 0|(gdextension.SizeInt<<4), &struct{ item int64 }{item})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSelectedPaletteItem() int64 { //gd:GridMapEditorPlugin.get_selected_palette_item
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_selected_palette_item, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsGridMapEditorPlugin() Advanced               { return Advanced(o) }
 func (o Instance) AsGridMapEditorPlugin() Instance            { return o }
 func (o *Extension[T]) AsGridMapEditorPlugin() Instance       { return o.Super() }
-func (o class) AsEditorPlugin() EditorPlugin.Advanced         { return EditorPlugin.Advanced{gdclass.NewEditorPlugin(o[0].AsObject()[0])} }
+func (o class) AsEditorPlugin() EditorPlugin.Advanced         { return *(*EditorPlugin.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsEditorPlugin() EditorPlugin.Instance { return o.Super().AsEditorPlugin() }
-func (o Instance) AsEditorPlugin() EditorPlugin.Instance      { return EditorPlugin.Instance{gdclass.NewEditorPlugin(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsEditorPlugin() EditorPlugin.Instance      { return *(*EditorPlugin.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                         { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance                 { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                      { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

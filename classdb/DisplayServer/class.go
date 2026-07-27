@@ -13,6 +13,7 @@ package DisplayServer
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -21,6 +22,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -57,6 +59,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -3530,7 +3535,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.DisplayServer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewDisplayServer(obj[0])
@@ -3545,7 +3550,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) HasFeature(feature Feature) bool { //gd:DisplayServer.has_feature
@@ -3566,6 +3571,8 @@ func (self class) HelpSetSearchCallbacks(search_callback Callable.Function, acti
 		search_callback gdextension.Callable
 		action_callback gdextension.Callable
 	}{pointers.Get(gd.InternalCallable(search_callback)), pointers.Get(gd.InternalCallable(action_callback))})
+	runtime.KeepAlive(search_callback)
+	runtime.KeepAlive(action_callback)
 }
 func (self class) GlobalMenuSetPopupCallbacks(menu_root String.Readable, open_callback Callable.Function, close_callback Callable.Function) { //gd:DisplayServer.global_menu_set_popup_callbacks
 	once.Do(singleton)
@@ -3574,6 +3581,9 @@ func (self class) GlobalMenuSetPopupCallbacks(menu_root String.Readable, open_ca
 		open_callback  gdextension.Callable
 		close_callback gdextension.Callable
 	}{pointers.Get(gd.InternalString(menu_root)), pointers.Get(gd.InternalCallable(open_callback)), pointers.Get(gd.InternalCallable(close_callback))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(open_callback)
+	runtime.KeepAlive(close_callback)
 }
 func (self class) GlobalMenuAddSubmenuItem(menu_root String.Readable, label String.Readable, submenu String.Readable, index int64) int64 { //gd:DisplayServer.global_menu_add_submenu_item
 	once.Do(singleton)
@@ -3583,6 +3593,9 @@ func (self class) GlobalMenuAddSubmenuItem(menu_root String.Readable, label Stri
 		submenu   gdextension.String
 		index     int64
 	}{pointers.Get(gd.InternalString(menu_root)), pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalString(submenu)), index})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(submenu)
 	var ret = r_ret
 	return ret
 }
@@ -3597,6 +3610,11 @@ func (self class) GlobalMenuAddItem(menu_root String.Readable, label String.Read
 		accelerator  Input.Key
 		index        int64
 	}{pointers.Get(gd.InternalString(menu_root)), pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -3611,6 +3629,11 @@ func (self class) GlobalMenuAddCheckItem(menu_root String.Readable, label String
 		accelerator  Input.Key
 		index        int64
 	}{pointers.Get(gd.InternalString(menu_root)), pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -3626,6 +3649,12 @@ func (self class) GlobalMenuAddIconItem(menu_root String.Readable, icon [1]gdcla
 		accelerator  Input.Key
 		index        int64
 	}{pointers.Get(gd.InternalString(menu_root)), gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0])), pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(icon[0].Anchor())
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -3641,6 +3670,12 @@ func (self class) GlobalMenuAddIconCheckItem(menu_root String.Readable, icon [1]
 		accelerator  Input.Key
 		index        int64
 	}{pointers.Get(gd.InternalString(menu_root)), gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0])), pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(icon[0].Anchor())
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -3655,6 +3690,11 @@ func (self class) GlobalMenuAddRadioCheckItem(menu_root String.Readable, label S
 		accelerator  Input.Key
 		index        int64
 	}{pointers.Get(gd.InternalString(menu_root)), pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -3670,6 +3710,12 @@ func (self class) GlobalMenuAddIconRadioCheckItem(menu_root String.Readable, ico
 		accelerator  Input.Key
 		index        int64
 	}{pointers.Get(gd.InternalString(menu_root)), gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0])), pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(icon[0].Anchor())
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -3686,6 +3732,11 @@ func (self class) GlobalMenuAddMultistateItem(menu_root String.Readable, label S
 		accelerator   Input.Key
 		index         int64
 	}{pointers.Get(gd.InternalString(menu_root)), pointers.Get(gd.InternalString(label)), max_states, default_state, pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -3695,6 +3746,7 @@ func (self class) GlobalMenuAddSeparator(menu_root String.Readable, index int64)
 		menu_root gdextension.String
 		index     int64
 	}{pointers.Get(gd.InternalString(menu_root)), index})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -3704,6 +3756,8 @@ func (self class) GlobalMenuGetItemIndexFromText(menu_root String.Readable, text
 		menu_root gdextension.String
 		text      gdextension.String
 	}{pointers.Get(gd.InternalString(menu_root)), pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(text)
 	var ret = r_ret
 	return ret
 }
@@ -3713,6 +3767,8 @@ func (self class) GlobalMenuGetItemIndexFromTag(menu_root String.Readable, tag v
 		menu_root gdextension.String
 		tag       gdextension.Variant
 	}{pointers.Get(gd.InternalString(menu_root)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag)))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -3722,6 +3778,7 @@ func (self class) GlobalMenuIsItemChecked(menu_root String.Readable, idx int64) 
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -3731,6 +3788,7 @@ func (self class) GlobalMenuIsItemCheckable(menu_root String.Readable, idx int64
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -3740,6 +3798,7 @@ func (self class) GlobalMenuIsItemRadioCheckable(menu_root String.Readable, idx 
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -3749,6 +3808,7 @@ func (self class) GlobalMenuGetItemCallback(menu_root String.Readable, idx int64
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
@@ -3758,6 +3818,7 @@ func (self class) GlobalMenuGetItemKeyCallback(menu_root String.Readable, idx in
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = Callable.Through(gd.WrapCallable(pointers.New[gd.Callable](r_ret)))
 	return ret
 }
@@ -3767,6 +3828,7 @@ func (self class) GlobalMenuGetItemTag(menu_root String.Readable, idx int64) var
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -3776,6 +3838,7 @@ func (self class) GlobalMenuGetItemText(menu_root String.Readable, idx int64) St
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -3785,6 +3848,7 @@ func (self class) GlobalMenuGetItemSubmenu(menu_root String.Readable, idx int64)
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -3794,6 +3858,7 @@ func (self class) GlobalMenuGetItemAccelerator(menu_root String.Readable, idx in
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -3803,6 +3868,7 @@ func (self class) GlobalMenuIsItemDisabled(menu_root String.Readable, idx int64)
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -3812,6 +3878,7 @@ func (self class) GlobalMenuIsItemHidden(menu_root String.Readable, idx int64) b
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -3821,6 +3888,7 @@ func (self class) GlobalMenuGetItemTooltip(menu_root String.Readable, idx int64)
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -3830,6 +3898,7 @@ func (self class) GlobalMenuGetItemState(menu_root String.Readable, idx int64) i
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -3839,6 +3908,7 @@ func (self class) GlobalMenuGetItemMaxStates(menu_root String.Readable, idx int6
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -3848,6 +3918,7 @@ func (self class) GlobalMenuGetItemIcon(menu_root String.Readable, idx int64) [1
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -3857,6 +3928,7 @@ func (self class) GlobalMenuGetItemIndentationLevel(menu_root String.Readable, i
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -3867,6 +3939,7 @@ func (self class) GlobalMenuSetItemChecked(menu_root String.Readable, idx int64,
 		idx       int64
 		checked   bool
 	}{pointers.Get(gd.InternalString(menu_root)), idx, checked})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuSetItemCheckable(menu_root String.Readable, idx int64, checkable bool) { //gd:DisplayServer.global_menu_set_item_checkable
 	once.Do(singleton)
@@ -3875,6 +3948,7 @@ func (self class) GlobalMenuSetItemCheckable(menu_root String.Readable, idx int6
 		idx       int64
 		checkable bool
 	}{pointers.Get(gd.InternalString(menu_root)), idx, checkable})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuSetItemRadioCheckable(menu_root String.Readable, idx int64, checkable bool) { //gd:DisplayServer.global_menu_set_item_radio_checkable
 	once.Do(singleton)
@@ -3883,6 +3957,7 @@ func (self class) GlobalMenuSetItemRadioCheckable(menu_root String.Readable, idx
 		idx       int64
 		checkable bool
 	}{pointers.Get(gd.InternalString(menu_root)), idx, checkable})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuSetItemCallback(menu_root String.Readable, idx int64, callback Callable.Function) { //gd:DisplayServer.global_menu_set_item_callback
 	once.Do(singleton)
@@ -3891,6 +3966,8 @@ func (self class) GlobalMenuSetItemCallback(menu_root String.Readable, idx int64
 		idx       int64
 		callback  gdextension.Callable
 	}{pointers.Get(gd.InternalString(menu_root)), idx, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(callback)
 }
 func (self class) GlobalMenuSetItemHoverCallbacks(menu_root String.Readable, idx int64, callback Callable.Function) { //gd:DisplayServer.global_menu_set_item_hover_callbacks
 	once.Do(singleton)
@@ -3899,6 +3976,8 @@ func (self class) GlobalMenuSetItemHoverCallbacks(menu_root String.Readable, idx
 		idx       int64
 		callback  gdextension.Callable
 	}{pointers.Get(gd.InternalString(menu_root)), idx, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(callback)
 }
 func (self class) GlobalMenuSetItemKeyCallback(menu_root String.Readable, idx int64, key_callback Callable.Function) { //gd:DisplayServer.global_menu_set_item_key_callback
 	once.Do(singleton)
@@ -3907,6 +3986,8 @@ func (self class) GlobalMenuSetItemKeyCallback(menu_root String.Readable, idx in
 		idx          int64
 		key_callback gdextension.Callable
 	}{pointers.Get(gd.InternalString(menu_root)), idx, pointers.Get(gd.InternalCallable(key_callback))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(key_callback)
 }
 func (self class) GlobalMenuSetItemTag(menu_root String.Readable, idx int64, tag variant.Any) { //gd:DisplayServer.global_menu_set_item_tag
 	once.Do(singleton)
@@ -3915,6 +3996,8 @@ func (self class) GlobalMenuSetItemTag(menu_root String.Readable, idx int64, tag
 		idx       int64
 		tag       gdextension.Variant
 	}{pointers.Get(gd.InternalString(menu_root)), idx, gdextension.Variant(pointers.Get(gd.InternalVariant(tag)))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(tag)
 }
 func (self class) GlobalMenuSetItemText(menu_root String.Readable, idx int64, text String.Readable) { //gd:DisplayServer.global_menu_set_item_text
 	once.Do(singleton)
@@ -3923,6 +4006,8 @@ func (self class) GlobalMenuSetItemText(menu_root String.Readable, idx int64, te
 		idx       int64
 		text      gdextension.String
 	}{pointers.Get(gd.InternalString(menu_root)), idx, pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(text)
 }
 func (self class) GlobalMenuSetItemSubmenu(menu_root String.Readable, idx int64, submenu String.Readable) { //gd:DisplayServer.global_menu_set_item_submenu
 	once.Do(singleton)
@@ -3931,6 +4016,8 @@ func (self class) GlobalMenuSetItemSubmenu(menu_root String.Readable, idx int64,
 		idx       int64
 		submenu   gdextension.String
 	}{pointers.Get(gd.InternalString(menu_root)), idx, pointers.Get(gd.InternalString(submenu))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(submenu)
 }
 func (self class) GlobalMenuSetItemAccelerator(menu_root String.Readable, idx int64, keycode Input.Key) { //gd:DisplayServer.global_menu_set_item_accelerator
 	once.Do(singleton)
@@ -3939,6 +4026,7 @@ func (self class) GlobalMenuSetItemAccelerator(menu_root String.Readable, idx in
 		idx       int64
 		keycode   Input.Key
 	}{pointers.Get(gd.InternalString(menu_root)), idx, keycode})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuSetItemDisabled(menu_root String.Readable, idx int64, disabled bool) { //gd:DisplayServer.global_menu_set_item_disabled
 	once.Do(singleton)
@@ -3947,6 +4035,7 @@ func (self class) GlobalMenuSetItemDisabled(menu_root String.Readable, idx int64
 		idx       int64
 		disabled  bool
 	}{pointers.Get(gd.InternalString(menu_root)), idx, disabled})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuSetItemHidden(menu_root String.Readable, idx int64, hidden bool) { //gd:DisplayServer.global_menu_set_item_hidden
 	once.Do(singleton)
@@ -3955,6 +4044,7 @@ func (self class) GlobalMenuSetItemHidden(menu_root String.Readable, idx int64, 
 		idx       int64
 		hidden    bool
 	}{pointers.Get(gd.InternalString(menu_root)), idx, hidden})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuSetItemTooltip(menu_root String.Readable, idx int64, tooltip String.Readable) { //gd:DisplayServer.global_menu_set_item_tooltip
 	once.Do(singleton)
@@ -3963,6 +4053,8 @@ func (self class) GlobalMenuSetItemTooltip(menu_root String.Readable, idx int64,
 		idx       int64
 		tooltip   gdextension.String
 	}{pointers.Get(gd.InternalString(menu_root)), idx, pointers.Get(gd.InternalString(tooltip))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(tooltip)
 }
 func (self class) GlobalMenuSetItemState(menu_root String.Readable, idx int64, state int64) { //gd:DisplayServer.global_menu_set_item_state
 	once.Do(singleton)
@@ -3971,6 +4063,7 @@ func (self class) GlobalMenuSetItemState(menu_root String.Readable, idx int64, s
 		idx       int64
 		state     int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx, state})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuSetItemMaxStates(menu_root String.Readable, idx int64, max_states int64) { //gd:DisplayServer.global_menu_set_item_max_states
 	once.Do(singleton)
@@ -3979,6 +4072,7 @@ func (self class) GlobalMenuSetItemMaxStates(menu_root String.Readable, idx int6
 		idx        int64
 		max_states int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx, max_states})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuSetItemIcon(menu_root String.Readable, idx int64, icon [1]gdclass.Texture2D) { //gd:DisplayServer.global_menu_set_item_icon
 	once.Do(singleton)
@@ -3987,6 +4081,8 @@ func (self class) GlobalMenuSetItemIcon(menu_root String.Readable, idx int64, ic
 		idx       int64
 		icon      gdextension.Object
 	}{pointers.Get(gd.InternalString(menu_root)), idx, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0]))})
+	runtime.KeepAlive(menu_root)
+	runtime.KeepAlive(icon[0].Anchor())
 }
 func (self class) GlobalMenuSetItemIndentationLevel(menu_root String.Readable, idx int64, level int64) { //gd:DisplayServer.global_menu_set_item_indentation_level
 	once.Do(singleton)
@@ -3995,10 +4091,12 @@ func (self class) GlobalMenuSetItemIndentationLevel(menu_root String.Readable, i
 		idx       int64
 		level     int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx, level})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuGetItemCount(menu_root String.Readable) int64 { //gd:DisplayServer.global_menu_get_item_count
 	once.Do(singleton)
 	var r_ret = noescape.Call[int64](gdreference.GetObject(self.AsObject()[0]), methods.global_menu_get_item_count, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ menu_root gdextension.String }{pointers.Get(gd.InternalString(menu_root))})
+	runtime.KeepAlive(menu_root)
 	var ret = r_ret
 	return ret
 }
@@ -4008,10 +4106,12 @@ func (self class) GlobalMenuRemoveItem(menu_root String.Readable, idx int64) { /
 		menu_root gdextension.String
 		idx       int64
 	}{pointers.Get(gd.InternalString(menu_root)), idx})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuClear(menu_root String.Readable) { //gd:DisplayServer.global_menu_clear
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.global_menu_clear, 0|(gdextension.SizeString<<4), &struct{ menu_root gdextension.String }{pointers.Get(gd.InternalString(menu_root))})
+	runtime.KeepAlive(menu_root)
 }
 func (self class) GlobalMenuGetSystemMenuRoots() Dictionary.Any { //gd:DisplayServer.global_menu_get_system_menu_roots
 	once.Do(singleton)
@@ -4040,6 +4140,7 @@ func (self class) TtsGetVoices() Array.Contains[Dictionary.Any] { //gd:DisplaySe
 func (self class) TtsGetVoicesForLanguage(language String.Readable) Packed.Strings { //gd:DisplayServer.tts_get_voices_for_language
 	once.Do(singleton)
 	var r_ret = noescape.Call[gd.PackedPointers](gdreference.GetObject(self.AsObject()[0]), methods.tts_get_voices_for_language, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ language gdextension.String }{pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(language)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -4054,6 +4155,8 @@ func (self class) TtsSpeak(text String.Readable, voice String.Readable, volume i
 		utterance_id int64
 		interrupt    bool
 	}{pointers.Get(gd.InternalString(text)), pointers.Get(gd.InternalString(voice)), volume, pitch, rate, utterance_id, interrupt})
+	runtime.KeepAlive(text)
+	runtime.KeepAlive(voice)
 }
 func (self class) TtsPause() { //gd:DisplayServer.tts_pause
 	once.Do(singleton)
@@ -4073,6 +4176,7 @@ func (self class) TtsSetUtteranceCallback(event TTSUtteranceEvent, callable Call
 		event    TTSUtteranceEvent
 		callable gdextension.Callable
 	}{event, pointers.Get(gd.InternalCallable(callable))})
+	runtime.KeepAlive(callable)
 }
 func (self class) IsDarkModeSupported() bool { //gd:DisplayServer.is_dark_mode_supported
 	once.Do(singleton)
@@ -4101,6 +4205,7 @@ func (self class) GetBaseColor() Color.RGBA { //gd:DisplayServer.get_base_color
 func (self class) SetSystemThemeChangeCallback(callable Callable.Function) { //gd:DisplayServer.set_system_theme_change_callback
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.set_system_theme_change_callback, 0|(gdextension.SizeCallable<<4), &struct{ callable gdextension.Callable }{pointers.Get(gd.InternalCallable(callable))})
+	runtime.KeepAlive(callable)
 }
 func (self class) MouseSetMode(mouse_mode MouseModeValue) { //gd:DisplayServer.mouse_set_mode
 	once.Do(singleton)
@@ -4131,6 +4236,7 @@ func (self class) MouseGetButtonState() Input.MouseButtonMask { //gd:DisplayServ
 func (self class) ClipboardSet(clipboard String.Readable) { //gd:DisplayServer.clipboard_set
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.clipboard_set, 0|(gdextension.SizeString<<4), &struct{ clipboard gdextension.String }{pointers.Get(gd.InternalString(clipboard))})
+	runtime.KeepAlive(clipboard)
 }
 func (self class) ClipboardGet() String.Readable { //gd:DisplayServer.clipboard_get
 	once.Do(singleton)
@@ -4159,6 +4265,7 @@ func (self class) ClipboardHasImage() bool { //gd:DisplayServer.clipboard_has_im
 func (self class) ClipboardSetPrimary(clipboard_primary String.Readable) { //gd:DisplayServer.clipboard_set_primary
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.clipboard_set_primary, 0|(gdextension.SizeString<<4), &struct{ clipboard_primary gdextension.String }{pointers.Get(gd.InternalString(clipboard_primary))})
+	runtime.KeepAlive(clipboard_primary)
 }
 func (self class) ClipboardGetPrimary() String.Readable { //gd:DisplayServer.clipboard_get_primary
 	once.Do(singleton)
@@ -4337,6 +4444,7 @@ func (self class) WindowSetTitle(title String.Readable, window_id int64) { //gd:
 		title     gdextension.String
 		window_id int64
 	}{pointers.Get(gd.InternalString(title)), window_id})
+	runtime.KeepAlive(title)
 }
 func (self class) WindowGetTitleSize(title String.Readable, window_id int64) Vector2i.XY { //gd:DisplayServer.window_get_title_size
 	once.Do(singleton)
@@ -4344,6 +4452,7 @@ func (self class) WindowGetTitleSize(title String.Readable, window_id int64) Vec
 		title     gdextension.String
 		window_id int64
 	}{pointers.Get(gd.InternalString(title)), window_id})
+	runtime.KeepAlive(title)
 	var ret = r_ret
 	return ret
 }
@@ -4353,6 +4462,7 @@ func (self class) WindowSetMousePassthrough(region Packed.Array[Vector2.XY], win
 		region    gdextension.PackedArray[Vector2.XY]
 		window_id int64
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](region)), window_id})
+	runtime.KeepAlive(region)
 }
 func (self class) WindowGetCurrentScreen(window_id int64) int64 { //gd:DisplayServer.window_get_current_screen
 	once.Do(singleton)
@@ -4405,6 +4515,7 @@ func (self class) WindowSetRectChangedCallback(callback Callable.Function, windo
 		callback  gdextension.Callable
 		window_id int64
 	}{pointers.Get(gd.InternalCallable(callback)), window_id})
+	runtime.KeepAlive(callback)
 }
 func (self class) WindowSetWindowEventCallback(callback Callable.Function, window_id int64) { //gd:DisplayServer.window_set_window_event_callback
 	once.Do(singleton)
@@ -4412,6 +4523,7 @@ func (self class) WindowSetWindowEventCallback(callback Callable.Function, windo
 		callback  gdextension.Callable
 		window_id int64
 	}{pointers.Get(gd.InternalCallable(callback)), window_id})
+	runtime.KeepAlive(callback)
 }
 func (self class) WindowSetInputEventCallback(callback Callable.Function, window_id int64) { //gd:DisplayServer.window_set_input_event_callback
 	once.Do(singleton)
@@ -4419,6 +4531,7 @@ func (self class) WindowSetInputEventCallback(callback Callable.Function, window
 		callback  gdextension.Callable
 		window_id int64
 	}{pointers.Get(gd.InternalCallable(callback)), window_id})
+	runtime.KeepAlive(callback)
 }
 func (self class) WindowSetInputTextCallback(callback Callable.Function, window_id int64) { //gd:DisplayServer.window_set_input_text_callback
 	once.Do(singleton)
@@ -4426,6 +4539,7 @@ func (self class) WindowSetInputTextCallback(callback Callable.Function, window_
 		callback  gdextension.Callable
 		window_id int64
 	}{pointers.Get(gd.InternalCallable(callback)), window_id})
+	runtime.KeepAlive(callback)
 }
 func (self class) WindowSetDropFilesCallback(callback Callable.Function, window_id int64) { //gd:DisplayServer.window_set_drop_files_callback
 	once.Do(singleton)
@@ -4433,6 +4547,7 @@ func (self class) WindowSetDropFilesCallback(callback Callable.Function, window_
 		callback  gdextension.Callable
 		window_id int64
 	}{pointers.Get(gd.InternalCallable(callback)), window_id})
+	runtime.KeepAlive(callback)
 }
 func (self class) WindowGetAttachedInstanceId(window_id int64) int64 { //gd:DisplayServer.window_get_attached_instance_id
 	once.Do(singleton)
@@ -4508,6 +4623,7 @@ func (self class) WindowSetIcon(icon [1]gdclass.Image, window_id int64) { //gd:D
 		icon      gdextension.Object
 		window_id int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(icon[0])[0])), window_id})
+	runtime.KeepAlive(icon[0].Anchor())
 }
 func (self class) WindowSetWindowButtonsOffset(offset Vector2i.XY, window_id int64) { //gd:DisplayServer.window_set_window_buttons_offset
 	once.Do(singleton)
@@ -4770,6 +4886,7 @@ func (self class) AccessibilityElementSetMeta(id RID.Any, meta variant.Any) { //
 		id   RID.Any
 		meta gdextension.Variant
 	}{id, gdextension.Variant(pointers.Get(gd.InternalVariant(meta)))})
+	runtime.KeepAlive(meta)
 }
 func (self class) AccessibilityElementGetMeta(id RID.Any) variant.Any { //gd:DisplayServer.accessibility_element_get_meta
 	once.Do(singleton)
@@ -4815,6 +4932,7 @@ func (self class) AccessibilityUpdateSetName(id RID.Any, name String.Readable) {
 		id   RID.Any
 		name gdextension.String
 	}{id, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) AccessibilityUpdateSetExtraInfo(id RID.Any, name String.Readable) { //gd:DisplayServer.accessibility_update_set_extra_info
 	once.Do(singleton)
@@ -4822,6 +4940,7 @@ func (self class) AccessibilityUpdateSetExtraInfo(id RID.Any, name String.Readab
 		id   RID.Any
 		name gdextension.String
 	}{id, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) AccessibilityUpdateSetDescription(id RID.Any, description String.Readable) { //gd:DisplayServer.accessibility_update_set_description
 	once.Do(singleton)
@@ -4829,6 +4948,7 @@ func (self class) AccessibilityUpdateSetDescription(id RID.Any, description Stri
 		id          RID.Any
 		description gdextension.String
 	}{id, pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(description)
 }
 func (self class) AccessibilityUpdateSetValue(id RID.Any, value String.Readable) { //gd:DisplayServer.accessibility_update_set_value
 	once.Do(singleton)
@@ -4836,6 +4956,7 @@ func (self class) AccessibilityUpdateSetValue(id RID.Any, value String.Readable)
 		id    RID.Any
 		value gdextension.String
 	}{id, pointers.Get(gd.InternalString(value))})
+	runtime.KeepAlive(value)
 }
 func (self class) AccessibilityUpdateSetTooltip(id RID.Any, tooltip String.Readable) { //gd:DisplayServer.accessibility_update_set_tooltip
 	once.Do(singleton)
@@ -4843,6 +4964,7 @@ func (self class) AccessibilityUpdateSetTooltip(id RID.Any, tooltip String.Reada
 		id      RID.Any
 		tooltip gdextension.String
 	}{id, pointers.Get(gd.InternalString(tooltip))})
+	runtime.KeepAlive(tooltip)
 }
 func (self class) AccessibilityUpdateSetBounds(id RID.Any, rect Rect2.PositionSize) { //gd:DisplayServer.accessibility_update_set_bounds
 	once.Do(singleton)
@@ -4963,6 +5085,7 @@ func (self class) AccessibilityUpdateAddAction(id RID.Any, action AccessibilityA
 		action   AccessibilityAction
 		callable gdextension.Callable
 	}{id, action, pointers.Get(gd.InternalCallable(callable))})
+	runtime.KeepAlive(callable)
 }
 func (self class) AccessibilityUpdateAddCustomAction(id RID.Any, action_id int64, action_description String.Readable) { //gd:DisplayServer.accessibility_update_add_custom_action
 	once.Do(singleton)
@@ -4971,6 +5094,7 @@ func (self class) AccessibilityUpdateAddCustomAction(id RID.Any, action_id int64
 		action_id          int64
 		action_description gdextension.String
 	}{id, action_id, pointers.Get(gd.InternalString(action_description))})
+	runtime.KeepAlive(action_description)
 }
 func (self class) AccessibilityUpdateSetTableRowCount(id RID.Any, count int64) { //gd:DisplayServer.accessibility_update_set_table_row_count
 	once.Do(singleton)
@@ -5164,6 +5288,7 @@ func (self class) AccessibilityUpdateSetClassname(id RID.Any, classname String.R
 		id        RID.Any
 		classname gdextension.String
 	}{id, pointers.Get(gd.InternalString(classname))})
+	runtime.KeepAlive(classname)
 }
 func (self class) AccessibilityUpdateSetPlaceholder(id RID.Any, placeholder String.Readable) { //gd:DisplayServer.accessibility_update_set_placeholder
 	once.Do(singleton)
@@ -5171,6 +5296,7 @@ func (self class) AccessibilityUpdateSetPlaceholder(id RID.Any, placeholder Stri
 		id          RID.Any
 		placeholder gdextension.String
 	}{id, pointers.Get(gd.InternalString(placeholder))})
+	runtime.KeepAlive(placeholder)
 }
 func (self class) AccessibilityUpdateSetLanguage(id RID.Any, language String.Readable) { //gd:DisplayServer.accessibility_update_set_language
 	once.Do(singleton)
@@ -5178,6 +5304,7 @@ func (self class) AccessibilityUpdateSetLanguage(id RID.Any, language String.Rea
 		id       RID.Any
 		language gdextension.String
 	}{id, pointers.Get(gd.InternalString(language))})
+	runtime.KeepAlive(language)
 }
 func (self class) AccessibilityUpdateSetTextOrientation(id RID.Any, vertical bool) { //gd:DisplayServer.accessibility_update_set_text_orientation
 	once.Do(singleton)
@@ -5199,6 +5326,7 @@ func (self class) AccessibilityUpdateSetShortcut(id RID.Any, shortcut String.Rea
 		id       RID.Any
 		shortcut gdextension.String
 	}{id, pointers.Get(gd.InternalString(shortcut))})
+	runtime.KeepAlive(shortcut)
 }
 func (self class) AccessibilityUpdateSetUrl(id RID.Any, url String.Readable) { //gd:DisplayServer.accessibility_update_set_url
 	once.Do(singleton)
@@ -5206,6 +5334,7 @@ func (self class) AccessibilityUpdateSetUrl(id RID.Any, url String.Readable) { /
 		id  RID.Any
 		url gdextension.String
 	}{id, pointers.Get(gd.InternalString(url))})
+	runtime.KeepAlive(url)
 }
 func (self class) AccessibilityUpdateSetRoleDescription(id RID.Any, description String.Readable) { //gd:DisplayServer.accessibility_update_set_role_description
 	once.Do(singleton)
@@ -5213,6 +5342,7 @@ func (self class) AccessibilityUpdateSetRoleDescription(id RID.Any, description 
 		id          RID.Any
 		description gdextension.String
 	}{id, pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(description)
 }
 func (self class) AccessibilityUpdateSetStateDescription(id RID.Any, description String.Readable) { //gd:DisplayServer.accessibility_update_set_state_description
 	once.Do(singleton)
@@ -5220,6 +5350,7 @@ func (self class) AccessibilityUpdateSetStateDescription(id RID.Any, description
 		id          RID.Any
 		description gdextension.String
 	}{id, pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(description)
 }
 func (self class) AccessibilityUpdateSetColorValue(id RID.Any, color Color.RGBA) { //gd:DisplayServer.accessibility_update_set_color_value
 	once.Do(singleton)
@@ -5264,6 +5395,7 @@ func (self class) VirtualKeyboardShow(existing_text String.Readable, position Re
 		cursor_start  int64
 		cursor_end    int64
 	}{pointers.Get(gd.InternalString(existing_text)), position, atype, max_length, cursor_start, cursor_end})
+	runtime.KeepAlive(existing_text)
 }
 func (self class) VirtualKeyboardHide() { //gd:DisplayServer.virtual_keyboard_hide
 	once.Do(singleton)
@@ -5284,6 +5416,7 @@ func (self class) HasHardwareKeyboard() bool { //gd:DisplayServer.has_hardware_k
 func (self class) SetHardwareKeyboardConnectionChangeCallback(callable Callable.Function) { //gd:DisplayServer.set_hardware_keyboard_connection_change_callback
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.set_hardware_keyboard_connection_change_callback, 0|(gdextension.SizeCallable<<4), &struct{ callable gdextension.Callable }{pointers.Get(gd.InternalCallable(callable))})
+	runtime.KeepAlive(callable)
 }
 func (self class) CursorSetShape(shape CursorShape) { //gd:DisplayServer.cursor_set_shape
 	once.Do(singleton)
@@ -5302,6 +5435,7 @@ func (self class) CursorSetCustomImage(cursor [1]gdclass.Resource, shape CursorS
 		shape   CursorShape
 		hotspot Vector2.XY
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetResource(cursor[0])[0])), shape, hotspot})
+	runtime.KeepAlive(cursor[0].Anchor())
 }
 func (self class) GetSwapCancelOk() bool { //gd:DisplayServer.get_swap_cancel_ok
 	once.Do(singleton)
@@ -5321,6 +5455,10 @@ func (self class) DialogShow(title String.Readable, description String.Readable,
 		buttons     gdextension.PackedArray[gdextension.String]
 		callback    gdextension.Callable
 	}{pointers.Get(gd.InternalString(title)), pointers.Get(gd.InternalString(description)), pointers.Get(gd.InternalPackedStrings(buttons)), pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(title)
+	runtime.KeepAlive(description)
+	runtime.KeepAlive(buttons)
+	runtime.KeepAlive(callback)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -5332,6 +5470,10 @@ func (self class) DialogInputText(title String.Readable, description String.Read
 		existing_text gdextension.String
 		callback      gdextension.Callable
 	}{pointers.Get(gd.InternalString(title)), pointers.Get(gd.InternalString(description)), pointers.Get(gd.InternalString(existing_text)), pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(title)
+	runtime.KeepAlive(description)
+	runtime.KeepAlive(existing_text)
+	runtime.KeepAlive(callback)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -5347,6 +5489,11 @@ func (self class) FileDialogShow(title String.Readable, current_directory String
 		callback          gdextension.Callable
 		parent_window_id  int64
 	}{pointers.Get(gd.InternalString(title)), pointers.Get(gd.InternalString(current_directory)), pointers.Get(gd.InternalString(filename)), show_hidden, mode, pointers.Get(gd.InternalPackedStrings(filters)), pointers.Get(gd.InternalCallable(callback)), parent_window_id})
+	runtime.KeepAlive(title)
+	runtime.KeepAlive(current_directory)
+	runtime.KeepAlive(filename)
+	runtime.KeepAlive(filters)
+	runtime.KeepAlive(callback)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -5364,6 +5511,13 @@ func (self class) FileDialogWithOptionsShow(title String.Readable, current_direc
 		callback          gdextension.Callable
 		parent_window_id  int64
 	}{pointers.Get(gd.InternalString(title)), pointers.Get(gd.InternalString(current_directory)), pointers.Get(gd.InternalString(root)), pointers.Get(gd.InternalString(filename)), show_hidden, mode, pointers.Get(gd.InternalPackedStrings(filters)), pointers.Get(gd.InternalArray(options)), pointers.Get(gd.InternalCallable(callback)), parent_window_id})
+	runtime.KeepAlive(title)
+	runtime.KeepAlive(current_directory)
+	runtime.KeepAlive(root)
+	runtime.KeepAlive(filename)
+	runtime.KeepAlive(filters)
+	runtime.KeepAlive(options)
+	runtime.KeepAlive(callback)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -5418,6 +5572,7 @@ func (self class) ShowEmojiAndSymbolPicker() { //gd:DisplayServer.show_emoji_and
 func (self class) ColorPicker(callback Callable.Function) bool { //gd:DisplayServer.color_picker
 	once.Do(singleton)
 	var r_ret = noescape.Call[bool](gdreference.GetObject(self.AsObject()[0]), methods.color_picker, gdextension.SizeBool|(gdextension.SizeCallable<<4), &struct{ callback gdextension.Callable }{pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 	var ret = r_ret
 	return ret
 }
@@ -5432,10 +5587,12 @@ func (self class) ForceProcessAndDropEvents() { //gd:DisplayServer.force_process
 func (self class) SetNativeIcon(filename String.Readable) { //gd:DisplayServer.set_native_icon
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.set_native_icon, 0|(gdextension.SizeString<<4), &struct{ filename gdextension.String }{pointers.Get(gd.InternalString(filename))})
+	runtime.KeepAlive(filename)
 }
 func (self class) SetIcon(image [1]gdclass.Image) { //gd:DisplayServer.set_icon
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.set_icon, 0|(gdextension.SizeObject<<4), &struct{ image gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0]))})
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (self class) CreateStatusIndicator(icon [1]gdclass.Texture2D, tooltip String.Readable, callback Callable.Function) int64 { //gd:DisplayServer.create_status_indicator
 	once.Do(singleton)
@@ -5444,6 +5601,9 @@ func (self class) CreateStatusIndicator(icon [1]gdclass.Texture2D, tooltip Strin
 		tooltip  gdextension.String
 		callback gdextension.Callable
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0])), pointers.Get(gd.InternalString(tooltip)), pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(icon[0].Anchor())
+	runtime.KeepAlive(tooltip)
+	runtime.KeepAlive(callback)
 	var ret = r_ret
 	return ret
 }
@@ -5453,6 +5613,7 @@ func (self class) StatusIndicatorSetIcon(id int64, icon [1]gdclass.Texture2D) { 
 		id   int64
 		icon gdextension.Object
 	}{id, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0]))})
+	runtime.KeepAlive(icon[0].Anchor())
 }
 func (self class) StatusIndicatorSetTooltip(id int64, tooltip String.Readable) { //gd:DisplayServer.status_indicator_set_tooltip
 	once.Do(singleton)
@@ -5460,6 +5621,7 @@ func (self class) StatusIndicatorSetTooltip(id int64, tooltip String.Readable) {
 		id      int64
 		tooltip gdextension.String
 	}{id, pointers.Get(gd.InternalString(tooltip))})
+	runtime.KeepAlive(tooltip)
 }
 func (self class) StatusIndicatorSetMenu(id int64, menu_rid RID.Any) { //gd:DisplayServer.status_indicator_set_menu
 	once.Do(singleton)
@@ -5474,6 +5636,7 @@ func (self class) StatusIndicatorSetCallback(id int64, callback Callable.Functio
 		id       int64
 		callback gdextension.Callable
 	}{id, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) StatusIndicatorGetRect(id int64) Rect2.PositionSize { //gd:DisplayServer.status_indicator_get_rect
 	once.Do(singleton)
@@ -5506,6 +5669,7 @@ func (self class) TabletGetCurrentDriver() String.Readable { //gd:DisplayServer.
 func (self class) TabletSetCurrentDriver(name String.Readable) { //gd:DisplayServer.tablet_set_current_driver
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.tablet_set_current_driver, 0|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) IsWindowTransparencyAvailable() bool { //gd:DisplayServer.is_window_transparency_available
 	once.Do(singleton)
@@ -5516,10 +5680,12 @@ func (self class) IsWindowTransparencyAvailable() bool { //gd:DisplayServer.is_w
 func (self class) RegisterAdditionalOutput(obj [1]gdreference.Object) { //gd:DisplayServer.register_additional_output
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.register_additional_output, 0|(gdextension.SizeObject<<4), &struct{ obj gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetObject(obj[0])[0]))})
+	runtime.KeepAlive(obj[0].Anchor())
 }
 func (self class) UnregisterAdditionalOutput(obj [1]gdreference.Object) { //gd:DisplayServer.unregister_additional_output
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.unregister_additional_output, 0|(gdextension.SizeObject<<4), &struct{ obj gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetObject(obj[0])[0]))})
+	runtime.KeepAlive(obj[0].Anchor())
 }
 func (self class) HasAdditionalOutputs() bool { //gd:DisplayServer.has_additional_outputs
 	once.Do(singleton)

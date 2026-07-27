@@ -31,6 +31,7 @@ package JavaClassWrapper
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -40,6 +41,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -65,6 +67,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -246,7 +251,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.JavaClassWrapper
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewJavaClassWrapper(obj[0])
@@ -261,12 +266,13 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) Wrap(name String.Readable) [1]gdclass.JavaClass { //gd:JavaClassWrapper.wrap
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Object](gdreference.GetObject(self.AsObject()[0]), methods.wrap, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(name)
 	var ret = [1]gdclass.JavaClass{gdclass.NewJavaClass(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -282,6 +288,8 @@ func (self class) CreateSamCallback(sam_interface String.Readable, callable Call
 		sam_interface gdextension.String
 		callable      gdextension.Callable
 	}{pointers.Get(gd.InternalString(sam_interface)), pointers.Get(gd.InternalCallable(callable))})
+	runtime.KeepAlive(sam_interface)
+	runtime.KeepAlive(callable)
 	var ret = [1]gdclass.JavaObject{gdclass.NewJavaObject(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -291,6 +299,8 @@ func (self class) CreateProxy(obj [1]gdreference.Object, interfaces Packed.Strin
 		obj        gdextension.Object
 		interfaces gdextension.PackedArray[gdextension.String]
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetObject(obj[0])[0])), pointers.Get(gd.InternalPackedStrings(interfaces))})
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(interfaces)
 	var ret = [1]gdclass.JavaObject{gdclass.NewJavaObject(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }

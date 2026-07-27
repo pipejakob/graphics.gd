@@ -20,6 +20,7 @@ Resource for environment nodes (like [WorldEnvironment]) that define multiple en
 package Environment
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -58,6 +59,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -342,7 +346,7 @@ func (self Instance) GetGlowLevel(idx int) Float.X { //gd:Environment.get_glow_l
 type Advanced = class
 type class [1]gdclass.Environment
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEnvironment(obj[0])
@@ -357,7 +361,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1825,409 +1829,512 @@ func (self Instance) SetAdjustmentColorCorrection(value Texture.Instance) Instan
 
 func (self class) SetBackground(mode BGMode) { //gd:Environment.set_background
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_background, 0|(gdextension.SizeInt<<4), &struct{ mode BGMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBackground() BGMode { //gd:Environment.get_background
 	var r_ret = jumponly.Call[BGMode](gd.ObjectChecked(self.AsObject()), methods.get_background, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSky(sky [1]gdclass.Sky) { //gd:Environment.set_sky
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sky, 0|(gdextension.SizeObject<<4), &struct{ sky gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetSky(sky[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(sky[0].Anchor())
 }
 func (self class) GetSky() [1]gdclass.Sky { //gd:Environment.get_sky
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_sky, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Sky{gdclass.NewSky(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetSkyCustomFov(scale float64) { //gd:Environment.set_sky_custom_fov
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sky_custom_fov, 0|(gdextension.SizeFloat<<4), &struct{ scale float64 }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkyCustomFov() float64 { //gd:Environment.get_sky_custom_fov
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sky_custom_fov, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSkyRotation(euler_radians Vector3.XYZ) { //gd:Environment.set_sky_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sky_rotation, 0|(gdextension.SizeVector3<<4), &struct{ euler_radians Vector3.XYZ }{euler_radians})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkyRotation() Vector3.XYZ { //gd:Environment.get_sky_rotation
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_sky_rotation, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBgColor(color Color.RGBA) { //gd:Environment.set_bg_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bg_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBgColor() Color.RGBA { //gd:Environment.get_bg_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_bg_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBgEnergyMultiplier(energy float64) { //gd:Environment.set_bg_energy_multiplier
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bg_energy_multiplier, 0|(gdextension.SizeFloat<<4), &struct{ energy float64 }{energy})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBgEnergyMultiplier() float64 { //gd:Environment.get_bg_energy_multiplier
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_bg_energy_multiplier, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBgIntensity(energy float64) { //gd:Environment.set_bg_intensity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bg_intensity, 0|(gdextension.SizeFloat<<4), &struct{ energy float64 }{energy})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBgIntensity() float64 { //gd:Environment.get_bg_intensity
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_bg_intensity, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCanvasMaxLayer(layer int64) { //gd:Environment.set_canvas_max_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_canvas_max_layer, 0|(gdextension.SizeInt<<4), &struct{ layer int64 }{layer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCanvasMaxLayer() int64 { //gd:Environment.get_canvas_max_layer
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_canvas_max_layer, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCameraFeedId(id int64) { //gd:Environment.set_camera_feed_id
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_camera_feed_id, 0|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCameraFeedId() int64 { //gd:Environment.get_camera_feed_id
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_camera_feed_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAmbientLightColor(color Color.RGBA) { //gd:Environment.set_ambient_light_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ambient_light_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAmbientLightColor() Color.RGBA { //gd:Environment.get_ambient_light_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_ambient_light_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAmbientSource(source AmbientSource) { //gd:Environment.set_ambient_source
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ambient_source, 0|(gdextension.SizeInt<<4), &struct{ source AmbientSource }{source})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAmbientSource() AmbientSource { //gd:Environment.get_ambient_source
 	var r_ret = jumponly.Call[AmbientSource](gd.ObjectChecked(self.AsObject()), methods.get_ambient_source, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAmbientLightEnergy(energy float64) { //gd:Environment.set_ambient_light_energy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ambient_light_energy, 0|(gdextension.SizeFloat<<4), &struct{ energy float64 }{energy})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAmbientLightEnergy() float64 { //gd:Environment.get_ambient_light_energy
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ambient_light_energy, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAmbientLightSkyContribution(ratio float64) { //gd:Environment.set_ambient_light_sky_contribution
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ambient_light_sky_contribution, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAmbientLightSkyContribution() float64 { //gd:Environment.get_ambient_light_sky_contribution
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ambient_light_sky_contribution, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetReflectionSource(source ReflectionSource) { //gd:Environment.set_reflection_source
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_reflection_source, 0|(gdextension.SizeInt<<4), &struct{ source ReflectionSource }{source})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetReflectionSource() ReflectionSource { //gd:Environment.get_reflection_source
 	var r_ret = jumponly.Call[ReflectionSource](gd.ObjectChecked(self.AsObject()), methods.get_reflection_source, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTonemapper(mode ToneMapper) { //gd:Environment.set_tonemapper
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tonemapper, 0|(gdextension.SizeInt<<4), &struct{ mode ToneMapper }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTonemapper() ToneMapper { //gd:Environment.get_tonemapper
 	var r_ret = jumponly.Call[ToneMapper](gd.ObjectChecked(self.AsObject()), methods.get_tonemapper, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTonemapExposure(exposure float64) { //gd:Environment.set_tonemap_exposure
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tonemap_exposure, 0|(gdextension.SizeFloat<<4), &struct{ exposure float64 }{exposure})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTonemapExposure() float64 { //gd:Environment.get_tonemap_exposure
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tonemap_exposure, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTonemapWhite(white float64) { //gd:Environment.set_tonemap_white
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tonemap_white, 0|(gdextension.SizeFloat<<4), &struct{ white float64 }{white})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTonemapWhite() float64 { //gd:Environment.get_tonemap_white
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tonemap_white, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTonemapAgxWhite(white float64) { //gd:Environment.set_tonemap_agx_white
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tonemap_agx_white, 0|(gdextension.SizeFloat<<4), &struct{ white float64 }{white})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTonemapAgxWhite() float64 { //gd:Environment.get_tonemap_agx_white
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tonemap_agx_white, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTonemapAgxContrast(contrast float64) { //gd:Environment.set_tonemap_agx_contrast
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tonemap_agx_contrast, 0|(gdextension.SizeFloat<<4), &struct{ contrast float64 }{contrast})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTonemapAgxContrast() float64 { //gd:Environment.get_tonemap_agx_contrast
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_tonemap_agx_contrast, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsrEnabled(enabled bool) { //gd:Environment.set_ssr_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssr_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSsrEnabled() bool { //gd:Environment.is_ssr_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_ssr_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsrMaxSteps(max_steps int64) { //gd:Environment.set_ssr_max_steps
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssr_max_steps, 0|(gdextension.SizeInt<<4), &struct{ max_steps int64 }{max_steps})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsrMaxSteps() int64 { //gd:Environment.get_ssr_max_steps
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_ssr_max_steps, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsrFadeIn(fade_in float64) { //gd:Environment.set_ssr_fade_in
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssr_fade_in, 0|(gdextension.SizeFloat<<4), &struct{ fade_in float64 }{fade_in})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsrFadeIn() float64 { //gd:Environment.get_ssr_fade_in
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssr_fade_in, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsrFadeOut(fade_out float64) { //gd:Environment.set_ssr_fade_out
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssr_fade_out, 0|(gdextension.SizeFloat<<4), &struct{ fade_out float64 }{fade_out})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsrFadeOut() float64 { //gd:Environment.get_ssr_fade_out
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssr_fade_out, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsrDepthTolerance(depth_tolerance float64) { //gd:Environment.set_ssr_depth_tolerance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssr_depth_tolerance, 0|(gdextension.SizeFloat<<4), &struct{ depth_tolerance float64 }{depth_tolerance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsrDepthTolerance() float64 { //gd:Environment.get_ssr_depth_tolerance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssr_depth_tolerance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsaoEnabled(enabled bool) { //gd:Environment.set_ssao_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssao_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSsaoEnabled() bool { //gd:Environment.is_ssao_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_ssao_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsaoRadius(radius float64) { //gd:Environment.set_ssao_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssao_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsaoRadius() float64 { //gd:Environment.get_ssao_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssao_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsaoIntensity(intensity float64) { //gd:Environment.set_ssao_intensity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssao_intensity, 0|(gdextension.SizeFloat<<4), &struct{ intensity float64 }{intensity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsaoIntensity() float64 { //gd:Environment.get_ssao_intensity
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssao_intensity, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsaoPower(power float64) { //gd:Environment.set_ssao_power
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssao_power, 0|(gdextension.SizeFloat<<4), &struct{ power float64 }{power})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsaoPower() float64 { //gd:Environment.get_ssao_power
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssao_power, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsaoDetail(detail float64) { //gd:Environment.set_ssao_detail
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssao_detail, 0|(gdextension.SizeFloat<<4), &struct{ detail float64 }{detail})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsaoDetail() float64 { //gd:Environment.get_ssao_detail
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssao_detail, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsaoHorizon(horizon float64) { //gd:Environment.set_ssao_horizon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssao_horizon, 0|(gdextension.SizeFloat<<4), &struct{ horizon float64 }{horizon})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsaoHorizon() float64 { //gd:Environment.get_ssao_horizon
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssao_horizon, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsaoSharpness(sharpness float64) { //gd:Environment.set_ssao_sharpness
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssao_sharpness, 0|(gdextension.SizeFloat<<4), &struct{ sharpness float64 }{sharpness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsaoSharpness() float64 { //gd:Environment.get_ssao_sharpness
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssao_sharpness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsaoDirectLightAffect(amount float64) { //gd:Environment.set_ssao_direct_light_affect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssao_direct_light_affect, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsaoDirectLightAffect() float64 { //gd:Environment.get_ssao_direct_light_affect
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssao_direct_light_affect, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsaoAoChannelAffect(amount float64) { //gd:Environment.set_ssao_ao_channel_affect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssao_ao_channel_affect, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsaoAoChannelAffect() float64 { //gd:Environment.get_ssao_ao_channel_affect
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssao_ao_channel_affect, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsilEnabled(enabled bool) { //gd:Environment.set_ssil_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssil_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSsilEnabled() bool { //gd:Environment.is_ssil_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_ssil_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsilRadius(radius float64) { //gd:Environment.set_ssil_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssil_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsilRadius() float64 { //gd:Environment.get_ssil_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssil_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsilIntensity(intensity float64) { //gd:Environment.set_ssil_intensity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssil_intensity, 0|(gdextension.SizeFloat<<4), &struct{ intensity float64 }{intensity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsilIntensity() float64 { //gd:Environment.get_ssil_intensity
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssil_intensity, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsilSharpness(sharpness float64) { //gd:Environment.set_ssil_sharpness
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssil_sharpness, 0|(gdextension.SizeFloat<<4), &struct{ sharpness float64 }{sharpness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsilSharpness() float64 { //gd:Environment.get_ssil_sharpness
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssil_sharpness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSsilNormalRejection(normal_rejection float64) { //gd:Environment.set_ssil_normal_rejection
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ssil_normal_rejection, 0|(gdextension.SizeFloat<<4), &struct{ normal_rejection float64 }{normal_rejection})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSsilNormalRejection() float64 { //gd:Environment.get_ssil_normal_rejection
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ssil_normal_rejection, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiEnabled(enabled bool) { //gd:Environment.set_sdfgi_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSdfgiEnabled() bool { //gd:Environment.is_sdfgi_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_sdfgi_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiCascades(amount int64) { //gd:Environment.set_sdfgi_cascades
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_cascades, 0|(gdextension.SizeInt<<4), &struct{ amount int64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfgiCascades() int64 { //gd:Environment.get_sdfgi_cascades
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_sdfgi_cascades, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiMinCellSize(size float64) { //gd:Environment.set_sdfgi_min_cell_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_min_cell_size, 0|(gdextension.SizeFloat<<4), &struct{ size float64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfgiMinCellSize() float64 { //gd:Environment.get_sdfgi_min_cell_size
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sdfgi_min_cell_size, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiMaxDistance(distance float64) { //gd:Environment.set_sdfgi_max_distance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_max_distance, 0|(gdextension.SizeFloat<<4), &struct{ distance float64 }{distance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfgiMaxDistance() float64 { //gd:Environment.get_sdfgi_max_distance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sdfgi_max_distance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiCascade0Distance(distance float64) { //gd:Environment.set_sdfgi_cascade0_distance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_cascade0_distance, 0|(gdextension.SizeFloat<<4), &struct{ distance float64 }{distance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfgiCascade0Distance() float64 { //gd:Environment.get_sdfgi_cascade0_distance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sdfgi_cascade0_distance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiYScale(scale SDFGIYScale) { //gd:Environment.set_sdfgi_y_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_y_scale, 0|(gdextension.SizeInt<<4), &struct{ scale SDFGIYScale }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfgiYScale() SDFGIYScale { //gd:Environment.get_sdfgi_y_scale
 	var r_ret = jumponly.Call[SDFGIYScale](gd.ObjectChecked(self.AsObject()), methods.get_sdfgi_y_scale, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiUseOcclusion(enable bool) { //gd:Environment.set_sdfgi_use_occlusion
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_use_occlusion, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSdfgiUsingOcclusion() bool { //gd:Environment.is_sdfgi_using_occlusion
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_sdfgi_using_occlusion, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiBounceFeedback(amount float64) { //gd:Environment.set_sdfgi_bounce_feedback
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_bounce_feedback, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfgiBounceFeedback() float64 { //gd:Environment.get_sdfgi_bounce_feedback
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sdfgi_bounce_feedback, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiReadSkyLight(enable bool) { //gd:Environment.set_sdfgi_read_sky_light
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_read_sky_light, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSdfgiReadingSkyLight() bool { //gd:Environment.is_sdfgi_reading_sky_light
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_sdfgi_reading_sky_light, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiEnergy(amount float64) { //gd:Environment.set_sdfgi_energy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_energy, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfgiEnergy() float64 { //gd:Environment.get_sdfgi_energy
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sdfgi_energy, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiNormalBias(bias float64) { //gd:Environment.set_sdfgi_normal_bias
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_normal_bias, 0|(gdextension.SizeFloat<<4), &struct{ bias float64 }{bias})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfgiNormalBias() float64 { //gd:Environment.get_sdfgi_normal_bias
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sdfgi_normal_bias, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfgiProbeBias(bias float64) { //gd:Environment.set_sdfgi_probe_bias
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdfgi_probe_bias, 0|(gdextension.SizeFloat<<4), &struct{ bias float64 }{bias})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfgiProbeBias() float64 { //gd:Environment.get_sdfgi_probe_bias
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_sdfgi_probe_bias, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowEnabled(enabled bool) { //gd:Environment.set_glow_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsGlowEnabled() bool { //gd:Environment.is_glow_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_glow_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2236,354 +2343,442 @@ func (self class) SetGlowLevel(idx int64, intensity float64) { //gd:Environment.
 		idx       int64
 		intensity float64
 	}{idx, intensity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlowLevel(idx int64) float64 { //gd:Environment.get_glow_level
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_glow_level, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowNormalized(normalize bool) { //gd:Environment.set_glow_normalized
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_normalized, 0|(gdextension.SizeBool<<4), &struct{ normalize bool }{normalize})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsGlowNormalized() bool { //gd:Environment.is_glow_normalized
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_glow_normalized, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowIntensity(intensity float64) { //gd:Environment.set_glow_intensity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_intensity, 0|(gdextension.SizeFloat<<4), &struct{ intensity float64 }{intensity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlowIntensity() float64 { //gd:Environment.get_glow_intensity
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_glow_intensity, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowStrength(strength float64) { //gd:Environment.set_glow_strength
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_strength, 0|(gdextension.SizeFloat<<4), &struct{ strength float64 }{strength})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlowStrength() float64 { //gd:Environment.get_glow_strength
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_glow_strength, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowMix(mix float64) { //gd:Environment.set_glow_mix
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_mix, 0|(gdextension.SizeFloat<<4), &struct{ mix float64 }{mix})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlowMix() float64 { //gd:Environment.get_glow_mix
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_glow_mix, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowBloom(amount float64) { //gd:Environment.set_glow_bloom
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_bloom, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlowBloom() float64 { //gd:Environment.get_glow_bloom
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_glow_bloom, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowBlendMode(mode GlowBlendMode) { //gd:Environment.set_glow_blend_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_blend_mode, 0|(gdextension.SizeInt<<4), &struct{ mode GlowBlendMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlowBlendMode() GlowBlendMode { //gd:Environment.get_glow_blend_mode
 	var r_ret = jumponly.Call[GlowBlendMode](gd.ObjectChecked(self.AsObject()), methods.get_glow_blend_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowHdrBleedThreshold(threshold float64) { //gd:Environment.set_glow_hdr_bleed_threshold
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_hdr_bleed_threshold, 0|(gdextension.SizeFloat<<4), &struct{ threshold float64 }{threshold})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlowHdrBleedThreshold() float64 { //gd:Environment.get_glow_hdr_bleed_threshold
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_glow_hdr_bleed_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowHdrBleedScale(scale float64) { //gd:Environment.set_glow_hdr_bleed_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_hdr_bleed_scale, 0|(gdextension.SizeFloat<<4), &struct{ scale float64 }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlowHdrBleedScale() float64 { //gd:Environment.get_glow_hdr_bleed_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_glow_hdr_bleed_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowHdrLuminanceCap(amount float64) { //gd:Environment.set_glow_hdr_luminance_cap
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_hdr_luminance_cap, 0|(gdextension.SizeFloat<<4), &struct{ amount float64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlowHdrLuminanceCap() float64 { //gd:Environment.get_glow_hdr_luminance_cap
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_glow_hdr_luminance_cap, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowMapStrength(strength float64) { //gd:Environment.set_glow_map_strength
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_map_strength, 0|(gdextension.SizeFloat<<4), &struct{ strength float64 }{strength})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlowMapStrength() float64 { //gd:Environment.get_glow_map_strength
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_glow_map_strength, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlowMap(mode [1]gdclass.Texture) { //gd:Environment.set_glow_map
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glow_map, 0|(gdextension.SizeObject<<4), &struct{ mode gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture(mode[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(mode[0].Anchor())
 }
 func (self class) GetGlowMap() [1]gdclass.Texture { //gd:Environment.get_glow_map
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_glow_map, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture{gdclass.NewTexture(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetFogEnabled(enabled bool) { //gd:Environment.set_fog_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFogEnabled() bool { //gd:Environment.is_fog_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_fog_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogMode(mode FogMode) { //gd:Environment.set_fog_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_mode, 0|(gdextension.SizeInt<<4), &struct{ mode FogMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogMode() FogMode { //gd:Environment.get_fog_mode
 	var r_ret = jumponly.Call[FogMode](gd.ObjectChecked(self.AsObject()), methods.get_fog_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogLightColor(light_color Color.RGBA) { //gd:Environment.set_fog_light_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_light_color, 0|(gdextension.SizeColor<<4), &struct{ light_color Color.RGBA }{light_color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogLightColor() Color.RGBA { //gd:Environment.get_fog_light_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_fog_light_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogLightEnergy(light_energy float64) { //gd:Environment.set_fog_light_energy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_light_energy, 0|(gdextension.SizeFloat<<4), &struct{ light_energy float64 }{light_energy})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogLightEnergy() float64 { //gd:Environment.get_fog_light_energy
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fog_light_energy, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogSunScatter(sun_scatter float64) { //gd:Environment.set_fog_sun_scatter
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_sun_scatter, 0|(gdextension.SizeFloat<<4), &struct{ sun_scatter float64 }{sun_scatter})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogSunScatter() float64 { //gd:Environment.get_fog_sun_scatter
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fog_sun_scatter, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogDensity(density float64) { //gd:Environment.set_fog_density
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_density, 0|(gdextension.SizeFloat<<4), &struct{ density float64 }{density})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogDensity() float64 { //gd:Environment.get_fog_density
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fog_density, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogHeight(height float64) { //gd:Environment.set_fog_height
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_height, 0|(gdextension.SizeFloat<<4), &struct{ height float64 }{height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogHeight() float64 { //gd:Environment.get_fog_height
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fog_height, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogHeightDensity(height_density float64) { //gd:Environment.set_fog_height_density
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_height_density, 0|(gdextension.SizeFloat<<4), &struct{ height_density float64 }{height_density})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogHeightDensity() float64 { //gd:Environment.get_fog_height_density
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fog_height_density, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogAerialPerspective(aerial_perspective float64) { //gd:Environment.set_fog_aerial_perspective
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_aerial_perspective, 0|(gdextension.SizeFloat<<4), &struct{ aerial_perspective float64 }{aerial_perspective})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogAerialPerspective() float64 { //gd:Environment.get_fog_aerial_perspective
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fog_aerial_perspective, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogSkyAffect(sky_affect float64) { //gd:Environment.set_fog_sky_affect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_sky_affect, 0|(gdextension.SizeFloat<<4), &struct{ sky_affect float64 }{sky_affect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogSkyAffect() float64 { //gd:Environment.get_fog_sky_affect
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fog_sky_affect, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogDepthCurve(curve float64) { //gd:Environment.set_fog_depth_curve
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_depth_curve, 0|(gdextension.SizeFloat<<4), &struct{ curve float64 }{curve})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogDepthCurve() float64 { //gd:Environment.get_fog_depth_curve
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fog_depth_curve, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogDepthBegin(begin float64) { //gd:Environment.set_fog_depth_begin
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_depth_begin, 0|(gdextension.SizeFloat<<4), &struct{ begin float64 }{begin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogDepthBegin() float64 { //gd:Environment.get_fog_depth_begin
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fog_depth_begin, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFogDepthEnd(end float64) { //gd:Environment.set_fog_depth_end
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fog_depth_end, 0|(gdextension.SizeFloat<<4), &struct{ end float64 }{end})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFogDepthEnd() float64 { //gd:Environment.get_fog_depth_end
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fog_depth_end, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogEnabled(enabled bool) { //gd:Environment.set_volumetric_fog_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsVolumetricFogEnabled() bool { //gd:Environment.is_volumetric_fog_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_volumetric_fog_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogEmission(color Color.RGBA) { //gd:Environment.set_volumetric_fog_emission
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_emission, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogEmission() Color.RGBA { //gd:Environment.get_volumetric_fog_emission
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_emission, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogAlbedo(color Color.RGBA) { //gd:Environment.set_volumetric_fog_albedo
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_albedo, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogAlbedo() Color.RGBA { //gd:Environment.get_volumetric_fog_albedo
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_albedo, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogDensity(density float64) { //gd:Environment.set_volumetric_fog_density
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_density, 0|(gdextension.SizeFloat<<4), &struct{ density float64 }{density})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogDensity() float64 { //gd:Environment.get_volumetric_fog_density
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_density, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogEmissionEnergy(begin float64) { //gd:Environment.set_volumetric_fog_emission_energy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_emission_energy, 0|(gdextension.SizeFloat<<4), &struct{ begin float64 }{begin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogEmissionEnergy() float64 { //gd:Environment.get_volumetric_fog_emission_energy
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_emission_energy, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogAnisotropy(anisotropy float64) { //gd:Environment.set_volumetric_fog_anisotropy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_anisotropy, 0|(gdextension.SizeFloat<<4), &struct{ anisotropy float64 }{anisotropy})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogAnisotropy() float64 { //gd:Environment.get_volumetric_fog_anisotropy
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_anisotropy, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogLength(length float64) { //gd:Environment.set_volumetric_fog_length
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_length, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogLength() float64 { //gd:Environment.get_volumetric_fog_length
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogDetailSpread(detail_spread float64) { //gd:Environment.set_volumetric_fog_detail_spread
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_detail_spread, 0|(gdextension.SizeFloat<<4), &struct{ detail_spread float64 }{detail_spread})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogDetailSpread() float64 { //gd:Environment.get_volumetric_fog_detail_spread
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_detail_spread, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogGiInject(gi_inject float64) { //gd:Environment.set_volumetric_fog_gi_inject
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_gi_inject, 0|(gdextension.SizeFloat<<4), &struct{ gi_inject float64 }{gi_inject})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogGiInject() float64 { //gd:Environment.get_volumetric_fog_gi_inject
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_gi_inject, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogAmbientInject(enabled float64) { //gd:Environment.set_volumetric_fog_ambient_inject
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_ambient_inject, 0|(gdextension.SizeFloat<<4), &struct{ enabled float64 }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogAmbientInject() float64 { //gd:Environment.get_volumetric_fog_ambient_inject
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_ambient_inject, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogSkyAffect(sky_affect float64) { //gd:Environment.set_volumetric_fog_sky_affect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_sky_affect, 0|(gdextension.SizeFloat<<4), &struct{ sky_affect float64 }{sky_affect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogSkyAffect() float64 { //gd:Environment.get_volumetric_fog_sky_affect
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_sky_affect, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogTemporalReprojectionEnabled(enabled bool) { //gd:Environment.set_volumetric_fog_temporal_reprojection_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_temporal_reprojection_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsVolumetricFogTemporalReprojectionEnabled() bool { //gd:Environment.is_volumetric_fog_temporal_reprojection_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_volumetric_fog_temporal_reprojection_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumetricFogTemporalReprojectionAmount(temporal_reprojection_amount float64) { //gd:Environment.set_volumetric_fog_temporal_reprojection_amount
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volumetric_fog_temporal_reprojection_amount, 0|(gdextension.SizeFloat<<4), &struct{ temporal_reprojection_amount float64 }{temporal_reprojection_amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumetricFogTemporalReprojectionAmount() float64 { //gd:Environment.get_volumetric_fog_temporal_reprojection_amount
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volumetric_fog_temporal_reprojection_amount, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAdjustmentEnabled(enabled bool) { //gd:Environment.set_adjustment_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_adjustment_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAdjustmentEnabled() bool { //gd:Environment.is_adjustment_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_adjustment_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAdjustmentBrightness(brightness float64) { //gd:Environment.set_adjustment_brightness
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_adjustment_brightness, 0|(gdextension.SizeFloat<<4), &struct{ brightness float64 }{brightness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAdjustmentBrightness() float64 { //gd:Environment.get_adjustment_brightness
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_adjustment_brightness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAdjustmentContrast(contrast float64) { //gd:Environment.set_adjustment_contrast
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_adjustment_contrast, 0|(gdextension.SizeFloat<<4), &struct{ contrast float64 }{contrast})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAdjustmentContrast() float64 { //gd:Environment.get_adjustment_contrast
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_adjustment_contrast, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAdjustmentSaturation(saturation float64) { //gd:Environment.set_adjustment_saturation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_adjustment_saturation, 0|(gdextension.SizeFloat<<4), &struct{ saturation float64 }{saturation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAdjustmentSaturation() float64 { //gd:Environment.get_adjustment_saturation
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_adjustment_saturation, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAdjustmentColorCorrection(color_correction [1]gdclass.Texture) { //gd:Environment.set_adjustment_color_correction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_adjustment_color_correction, 0|(gdextension.SizeObject<<4), &struct{ color_correction gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture(color_correction[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(color_correction[0].Anchor())
 }
 func (self class) GetAdjustmentColorCorrection() [1]gdclass.Texture { //gd:Environment.get_adjustment_color_correction
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_adjustment_color_correction, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture{gdclass.NewTexture(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsEnvironment() Advanced               { return Advanced(o) }
 func (o Instance) AsEnvironment() Instance            { return o }
 func (o *Extension[T]) AsEnvironment() Instance       { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

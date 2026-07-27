@@ -9,6 +9,7 @@ package GDScriptLanguageProtocol
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -17,6 +18,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -43,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -180,7 +185,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.GDScriptLanguageProtocol
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGDScriptLanguageProtocol(obj[0])
@@ -195,7 +200,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) GetTextDocument() [1]gdclass.GDScriptTextDocument { //gd:GDScriptLanguageProtocol.get_text_document
@@ -225,12 +230,14 @@ func (self class) IsInitialized() bool { //gd:GDScriptLanguageProtocol.is_initia
 func (self class) Initialize(params Dictionary.Any) variant.Any { //gd:GDScriptLanguageProtocol.initialize
 	once.Do(singleton)
 	var r_ret = noescape.Call[gdextension.Variant](gdreference.GetObject(self.AsObject()[0]), methods.initialize, gdextension.SizeVariant|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(params)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) Initialized(params variant.Any) { //gd:GDScriptLanguageProtocol.initialized
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.initialized, 0|(gdextension.SizeVariant<<4), &struct{ params gdextension.Variant }{gdextension.Variant(pointers.Get(gd.InternalVariant(params)))})
+	runtime.KeepAlive(params)
 }
 func (self class) OnClientConnected() Error.Code { //gd:GDScriptLanguageProtocol.on_client_connected
 	once.Do(singleton)
@@ -249,10 +256,12 @@ func (self class) NotifyClient(method String.Readable, params variant.Any, clien
 		params    gdextension.Variant
 		client_id int64
 	}{pointers.Get(gd.InternalString(method)), gdextension.Variant(pointers.Get(gd.InternalVariant(params))), client_id})
+	runtime.KeepAlive(method)
+	runtime.KeepAlive(params)
 }
-func (o class) AsJSONRPC() JSONRPC.Advanced         { return JSONRPC.Advanced{gdclass.NewJSONRPC(o[0].AsObject()[0])} }
+func (o class) AsJSONRPC() JSONRPC.Advanced         { return *(*JSONRPC.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsJSONRPC() JSONRPC.Instance { return o.Super().AsJSONRPC() }
-func (o Instance) AsJSONRPC() JSONRPC.Instance      { return JSONRPC.Instance{gdclass.NewJSONRPC(o[0].AsObject()[0])} }
+func (o Instance) AsJSONRPC() JSONRPC.Instance      { return *(*JSONRPC.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

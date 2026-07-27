@@ -12,6 +12,7 @@ Used in scripting by [EditorExportPlugin] to configure platform-specific customi
 package EditorExportPlatform
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -446,7 +450,7 @@ func GetForcedExportFiles(preset EditorExportPreset.Instance) []string { //gd:Ed
 type Advanced = class
 type class [1]gdclass.EditorExportPlatform
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorExportPlatform(obj[0])
@@ -461,7 +465,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -486,21 +490,26 @@ func New() Instance {
 
 func (self class) GetOsName() String.Readable { //gd:EditorExportPlatform.get_os_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_os_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) CreatePreset() [1]gdclass.EditorExportPreset { //gd:EditorExportPlatform.create_preset
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.create_preset, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.EditorExportPreset{gdclass.NewEditorExportPreset(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) FindExportTemplate(template_file_name String.Readable) Dictionary.Any { //gd:EditorExportPlatform.find_export_template
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.find_export_template, gdextension.SizeDictionary|(gdextension.SizeString<<4), &struct{ template_file_name gdextension.String }{pointers.Get(gd.InternalString(template_file_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(template_file_name)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetCurrentPresets() Array.Any { //gd:EditorExportPlatform.get_current_presets
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_current_presets, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -511,6 +520,9 @@ func (self class) SavePack(preset [1]gdclass.EditorExportPreset, debug bool, pat
 		path   gdextension.String
 		embed  bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug, pointers.Get(gd.InternalString(path)), embed})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -520,6 +532,9 @@ func (self class) SaveZip(preset [1]gdclass.EditorExportPreset, debug bool, path
 		debug  bool
 		path   gdextension.String
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug, pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -529,6 +544,9 @@ func (self class) SavePackPatch(preset [1]gdclass.EditorExportPreset, debug bool
 		debug  bool
 		path   gdextension.String
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug, pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -538,11 +556,15 @@ func (self class) SaveZipPatch(preset [1]gdclass.EditorExportPreset, debug bool,
 		debug  bool
 		path   gdextension.String
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug, pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GenExportFlags(flags DebugFlags) Packed.Strings { //gd:EditorExportPlatform.gen_export_flags
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.gen_export_flags, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ flags DebugFlags }{flags})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -553,6 +575,10 @@ func (self class) ExportProjectFiles(preset [1]gdclass.EditorExportPreset, debug
 		save_cb   gdextension.Callable
 		shared_cb gdextension.Callable
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug, pointers.Get(gd.InternalCallable(save_cb)), pointers.Get(gd.InternalCallable(shared_cb))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
+	runtime.KeepAlive(save_cb)
+	runtime.KeepAlive(shared_cb)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -564,6 +590,9 @@ func (self class) ExportProject(preset [1]gdclass.EditorExportPreset, debug bool
 		flags  DebugFlags
 		notify bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug, pointers.Get(gd.InternalString(path)), flags, notify})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -574,6 +603,9 @@ func (self class) ExportPack(preset [1]gdclass.EditorExportPreset, debug bool, p
 		path   gdextension.String
 		flags  DebugFlags
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug, pointers.Get(gd.InternalString(path)), flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -584,6 +616,9 @@ func (self class) ExportZip(preset [1]gdclass.EditorExportPreset, debug bool, pa
 		path   gdextension.String
 		flags  DebugFlags
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug, pointers.Get(gd.InternalString(path)), flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -595,6 +630,10 @@ func (self class) ExportPackPatch(preset [1]gdclass.EditorExportPreset, debug bo
 		patches gdextension.PackedArray[gdextension.String]
 		flags   DebugFlags
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug, pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalPackedStrings(patches)), flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(patches)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -606,11 +645,16 @@ func (self class) ExportZipPatch(preset [1]gdclass.EditorExportPreset, debug boo
 		patches gdextension.PackedArray[gdextension.String]
 		flags   DebugFlags
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug, pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalPackedStrings(patches)), flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(patches)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) ClearMessages() { //gd:EditorExportPlatform.clear_messages
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_messages, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddMessage(atype ExportMessageType, category String.Readable, message String.Readable) { //gd:EditorExportPlatform.add_message
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_message, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8)|(gdextension.SizeString<<12), &struct {
@@ -618,29 +662,37 @@ func (self class) AddMessage(atype ExportMessageType, category String.Readable, 
 		category gdextension.String
 		message  gdextension.String
 	}{atype, pointers.Get(gd.InternalString(category)), pointers.Get(gd.InternalString(message))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(category)
+	runtime.KeepAlive(message)
 }
 func (self class) GetMessageCount() int64 { //gd:EditorExportPlatform.get_message_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_message_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMessageType(index int64) ExportMessageType { //gd:EditorExportPlatform.get_message_type
 	var r_ret = noescape.Call[ExportMessageType](gd.ObjectChecked(self.AsObject()), methods.get_message_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMessageCategory(index int64) String.Readable { //gd:EditorExportPlatform.get_message_category
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_message_category, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetMessageText(index int64) String.Readable { //gd:EditorExportPlatform.get_message_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_message_text, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetWorstMessageType() ExportMessageType { //gd:EditorExportPlatform.get_worst_message_type
 	var r_ret = noescape.Call[ExportMessageType](gd.ObjectChecked(self.AsObject()), methods.get_worst_message_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -653,6 +705,12 @@ func (self class) SshRunOnRemote(host String.Readable, port String.Readable, ssh
 		output   gdextension.Array
 		port_fwd int64
 	}{pointers.Get(gd.InternalString(host)), pointers.Get(gd.InternalString(port)), pointers.Get(gd.InternalPackedStrings(ssh_arg)), pointers.Get(gd.InternalString(cmd_args)), pointers.Get(gd.InternalArray(output)), port_fwd})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
+	runtime.KeepAlive(port)
+	runtime.KeepAlive(ssh_arg)
+	runtime.KeepAlive(cmd_args)
+	runtime.KeepAlive(output)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -664,6 +722,11 @@ func (self class) SshRunOnRemoteNoWait(host String.Readable, port String.Readabl
 		cmd_args gdextension.String
 		port_fwd int64
 	}{pointers.Get(gd.InternalString(host)), pointers.Get(gd.InternalString(port)), pointers.Get(gd.InternalPackedStrings(ssh_args)), pointers.Get(gd.InternalString(cmd_args)), port_fwd})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
+	runtime.KeepAlive(port)
+	runtime.KeepAlive(ssh_args)
+	runtime.KeepAlive(cmd_args)
 	var ret = r_ret
 	return ret
 }
@@ -675,6 +738,12 @@ func (self class) SshPushToRemote(host String.Readable, port String.Readable, sc
 		src_file gdextension.String
 		dst_file gdextension.String
 	}{pointers.Get(gd.InternalString(host)), pointers.Get(gd.InternalString(port)), pointers.Get(gd.InternalPackedStrings(scp_args)), pointers.Get(gd.InternalString(src_file)), pointers.Get(gd.InternalString(dst_file))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(host)
+	runtime.KeepAlive(port)
+	runtime.KeepAlive(scp_args)
+	runtime.KeepAlive(src_file)
+	runtime.KeepAlive(dst_file)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -683,11 +752,14 @@ func (self class) GetInternalExportFiles(preset [1]gdclass.EditorExportPreset, d
 		preset gdextension.Object
 		debug  bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0])), debug})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(preset[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetForcedExportFiles(preset [1]gdclass.EditorExportPreset) Packed.Strings { //gd:EditorExportPlatform.get_forced_export_files
 	var r_ret = noescape.CallStatic[gd.PackedPointers](methods.get_forced_export_files, gdextension.SizePackedArray|(gdextension.SizeObject<<4), &struct{ preset gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetEditorExportPreset(preset[0])[0]))})
+	runtime.KeepAlive(preset[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }

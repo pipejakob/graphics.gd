@@ -16,6 +16,7 @@ When events are compared, properties are checked in the following priority - [Ke
 package InputEventKey
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -54,6 +55,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -224,7 +228,7 @@ func (self Instance) AsTextLocation() string { //gd:InputEventKey.as_text_locati
 type Advanced = class
 type class [1]gdclass.InputEventKey
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputEventKey(obj[0])
@@ -239,7 +243,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -371,82 +375,101 @@ func (self Instance) SetEcho(value bool) Instance { //gd:InputEventKey.echo
 
 func (self class) SetPressed(pressed bool) { //gd:InputEventKey.set_pressed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pressed, 0|(gdextension.SizeBool<<4), &struct{ pressed bool }{pressed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetKeycode(keycode Input.Key) { //gd:InputEventKey.set_keycode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_keycode, 0|(gdextension.SizeInt<<4), &struct{ keycode Input.Key }{keycode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetKeycode() Input.Key { //gd:InputEventKey.get_keycode
 	var r_ret = jumponly.Call[Input.Key](gd.ObjectChecked(self.AsObject()), methods.get_keycode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPhysicalKeycode(physical_keycode Input.Key) { //gd:InputEventKey.set_physical_keycode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_physical_keycode, 0|(gdextension.SizeInt<<4), &struct{ physical_keycode Input.Key }{physical_keycode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPhysicalKeycode() Input.Key { //gd:InputEventKey.get_physical_keycode
 	var r_ret = jumponly.Call[Input.Key](gd.ObjectChecked(self.AsObject()), methods.get_physical_keycode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetKeyLabel(key_label Input.Key) { //gd:InputEventKey.set_key_label
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_key_label, 0|(gdextension.SizeInt<<4), &struct{ key_label Input.Key }{key_label})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetKeyLabel() Input.Key { //gd:InputEventKey.get_key_label
 	var r_ret = jumponly.Call[Input.Key](gd.ObjectChecked(self.AsObject()), methods.get_key_label, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUnicode(unicode int64) { //gd:InputEventKey.set_unicode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_unicode, 0|(gdextension.SizeInt<<4), &struct{ unicode int64 }{unicode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUnicode() int64 { //gd:InputEventKey.get_unicode
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_unicode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLocation(location Input.KeyLocation) { //gd:InputEventKey.set_location
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_location, 0|(gdextension.SizeInt<<4), &struct{ location Input.KeyLocation }{location})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLocation() Input.KeyLocation { //gd:InputEventKey.get_location
 	var r_ret = jumponly.Call[Input.KeyLocation](gd.ObjectChecked(self.AsObject()), methods.get_location, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEcho(echo bool) { //gd:InputEventKey.set_echo
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_echo, 0|(gdextension.SizeBool<<4), &struct{ echo bool }{echo})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetKeycodeWithModifiers() Input.Key { //gd:InputEventKey.get_keycode_with_modifiers
 	var r_ret = noescape.Call[Input.Key](gd.ObjectChecked(self.AsObject()), methods.get_keycode_with_modifiers, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPhysicalKeycodeWithModifiers() Input.Key { //gd:InputEventKey.get_physical_keycode_with_modifiers
 	var r_ret = noescape.Call[Input.Key](gd.ObjectChecked(self.AsObject()), methods.get_physical_keycode_with_modifiers, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetKeyLabelWithModifiers() Input.Key { //gd:InputEventKey.get_key_label_with_modifiers
 	var r_ret = noescape.Call[Input.Key](gd.ObjectChecked(self.AsObject()), methods.get_key_label_with_modifiers, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AsTextKeycode() String.Readable { //gd:InputEventKey.as_text_keycode
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.as_text_keycode, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) AsTextPhysicalKeycode() String.Readable { //gd:InputEventKey.as_text_physical_keycode
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.as_text_physical_keycode, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) AsTextKeyLabel() String.Readable { //gd:InputEventKey.as_text_key_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.as_text_key_label, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) AsTextLocation() String.Readable { //gd:InputEventKey.as_text_location
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.as_text_location, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -454,29 +477,29 @@ func (o class) AsInputEventKey() Advanced         { return Advanced(o) }
 func (o Instance) AsInputEventKey() Instance      { return o }
 func (o *Extension[T]) AsInputEventKey() Instance { return o.Super() }
 func (o class) AsInputEventWithModifiers() InputEventWithModifiers.Advanced {
-	return InputEventWithModifiers.Advanced{gdclass.NewInputEventWithModifiers(o[0].AsObject()[0])}
+	return *(*InputEventWithModifiers.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventWithModifiers() InputEventWithModifiers.Instance {
 	return o.Super().AsInputEventWithModifiers()
 }
 func (o Instance) AsInputEventWithModifiers() InputEventWithModifiers.Instance {
-	return InputEventWithModifiers.Instance{gdclass.NewInputEventWithModifiers(o[0].AsObject()[0])}
+	return *(*InputEventWithModifiers.Instance)(ie.As(&o))
 }
 func (o class) AsInputEventFromWindow() InputEventFromWindow.Advanced {
-	return InputEventFromWindow.Advanced{gdclass.NewInputEventFromWindow(o[0].AsObject()[0])}
+	return *(*InputEventFromWindow.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventFromWindow() InputEventFromWindow.Instance {
 	return o.Super().AsInputEventFromWindow()
 }
 func (o Instance) AsInputEventFromWindow() InputEventFromWindow.Instance {
-	return InputEventFromWindow.Instance{gdclass.NewInputEventFromWindow(o[0].AsObject()[0])}
+	return *(*InputEventFromWindow.Instance)(ie.As(&o))
 }
-func (o class) AsInputEvent() InputEvent.Advanced         { return InputEvent.Advanced{gdclass.NewInputEvent(o[0].AsObject()[0])} }
+func (o class) AsInputEvent() InputEvent.Advanced         { return *(*InputEvent.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsInputEvent() InputEvent.Instance { return o.Super().AsInputEvent() }
-func (o Instance) AsInputEvent() InputEvent.Instance      { return InputEvent.Instance{gdclass.NewInputEvent(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced             { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsInputEvent() InputEvent.Instance      { return *(*InputEvent.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced             { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance     { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance          { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance          { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

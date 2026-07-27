@@ -6,6 +6,7 @@ Provides language server functionality related to the workspace.
 package GDScriptWorkspace
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -38,6 +39,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -161,7 +165,7 @@ func (self Instance) PublishDiagnostics(path string) { //gd:GDScriptWorkspace.pu
 type Advanced = class
 type class [1]gdclass.GDScriptWorkspace
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGDScriptWorkspace(obj[0])
@@ -176,7 +180,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -205,40 +209,59 @@ func (self class) ApplyNewSignal(obj [1]gdreference.Object, function String.Read
 		function gdextension.String
 		args     gdextension.PackedArray[gdextension.String]
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetObject(obj[0])[0])), pointers.Get(gd.InternalString(function)), pointers.Get(gd.InternalPackedStrings(args))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(function)
+	runtime.KeepAlive(args)
 }
 func (self class) GetFilePath(uri String.Readable) String.Readable { //gd:GDScriptWorkspace.get_file_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_file_path, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ uri gdextension.String }{pointers.Get(gd.InternalString(uri))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(uri)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetFileUri(path String.Readable) String.Readable { //gd:GDScriptWorkspace.get_file_uri
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_file_uri, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GenerateScriptApi(path String.Readable) Dictionary.Any { //gd:GDScriptWorkspace.generate_script_api
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.generate_script_api, gdextension.SizeDictionary|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) Diddeletefiles(params Dictionary.Any) { //gd:GDScriptWorkspace.didDeleteFiles
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.didDeleteFiles, 0|(gdextension.SizeDictionary<<4), &struct{ params gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(params))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(params)
 }
 func (self class) ParseScript(path String.Readable, content String.Readable) Error.Code { //gd:GDScriptWorkspace.parse_script
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.parse_script, gdextension.SizeInt|(gdextension.SizeString<<4)|(gdextension.SizeString<<8), &struct {
 		path    gdextension.String
 		content gdextension.String
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalString(content))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(content)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) ParseLocalScript(path String.Readable) Error.Code { //gd:GDScriptWorkspace.parse_local_script
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.parse_local_script, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) PublishDiagnostics(path String.Readable) { //gd:GDScriptWorkspace.publish_diagnostics
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.publish_diagnostics, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (o class) AsGDScriptWorkspace() Advanced         { return Advanced(o) }
 func (o Instance) AsGDScriptWorkspace() Instance      { return o }

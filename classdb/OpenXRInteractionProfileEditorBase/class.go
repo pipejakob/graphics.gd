@@ -6,6 +6,7 @@ This is a base class for interaction profile editors used by the OpenXR action m
 package OpenXRInteractionProfileEditorBase
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -14,6 +15,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -45,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -131,7 +136,7 @@ func (self Instance) Setup(action_map OpenXRActionMap.Instance, interaction_prof
 type Advanced = class
 type class [1]gdclass.OpenXRInteractionProfileEditorBase
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRInteractionProfileEditorBase(obj[0])
@@ -146,7 +151,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -174,30 +179,33 @@ func (self class) Setup(action_map [1]gdclass.OpenXRActionMap, interaction_profi
 		action_map          gdextension.Object
 		interaction_profile gdextension.Object
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRActionMap(action_map[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRInteractionProfile(interaction_profile[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action_map[0].Anchor())
+	runtime.KeepAlive(interaction_profile[0].Anchor())
 }
 func (o class) AsOpenXRInteractionProfileEditorBase() Advanced         { return Advanced(o) }
 func (o Instance) AsOpenXRInteractionProfileEditorBase() Instance      { return o }
 func (o *Extension[T]) AsOpenXRInteractionProfileEditorBase() Instance { return o.Super() }
-func (o class) AsHBoxContainer() HBoxContainer.Advanced                { return HBoxContainer.Advanced{gdclass.NewHBoxContainer(o[0].AsObject()[0])} }
+func (o class) AsHBoxContainer() HBoxContainer.Advanced                { return *(*HBoxContainer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsHBoxContainer() HBoxContainer.Instance        { return o.Super().AsHBoxContainer() }
 func (o Instance) AsHBoxContainer() HBoxContainer.Instance {
-	return HBoxContainer.Instance{gdclass.NewHBoxContainer(o[0].AsObject()[0])}
+	return *(*HBoxContainer.Instance)(ie.As(&o))
 }
-func (o class) AsBoxContainer() BoxContainer.Advanced         { return BoxContainer.Advanced{gdclass.NewBoxContainer(o[0].AsObject()[0])} }
+func (o class) AsBoxContainer() BoxContainer.Advanced         { return *(*BoxContainer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsBoxContainer() BoxContainer.Instance { return o.Super().AsBoxContainer() }
-func (o Instance) AsBoxContainer() BoxContainer.Instance      { return BoxContainer.Instance{gdclass.NewBoxContainer(o[0].AsObject()[0])} }
-func (o class) AsContainer() Container.Advanced               { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o Instance) AsBoxContainer() BoxContainer.Instance      { return *(*BoxContainer.Instance)(ie.As(&o)) }
+func (o class) AsContainer() Container.Advanced               { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance       { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance            { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced                   { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance            { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced                   { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance           { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance                { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced             { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance                { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced             { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance     { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance          { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance          { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                         { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance                 { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                      { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

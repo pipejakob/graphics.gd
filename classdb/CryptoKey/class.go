@@ -13,6 +13,7 @@ They can be used to generate a self-signed [X509Certificate] via [Crypto.Generat
 package CryptoKey
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -46,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -207,7 +211,7 @@ func (self MoreArgs) LoadFromString(string_key string, public_only bool) error {
 type Advanced = class
 type class [1]gdclass.CryptoKey
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCryptoKey(obj[0])
@@ -222,7 +226,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -250,6 +254,8 @@ func (self class) Save(path String.Readable, public_only bool) Error.Code { //gd
 		path        gdextension.String
 		public_only bool
 	}{pointers.Get(gd.InternalString(path)), public_only})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -258,16 +264,20 @@ func (self class) Load(path String.Readable, public_only bool) Error.Code { //gd
 		path        gdextension.String
 		public_only bool
 	}{pointers.Get(gd.InternalString(path)), public_only})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) IsPublicOnly() bool { //gd:CryptoKey.is_public_only
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_public_only, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SaveToString(public_only bool) String.Readable { //gd:CryptoKey.save_to_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.save_to_string, gdextension.SizeString|(gdextension.SizeBool<<4), &struct{ public_only bool }{public_only})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -276,15 +286,17 @@ func (self class) LoadFromString(string_key String.Readable, public_only bool) E
 		string_key  gdextension.String
 		public_only bool
 	}{pointers.Get(gd.InternalString(string_key)), public_only})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(string_key)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (o class) AsCryptoKey() Advanced                 { return Advanced(o) }
 func (o Instance) AsCryptoKey() Instance              { return o }
 func (o *Extension[T]) AsCryptoKey() Instance         { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

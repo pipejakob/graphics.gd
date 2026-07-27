@@ -11,6 +11,7 @@ package ResourceUID
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -19,6 +20,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -43,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -227,7 +232,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.ResourceUID
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewResourceUID(obj[0])
@@ -242,7 +247,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) IdToText(id int64) String.Readable { //gd:ResourceUID.id_to_text
@@ -254,6 +259,7 @@ func (self class) IdToText(id int64) String.Readable { //gd:ResourceUID.id_to_te
 func (self class) TextToId(text_id String.Readable) int64 { //gd:ResourceUID.text_to_id
 	once.Do(singleton)
 	var r_ret = noescape.Call[int64](gdreference.GetObject(self.AsObject()[0]), methods.text_to_id, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ text_id gdextension.String }{pointers.Get(gd.InternalString(text_id))})
+	runtime.KeepAlive(text_id)
 	var ret = r_ret
 	return ret
 }
@@ -266,6 +272,7 @@ func (self class) CreateId() int64 { //gd:ResourceUID.create_id
 func (self class) CreateIdForPath(path String.Readable) int64 { //gd:ResourceUID.create_id_for_path
 	once.Do(singleton)
 	var r_ret = noescape.Call[int64](gdreference.GetObject(self.AsObject()[0]), methods.create_id_for_path, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
@@ -281,6 +288,7 @@ func (self class) AddId(id int64, path String.Readable) { //gd:ResourceUID.add_i
 		id   int64
 		path gdextension.String
 	}{id, pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(path)
 }
 func (self class) SetId(id int64, path String.Readable) { //gd:ResourceUID.set_id
 	once.Do(singleton)
@@ -288,6 +296,7 @@ func (self class) SetId(id int64, path String.Readable) { //gd:ResourceUID.set_i
 		id   int64
 		path gdextension.String
 	}{id, pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(path)
 }
 func (self class) GetIdPath(id int64) String.Readable { //gd:ResourceUID.get_id_path
 	once.Do(singleton)
@@ -302,18 +311,21 @@ func (self class) RemoveId(id int64) { //gd:ResourceUID.remove_id
 func (self class) UidToPath(uid String.Readable) String.Readable { //gd:ResourceUID.uid_to_path
 	once.Do(singleton)
 	var r_ret = noescape.CallStatic[gdextension.String](methods.uid_to_path, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ uid gdextension.String }{pointers.Get(gd.InternalString(uid))})
+	runtime.KeepAlive(uid)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) PathToUid(path String.Readable) String.Readable { //gd:ResourceUID.path_to_uid
 	once.Do(singleton)
 	var r_ret = noescape.CallStatic[gdextension.String](methods.path_to_uid, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(path)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) EnsurePath(path_or_uid String.Readable) String.Readable { //gd:ResourceUID.ensure_path
 	once.Do(singleton)
 	var r_ret = noescape.CallStatic[gdextension.String](methods.ensure_path, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path_or_uid gdextension.String }{pointers.Get(gd.InternalString(path_or_uid))})
+	runtime.KeepAlive(path_or_uid)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }

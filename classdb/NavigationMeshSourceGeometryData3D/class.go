@@ -6,6 +6,7 @@ Container for parsed source geometry data used in navigation mesh baking.
 package NavigationMeshSourceGeometryData3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -218,7 +222,7 @@ func (self Instance) GetBounds() AABB.PositionSize { //gd:NavigationMeshSourceGe
 type Advanced = class
 type class [1]gdclass.NavigationMeshSourceGeometryData3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNavigationMeshSourceGeometryData3D(obj[0])
@@ -233,7 +237,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -290,9 +294,12 @@ func (self class) SetVertices(vertices Packed.Array[float32]) { //gd:NavigationM
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertices, 0|(gdextension.SizePackedArray<<4), &struct {
 		vertices gdextension.PackedArray[float32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](vertices))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertices)
 }
 func (self class) GetVertices() Packed.Array[float32] { //gd:NavigationMeshSourceGeometryData3D.get_vertices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertices, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
@@ -300,9 +307,12 @@ func (self class) SetIndices(indices Packed.Array[int32]) { //gd:NavigationMeshS
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_indices, 0|(gdextension.SizePackedArray<<4), &struct {
 		indices gdextension.PackedArray[int32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](indices))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(indices)
 }
 func (self class) GetIndices() Packed.Array[int32] { //gd:NavigationMeshSourceGeometryData3D.get_indices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_indices, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -311,12 +321,17 @@ func (self class) AppendArrays(vertices Packed.Array[float32], indices Packed.Ar
 		vertices gdextension.PackedArray[float32]
 		indices  gdextension.PackedArray[int32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](vertices)), pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](indices))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertices)
+	runtime.KeepAlive(indices)
 }
 func (self class) Clear() { //gd:NavigationMeshSourceGeometryData3D.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasData() bool { //gd:NavigationMeshSourceGeometryData3D.has_data
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_data, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -325,21 +340,29 @@ func (self class) AddMesh(mesh [1]gdclass.Mesh, xform Transform3D.BasisOrigin) {
 		mesh  gdextension.Object
 		xform Transform3D.BasisOrigin
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetMesh(mesh[0])[0])), gd.Transposed(xform)})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(mesh[0].Anchor())
 }
 func (self class) AddMeshArray(mesh_array Array.Any, xform Transform3D.BasisOrigin) { //gd:NavigationMeshSourceGeometryData3D.add_mesh_array
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_mesh_array, 0|(gdextension.SizeArray<<4)|(gdextension.SizeTransform3D<<8), &struct {
 		mesh_array gdextension.Array
 		xform      Transform3D.BasisOrigin
 	}{pointers.Get(gd.InternalArray(mesh_array)), gd.Transposed(xform)})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(mesh_array)
 }
 func (self class) AddFaces(faces Packed.Array[Vector3.XYZ], xform Transform3D.BasisOrigin) { //gd:NavigationMeshSourceGeometryData3D.add_faces
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_faces, 0|(gdextension.SizePackedArray<<4)|(gdextension.SizeTransform3D<<8), &struct {
 		faces gdextension.PackedArray[Vector3.XYZ]
 		xform Transform3D.BasisOrigin
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](faces)), gd.Transposed(xform)})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(faces)
 }
 func (self class) Merge(other_geometry [1]gdclass.NavigationMeshSourceGeometryData3D) { //gd:NavigationMeshSourceGeometryData3D.merge
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.merge, 0|(gdextension.SizeObject<<4), &struct{ other_geometry gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMeshSourceGeometryData3D(other_geometry[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(other_geometry[0].Anchor())
 }
 func (self class) AddProjectedObstruction(vertices Packed.Array[Vector3.XYZ], elevation float64, height float64, carve bool) { //gd:NavigationMeshSourceGeometryData3D.add_projected_obstruction
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_projected_obstruction, 0|(gdextension.SizePackedArray<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeFloat<<12)|(gdextension.SizeBool<<16), &struct {
@@ -348,29 +371,36 @@ func (self class) AddProjectedObstruction(vertices Packed.Array[Vector3.XYZ], el
 		height    float64
 		carve     bool
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](vertices)), elevation, height, carve})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertices)
 }
 func (self class) ClearProjectedObstructions() { //gd:NavigationMeshSourceGeometryData3D.clear_projected_obstructions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_projected_obstructions, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetProjectedObstructions(projected_obstructions Array.Any) { //gd:NavigationMeshSourceGeometryData3D.set_projected_obstructions
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_projected_obstructions, 0|(gdextension.SizeArray<<4), &struct{ projected_obstructions gdextension.Array }{pointers.Get(gd.InternalArray(projected_obstructions))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(projected_obstructions)
 }
 func (self class) GetProjectedObstructions() Array.Any { //gd:NavigationMeshSourceGeometryData3D.get_projected_obstructions
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_projected_obstructions, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBounds() AABB.PositionSize { //gd:NavigationMeshSourceGeometryData3D.get_bounds
 	var r_ret = noescape.Call[AABB.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_bounds, gdextension.SizeAABB, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsNavigationMeshSourceGeometryData3D() Advanced         { return Advanced(o) }
 func (o Instance) AsNavigationMeshSourceGeometryData3D() Instance      { return o }
 func (o *Extension[T]) AsNavigationMeshSourceGeometryData3D() Instance { return o.Super() }
-func (o class) AsResource() Resource.Advanced                          { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced                          { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance                  { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance                       { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance                       { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                                    { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                            { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                                 { return *(*ie.RC)(ie.As(&o)) }

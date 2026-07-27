@@ -8,6 +8,7 @@ Custom code to generate previews. Check [EditorSettings] "filesystem/file_dialog
 package EditorResourcePreviewGenerator
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -299,7 +303,7 @@ func (self Instance) RequestDrawAndWait(viewport RID.Viewport) { //gd:EditorReso
 type Advanced = class
 type class [1]gdclass.EditorResourcePreviewGenerator
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorResourcePreviewGenerator(obj[0])
@@ -314,7 +318,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -397,6 +401,7 @@ func (class) _can_generate_small_preview(impl func(ptr gdclass.Receiver) bool) (
 
 func (self class) RequestDrawAndWait(viewport RID.Any) { //gd:EditorResourcePreviewGenerator.request_draw_and_wait
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.request_draw_and_wait, 0|(gdextension.SizeRID<<4), &struct{ viewport RID.Any }{viewport})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsEditorResourcePreviewGenerator() Advanced         { return Advanced(o) }
 func (o Instance) AsEditorResourcePreviewGenerator() Instance      { return o }

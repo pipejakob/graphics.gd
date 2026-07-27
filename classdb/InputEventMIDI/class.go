@@ -54,6 +54,7 @@ Note: On the Web platform, using MIDI input requires a browser permission to be 
 package InputEventMIDI
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -89,6 +90,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -184,7 +188,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.InputEventMIDI
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputEventMIDI(obj[0])
@@ -199,7 +203,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -352,77 +356,93 @@ func (self Instance) SetControllerValue(value int) Instance { //gd:InputEventMID
 
 func (self class) SetChannel(channel int64) { //gd:InputEventMIDI.set_channel
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_channel, 0|(gdextension.SizeInt<<4), &struct{ channel int64 }{channel})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetChannel() int64 { //gd:InputEventMIDI.get_channel
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_channel, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMessage(message Message) { //gd:InputEventMIDI.set_message
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_message, 0|(gdextension.SizeInt<<4), &struct{ message Message }{message})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMessage() Message { //gd:InputEventMIDI.get_message
 	var r_ret = jumponly.Call[Message](gd.ObjectChecked(self.AsObject()), methods.get_message, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPitch(pitch int64) { //gd:InputEventMIDI.set_pitch
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pitch, 0|(gdextension.SizeInt<<4), &struct{ pitch int64 }{pitch})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPitch() int64 { //gd:InputEventMIDI.get_pitch
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_pitch, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVelocity(velocity int64) { //gd:InputEventMIDI.set_velocity
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_velocity, 0|(gdextension.SizeInt<<4), &struct{ velocity int64 }{velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVelocity() int64 { //gd:InputEventMIDI.get_velocity
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_velocity, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInstrument(instrument int64) { //gd:InputEventMIDI.set_instrument
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_instrument, 0|(gdextension.SizeInt<<4), &struct{ instrument int64 }{instrument})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInstrument() int64 { //gd:InputEventMIDI.get_instrument
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_instrument, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPressure(pressure int64) { //gd:InputEventMIDI.set_pressure
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pressure, 0|(gdextension.SizeInt<<4), &struct{ pressure int64 }{pressure})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPressure() int64 { //gd:InputEventMIDI.get_pressure
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_pressure, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetControllerNumber(controller_number int64) { //gd:InputEventMIDI.set_controller_number
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_controller_number, 0|(gdextension.SizeInt<<4), &struct{ controller_number int64 }{controller_number})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetControllerNumber() int64 { //gd:InputEventMIDI.get_controller_number
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_controller_number, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetControllerValue(controller_value int64) { //gd:InputEventMIDI.set_controller_value
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_controller_value, 0|(gdextension.SizeInt<<4), &struct{ controller_value int64 }{controller_value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetControllerValue() int64 { //gd:InputEventMIDI.get_controller_value
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_controller_value, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsInputEventMIDI() Advanced                { return Advanced(o) }
 func (o Instance) AsInputEventMIDI() Instance             { return o }
 func (o *Extension[T]) AsInputEventMIDI() Instance        { return o.Super() }
-func (o class) AsInputEvent() InputEvent.Advanced         { return InputEvent.Advanced{gdclass.NewInputEvent(o[0].AsObject()[0])} }
+func (o class) AsInputEvent() InputEvent.Advanced         { return *(*InputEvent.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsInputEvent() InputEvent.Instance { return o.Super().AsInputEvent() }
-func (o Instance) AsInputEvent() InputEvent.Instance      { return InputEvent.Instance{gdclass.NewInputEvent(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced             { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsInputEvent() InputEvent.Instance      { return *(*InputEvent.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced             { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance     { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance          { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance          { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

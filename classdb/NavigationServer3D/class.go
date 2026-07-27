@@ -26,6 +26,7 @@ package NavigationServer3D
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -35,6 +36,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -67,6 +69,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1470,7 +1475,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.NavigationServer3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNavigationServer3D(obj[0])
@@ -1485,7 +1490,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) GetMaps() Array.Contains[RID.Any] { //gd:NavigationServer3D.get_maps
@@ -1718,6 +1723,9 @@ func (self class) QueryPath(parameters [1]gdclass.NavigationPathQueryParameters3
 		result     gdextension.Object
 		callback   gdextension.Callable
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationPathQueryParameters3D(parameters[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetNavigationPathQueryResult3D(result[0])[0])), pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(parameters[0].Anchor())
+	runtime.KeepAlive(result[0].Anchor())
+	runtime.KeepAlive(callback)
 }
 func (self class) RegionCreate() RID.Any { //gd:NavigationServer3D.region_create
 	once.Do(singleton)
@@ -1863,6 +1871,7 @@ func (self class) RegionSetNavigationMesh(region RID.Any, navigation_mesh [1]gdc
 		region          RID.Any
 		navigation_mesh gdextension.Object
 	}{region, gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0]))})
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
 }
 func (self class) RegionBakeNavigationMesh(navigation_mesh [1]gdclass.NavigationMesh, root_node [1]gdclass.Node) { //gd:NavigationServer3D.region_bake_navigation_mesh
 	once.Do(singleton)
@@ -1870,6 +1879,8 @@ func (self class) RegionBakeNavigationMesh(navigation_mesh [1]gdclass.Navigation
 		navigation_mesh gdextension.Object
 		root_node       gdextension.Object
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetNode(root_node[0])[0]))})
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
+	runtime.KeepAlive(root_node[0].Anchor())
 }
 func (self class) RegionGetConnectionsCount(region RID.Any) int64 { //gd:NavigationServer3D.region_get_connections_count
 	once.Do(singleton)
@@ -2263,6 +2274,7 @@ func (self class) AgentSetAvoidanceCallback(agent RID.Any, callback Callable.Fun
 		agent    RID.Any
 		callback gdextension.Callable
 	}{agent, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) AgentHasAvoidanceCallback(agent RID.Any) bool { //gd:NavigationServer3D.agent_has_avoidance_callback
 	once.Do(singleton)
@@ -2425,6 +2437,7 @@ func (self class) ObstacleSetVertices(obstacle RID.Any, vertices Packed.Array[Ve
 		obstacle RID.Any
 		vertices gdextension.PackedArray[Vector3.XYZ]
 	}{obstacle, pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](vertices))})
+	runtime.KeepAlive(vertices)
 }
 func (self class) ObstacleGetVertices(obstacle RID.Any) Packed.Array[Vector3.XYZ] { //gd:NavigationServer3D.obstacle_get_vertices
 	once.Do(singleton)
@@ -2453,6 +2466,10 @@ func (self class) ParseSourceGeometryData(navigation_mesh [1]gdclass.NavigationM
 		root_node            gdextension.Object
 		callback             gdextension.Callable
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMeshSourceGeometryData3D(source_geometry_data[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetNode(root_node[0])[0])), pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
+	runtime.KeepAlive(source_geometry_data[0].Anchor())
+	runtime.KeepAlive(root_node[0].Anchor())
+	runtime.KeepAlive(callback)
 }
 func (self class) BakeFromSourceGeometryData(navigation_mesh [1]gdclass.NavigationMesh, source_geometry_data [1]gdclass.NavigationMeshSourceGeometryData3D, callback Callable.Function) { //gd:NavigationServer3D.bake_from_source_geometry_data
 	once.Do(singleton)
@@ -2461,6 +2478,9 @@ func (self class) BakeFromSourceGeometryData(navigation_mesh [1]gdclass.Navigati
 		source_geometry_data gdextension.Object
 		callback             gdextension.Callable
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMeshSourceGeometryData3D(source_geometry_data[0])[0])), pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
+	runtime.KeepAlive(source_geometry_data[0].Anchor())
+	runtime.KeepAlive(callback)
 }
 func (self class) BakeFromSourceGeometryDataAsync(navigation_mesh [1]gdclass.NavigationMesh, source_geometry_data [1]gdclass.NavigationMeshSourceGeometryData3D, callback Callable.Function) { //gd:NavigationServer3D.bake_from_source_geometry_data_async
 	once.Do(singleton)
@@ -2469,10 +2489,14 @@ func (self class) BakeFromSourceGeometryDataAsync(navigation_mesh [1]gdclass.Nav
 		source_geometry_data gdextension.Object
 		callback             gdextension.Callable
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMeshSourceGeometryData3D(source_geometry_data[0])[0])), pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
+	runtime.KeepAlive(source_geometry_data[0].Anchor())
+	runtime.KeepAlive(callback)
 }
 func (self class) IsBakingNavigationMesh(navigation_mesh [1]gdclass.NavigationMesh) bool { //gd:NavigationServer3D.is_baking_navigation_mesh
 	once.Do(singleton)
 	var r_ret = noescape.CallThreadSafe[bool](gdreference.GetObject(self.AsObject()[0]), methods.is_baking_navigation_mesh, gdextension.SizeBool|(gdextension.SizeObject<<4), &struct{ navigation_mesh gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0]))})
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2488,6 +2512,7 @@ func (self class) SourceGeometryParserSetCallback(parser RID.Any, callback Calla
 		parser   RID.Any
 		callback gdextension.Callable
 	}{parser, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) SimplifyPath(path Packed.Array[Vector3.XYZ], epsilon float64) Packed.Array[Vector3.XYZ] { //gd:NavigationServer3D.simplify_path
 	once.Do(singleton)
@@ -2495,6 +2520,7 @@ func (self class) SimplifyPath(path Packed.Array[Vector3.XYZ], epsilon float64) 
 		path    gdextension.PackedArray[Vector3.XYZ]
 		epsilon float64
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](path)), epsilon})
+	runtime.KeepAlive(path)
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }

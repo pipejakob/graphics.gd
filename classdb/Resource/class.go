@@ -21,6 +21,7 @@ Note: In C#, resources will not be freed instantly after they are no longer in u
 package Resource
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -54,6 +55,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -489,7 +493,7 @@ func (self Instance) CopyFromResource(resource Instance) error { //gd:Resource.c
 type Advanced = class
 type class [1]gdclass.Resource
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewResource(obj[0])
@@ -504,7 +508,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -628,63 +632,85 @@ func (class) _set_path_cache(impl func(ptr gdclass.Receiver, path String.Readabl
 
 func (self class) SetPath(path String.Readable) { //gd:Resource.set_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) TakeOverPath(path String.Readable) { //gd:Resource.take_over_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.take_over_path, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetPath() String.Readable { //gd:Resource.get_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_path, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetPathCache(path String.Readable) { //gd:Resource.set_path_cache
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_cache, 0|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) SetName(name String.Readable) { //gd:Resource.set_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_name, 0|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetName() String.Readable { //gd:Resource.get_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetRid() RID.Any { //gd:Resource.get_rid
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_rid, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLocalToScene(enable bool) { //gd:Resource.set_local_to_scene
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_local_to_scene, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLocalToScene() bool { //gd:Resource.is_local_to_scene
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_local_to_scene, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLocalScene() [1]gdclass.Node { //gd:Resource.get_local_scene
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_local_scene, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Node{gdclass.NewNode(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetupLocalToScene() { //gd:Resource.setup_local_to_scene
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.setup_local_to_scene, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ResetState() { //gd:Resource.reset_state
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset_state, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetIdForPath(path String.Readable, id String.Readable) { //gd:Resource.set_id_for_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_id_for_path, 0|(gdextension.SizeString<<4)|(gdextension.SizeString<<8), &struct {
 		path gdextension.String
 		id   gdextension.String
 	}{pointers.Get(gd.InternalString(path)), pointers.Get(gd.InternalString(id))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
+	runtime.KeepAlive(id)
 }
 func (self class) GetIdForPath(path String.Readable) String.Readable { //gd:Resource.get_id_for_path
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_id_for_path, gdextension.SizeString|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsBuiltIn() bool { //gd:Resource.is_built_in
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_built_in, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -695,27 +721,35 @@ func (self class) GenerateSceneUniqueId() String.Readable { //gd:Resource.genera
 }
 func (self class) SetSceneUniqueId(id String.Readable) { //gd:Resource.set_scene_unique_id
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scene_unique_id, 0|(gdextension.SizeString<<4), &struct{ id gdextension.String }{pointers.Get(gd.InternalString(id))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(id)
 }
 func (self class) GetSceneUniqueId() String.Readable { //gd:Resource.get_scene_unique_id
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_scene_unique_id, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) EmitChanged() { //gd:Resource.emit_changed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.emit_changed, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Duplicate(deep bool) [1]gdclass.Resource { //gd:Resource.duplicate
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.duplicate, gdextension.SizeObject|(gdextension.SizeBool<<4), &struct{ deep bool }{deep})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Resource{gdclass.NewResource(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) DuplicateDeep(deep_subresources_mode DeepDuplicateMode) [1]gdclass.Resource { //gd:Resource.duplicate_deep
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.duplicate_deep, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ deep_subresources_mode DeepDuplicateMode }{deep_subresources_mode})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Resource{gdclass.NewResource(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) CopyFromResource(resource [1]gdclass.Resource) Error.Code { //gd:Resource.copy_from_resource
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.copy_from_resource, gdextension.SizeInt|(gdextension.SizeObject<<4), &struct{ resource gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetResource(resource[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(resource[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }

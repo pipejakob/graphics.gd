@@ -10,6 +10,7 @@ See also [Curve] which supports more complex easing methods, but does not suppor
 package Gradient
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -216,7 +220,7 @@ func (self Instance) GetPointCount() int { //gd:Gradient.get_point_count
 type Advanced = class
 type class [1]gdclass.Gradient
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGradient(obj[0])
@@ -231,7 +235,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -324,42 +328,51 @@ func (self class) AddPoint(offset float64, color Color.RGBA) { //gd:Gradient.add
 		offset float64
 		color  Color.RGBA
 	}{offset, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemovePoint(point int64) { //gd:Gradient.remove_point
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_point, 0|(gdextension.SizeInt<<4), &struct{ point int64 }{point})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetOffset(point int64, offset float64) { //gd:Gradient.set_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset, 0|(gdextension.SizeInt<<4)|(gdextension.SizeFloat<<8), &struct {
 		point  int64
 		offset float64
 	}{point, offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffset(point int64) float64 { //gd:Gradient.get_offset
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_offset, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ point int64 }{point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Reverse() { //gd:Gradient.reverse
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reverse, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetColor(point int64, color Color.RGBA) { //gd:Gradient.set_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color, 0|(gdextension.SizeInt<<4)|(gdextension.SizeColor<<8), &struct {
 		point int64
 		color Color.RGBA
 	}{point, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetColor(point int64) Color.RGBA { //gd:Gradient.get_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_color, gdextension.SizeColor|(gdextension.SizeInt<<4), &struct{ point int64 }{point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Sample(offset float64) Color.RGBA { //gd:Gradient.sample
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.sample, gdextension.SizeColor|(gdextension.SizeFloat<<4), &struct{ offset float64 }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPointCount() int64 { //gd:Gradient.get_point_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_point_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -367,9 +380,12 @@ func (self class) SetOffsets(offsets Packed.Array[float32]) { //gd:Gradient.set_
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offsets, 0|(gdextension.SizePackedArray<<4), &struct {
 		offsets gdextension.PackedArray[float32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](offsets))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(offsets)
 }
 func (self class) GetOffsets() Packed.Array[float32] { //gd:Gradient.get_offsets
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_offsets, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
@@ -377,34 +393,41 @@ func (self class) SetColors(colors Packed.Array[Color.RGBA]) { //gd:Gradient.set
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_colors, 0|(gdextension.SizePackedArray<<4), &struct {
 		colors gdextension.PackedArray[Color.RGBA]
 	}{pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](colors))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(colors)
 }
 func (self class) GetColors() Packed.Array[Color.RGBA] { //gd:Gradient.get_colors
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_colors, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) SetInterpolationMode(interpolation_mode InterpolationMode) { //gd:Gradient.set_interpolation_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_interpolation_mode, 0|(gdextension.SizeInt<<4), &struct{ interpolation_mode InterpolationMode }{interpolation_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInterpolationMode() InterpolationMode { //gd:Gradient.get_interpolation_mode
 	var r_ret = jumponly.Call[InterpolationMode](gd.ObjectChecked(self.AsObject()), methods.get_interpolation_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInterpolationColorSpace(interpolation_color_space ColorSpace) { //gd:Gradient.set_interpolation_color_space
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_interpolation_color_space, 0|(gdextension.SizeInt<<4), &struct{ interpolation_color_space ColorSpace }{interpolation_color_space})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInterpolationColorSpace() ColorSpace { //gd:Gradient.get_interpolation_color_space
 	var r_ret = jumponly.Call[ColorSpace](gd.ObjectChecked(self.AsObject()), methods.get_interpolation_color_space, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsGradient() Advanced                  { return Advanced(o) }
 func (o Instance) AsGradient() Instance               { return o }
 func (o *Extension[T]) AsGradient() Instance          { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

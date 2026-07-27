@@ -17,6 +17,7 @@ The gradient is sampled individually for each pixel so it does not necessarily r
 package GradientTexture2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -55,6 +56,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -148,7 +152,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.GradientTexture2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGradientTexture2D(obj[0])
@@ -163,7 +167,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -292,70 +296,85 @@ func (self Instance) SetRepeat(value Repeat) Instance { //gd:GradientTexture2D.r
 
 func (self class) SetGradient(gradient [1]gdclass.Gradient) { //gd:GradientTexture2D.set_gradient
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_gradient, 0|(gdextension.SizeObject<<4), &struct{ gradient gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetGradient(gradient[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(gradient[0].Anchor())
 }
 func (self class) GetGradient() [1]gdclass.Gradient { //gd:GradientTexture2D.get_gradient
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_gradient, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Gradient{gdclass.NewGradient(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetWidth(width int64) { //gd:GradientTexture2D.set_width
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_width, 0|(gdextension.SizeInt<<4), &struct{ width int64 }{width})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetHeight(height int64) { //gd:GradientTexture2D.set_height
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_height, 0|(gdextension.SizeInt<<4), &struct{ height int64 }{height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetUseHdr(enabled bool) { //gd:GradientTexture2D.set_use_hdr
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_hdr, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingHdr() bool { //gd:GradientTexture2D.is_using_hdr
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_hdr, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFill(fill Fill) { //gd:GradientTexture2D.set_fill
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fill, 0|(gdextension.SizeInt<<4), &struct{ fill Fill }{fill})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFill() Fill { //gd:GradientTexture2D.get_fill
 	var r_ret = jumponly.Call[Fill](gd.ObjectChecked(self.AsObject()), methods.get_fill, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFillFrom(fill_from Vector2.XY) { //gd:GradientTexture2D.set_fill_from
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fill_from, 0|(gdextension.SizeVector2<<4), &struct{ fill_from Vector2.XY }{fill_from})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFillFrom() Vector2.XY { //gd:GradientTexture2D.get_fill_from
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_fill_from, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFillTo(fill_to Vector2.XY) { //gd:GradientTexture2D.set_fill_to
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fill_to, 0|(gdextension.SizeVector2<<4), &struct{ fill_to Vector2.XY }{fill_to})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFillTo() Vector2.XY { //gd:GradientTexture2D.get_fill_to
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_fill_to, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRepeat(repeat Repeat) { //gd:GradientTexture2D.set_repeat
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_repeat, 0|(gdextension.SizeInt<<4), &struct{ repeat Repeat }{repeat})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRepeat() Repeat { //gd:GradientTexture2D.get_repeat
 	var r_ret = jumponly.Call[Repeat](gd.ObjectChecked(self.AsObject()), methods.get_repeat, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsGradientTexture2D() Advanced           { return Advanced(o) }
 func (o Instance) AsGradientTexture2D() Instance        { return o }
 func (o *Extension[T]) AsGradientTexture2D() Instance   { return o.Super() }
-func (o class) AsTexture2D() Texture2D.Advanced         { return Texture2D.Advanced{gdclass.NewTexture2D(o[0].AsObject()[0])} }
+func (o class) AsTexture2D() Texture2D.Advanced         { return *(*Texture2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture2D() Texture2D.Instance { return o.Super().AsTexture2D() }
-func (o Instance) AsTexture2D() Texture2D.Instance      { return Texture2D.Instance{gdclass.NewTexture2D(o[0].AsObject()[0])} }
-func (o class) AsTexture() Texture.Advanced             { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o Instance) AsTexture2D() Texture2D.Instance      { return *(*Texture2D.Instance)(ie.As(&o)) }
+func (o class) AsTexture() Texture.Advanced             { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance     { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance          { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced           { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance          { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced           { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance   { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance        { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance        { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

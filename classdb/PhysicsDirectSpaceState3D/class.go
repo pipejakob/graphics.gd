@@ -11,6 +11,7 @@ Note: This class is not meant to be instantiated directly. Use [World3D.DirectSp
 package PhysicsDirectSpaceState3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -19,6 +20,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -46,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -322,7 +327,7 @@ func (self Instance) GetRestInfo(parameters PhysicsShapeQueryParameters3D.Instan
 type Advanced = class
 type class [1]gdclass.PhysicsDirectSpaceState3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPhysicsDirectSpaceState3D(obj[0])
@@ -337,7 +342,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -365,11 +370,15 @@ func (self class) IntersectPoint(parameters [1]gdclass.PhysicsPointQueryParamete
 		parameters  gdextension.Object
 		max_results int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsPointQueryParameters3D(parameters[0])[0])), max_results})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(parameters[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) IntersectRay(parameters [1]gdclass.PhysicsRayQueryParameters3D) Dictionary.Any { //gd:PhysicsDirectSpaceState3D.intersect_ray
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.intersect_ray, gdextension.SizeDictionary|(gdextension.SizeObject<<4), &struct{ parameters gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsRayQueryParameters3D(parameters[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(parameters[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -378,11 +387,15 @@ func (self class) IntersectShape(parameters [1]gdclass.PhysicsShapeQueryParamete
 		parameters  gdextension.Object
 		max_results int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsShapeQueryParameters3D(parameters[0])[0])), max_results})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(parameters[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) CastMotion(parameters [1]gdclass.PhysicsShapeQueryParameters3D) Packed.Array[float32] { //gd:PhysicsDirectSpaceState3D.cast_motion
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.cast_motion, gdextension.SizePackedArray|(gdextension.SizeObject<<4), &struct{ parameters gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsShapeQueryParameters3D(parameters[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(parameters[0].Anchor())
 	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
@@ -391,11 +404,15 @@ func (self class) CollideShape(parameters [1]gdclass.PhysicsShapeQueryParameters
 		parameters  gdextension.Object
 		max_results int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsShapeQueryParameters3D(parameters[0])[0])), max_results})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(parameters[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector3.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetRestInfo(parameters [1]gdclass.PhysicsShapeQueryParameters3D) Dictionary.Any { //gd:PhysicsDirectSpaceState3D.get_rest_info
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_rest_info, gdextension.SizeDictionary|(gdextension.SizeObject<<4), &struct{ parameters gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsShapeQueryParameters3D(parameters[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(parameters[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }

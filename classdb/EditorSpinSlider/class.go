@@ -14,6 +14,7 @@ If the [Range.Step] value is 1, the [EditorSpinSlider] will display up/down arro
 package EditorSpinSlider
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -23,6 +24,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -50,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -152,7 +157,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.EditorSpinSlider
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorSpinSlider(obj[0])
@@ -167,7 +172,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -301,65 +306,83 @@ func (self Instance) SetDeferredDragMode(value bool) Instance { //gd:EditorSpinS
 
 func (self class) SetLabel(label String.Readable) { //gd:EditorSpinSlider.set_label
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_label, 0|(gdextension.SizeString<<4), &struct{ label gdextension.String }{pointers.Get(gd.InternalString(label))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label)
 }
 func (self class) GetLabel() String.Readable { //gd:EditorSpinSlider.get_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_label, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetSuffix(suffix String.Readable) { //gd:EditorSpinSlider.set_suffix
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_suffix, 0|(gdextension.SizeString<<4), &struct{ suffix gdextension.String }{pointers.Get(gd.InternalString(suffix))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(suffix)
 }
 func (self class) GetSuffix() String.Readable { //gd:EditorSpinSlider.get_suffix
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_suffix, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetReadOnly(read_only bool) { //gd:EditorSpinSlider.set_read_only
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_read_only, 0|(gdextension.SizeBool<<4), &struct{ read_only bool }{read_only})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsReadOnly() bool { //gd:EditorSpinSlider.is_read_only
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_read_only, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFlat(flat bool) { //gd:EditorSpinSlider.set_flat
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_flat, 0|(gdextension.SizeBool<<4), &struct{ flat bool }{flat})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFlat() bool { //gd:EditorSpinSlider.is_flat
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_flat, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetControlState(state ControlState) { //gd:EditorSpinSlider.set_control_state
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_control_state, 0|(gdextension.SizeInt<<4), &struct{ state ControlState }{state})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetControlState() ControlState { //gd:EditorSpinSlider.get_control_state
 	var r_ret = jumponly.Call[ControlState](gd.ObjectChecked(self.AsObject()), methods.get_control_state, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHideSlider(hide_slider bool) { //gd:EditorSpinSlider.set_hide_slider
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hide_slider, 0|(gdextension.SizeBool<<4), &struct{ hide_slider bool }{hide_slider})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHidingSlider() bool { //gd:EditorSpinSlider.is_hiding_slider
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hiding_slider, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEditingInteger(editing_integer bool) { //gd:EditorSpinSlider.set_editing_integer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_editing_integer, 0|(gdextension.SizeBool<<4), &struct{ editing_integer bool }{editing_integer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEditingInteger() bool { //gd:EditorSpinSlider.is_editing_integer
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_editing_integer, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDeferredDragModeEnabled(enabled bool) { //gd:EditorSpinSlider.set_deferred_drag_mode_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_deferred_drag_mode_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDeferredDragModeEnabled() bool { //gd:EditorSpinSlider.is_deferred_drag_mode_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_deferred_drag_mode_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -447,18 +470,18 @@ func (self class) ValueFocusExited() Signal.Any {
 func (o class) AsEditorSpinSlider() Advanced              { return Advanced(o) }
 func (o Instance) AsEditorSpinSlider() Instance           { return o }
 func (o *Extension[T]) AsEditorSpinSlider() Instance      { return o.Super() }
-func (o class) AsRange() Range.Advanced                   { return Range.Advanced{gdclass.NewRange(o[0].AsObject()[0])} }
+func (o class) AsRange() Range.Advanced                   { return *(*Range.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsRange() Range.Instance           { return o.Super().AsRange() }
-func (o Instance) AsRange() Range.Instance                { return Range.Instance{gdclass.NewRange(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsRange() Range.Instance                { return *(*Range.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -8,6 +8,7 @@ By changing various properties of this object, such as the ray position, you can
 package PhysicsRayQueryParameters2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -162,7 +166,7 @@ func CreateOptions(from Vector2.XY, to Vector2.XY, collision_mask int, exclude [
 type Advanced = class
 type class [1]gdclass.PhysicsRayQueryParameters2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPhysicsRayQueryParameters2D(obj[0])
@@ -177,7 +181,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -310,62 +314,78 @@ func (self class) Create(from Vector2.XY, to Vector2.XY, collision_mask int64, e
 		collision_mask int64
 		exclude        gdextension.Array
 	}{from, to, collision_mask, pointers.Get(gd.InternalArray(exclude))})
+	runtime.KeepAlive(exclude)
 	var ret = [1]gdclass.PhysicsRayQueryParameters2D{gdclass.NewPhysicsRayQueryParameters2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetFrom(from Vector2.XY) { //gd:PhysicsRayQueryParameters2D.set_from
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_from, 0|(gdextension.SizeVector2<<4), &struct{ from Vector2.XY }{from})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrom() Vector2.XY { //gd:PhysicsRayQueryParameters2D.get_from
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_from, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTo(to Vector2.XY) { //gd:PhysicsRayQueryParameters2D.set_to
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_to, 0|(gdextension.SizeVector2<<4), &struct{ to Vector2.XY }{to})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTo() Vector2.XY { //gd:PhysicsRayQueryParameters2D.get_to
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_to, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollisionMask(collision_mask int64) { //gd:PhysicsRayQueryParameters2D.set_collision_mask
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_mask, 0|(gdextension.SizeInt<<4), &struct{ collision_mask int64 }{collision_mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionMask() int64 { //gd:PhysicsRayQueryParameters2D.get_collision_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetExclude(exclude Array.Contains[RID.Any]) { //gd:PhysicsRayQueryParameters2D.set_exclude
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_exclude, 0|(gdextension.SizeArray<<4), &struct{ exclude gdextension.Array }{pointers.Get(gd.InternalArray(exclude))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(exclude)
 }
 func (self class) GetExclude() Array.Contains[RID.Any] { //gd:PhysicsRayQueryParameters2D.get_exclude
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_exclude, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[RID.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetCollideWithBodies(enable bool) { //gd:PhysicsRayQueryParameters2D.set_collide_with_bodies
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collide_with_bodies, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCollideWithBodiesEnabled() bool { //gd:PhysicsRayQueryParameters2D.is_collide_with_bodies_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_collide_with_bodies_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollideWithAreas(enable bool) { //gd:PhysicsRayQueryParameters2D.set_collide_with_areas
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collide_with_areas, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCollideWithAreasEnabled() bool { //gd:PhysicsRayQueryParameters2D.is_collide_with_areas_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_collide_with_areas_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHitFromInside(enable bool) { //gd:PhysicsRayQueryParameters2D.set_hit_from_inside
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hit_from_inside, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHitFromInsideEnabled() bool { //gd:PhysicsRayQueryParameters2D.is_hit_from_inside_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hit_from_inside_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

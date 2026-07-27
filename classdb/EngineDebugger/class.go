@@ -9,6 +9,7 @@ package EngineDebugger
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -17,6 +18,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -42,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -327,7 +332,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.EngineDebugger
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEngineDebugger(obj[0])
@@ -342,7 +347,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) IsActive() bool { //gd:EngineDebugger.is_active
@@ -357,20 +362,25 @@ func (self class) RegisterProfiler(name String.Name, profiler [1]gdclass.EngineP
 		name     gdextension.StringName
 		profiler gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetEngineProfiler(profiler[0])[0]))})
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(profiler[0].Anchor())
 }
 func (self class) UnregisterProfiler(name String.Name) { //gd:EngineDebugger.unregister_profiler
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.unregister_profiler, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) IsProfiling(name String.Name) bool { //gd:EngineDebugger.is_profiling
 	once.Do(singleton)
 	var r_ret = noescape.Call[bool](gdreference.GetObject(self.AsObject()[0]), methods.is_profiling, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasProfiler(name String.Name) bool { //gd:EngineDebugger.has_profiler
 	once.Do(singleton)
 	var r_ret = noescape.Call[bool](gdreference.GetObject(self.AsObject()[0]), methods.has_profiler, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -380,6 +390,8 @@ func (self class) ProfilerAddFrameData(name String.Name, data Array.Any) { //gd:
 		name gdextension.StringName
 		data gdextension.Array
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalArray(data))})
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(data)
 }
 func (self class) ProfilerEnable(name String.Name, enable bool, arguments Array.Any) { //gd:EngineDebugger.profiler_enable
 	once.Do(singleton)
@@ -388,6 +400,8 @@ func (self class) ProfilerEnable(name String.Name, enable bool, arguments Array.
 		enable    bool
 		arguments gdextension.Array
 	}{pointers.Get(gd.InternalStringName(name)), enable, pointers.Get(gd.InternalArray(arguments))})
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(arguments)
 }
 func (self class) RegisterMessageCapture(name String.Name, callable Callable.Function) { //gd:EngineDebugger.register_message_capture
 	once.Do(singleton)
@@ -395,14 +409,18 @@ func (self class) RegisterMessageCapture(name String.Name, callable Callable.Fun
 		name     gdextension.StringName
 		callable gdextension.Callable
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalCallable(callable))})
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(callable)
 }
 func (self class) UnregisterMessageCapture(name String.Name) { //gd:EngineDebugger.unregister_message_capture
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.unregister_message_capture, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) HasCapture(name String.Name) bool { //gd:EngineDebugger.has_capture
 	once.Do(singleton)
 	var r_ret = noescape.Call[bool](gdreference.GetObject(self.AsObject()[0]), methods.has_capture, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -416,6 +434,8 @@ func (self class) SendMessage(message String.Readable, data Array.Any) { //gd:En
 		message gdextension.String
 		data    gdextension.Array
 	}{pointers.Get(gd.InternalString(message)), pointers.Get(gd.InternalArray(data))})
+	runtime.KeepAlive(message)
+	runtime.KeepAlive(data)
 }
 func (self class) Debug(can_continue bool, is_error_breakpoint bool) { //gd:EngineDebugger.debug
 	once.Do(singleton)
@@ -431,6 +451,7 @@ func (self class) ScriptDebug(language [1]gdclass.ScriptLanguage, can_continue b
 		can_continue        bool
 		is_error_breakpoint bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetScriptLanguage(language[0])[0])), can_continue, is_error_breakpoint})
+	runtime.KeepAlive(language[0].Anchor())
 }
 func (self class) SetLinesLeft(lines int64) { //gd:EngineDebugger.set_lines_left
 	once.Do(singleton)
@@ -458,6 +479,7 @@ func (self class) IsBreakpoint(line int64, source String.Name) bool { //gd:Engin
 		line   int64
 		source gdextension.StringName
 	}{line, pointers.Get(gd.InternalStringName(source))})
+	runtime.KeepAlive(source)
 	var ret = r_ret
 	return ret
 }
@@ -473,6 +495,7 @@ func (self class) InsertBreakpoint(line int64, source String.Name) { //gd:Engine
 		line   int64
 		source gdextension.StringName
 	}{line, pointers.Get(gd.InternalStringName(source))})
+	runtime.KeepAlive(source)
 }
 func (self class) RemoveBreakpoint(line int64, source String.Name) { //gd:EngineDebugger.remove_breakpoint
 	once.Do(singleton)
@@ -480,6 +503,7 @@ func (self class) RemoveBreakpoint(line int64, source String.Name) { //gd:Engine
 		line   int64
 		source gdextension.StringName
 	}{line, pointers.Get(gd.InternalStringName(source))})
+	runtime.KeepAlive(source)
 }
 func (self class) ClearBreakpoints() { //gd:EngineDebugger.clear_breakpoints
 	once.Do(singleton)

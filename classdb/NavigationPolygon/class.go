@@ -47,6 +47,7 @@ Adding vertices and polygon indices manually.
 package NavigationPolygon
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -84,6 +85,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -338,7 +342,7 @@ func (self Instance) Clear() { //gd:NavigationPolygon.clear
 type Advanced = class
 type class [1]gdclass.NavigationPolygon
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNavigationPolygon(obj[0])
@@ -353,7 +357,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -541,9 +545,12 @@ func (self class) SetVertices(vertices Packed.Array[Vector2.XY]) { //gd:Navigati
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertices, 0|(gdextension.SizePackedArray<<4), &struct {
 		vertices gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](vertices))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertices)
 }
 func (self class) GetVertices() Packed.Array[Vector2.XY] { //gd:NavigationPolygon.get_vertices
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_vertices, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -551,22 +558,28 @@ func (self class) AddPolygon(polygon Packed.Array[int32]) { //gd:NavigationPolyg
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_polygon, 0|(gdextension.SizePackedArray<<4), &struct {
 		polygon gdextension.PackedArray[int32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](polygon))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(polygon)
 }
 func (self class) GetPolygonCount() int64 { //gd:NavigationPolygon.get_polygon_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_polygon_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPolygon(idx int64) Packed.Array[int32] { //gd:NavigationPolygon.get_polygon
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_polygon, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ClearPolygons() { //gd:NavigationPolygon.clear_polygons
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_polygons, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNavigationMesh() [1]gdclass.NavigationMesh { //gd:NavigationPolygon.get_navigation_mesh
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_navigation_mesh, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.NavigationMesh{gdclass.NewNavigationMesh(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -574,15 +587,20 @@ func (self class) AddOutline(outline Packed.Array[Vector2.XY]) { //gd:Navigation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_outline, 0|(gdextension.SizePackedArray<<4), &struct {
 		outline gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](outline))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(outline)
 }
 func (self class) AddOutlineAtIndex(outline Packed.Array[Vector2.XY], index int64) { //gd:NavigationPolygon.add_outline_at_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_outline_at_index, 0|(gdextension.SizePackedArray<<4)|(gdextension.SizeInt<<8), &struct {
 		outline gdextension.PackedArray[Vector2.XY]
 		index   int64
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](outline)), index})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(outline)
 }
 func (self class) GetOutlineCount() int64 { //gd:NavigationPolygon.get_outline_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_outline_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -591,58 +609,74 @@ func (self class) SetOutline(idx int64, outline Packed.Array[Vector2.XY]) { //gd
 		idx     int64
 		outline gdextension.PackedArray[Vector2.XY]
 	}{idx, pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](outline))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(outline)
 }
 func (self class) GetOutline(idx int64) Packed.Array[Vector2.XY] { //gd:NavigationPolygon.get_outline
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_outline, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) RemoveOutline(idx int64) { //gd:NavigationPolygon.remove_outline
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_outline, 0|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearOutlines() { //gd:NavigationPolygon.clear_outlines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_outlines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MakePolygonsFromOutlines() { //gd:NavigationPolygon.make_polygons_from_outlines
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.make_polygons_from_outlines, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCellSize(cell_size float64) { //gd:NavigationPolygon.set_cell_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cell_size, 0|(gdextension.SizeFloat<<4), &struct{ cell_size float64 }{cell_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCellSize() float64 { //gd:NavigationPolygon.get_cell_size
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_cell_size, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBorderSize(border_size float64) { //gd:NavigationPolygon.set_border_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_border_size, 0|(gdextension.SizeFloat<<4), &struct{ border_size float64 }{border_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBorderSize() float64 { //gd:NavigationPolygon.get_border_size
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_border_size, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSamplePartitionType(sample_partition_type SamplePartitionType) { //gd:NavigationPolygon.set_sample_partition_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sample_partition_type, 0|(gdextension.SizeInt<<4), &struct{ sample_partition_type SamplePartitionType }{sample_partition_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSamplePartitionType() SamplePartitionType { //gd:NavigationPolygon.get_sample_partition_type
 	var r_ret = jumponly.Call[SamplePartitionType](gd.ObjectChecked(self.AsObject()), methods.get_sample_partition_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetParsedGeometryType(geometry_type ParsedGeometryType) { //gd:NavigationPolygon.set_parsed_geometry_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_parsed_geometry_type, 0|(gdextension.SizeInt<<4), &struct{ geometry_type ParsedGeometryType }{geometry_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetParsedGeometryType() ParsedGeometryType { //gd:NavigationPolygon.get_parsed_geometry_type
 	var r_ret = jumponly.Call[ParsedGeometryType](gd.ObjectChecked(self.AsObject()), methods.get_parsed_geometry_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetParsedCollisionMask(mask int64) { //gd:NavigationPolygon.set_parsed_collision_mask
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_parsed_collision_mask, 0|(gdextension.SizeInt<<4), &struct{ mask int64 }{mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetParsedCollisionMask() int64 { //gd:NavigationPolygon.get_parsed_collision_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_parsed_collision_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -651,61 +685,75 @@ func (self class) SetParsedCollisionMaskValue(layer_number int64, value bool) { 
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetParsedCollisionMaskValue(layer_number int64) bool { //gd:NavigationPolygon.get_parsed_collision_mask_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_parsed_collision_mask_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSourceGeometryMode(geometry_mode SourceGeometryMode) { //gd:NavigationPolygon.set_source_geometry_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_source_geometry_mode, 0|(gdextension.SizeInt<<4), &struct{ geometry_mode SourceGeometryMode }{geometry_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSourceGeometryMode() SourceGeometryMode { //gd:NavigationPolygon.get_source_geometry_mode
 	var r_ret = jumponly.Call[SourceGeometryMode](gd.ObjectChecked(self.AsObject()), methods.get_source_geometry_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSourceGeometryGroupName(group_name String.Name) { //gd:NavigationPolygon.set_source_geometry_group_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_source_geometry_group_name, 0|(gdextension.SizeStringName<<4), &struct{ group_name gdextension.StringName }{pointers.Get(gd.InternalStringName(group_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group_name)
 }
 func (self class) GetSourceGeometryGroupName() String.Name { //gd:NavigationPolygon.get_source_geometry_group_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_source_geometry_group_name, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetAgentRadius(agent_radius float64) { //gd:NavigationPolygon.set_agent_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_agent_radius, 0|(gdextension.SizeFloat<<4), &struct{ agent_radius float64 }{agent_radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAgentRadius() float64 { //gd:NavigationPolygon.get_agent_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_agent_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBakingRect(rect Rect2.PositionSize) { //gd:NavigationPolygon.set_baking_rect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_baking_rect, 0|(gdextension.SizeRect2<<4), &struct{ rect Rect2.PositionSize }{rect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBakingRect() Rect2.PositionSize { //gd:NavigationPolygon.get_baking_rect
 	var r_ret = jumponly.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_baking_rect, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBakingRectOffset(rect_offset Vector2.XY) { //gd:NavigationPolygon.set_baking_rect_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_baking_rect_offset, 0|(gdextension.SizeVector2<<4), &struct{ rect_offset Vector2.XY }{rect_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBakingRectOffset() Vector2.XY { //gd:NavigationPolygon.get_baking_rect_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_baking_rect_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Clear() { //gd:NavigationPolygon.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsNavigationPolygon() Advanced         { return Advanced(o) }
 func (o Instance) AsNavigationPolygon() Instance      { return o }
 func (o *Extension[T]) AsNavigationPolygon() Instance { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

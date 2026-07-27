@@ -12,6 +12,7 @@ It also provides methods for querying the status of OpenXR initialization, and h
 package OpenXRAPIExtension
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -51,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -635,7 +639,7 @@ func GetFromWrapper(peer OpenXRExtensionWrapper.Instance) Instance { //gd:OpenXR
 type Advanced = class
 type class [1]gdclass.OpenXRAPIExtension
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRAPIExtension(obj[0])
@@ -650,7 +654,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -675,26 +679,31 @@ func New() Instance {
 
 func (self class) GetOpenxrVersion() int64 { //gd:OpenXRAPIExtension.get_openxr_version
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_openxr_version, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInstance() int64 { //gd:OpenXRAPIExtension.get_instance
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_instance, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSystemId() int64 { //gd:OpenXRAPIExtension.get_system_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_system_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSession() int64 { //gd:OpenXRAPIExtension.get_session
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_session, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) TransformFromPose(pose Engine.Pointer[OpenXR.Posef]) Transform3D.BasisOrigin { //gd:OpenXRAPIExtension.transform_from_pose
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.transform_from_pose, gdextension.SizeTransform3D|(gdextension.SizePointer<<4), &struct{ pose gdextension.Pointer }{gdmemory.UnwrapPointer[OpenXR.Posef](pose)})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
@@ -704,6 +713,9 @@ func (self class) XrResult(result int64, format String.Readable, args Array.Any)
 		format gdextension.String
 		args   gdextension.Array
 	}{result, pointers.Get(gd.InternalString(format)), pointers.Get(gd.InternalArray(args))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(format)
+	runtime.KeepAlive(args)
 	var ret = r_ret
 	return ret
 }
@@ -714,16 +726,20 @@ func (self class) OpenxrIsEnabled(check_run_in_editor bool) bool { //gd:OpenXRAP
 }
 func (self class) GetInstanceProcAddr(name String.Readable) int64 { //gd:OpenXRAPIExtension.get_instance_proc_addr
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_instance_proc_addr, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetErrorString(result int64) String.Readable { //gd:OpenXRAPIExtension.get_error_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_error_string, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ result int64 }{result})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSwapchainFormatName(swapchain_format int64) String.Readable { //gd:OpenXRAPIExtension.get_swapchain_format_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_swapchain_format_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ swapchain_format int64 }{swapchain_format})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -733,56 +749,72 @@ func (self class) SetObjectName(object_type int64, object_handle int64, object_n
 		object_handle int64
 		object_name   gdextension.String
 	}{object_type, object_handle, pointers.Get(gd.InternalString(object_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(object_name)
 }
 func (self class) BeginDebugLabelRegion(label_name String.Readable) { //gd:OpenXRAPIExtension.begin_debug_label_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.begin_debug_label_region, 0|(gdextension.SizeString<<4), &struct{ label_name gdextension.String }{pointers.Get(gd.InternalString(label_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label_name)
 }
 func (self class) EndDebugLabelRegion() { //gd:OpenXRAPIExtension.end_debug_label_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.end_debug_label_region, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) InsertDebugLabel(label_name String.Readable) { //gd:OpenXRAPIExtension.insert_debug_label
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.insert_debug_label, 0|(gdextension.SizeString<<4), &struct{ label_name gdextension.String }{pointers.Get(gd.InternalString(label_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(label_name)
 }
 func (self class) GetViewCount() int64 { //gd:OpenXRAPIExtension.get_view_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_view_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetViewConfiguration() int64 { //gd:OpenXRAPIExtension.get_view_configuration
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_view_configuration, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsInitialized() bool { //gd:OpenXRAPIExtension.is_initialized
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_initialized, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsRunning() bool { //gd:OpenXRAPIExtension.is_running
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_running, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCustomPlaySpace(space uintptr) { //gd:OpenXRAPIExtension.set_custom_play_space
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_custom_play_space, 0|(gdextension.SizePointer<<4), &struct{ space gdextension.Pointer }{gdextension.Pointer(space)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPlaySpace() int64 { //gd:OpenXRAPIExtension.get_play_space
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_play_space, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPredictedDisplayTime() int64 { //gd:OpenXRAPIExtension.get_predicted_display_time
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_predicted_display_time, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetNextFrameTime() int64 { //gd:OpenXRAPIExtension.get_next_frame_time
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_next_frame_time, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) CanRender() bool { //gd:OpenXRAPIExtension.can_render
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.can_render, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -791,64 +823,90 @@ func (self class) FindAction(name String.Readable, action_set RID.Any) RID.Any {
 		name       gdextension.String
 		action_set RID.Any
 	}{pointers.Get(gd.InternalString(name)), action_set})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) ActionGetHandle(action RID.Any) int64 { //gd:OpenXRAPIExtension.action_get_handle
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.action_get_handle, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ action RID.Any }{action})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetHandTracker(hand_index int64) int64 { //gd:OpenXRAPIExtension.get_hand_tracker
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_hand_tracker, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ hand_index int64 }{hand_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RegisterCompositionLayerProvider(extension [1]gdclass.OpenXRExtensionWrapper) { //gd:OpenXRAPIExtension.register_composition_layer_provider
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.register_composition_layer_provider, 0|(gdextension.SizeObject<<4), &struct{ extension gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetOpenXRExtensionWrapper(extension[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension[0].Anchor())
 }
 func (self class) UnregisterCompositionLayerProvider(extension [1]gdclass.OpenXRExtensionWrapper) { //gd:OpenXRAPIExtension.unregister_composition_layer_provider
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.unregister_composition_layer_provider, 0|(gdextension.SizeObject<<4), &struct{ extension gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRExtensionWrapper(extension[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension[0].Anchor())
 }
 func (self class) RegisterProjectionViewsExtension(extension [1]gdclass.OpenXRExtensionWrapper) { //gd:OpenXRAPIExtension.register_projection_views_extension
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.register_projection_views_extension, 0|(gdextension.SizeObject<<4), &struct{ extension gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetOpenXRExtensionWrapper(extension[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension[0].Anchor())
 }
 func (self class) UnregisterProjectionViewsExtension(extension [1]gdclass.OpenXRExtensionWrapper) { //gd:OpenXRAPIExtension.unregister_projection_views_extension
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.unregister_projection_views_extension, 0|(gdextension.SizeObject<<4), &struct{ extension gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRExtensionWrapper(extension[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension[0].Anchor())
 }
 func (self class) RegisterFrameInfoExtension(extension [1]gdclass.OpenXRExtensionWrapper) { //gd:OpenXRAPIExtension.register_frame_info_extension
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.register_frame_info_extension, 0|(gdextension.SizeObject<<4), &struct{ extension gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetOpenXRExtensionWrapper(extension[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension[0].Anchor())
 }
 func (self class) UnregisterFrameInfoExtension(extension [1]gdclass.OpenXRExtensionWrapper) { //gd:OpenXRAPIExtension.unregister_frame_info_extension
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.unregister_frame_info_extension, 0|(gdextension.SizeObject<<4), &struct{ extension gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRExtensionWrapper(extension[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension[0].Anchor())
 }
 func (self class) RegisterProjectionLayerExtension(extension [1]gdclass.OpenXRExtensionWrapper) { //gd:OpenXRAPIExtension.register_projection_layer_extension
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.register_projection_layer_extension, 0|(gdextension.SizeObject<<4), &struct{ extension gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetOpenXRExtensionWrapper(extension[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension[0].Anchor())
 }
 func (self class) UnregisterProjectionLayerExtension(extension [1]gdclass.OpenXRExtensionWrapper) { //gd:OpenXRAPIExtension.unregister_projection_layer_extension
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.unregister_projection_layer_extension, 0|(gdextension.SizeObject<<4), &struct{ extension gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRExtensionWrapper(extension[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(extension[0].Anchor())
 }
 func (self class) GetRenderStateZNear() float64 { //gd:OpenXRAPIExtension.get_render_state_z_near
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_render_state_z_near, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRenderStateZFar() float64 { //gd:OpenXRAPIExtension.get_render_state_z_far
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_render_state_z_far, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVelocityTexture(render_target RID.Any) { //gd:OpenXRAPIExtension.set_velocity_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_velocity_texture, 0|(gdextension.SizeRID<<4), &struct{ render_target RID.Any }{render_target})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetVelocityDepthTexture(render_target RID.Any) { //gd:OpenXRAPIExtension.set_velocity_depth_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_velocity_depth_texture, 0|(gdextension.SizeRID<<4), &struct{ render_target RID.Any }{render_target})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetVelocityTargetSize(target_size Vector2i.XY) { //gd:OpenXRAPIExtension.set_velocity_target_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_velocity_target_size, 0|(gdextension.SizeVector2i<<4), &struct{ target_size Vector2i.XY }{target_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSupportedSwapchainFormats() Packed.Array[int64] { //gd:OpenXRAPIExtension.get_supported_swapchain_formats
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_supported_swapchain_formats, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
@@ -862,46 +920,57 @@ func (self class) OpenxrSwapchainCreate(create_flags int64, usage_flags int64, s
 		sample_count     int64
 		array_size       int64
 	}{create_flags, usage_flags, swapchain_format, width, height, sample_count, array_size})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) OpenxrSwapchainFree(swapchain int64) { //gd:OpenXRAPIExtension.openxr_swapchain_free
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.openxr_swapchain_free, 0|(gdextension.SizeInt<<4), &struct{ swapchain int64 }{swapchain})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) OpenxrSwapchainGetSwapchain(swapchain int64) int64 { //gd:OpenXRAPIExtension.openxr_swapchain_get_swapchain
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.openxr_swapchain_get_swapchain, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ swapchain int64 }{swapchain})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) OpenxrSwapchainAcquire(swapchain int64) { //gd:OpenXRAPIExtension.openxr_swapchain_acquire
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.openxr_swapchain_acquire, 0|(gdextension.SizeInt<<4), &struct{ swapchain int64 }{swapchain})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) OpenxrSwapchainGetImage(swapchain int64) RID.Any { //gd:OpenXRAPIExtension.openxr_swapchain_get_image
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.openxr_swapchain_get_image, gdextension.SizeRID|(gdextension.SizeInt<<4), &struct{ swapchain int64 }{swapchain})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) OpenxrSwapchainRelease(swapchain int64) { //gd:OpenXRAPIExtension.openxr_swapchain_release
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.openxr_swapchain_release, 0|(gdextension.SizeInt<<4), &struct{ swapchain int64 }{swapchain})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetProjectionLayer() int64 { //gd:OpenXRAPIExtension.get_projection_layer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_projection_layer, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRenderRegion(render_region Rect2i.PositionSize) { //gd:OpenXRAPIExtension.set_render_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_render_region, 0|(gdextension.SizeRect2i<<4), &struct{ render_region Rect2i.PositionSize }{render_region})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetEmulateEnvironmentBlendModeAlphaBlend(enabled bool) { //gd:OpenXRAPIExtension.set_emulate_environment_blend_mode_alpha_blend
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_emulate_environment_blend_mode_alpha_blend, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEnvironmentBlendModeAlphaSupported() OpenXRAlphaBlendModeSupport { //gd:OpenXRAPIExtension.is_environment_blend_mode_alpha_supported
 	var r_ret = noescape.Call[OpenXRAlphaBlendModeSupport](gd.ObjectChecked(self.AsObject()), methods.is_environment_blend_mode_alpha_supported, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) UpdateMainSwapchainSize() { //gd:OpenXRAPIExtension.update_main_swapchain_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update_main_swapchain_size, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsOpenXRAPIExtension() Advanced         { return Advanced(o) }
 func (o Instance) AsOpenXRAPIExtension() Instance      { return o }

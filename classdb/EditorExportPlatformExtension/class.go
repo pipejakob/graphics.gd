@@ -11,6 +11,7 @@ To use [EditorExportPlatform], register it using the [EditorPlugin.AddExportPlat
 package EditorExportPlatformExtension
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1003,7 +1007,7 @@ func (self Instance) GetConfigMissingTemplates() bool { //gd:EditorExportPlatfor
 type Advanced = class
 type class [1]gdclass.EditorExportPlatformExtension
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorExportPlatformExtension(obj[0])
@@ -1018,7 +1022,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1440,17 +1444,22 @@ func (class) _initialize(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassC
 
 func (self class) SetConfigError(error_text String.Readable) { //gd:EditorExportPlatformExtension.set_config_error
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_config_error, 0|(gdextension.SizeString<<4), &struct{ error_text gdextension.String }{pointers.Get(gd.InternalString(error_text))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(error_text)
 }
 func (self class) GetConfigError() String.Readable { //gd:EditorExportPlatformExtension.get_config_error
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_config_error, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetConfigMissingTemplates(missing_templates bool) { //gd:EditorExportPlatformExtension.set_config_missing_templates
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_config_missing_templates, 0|(gdextension.SizeBool<<4), &struct{ missing_templates bool }{missing_templates})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConfigMissingTemplates() bool { //gd:EditorExportPlatformExtension.get_config_missing_templates
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_config_missing_templates, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1458,13 +1467,13 @@ func (o class) AsEditorExportPlatformExtension() Advanced         { return Advan
 func (o Instance) AsEditorExportPlatformExtension() Instance      { return o }
 func (o *Extension[T]) AsEditorExportPlatformExtension() Instance { return o.Super() }
 func (o class) AsEditorExportPlatform() EditorExportPlatform.Advanced {
-	return EditorExportPlatform.Advanced{gdclass.NewEditorExportPlatform(o[0].AsObject()[0])}
+	return *(*EditorExportPlatform.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsEditorExportPlatform() EditorExportPlatform.Instance {
 	return o.Super().AsEditorExportPlatform()
 }
 func (o Instance) AsEditorExportPlatform() EditorExportPlatform.Instance {
-	return EditorExportPlatform.Instance{gdclass.NewEditorExportPlatform(o[0].AsObject()[0])}
+	return *(*EditorExportPlatform.Instance)(ie.As(&o))
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

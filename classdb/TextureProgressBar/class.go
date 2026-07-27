@@ -9,6 +9,7 @@ TextureProgressBar works like [ProgressBar], but uses up to 3 textures instead o
 package TextureProgressBar
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -18,6 +19,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -49,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -154,7 +159,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.TextureProgressBar
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTextureProgressBar(obj[0])
@@ -169,7 +174,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -461,89 +466,114 @@ func (self Instance) SetTintProgress(value Color.RGBA) Instance { //gd:TexturePr
 
 func (self class) SetUnderTexture(tex [1]gdclass.Texture2D) { //gd:TextureProgressBar.set_under_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_under_texture, 0|(gdextension.SizeObject<<4), &struct{ tex gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(tex[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tex[0].Anchor())
 }
 func (self class) GetUnderTexture() [1]gdclass.Texture2D { //gd:TextureProgressBar.get_under_texture
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_under_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetProgressTexture(tex [1]gdclass.Texture2D) { //gd:TextureProgressBar.set_progress_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_progress_texture, 0|(gdextension.SizeObject<<4), &struct{ tex gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(tex[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tex[0].Anchor())
 }
 func (self class) GetProgressTexture() [1]gdclass.Texture2D { //gd:TextureProgressBar.get_progress_texture
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_progress_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetOverTexture(tex [1]gdclass.Texture2D) { //gd:TextureProgressBar.set_over_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_over_texture, 0|(gdextension.SizeObject<<4), &struct{ tex gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(tex[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tex[0].Anchor())
 }
 func (self class) GetOverTexture() [1]gdclass.Texture2D { //gd:TextureProgressBar.get_over_texture
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_over_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetFillMode(mode int64) { //gd:TextureProgressBar.set_fill_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fill_mode, 0|(gdextension.SizeInt<<4), &struct{ mode int64 }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFillMode() int64 { //gd:TextureProgressBar.get_fill_mode
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_fill_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTintUnder(tint Color.RGBA) { //gd:TextureProgressBar.set_tint_under
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tint_under, 0|(gdextension.SizeColor<<4), &struct{ tint Color.RGBA }{tint})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTintUnder() Color.RGBA { //gd:TextureProgressBar.get_tint_under
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_tint_under, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTintProgress(tint Color.RGBA) { //gd:TextureProgressBar.set_tint_progress
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tint_progress, 0|(gdextension.SizeColor<<4), &struct{ tint Color.RGBA }{tint})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTintProgress() Color.RGBA { //gd:TextureProgressBar.get_tint_progress
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_tint_progress, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTintOver(tint Color.RGBA) { //gd:TextureProgressBar.set_tint_over
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tint_over, 0|(gdextension.SizeColor<<4), &struct{ tint Color.RGBA }{tint})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTintOver() Color.RGBA { //gd:TextureProgressBar.get_tint_over
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_tint_over, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextureProgressOffset(offset Vector2.XY) { //gd:TextureProgressBar.set_texture_progress_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_progress_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureProgressOffset() Vector2.XY { //gd:TextureProgressBar.get_texture_progress_offset
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_texture_progress_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRadialInitialAngle(mode float64) { //gd:TextureProgressBar.set_radial_initial_angle
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_radial_initial_angle, 0|(gdextension.SizeFloat<<4), &struct{ mode float64 }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadialInitialAngle() float64 { //gd:TextureProgressBar.get_radial_initial_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_radial_initial_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRadialCenterOffset(mode Vector2.XY) { //gd:TextureProgressBar.set_radial_center_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_radial_center_offset, 0|(gdextension.SizeVector2<<4), &struct{ mode Vector2.XY }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadialCenterOffset() Vector2.XY { //gd:TextureProgressBar.get_radial_center_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_radial_center_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFillDegrees(mode float64) { //gd:TextureProgressBar.set_fill_degrees
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fill_degrees, 0|(gdextension.SizeFloat<<4), &struct{ mode float64 }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFillDegrees() float64 { //gd:TextureProgressBar.get_fill_degrees
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fill_degrees, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -552,35 +582,39 @@ func (self class) SetStretchMargin(margin Rect2.Side, value int64) { //gd:Textur
 		margin Rect2.Side
 		value  int64
 	}{margin, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStretchMargin(margin Rect2.Side) int64 { //gd:TextureProgressBar.get_stretch_margin
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_stretch_margin, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ margin Rect2.Side }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNinePatchStretch(stretch bool) { //gd:TextureProgressBar.set_nine_patch_stretch
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_nine_patch_stretch, 0|(gdextension.SizeBool<<4), &struct{ stretch bool }{stretch})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNinePatchStretch() bool { //gd:TextureProgressBar.get_nine_patch_stretch
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_nine_patch_stretch, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsTextureProgressBar() Advanced            { return Advanced(o) }
 func (o Instance) AsTextureProgressBar() Instance         { return o }
 func (o *Extension[T]) AsTextureProgressBar() Instance    { return o.Super() }
-func (o class) AsRange() Range.Advanced                   { return Range.Advanced{gdclass.NewRange(o[0].AsObject()[0])} }
+func (o class) AsRange() Range.Advanced                   { return *(*Range.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsRange() Range.Instance           { return o.Super().AsRange() }
-func (o Instance) AsRange() Range.Instance                { return Range.Instance{gdclass.NewRange(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsRange() Range.Instance                { return *(*Range.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

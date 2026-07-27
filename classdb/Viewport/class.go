@@ -16,6 +16,7 @@ Finally, viewports can also behave as render targets, in which case they will no
 package Viewport
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -25,6 +26,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -62,6 +64,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -779,7 +784,7 @@ func Get(peer Node.Instance) Instance { //gd:Node.get_viewport
 type Advanced = class
 type class [1]gdclass.Viewport
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewViewport(obj[0])
@@ -794,7 +799,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1635,143 +1640,178 @@ func (self Instance) SetOversamplingOverride(value Float.X) Instance { //gd:View
 
 func (self class) SetWorld2d(world_2d [1]gdclass.World2D) { //gd:Viewport.set_world_2d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_world_2d, 0|(gdextension.SizeObject<<4), &struct{ world_2d gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetWorld2D(world_2d[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(world_2d[0].Anchor())
 }
 func (self class) GetWorld2d() [1]gdclass.World2D { //gd:Viewport.get_world_2d
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_world_2d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.World2D{gdclass.NewWorld2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) FindWorld2d() [1]gdclass.World2D { //gd:Viewport.find_world_2d
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.find_world_2d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.World2D{gdclass.NewWorld2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetCanvasTransform(xform Transform2D.OriginXY) { //gd:Viewport.set_canvas_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_canvas_transform, 0|(gdextension.SizeTransform2D<<4), &struct{ xform Transform2D.OriginXY }{xform})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCanvasTransform() Transform2D.OriginXY { //gd:Viewport.get_canvas_transform
 	var r_ret = noescape.Call[Transform2D.OriginXY](gd.ObjectChecked(self.AsObject()), methods.get_canvas_transform, gdextension.SizeTransform2D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlobalCanvasTransform(xform Transform2D.OriginXY) { //gd:Viewport.set_global_canvas_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_global_canvas_transform, 0|(gdextension.SizeTransform2D<<4), &struct{ xform Transform2D.OriginXY }{xform})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlobalCanvasTransform() Transform2D.OriginXY { //gd:Viewport.get_global_canvas_transform
 	var r_ret = noescape.Call[Transform2D.OriginXY](gd.ObjectChecked(self.AsObject()), methods.get_global_canvas_transform, gdextension.SizeTransform2D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetStretchTransform() Transform2D.OriginXY { //gd:Viewport.get_stretch_transform
 	var r_ret = jumponly.Call[Transform2D.OriginXY](gd.ObjectChecked(self.AsObject()), methods.get_stretch_transform, gdextension.SizeTransform2D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFinalTransform() Transform2D.OriginXY { //gd:Viewport.get_final_transform
 	var r_ret = noescape.Call[Transform2D.OriginXY](gd.ObjectChecked(self.AsObject()), methods.get_final_transform, gdextension.SizeTransform2D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetScreenTransform() Transform2D.OriginXY { //gd:Viewport.get_screen_transform
 	var r_ret = noescape.Call[Transform2D.OriginXY](gd.ObjectChecked(self.AsObject()), methods.get_screen_transform, gdextension.SizeTransform2D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVisibleRect() Rect2.PositionSize { //gd:Viewport.get_visible_rect
 	var r_ret = noescape.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_visible_rect, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTransparentBackground(enable bool) { //gd:Viewport.set_transparent_background
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transparent_background, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasTransparentBackground() bool { //gd:Viewport.has_transparent_background
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_transparent_background, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseHdr2d(enable bool) { //gd:Viewport.set_use_hdr_2d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_hdr_2d, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingHdr2d() bool { //gd:Viewport.is_using_hdr_2d
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_hdr_2d, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMsaa2d(msaa MSAA) { //gd:Viewport.set_msaa_2d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_msaa_2d, 0|(gdextension.SizeInt<<4), &struct{ msaa MSAA }{msaa})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMsaa2d() MSAA { //gd:Viewport.get_msaa_2d
 	var r_ret = noescape.Call[MSAA](gd.ObjectChecked(self.AsObject()), methods.get_msaa_2d, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMsaa3d(msaa MSAA) { //gd:Viewport.set_msaa_3d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_msaa_3d, 0|(gdextension.SizeInt<<4), &struct{ msaa MSAA }{msaa})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMsaa3d() MSAA { //gd:Viewport.get_msaa_3d
 	var r_ret = noescape.Call[MSAA](gd.ObjectChecked(self.AsObject()), methods.get_msaa_3d, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetScreenSpaceAa(screen_space_aa ScreenSpaceAA) { //gd:Viewport.set_screen_space_aa
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_screen_space_aa, 0|(gdextension.SizeInt<<4), &struct{ screen_space_aa ScreenSpaceAA }{screen_space_aa})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScreenSpaceAa() ScreenSpaceAA { //gd:Viewport.get_screen_space_aa
 	var r_ret = noescape.Call[ScreenSpaceAA](gd.ObjectChecked(self.AsObject()), methods.get_screen_space_aa, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseTaa(enable bool) { //gd:Viewport.set_use_taa
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_taa, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingTaa() bool { //gd:Viewport.is_using_taa
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_taa, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseDebanding(enable bool) { //gd:Viewport.set_use_debanding
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_debanding, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingDebanding() bool { //gd:Viewport.is_using_debanding
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_debanding, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseOcclusionCulling(enable bool) { //gd:Viewport.set_use_occlusion_culling
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_occlusion_culling, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingOcclusionCulling() bool { //gd:Viewport.is_using_occlusion_culling
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_occlusion_culling, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDebugDraw(debug_draw DebugDraw) { //gd:Viewport.set_debug_draw
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_debug_draw, 0|(gdextension.SizeInt<<4), &struct{ debug_draw DebugDraw }{debug_draw})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDebugDraw() DebugDraw { //gd:Viewport.get_debug_draw
 	var r_ret = noescape.Call[DebugDraw](gd.ObjectChecked(self.AsObject()), methods.get_debug_draw, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseOversampling(enable bool) { //gd:Viewport.set_use_oversampling
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_oversampling, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingOversampling() bool { //gd:Viewport.is_using_oversampling
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_oversampling, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOversamplingOverride(oversampling float64) { //gd:Viewport.set_oversampling_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_oversampling_override, 0|(gdextension.SizeFloat<<4), &struct{ oversampling float64 }{oversampling})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOversamplingOverride() float64 { //gd:Viewport.get_oversampling_override
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_oversampling_override, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOversampling() float64 { //gd:Viewport.get_oversampling
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_oversampling, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1780,159 +1820,201 @@ func (self class) GetRenderInfo(atype RenderInfoType, info RenderInfo) int64 { /
 		atype RenderInfoType
 		info  RenderInfo
 	}{atype, info})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetTexture() [1]gdclass.ViewportTexture { //gd:Viewport.get_texture
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.ViewportTexture{gdclass.NewViewportTexture(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetPhysicsObjectPicking(enable bool) { //gd:Viewport.set_physics_object_picking
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_physics_object_picking, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPhysicsObjectPicking() bool { //gd:Viewport.get_physics_object_picking
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_physics_object_picking, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPhysicsObjectPickingSort(enable bool) { //gd:Viewport.set_physics_object_picking_sort
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_physics_object_picking_sort, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPhysicsObjectPickingSort() bool { //gd:Viewport.get_physics_object_picking_sort
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_physics_object_picking_sort, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPhysicsObjectPickingFirstOnly(enable bool) { //gd:Viewport.set_physics_object_picking_first_only
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_physics_object_picking_first_only, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPhysicsObjectPickingFirstOnly() bool { //gd:Viewport.get_physics_object_picking_first_only
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_physics_object_picking_first_only, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetViewportRid() RID.Any { //gd:Viewport.get_viewport_rid
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_viewport_rid, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) PushTextInput(text String.Readable) { //gd:Viewport.push_text_input
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.push_text_input, 0|(gdextension.SizeString<<4), &struct{ text gdextension.String }{pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
 }
 func (self class) PushInput(event [1]gdclass.InputEvent, in_local_coords bool) { //gd:Viewport.push_input
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.push_input, 0|(gdextension.SizeObject<<4)|(gdextension.SizeBool<<8), &struct {
 		event           gdextension.Object
 		in_local_coords bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0])), in_local_coords})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(event[0].Anchor())
 }
 func (self class) PushUnhandledInput(event [1]gdclass.InputEvent, in_local_coords bool) { //gd:Viewport.push_unhandled_input
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.push_unhandled_input, 0|(gdextension.SizeObject<<4)|(gdextension.SizeBool<<8), &struct {
 		event           gdextension.Object
 		in_local_coords bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0])), in_local_coords})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(event[0].Anchor())
 }
 func (self class) NotifyMouseEntered() { //gd:Viewport.notify_mouse_entered
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.notify_mouse_entered, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) NotifyMouseExited() { //gd:Viewport.notify_mouse_exited
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.notify_mouse_exited, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMousePosition() Vector2.XY { //gd:Viewport.get_mouse_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_mouse_position, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) WarpMouse(position Vector2.XY) { //gd:Viewport.warp_mouse
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.warp_mouse, 0|(gdextension.SizeVector2<<4), &struct{ position Vector2.XY }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) UpdateMouseCursorState() { //gd:Viewport.update_mouse_cursor_state
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update_mouse_cursor_state, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GuiCancelDrag() { //gd:Viewport.gui_cancel_drag
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.gui_cancel_drag, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GuiGetDragData() variant.Any { //gd:Viewport.gui_get_drag_data
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.gui_get_drag_data, gdextension.SizeVariant, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GuiGetDragDescription() String.Readable { //gd:Viewport.gui_get_drag_description
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.gui_get_drag_description, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GuiSetDragDescription(description String.Readable) { //gd:Viewport.gui_set_drag_description
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.gui_set_drag_description, 0|(gdextension.SizeString<<4), &struct{ description gdextension.String }{pointers.Get(gd.InternalString(description))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(description)
 }
 func (self class) GuiIsDragging() bool { //gd:Viewport.gui_is_dragging
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.gui_is_dragging, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GuiIsDragSuccessful() bool { //gd:Viewport.gui_is_drag_successful
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.gui_is_drag_successful, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GuiReleaseFocus() { //gd:Viewport.gui_release_focus
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.gui_release_focus, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GuiGetFocusOwner() [1]gdclass.Control { //gd:Viewport.gui_get_focus_owner
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.gui_get_focus_owner, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Control{gdclass.NewControl(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) GuiGetHoveredControl() [1]gdclass.Control { //gd:Viewport.gui_get_hovered_control
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.gui_get_hovered_control, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Control{gdclass.NewControl(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetDisableInput(disable bool) { //gd:Viewport.set_disable_input
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_disable_input, 0|(gdextension.SizeBool<<4), &struct{ disable bool }{disable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsInputDisabled() bool { //gd:Viewport.is_input_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_input_disabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPositionalShadowAtlasSize(size int64) { //gd:Viewport.set_positional_shadow_atlas_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_positional_shadow_atlas_size, 0|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPositionalShadowAtlasSize() int64 { //gd:Viewport.get_positional_shadow_atlas_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_positional_shadow_atlas_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPositionalShadowAtlas16Bits(enable bool) { //gd:Viewport.set_positional_shadow_atlas_16_bits
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_positional_shadow_atlas_16_bits, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPositionalShadowAtlas16Bits() bool { //gd:Viewport.get_positional_shadow_atlas_16_bits
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_positional_shadow_atlas_16_bits, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSnapControlsToPixels(enabled bool) { //gd:Viewport.set_snap_controls_to_pixels
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_snap_controls_to_pixels, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSnapControlsToPixelsEnabled() bool { //gd:Viewport.is_snap_controls_to_pixels_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_snap_controls_to_pixels_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSnap2dTransformsToPixel(enabled bool) { //gd:Viewport.set_snap_2d_transforms_to_pixel
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_snap_2d_transforms_to_pixel, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSnap2dTransformsToPixelEnabled() bool { //gd:Viewport.is_snap_2d_transforms_to_pixel_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_snap_2d_transforms_to_pixel_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSnap2dVerticesToPixel(enabled bool) { //gd:Viewport.set_snap_2d_vertices_to_pixel
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_snap_2d_vertices_to_pixel, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSnap2dVerticesToPixelEnabled() bool { //gd:Viewport.is_snap_2d_vertices_to_pixel_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_snap_2d_vertices_to_pixel_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1941,25 +2023,31 @@ func (self class) SetPositionalShadowAtlasQuadrantSubdiv(quadrant int64, subdiv 
 		quadrant int64
 		subdiv   PositionalShadowAtlasQuadrantSubdiv
 	}{quadrant, subdiv})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPositionalShadowAtlasQuadrantSubdiv(quadrant int64) PositionalShadowAtlasQuadrantSubdiv { //gd:Viewport.get_positional_shadow_atlas_quadrant_subdiv
 	var r_ret = noescape.Call[PositionalShadowAtlasQuadrantSubdiv](gd.ObjectChecked(self.AsObject()), methods.get_positional_shadow_atlas_quadrant_subdiv, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ quadrant int64 }{quadrant})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInputAsHandled() { //gd:Viewport.set_input_as_handled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_input_as_handled, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsInputHandled() bool { //gd:Viewport.is_input_handled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_input_handled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHandleInputLocally(enable bool) { //gd:Viewport.set_handle_input_locally
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_handle_input_locally, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHandlingInputLocally() bool { //gd:Viewport.is_handling_input_locally
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_handling_input_locally, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1967,38 +2055,47 @@ func (self class) SetDefaultCanvasItemTextureFilter(mode DefaultCanvasItemTextur
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_canvas_item_texture_filter, 0|(gdextension.SizeInt<<4), &struct {
 		mode DefaultCanvasItemTextureFilter
 	}{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDefaultCanvasItemTextureFilter() DefaultCanvasItemTextureFilter { //gd:Viewport.get_default_canvas_item_texture_filter
 	var r_ret = noescape.Call[DefaultCanvasItemTextureFilter](gd.ObjectChecked(self.AsObject()), methods.get_default_canvas_item_texture_filter, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEmbeddingSubwindows(enable bool) { //gd:Viewport.set_embedding_subwindows
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_embedding_subwindows, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEmbeddingSubwindows() bool { //gd:Viewport.is_embedding_subwindows
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_embedding_subwindows, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetEmbeddedSubwindows() Array.Contains[[1]gdclass.Window] { //gd:Viewport.get_embedded_subwindows
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_embedded_subwindows, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.Window](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetDragThreshold(threshold int64) { //gd:Viewport.set_drag_threshold
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_threshold, 0|(gdextension.SizeInt<<4), &struct{ threshold int64 }{threshold})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDragThreshold() int64 { //gd:Viewport.get_drag_threshold
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_drag_threshold, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCanvasCullMask(mask int64) { //gd:Viewport.set_canvas_cull_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_canvas_cull_mask, 0|(gdextension.SizeInt<<4), &struct{ mask int64 }{mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCanvasCullMask() int64 { //gd:Viewport.get_canvas_cull_mask
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_canvas_cull_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2007,9 +2104,11 @@ func (self class) SetCanvasCullMaskBit(layer int64, enable bool) { //gd:Viewport
 		layer  int64
 		enable bool
 	}{layer, enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCanvasCullMaskBit(layer int64) bool { //gd:Viewport.get_canvas_cull_mask_bit
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_canvas_cull_mask_bit, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer int64 }{layer})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2017,170 +2116,213 @@ func (self class) SetDefaultCanvasItemTextureRepeat(mode DefaultCanvasItemTextur
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_canvas_item_texture_repeat, 0|(gdextension.SizeInt<<4), &struct {
 		mode DefaultCanvasItemTextureRepeat
 	}{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDefaultCanvasItemTextureRepeat() DefaultCanvasItemTextureRepeat { //gd:Viewport.get_default_canvas_item_texture_repeat
 	var r_ret = noescape.Call[DefaultCanvasItemTextureRepeat](gd.ObjectChecked(self.AsObject()), methods.get_default_canvas_item_texture_repeat, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfOversize(oversize SDFOversize) { //gd:Viewport.set_sdf_oversize
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdf_oversize, 0|(gdextension.SizeInt<<4), &struct{ oversize SDFOversize }{oversize})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfOversize() SDFOversize { //gd:Viewport.get_sdf_oversize
 	var r_ret = noescape.Call[SDFOversize](gd.ObjectChecked(self.AsObject()), methods.get_sdf_oversize, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSdfScale(scale SDFScale) { //gd:Viewport.set_sdf_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sdf_scale, 0|(gdextension.SizeInt<<4), &struct{ scale SDFScale }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSdfScale() SDFScale { //gd:Viewport.get_sdf_scale
 	var r_ret = noescape.Call[SDFScale](gd.ObjectChecked(self.AsObject()), methods.get_sdf_scale, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMeshLodThreshold(pixels float64) { //gd:Viewport.set_mesh_lod_threshold
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mesh_lod_threshold, 0|(gdextension.SizeFloat<<4), &struct{ pixels float64 }{pixels})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMeshLodThreshold() float64 { //gd:Viewport.get_mesh_lod_threshold
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_mesh_lod_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAsAudioListener2d(enable bool) { //gd:Viewport.set_as_audio_listener_2d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_as_audio_listener_2d, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAudioListener2d() bool { //gd:Viewport.is_audio_listener_2d
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_audio_listener_2d, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetAudioListener2d() [1]gdclass.AudioListener2D { //gd:Viewport.get_audio_listener_2d
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_audio_listener_2d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.AudioListener2D{gdclass.NewAudioListener2D(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) GetCamera2d() [1]gdclass.Camera2D { //gd:Viewport.get_camera_2d
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_camera_2d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Camera2D{gdclass.NewCamera2D(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetWorld3d(world_3d [1]gdclass.World3D) { //gd:Viewport.set_world_3d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_world_3d, 0|(gdextension.SizeObject<<4), &struct{ world_3d gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetWorld3D(world_3d[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(world_3d[0].Anchor())
 }
 func (self class) GetWorld3d() [1]gdclass.World3D { //gd:Viewport.get_world_3d
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_world_3d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.World3D{gdclass.NewWorld3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) FindWorld3d() [1]gdclass.World3D { //gd:Viewport.find_world_3d
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.find_world_3d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.World3D{gdclass.NewWorld3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetUseOwnWorld3d(enable bool) { //gd:Viewport.set_use_own_world_3d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_own_world_3d, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingOwnWorld3d() bool { //gd:Viewport.is_using_own_world_3d
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_own_world_3d, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetAudioListener3d() [1]gdclass.AudioListener3D { //gd:Viewport.get_audio_listener_3d
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_audio_listener_3d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.AudioListener3D{gdclass.NewAudioListener3D(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) GetCamera3d() [1]gdclass.Camera3D { //gd:Viewport.get_camera_3d
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_camera_3d, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Camera3D{gdclass.NewCamera3D(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetAsAudioListener3d(enable bool) { //gd:Viewport.set_as_audio_listener_3d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_as_audio_listener_3d, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAudioListener3d() bool { //gd:Viewport.is_audio_listener_3d
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_audio_listener_3d, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDisable3d(disable bool) { //gd:Viewport.set_disable_3d
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_disable_3d, 0|(gdextension.SizeBool<<4), &struct{ disable bool }{disable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Is3dDisabled() bool { //gd:Viewport.is_3d_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_3d_disabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseXr(use bool) { //gd:Viewport.set_use_xr
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_xr, 0|(gdextension.SizeBool<<4), &struct{ use bool }{use})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingXr() bool { //gd:Viewport.is_using_xr
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_xr, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetScaling3dMode(scaling_3d_mode Scaling3DMode) { //gd:Viewport.set_scaling_3d_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scaling_3d_mode, 0|(gdextension.SizeInt<<4), &struct{ scaling_3d_mode Scaling3DMode }{scaling_3d_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScaling3dMode() Scaling3DMode { //gd:Viewport.get_scaling_3d_mode
 	var r_ret = noescape.Call[Scaling3DMode](gd.ObjectChecked(self.AsObject()), methods.get_scaling_3d_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetScaling3dScale(scale float64) { //gd:Viewport.set_scaling_3d_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scaling_3d_scale, 0|(gdextension.SizeFloat<<4), &struct{ scale float64 }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScaling3dScale() float64 { //gd:Viewport.get_scaling_3d_scale
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_scaling_3d_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFsrSharpness(fsr_sharpness float64) { //gd:Viewport.set_fsr_sharpness
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_fsr_sharpness, 0|(gdextension.SizeFloat<<4), &struct{ fsr_sharpness float64 }{fsr_sharpness})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFsrSharpness() float64 { //gd:Viewport.get_fsr_sharpness
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fsr_sharpness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTextureMipmapBias(texture_mipmap_bias float64) { //gd:Viewport.set_texture_mipmap_bias
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_texture_mipmap_bias, 0|(gdextension.SizeFloat<<4), &struct{ texture_mipmap_bias float64 }{texture_mipmap_bias})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTextureMipmapBias() float64 { //gd:Viewport.get_texture_mipmap_bias
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_texture_mipmap_bias, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAnisotropicFilteringLevel(anisotropic_filtering_level AnisotropicFiltering) { //gd:Viewport.set_anisotropic_filtering_level
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_anisotropic_filtering_level, 0|(gdextension.SizeInt<<4), &struct{ anisotropic_filtering_level AnisotropicFiltering }{anisotropic_filtering_level})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAnisotropicFilteringLevel() AnisotropicFiltering { //gd:Viewport.get_anisotropic_filtering_level
 	var r_ret = noescape.Call[AnisotropicFiltering](gd.ObjectChecked(self.AsObject()), methods.get_anisotropic_filtering_level, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVrsMode(mode VRSMode) { //gd:Viewport.set_vrs_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vrs_mode, 0|(gdextension.SizeInt<<4), &struct{ mode VRSMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVrsMode() VRSMode { //gd:Viewport.get_vrs_mode
 	var r_ret = noescape.Call[VRSMode](gd.ObjectChecked(self.AsObject()), methods.get_vrs_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVrsUpdateMode(mode VRSUpdateMode) { //gd:Viewport.set_vrs_update_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vrs_update_mode, 0|(gdextension.SizeInt<<4), &struct{ mode VRSUpdateMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVrsUpdateMode() VRSUpdateMode { //gd:Viewport.get_vrs_update_mode
 	var r_ret = noescape.Call[VRSUpdateMode](gd.ObjectChecked(self.AsObject()), methods.get_vrs_update_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVrsTexture(texture [1]gdclass.Texture2D) { //gd:Viewport.set_vrs_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vrs_texture, 0|(gdextension.SizeObject<<4), &struct{ texture gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetVrsTexture() [1]gdclass.Texture2D { //gd:Viewport.get_vrs_texture
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_vrs_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -2222,9 +2364,9 @@ func (self class) GuiFocusChanged() Signal.Any {
 func (o class) AsViewport() Advanced          { return Advanced(o) }
 func (o Instance) AsViewport() Instance       { return o }
 func (o *Extension[T]) AsViewport() Instance  { return o.Super() }
-func (o class) AsNode() Node.Advanced         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced         { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance      { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

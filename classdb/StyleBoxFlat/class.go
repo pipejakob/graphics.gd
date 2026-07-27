@@ -10,6 +10,7 @@ The relative system now would take the 1:2 ratio of the two left corners to calc
 package StyleBoxFlat
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -196,7 +200,7 @@ func (self Instance) SetExpandMarginAll(size Float.X) Instance { //gd:StyleBoxFl
 type Advanced = class
 type class [1]gdclass.StyleBoxFlat
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewStyleBoxFlat(obj[0])
@@ -211,7 +215,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -587,25 +591,31 @@ func (self Instance) SetAntiAliasingSize(value Float.X) Instance { //gd:StyleBox
 
 func (self class) SetBgColor(color Color.RGBA) { //gd:StyleBoxFlat.set_bg_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bg_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBgColor() Color.RGBA { //gd:StyleBoxFlat.get_bg_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_bg_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBorderColor(color Color.RGBA) { //gd:StyleBoxFlat.set_border_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_border_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBorderColor() Color.RGBA { //gd:StyleBoxFlat.get_border_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_border_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBorderWidthAll(width int64) { //gd:StyleBoxFlat.set_border_width_all
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_border_width_all, 0|(gdextension.SizeInt<<4), &struct{ width int64 }{width})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBorderWidthMin() int64 { //gd:StyleBoxFlat.get_border_width_min
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_border_width_min, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -614,31 +624,38 @@ func (self class) SetBorderWidth(margin Rect2.Side, width int64) { //gd:StyleBox
 		margin Rect2.Side
 		width  int64
 	}{margin, width})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBorderWidth(margin Rect2.Side) int64 { //gd:StyleBoxFlat.get_border_width
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_border_width, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ margin Rect2.Side }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBorderBlend(blend bool) { //gd:StyleBoxFlat.set_border_blend
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_border_blend, 0|(gdextension.SizeBool<<4), &struct{ blend bool }{blend})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBorderBlend() bool { //gd:StyleBoxFlat.get_border_blend
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_border_blend, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCornerRadiusAll(radius int64) { //gd:StyleBoxFlat.set_corner_radius_all
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_corner_radius_all, 0|(gdextension.SizeInt<<4), &struct{ radius int64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCornerRadius(corner Rect2.Corner, radius int64) { //gd:StyleBoxFlat.set_corner_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_corner_radius, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		corner Rect2.Corner
 		radius int64
 	}{corner, radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCornerRadius(corner Rect2.Corner) int64 { //gd:StyleBoxFlat.get_corner_radius
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_corner_radius, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ corner Rect2.Corner }{corner})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -647,88 +664,107 @@ func (self class) SetExpandMargin(margin Rect2.Side, size float64) { //gd:StyleB
 		margin Rect2.Side
 		size   float64
 	}{margin, size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetExpandMarginAll(size float64) { //gd:StyleBoxFlat.set_expand_margin_all
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_expand_margin_all, 0|(gdextension.SizeFloat<<4), &struct{ size float64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetExpandMargin(margin Rect2.Side) float64 { //gd:StyleBoxFlat.get_expand_margin
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_expand_margin, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ margin Rect2.Side }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDrawCenter(draw_center bool) { //gd:StyleBoxFlat.set_draw_center
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_draw_center, 0|(gdextension.SizeBool<<4), &struct{ draw_center bool }{draw_center})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDrawCenterEnabled() bool { //gd:StyleBoxFlat.is_draw_center_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_draw_center_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSkew(skew Vector2.XY) { //gd:StyleBoxFlat.set_skew
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_skew, 0|(gdextension.SizeVector2<<4), &struct{ skew Vector2.XY }{skew})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSkew() Vector2.XY { //gd:StyleBoxFlat.get_skew
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_skew, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShadowColor(color Color.RGBA) { //gd:StyleBoxFlat.set_shadow_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shadow_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShadowColor() Color.RGBA { //gd:StyleBoxFlat.get_shadow_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_shadow_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShadowSize(size int64) { //gd:StyleBoxFlat.set_shadow_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shadow_size, 0|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShadowSize() int64 { //gd:StyleBoxFlat.get_shadow_size
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_shadow_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShadowOffset(offset Vector2.XY) { //gd:StyleBoxFlat.set_shadow_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shadow_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShadowOffset() Vector2.XY { //gd:StyleBoxFlat.get_shadow_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_shadow_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAntiAliased(anti_aliased bool) { //gd:StyleBoxFlat.set_anti_aliased
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_anti_aliased, 0|(gdextension.SizeBool<<4), &struct{ anti_aliased bool }{anti_aliased})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAntiAliased() bool { //gd:StyleBoxFlat.is_anti_aliased
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_anti_aliased, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAaSize(size float64) { //gd:StyleBoxFlat.set_aa_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_aa_size, 0|(gdextension.SizeFloat<<4), &struct{ size float64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAaSize() float64 { //gd:StyleBoxFlat.get_aa_size
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_aa_size, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCornerDetail(detail int64) { //gd:StyleBoxFlat.set_corner_detail
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_corner_detail, 0|(gdextension.SizeInt<<4), &struct{ detail int64 }{detail})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCornerDetail() int64 { //gd:StyleBoxFlat.get_corner_detail
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_corner_detail, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsStyleBoxFlat() Advanced              { return Advanced(o) }
 func (o Instance) AsStyleBoxFlat() Instance           { return o }
 func (o *Extension[T]) AsStyleBoxFlat() Instance      { return o.Super() }
-func (o class) AsStyleBox() StyleBox.Advanced         { return StyleBox.Advanced{gdclass.NewStyleBox(o[0].AsObject()[0])} }
+func (o class) AsStyleBox() StyleBox.Advanced         { return *(*StyleBox.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsStyleBox() StyleBox.Instance { return o.Super().AsStyleBox() }
-func (o Instance) AsStyleBox() StyleBox.Instance      { return StyleBox.Instance{gdclass.NewStyleBox(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsStyleBox() StyleBox.Instance      { return *(*StyleBox.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

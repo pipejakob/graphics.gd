@@ -23,6 +23,7 @@ Warning: [TileSetSource] can only be added to one TileSet at the same time. Call
 package TileSetSource
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -57,6 +58,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -189,7 +193,7 @@ func (self Instance) HasAlternativeTile(atlas_coords Vector2i.XY, alternative_ti
 type Advanced = class
 type class [1]gdclass.TileSetSource
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTileSetSource(obj[0])
@@ -204,7 +208,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -229,21 +233,25 @@ func New() Instance {
 
 func (self class) GetTilesCount() int64 { //gd:TileSetSource.get_tiles_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_tiles_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetTileId(index int64) Vector2i.XY { //gd:TileSetSource.get_tile_id
 	var r_ret = noescape.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_tile_id, gdextension.SizeVector2i|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasTile(atlas_coords Vector2i.XY) bool { //gd:TileSetSource.has_tile
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_tile, gdextension.SizeBool|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetAlternativeTilesCount(atlas_coords Vector2i.XY) int64 { //gd:TileSetSource.get_alternative_tiles_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_alternative_tiles_count, gdextension.SizeInt|(gdextension.SizeVector2i<<4), &struct{ atlas_coords Vector2i.XY }{atlas_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -252,6 +260,7 @@ func (self class) GetAlternativeTileId(atlas_coords Vector2i.XY, index int64) in
 		atlas_coords Vector2i.XY
 		index        int64
 	}{atlas_coords, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -260,15 +269,16 @@ func (self class) HasAlternativeTile(atlas_coords Vector2i.XY, alternative_tile 
 		atlas_coords     Vector2i.XY
 		alternative_tile int64
 	}{atlas_coords, alternative_tile})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsTileSetSource() Advanced             { return Advanced(o) }
 func (o Instance) AsTileSetSource() Instance          { return o }
 func (o *Extension[T]) AsTileSetSource() Instance     { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

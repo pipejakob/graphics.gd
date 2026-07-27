@@ -24,6 +24,7 @@ Warning: The current implementation is not efficient for the modern renderers.
 package AnimatedTexture
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -60,6 +61,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -196,7 +200,7 @@ func (self Instance) GetFrameDuration(frame_ int) Float.X { //gd:AnimatedTexture
 type Advanced = class
 type class [1]gdclass.AnimatedTexture
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAnimatedTexture(obj[0])
@@ -211,7 +215,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -307,41 +311,51 @@ func (self Instance) SetSpeedScale(value Float.X) Instance { //gd:AnimatedTextur
 
 func (self class) SetFrames(frames int64) { //gd:AnimatedTexture.set_frames
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_frames, 0|(gdextension.SizeInt<<4), &struct{ frames int64 }{frames})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrames() int64 { //gd:AnimatedTexture.get_frames
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_frames, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCurrentFrame(frame_ int64) { //gd:AnimatedTexture.set_current_frame
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_current_frame, 0|(gdextension.SizeInt<<4), &struct{ frame_ int64 }{frame_})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCurrentFrame() int64 { //gd:AnimatedTexture.get_current_frame
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_current_frame, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPause(pause bool) { //gd:AnimatedTexture.set_pause
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pause, 0|(gdextension.SizeBool<<4), &struct{ pause bool }{pause})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPause() bool { //gd:AnimatedTexture.get_pause
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_pause, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOneShot(one_shot bool) { //gd:AnimatedTexture.set_one_shot
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_one_shot, 0|(gdextension.SizeBool<<4), &struct{ one_shot bool }{one_shot})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOneShot() bool { //gd:AnimatedTexture.get_one_shot
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_one_shot, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSpeedScale(scale float64) { //gd:AnimatedTexture.set_speed_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_speed_scale, 0|(gdextension.SizeFloat<<4), &struct{ scale float64 }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpeedScale() float64 { //gd:AnimatedTexture.get_speed_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_speed_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -350,9 +364,12 @@ func (self class) SetFrameTexture(frame_ int64, texture [1]gdclass.Texture2D) { 
 		frame_  int64
 		texture gdextension.Object
 	}{frame_, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetFrameTexture(frame_ int64) [1]gdclass.Texture2D { //gd:AnimatedTexture.get_frame_texture
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_frame_texture, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ frame_ int64 }{frame_})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -361,24 +378,26 @@ func (self class) SetFrameDuration(frame_ int64, duration float64) { //gd:Animat
 		frame_   int64
 		duration float64
 	}{frame_, duration})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrameDuration(frame_ int64) float64 { //gd:AnimatedTexture.get_frame_duration
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_frame_duration, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ frame_ int64 }{frame_})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAnimatedTexture() Advanced             { return Advanced(o) }
 func (o Instance) AsAnimatedTexture() Instance          { return o }
 func (o *Extension[T]) AsAnimatedTexture() Instance     { return o.Super() }
-func (o class) AsTexture2D() Texture2D.Advanced         { return Texture2D.Advanced{gdclass.NewTexture2D(o[0].AsObject()[0])} }
+func (o class) AsTexture2D() Texture2D.Advanced         { return *(*Texture2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture2D() Texture2D.Instance { return o.Super().AsTexture2D() }
-func (o Instance) AsTexture2D() Texture2D.Instance      { return Texture2D.Instance{gdclass.NewTexture2D(o[0].AsObject()[0])} }
-func (o class) AsTexture() Texture.Advanced             { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o Instance) AsTexture2D() Texture2D.Instance      { return *(*Texture2D.Instance)(ie.As(&o)) }
+func (o class) AsTexture() Texture.Advanced             { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance     { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance          { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced           { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance          { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced           { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance   { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance        { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance        { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

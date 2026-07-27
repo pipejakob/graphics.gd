@@ -26,6 +26,7 @@ This class implements a writer that allows storing the multiple blobs in a ZIP a
 package ZIPPacker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -60,6 +61,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -243,7 +247,7 @@ func (self Instance) Close() error { //gd:ZIPPacker.close
 type Advanced = class
 type class [1]gdclass.ZIPPacker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewZIPPacker(obj[0])
@@ -258,7 +262,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -301,14 +305,18 @@ func (self class) Open(path String.Readable, append ZipAppend) Error.Code { //gd
 		path   gdextension.String
 		append ZipAppend
 	}{pointers.Get(gd.InternalString(path)), append})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) SetCompressionLevel(compression_level int64) { //gd:ZIPPacker.set_compression_level
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_compression_level, 0|(gdextension.SizeInt<<4), &struct{ compression_level int64 }{compression_level})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCompressionLevel() int64 { //gd:ZIPPacker.get_compression_level
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_compression_level, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -318,6 +326,8 @@ func (self class) AddDirectory(path String.Readable, permissions FileAccess.Unix
 		permissions   FileAccess.UnixPermissionFlags
 		modified_time int64
 	}{pointers.Get(gd.InternalString(path)), permissions, modified_time})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -327,21 +337,27 @@ func (self class) StartFile(path String.Readable, permissions FileAccess.UnixPer
 		permissions   FileAccess.UnixPermissionFlags
 		modified_time int64
 	}{pointers.Get(gd.InternalString(path)), permissions, modified_time})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) WriteFile(data Packed.Bytes) Error.Code { //gd:ZIPPacker.write_file
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.write_file, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ data gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) CloseFile() Error.Code { //gd:ZIPPacker.close_file
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.close_file, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Close() Error.Code { //gd:ZIPPacker.close
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.close, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }

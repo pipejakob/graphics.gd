@@ -17,6 +17,7 @@ Use [Control.Theme] of any control node to set up a theme that will be available
 package Theme
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -55,6 +56,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -911,7 +915,7 @@ func (self Instance) Clear() { //gd:Theme.clear
 type Advanced = class
 type class [1]gdclass.Theme
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTheme(obj[0])
@@ -926,7 +930,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1009,12 +1013,19 @@ func (self class) SetIcon(name String.Name, theme_type String.Name, texture [1]g
 		theme_type gdextension.StringName
 		texture    gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type)), gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetIcon(name String.Name, theme_type String.Name) [1]gdclass.Texture2D { //gd:Theme.get_icon
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_icon, gdextension.SizeObject|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1023,6 +1034,9 @@ func (self class) HasIcon(name String.Name, theme_type String.Name) bool { //gd:
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -1032,20 +1046,30 @@ func (self class) RenameIcon(old_name String.Name, name String.Name, theme_type 
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(old_name)), pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(old_name)
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) ClearIcon(name String.Name, theme_type String.Name) { //gd:Theme.clear_icon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_icon, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetIconList(theme_type String.Readable) Packed.Strings { //gd:Theme.get_icon_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_icon_list, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ theme_type gdextension.String }{pointers.Get(gd.InternalString(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetIconTypeList() Packed.Strings { //gd:Theme.get_icon_type_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_icon_type_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -1055,12 +1079,19 @@ func (self class) SetStylebox(name String.Name, theme_type String.Name, texture 
 		theme_type gdextension.StringName
 		texture    gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type)), gdextension.Object(gdreference.GetObject(gdclass.GetStyleBox(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) GetStylebox(name String.Name, theme_type String.Name) [1]gdclass.StyleBox { //gd:Theme.get_stylebox
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_stylebox, gdextension.SizeObject|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = [1]gdclass.StyleBox{gdclass.NewStyleBox(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1069,6 +1100,9 @@ func (self class) HasStylebox(name String.Name, theme_type String.Name) bool { /
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -1078,20 +1112,30 @@ func (self class) RenameStylebox(old_name String.Name, name String.Name, theme_t
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(old_name)), pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(old_name)
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) ClearStylebox(name String.Name, theme_type String.Name) { //gd:Theme.clear_stylebox
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_stylebox, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetStyleboxList(theme_type String.Readable) Packed.Strings { //gd:Theme.get_stylebox_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_stylebox_list, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ theme_type gdextension.String }{pointers.Get(gd.InternalString(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetStyleboxTypeList() Packed.Strings { //gd:Theme.get_stylebox_type_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_stylebox_type_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -1101,12 +1145,19 @@ func (self class) SetFont(name String.Name, theme_type String.Name, font [1]gdcl
 		theme_type gdextension.StringName
 		font       gdextension.Object
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type)), gdextension.Object(gdreference.GetObject(gdclass.GetFont(font[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
+	runtime.KeepAlive(font[0].Anchor())
 }
 func (self class) GetFont(name String.Name, theme_type String.Name) [1]gdclass.Font { //gd:Theme.get_font
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_font, gdextension.SizeObject|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = [1]gdclass.Font{gdclass.NewFont(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1115,6 +1166,9 @@ func (self class) HasFont(name String.Name, theme_type String.Name) bool { //gd:
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -1124,20 +1178,30 @@ func (self class) RenameFont(old_name String.Name, name String.Name, theme_type 
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(old_name)), pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(old_name)
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) ClearFont(name String.Name, theme_type String.Name) { //gd:Theme.clear_font
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_font, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetFontList(theme_type String.Readable) Packed.Strings { //gd:Theme.get_font_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_font_list, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ theme_type gdextension.String }{pointers.Get(gd.InternalString(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetFontTypeList() Packed.Strings { //gd:Theme.get_font_type_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_font_type_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -1147,12 +1211,18 @@ func (self class) SetFontSize(name String.Name, theme_type String.Name, font_siz
 		theme_type gdextension.StringName
 		font_size  int64
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type)), font_size})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetFontSize(name String.Name, theme_type String.Name) int64 { //gd:Theme.get_font_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_font_size, gdextension.SizeInt|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -1161,6 +1231,9 @@ func (self class) HasFontSize(name String.Name, theme_type String.Name) bool { /
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -1170,20 +1243,30 @@ func (self class) RenameFontSize(old_name String.Name, name String.Name, theme_t
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(old_name)), pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(old_name)
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) ClearFontSize(name String.Name, theme_type String.Name) { //gd:Theme.clear_font_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_font_size, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetFontSizeList(theme_type String.Readable) Packed.Strings { //gd:Theme.get_font_size_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_font_size_list, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ theme_type gdextension.String }{pointers.Get(gd.InternalString(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetFontSizeTypeList() Packed.Strings { //gd:Theme.get_font_size_type_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_font_size_type_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -1193,12 +1276,18 @@ func (self class) SetColor(name String.Name, theme_type String.Name, color Color
 		theme_type gdextension.StringName
 		color      Color.RGBA
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type)), color})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetColor(name String.Name, theme_type String.Name) Color.RGBA { //gd:Theme.get_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_color, gdextension.SizeColor|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -1207,6 +1296,9 @@ func (self class) HasColor(name String.Name, theme_type String.Name) bool { //gd
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -1216,20 +1308,30 @@ func (self class) RenameColor(old_name String.Name, name String.Name, theme_type
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(old_name)), pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(old_name)
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) ClearColor(name String.Name, theme_type String.Name) { //gd:Theme.clear_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_color, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetColorList(theme_type String.Readable) Packed.Strings { //gd:Theme.get_color_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_color_list, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ theme_type gdextension.String }{pointers.Get(gd.InternalString(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetColorTypeList() Packed.Strings { //gd:Theme.get_color_type_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_color_type_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -1239,12 +1341,18 @@ func (self class) SetConstant(name String.Name, theme_type String.Name, constant
 		theme_type gdextension.StringName
 		constant   int64
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type)), constant})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetConstant(name String.Name, theme_type String.Name) int64 { //gd:Theme.get_constant
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_constant, gdextension.SizeInt|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -1253,6 +1361,9 @@ func (self class) HasConstant(name String.Name, theme_type String.Name) bool { /
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -1262,59 +1373,79 @@ func (self class) RenameConstant(old_name String.Name, name String.Name, theme_t
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(old_name)), pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(old_name)
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) ClearConstant(name String.Name, theme_type String.Name) { //gd:Theme.clear_constant
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_constant, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetConstantList(theme_type String.Readable) Packed.Strings { //gd:Theme.get_constant_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_constant_list, gdextension.SizePackedArray|(gdextension.SizeString<<4), &struct{ theme_type gdextension.String }{pointers.Get(gd.InternalString(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetConstantTypeList() Packed.Strings { //gd:Theme.get_constant_type_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_constant_type_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetDefaultBaseScale(base_scale float64) { //gd:Theme.set_default_base_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_base_scale, 0|(gdextension.SizeFloat<<4), &struct{ base_scale float64 }{base_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDefaultBaseScale() float64 { //gd:Theme.get_default_base_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_default_base_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasDefaultBaseScale() bool { //gd:Theme.has_default_base_scale
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_default_base_scale, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDefaultFont(font [1]gdclass.Font) { //gd:Theme.set_default_font
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_font, 0|(gdextension.SizeObject<<4), &struct{ font gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetFont(font[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(font[0].Anchor())
 }
 func (self class) GetDefaultFont() [1]gdclass.Font { //gd:Theme.get_default_font
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_default_font, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Font{gdclass.NewFont(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) HasDefaultFont() bool { //gd:Theme.has_default_font
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_default_font, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDefaultFontSize(font_size int64) { //gd:Theme.set_default_font_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_font_size, 0|(gdextension.SizeInt<<4), &struct{ font_size int64 }{font_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDefaultFontSize() int64 { //gd:Theme.get_default_font_size
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_default_font_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasDefaultFontSize() bool { //gd:Theme.has_default_font_size
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_default_font_size, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1325,6 +1456,10 @@ func (self class) SetThemeItem(data_type DataType, name String.Name, theme_type 
 		theme_type gdextension.StringName
 		value      gdextension.Variant
 	}{data_type, pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
+	runtime.KeepAlive(value)
 }
 func (self class) GetThemeItem(data_type DataType, name String.Name, theme_type String.Name) variant.Any { //gd:Theme.get_theme_item
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_theme_item, gdextension.SizeVariant|(gdextension.SizeInt<<4)|(gdextension.SizeStringName<<8)|(gdextension.SizeStringName<<12), &struct {
@@ -1332,6 +1467,9 @@ func (self class) GetThemeItem(data_type DataType, name String.Name, theme_type 
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{data_type, pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -1341,6 +1479,9 @@ func (self class) HasThemeItem(data_type DataType, name String.Name, theme_type 
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{data_type, pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 	var ret = r_ret
 	return ret
 }
@@ -1351,6 +1492,10 @@ func (self class) RenameThemeItem(data_type DataType, old_name String.Name, name
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{data_type, pointers.Get(gd.InternalStringName(old_name)), pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(old_name)
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) ClearThemeItem(data_type DataType, name String.Name, theme_type String.Name) { //gd:Theme.clear_theme_item
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_theme_item, 0|(gdextension.SizeInt<<4)|(gdextension.SizeStringName<<8)|(gdextension.SizeStringName<<12), &struct {
@@ -1358,17 +1503,23 @@ func (self class) ClearThemeItem(data_type DataType, name String.Name, theme_typ
 		name       gdextension.StringName
 		theme_type gdextension.StringName
 	}{data_type, pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetThemeItemList(data_type DataType, theme_type String.Readable) Packed.Strings { //gd:Theme.get_theme_item_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_theme_item_list, gdextension.SizePackedArray|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8), &struct {
 		data_type  DataType
 		theme_type gdextension.String
 	}{data_type, pointers.Get(gd.InternalString(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) GetThemeItemTypeList(data_type DataType) Packed.Strings { //gd:Theme.get_theme_item_type_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_theme_item_type_list, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ data_type DataType }{data_type})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -1377,57 +1528,80 @@ func (self class) SetTypeVariation(theme_type String.Name, base_type String.Name
 		theme_type gdextension.StringName
 		base_type  gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(theme_type)), pointers.Get(gd.InternalStringName(base_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
+	runtime.KeepAlive(base_type)
 }
 func (self class) IsTypeVariation(theme_type String.Name, base_type String.Name) bool { //gd:Theme.is_type_variation
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_type_variation, gdextension.SizeBool|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		theme_type gdextension.StringName
 		base_type  gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(theme_type)), pointers.Get(gd.InternalStringName(base_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
+	runtime.KeepAlive(base_type)
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearTypeVariation(theme_type String.Name) { //gd:Theme.clear_type_variation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_type_variation, 0|(gdextension.SizeStringName<<4), &struct{ theme_type gdextension.StringName }{pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetTypeVariationBase(theme_type String.Name) String.Name { //gd:Theme.get_type_variation_base
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_type_variation_base, gdextension.SizeStringName|(gdextension.SizeStringName<<4), &struct{ theme_type gdextension.StringName }{pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetTypeVariationList(base_type String.Name) Packed.Strings { //gd:Theme.get_type_variation_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_type_variation_list, gdextension.SizePackedArray|(gdextension.SizeStringName<<4), &struct{ base_type gdextension.StringName }{pointers.Get(gd.InternalStringName(base_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(base_type)
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) AddType(theme_type String.Name) { //gd:Theme.add_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_type, 0|(gdextension.SizeStringName<<4), &struct{ theme_type gdextension.StringName }{pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 }
 func (self class) RemoveType(theme_type String.Name) { //gd:Theme.remove_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_type, 0|(gdextension.SizeStringName<<4), &struct{ theme_type gdextension.StringName }{pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(theme_type)
 }
 func (self class) RenameType(old_theme_type String.Name, theme_type String.Name) { //gd:Theme.rename_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.rename_type, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		old_theme_type gdextension.StringName
 		theme_type     gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(old_theme_type)), pointers.Get(gd.InternalStringName(theme_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(old_theme_type)
+	runtime.KeepAlive(theme_type)
 }
 func (self class) GetTypeList() Packed.Strings { //gd:Theme.get_type_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_type_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) MergeWith(other [1]gdclass.Theme) { //gd:Theme.merge_with
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.merge_with, 0|(gdextension.SizeObject<<4), &struct{ other gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTheme(other[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(other[0].Anchor())
 }
 func (self class) Clear() { //gd:Theme.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsTheme() Advanced                     { return Advanced(o) }
 func (o Instance) AsTheme() Instance                  { return o }
 func (o *Extension[T]) AsTheme() Instance             { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

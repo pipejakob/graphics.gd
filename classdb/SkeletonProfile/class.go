@@ -15,6 +15,7 @@ Note: These parameters need to be set only when creating a custom profile. In [S
 package SkeletonProfile
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -52,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -365,7 +369,7 @@ func (self Instance) SetRequired(bone_idx int, required bool) Instance { //gd:Sk
 type Advanced = class
 type class [1]gdclass.SkeletonProfile
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSkeletonProfile(obj[0])
@@ -380,7 +384,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -472,30 +476,39 @@ func (self Instance) SetBoneSize(value int) Instance { //gd:SkeletonProfile.bone
 
 func (self class) SetRootBone(bone_name String.Name) { //gd:SkeletonProfile.set_root_bone
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_root_bone, 0|(gdextension.SizeStringName<<4), &struct{ bone_name gdextension.StringName }{pointers.Get(gd.InternalStringName(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetRootBone() String.Name { //gd:SkeletonProfile.get_root_bone
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_root_bone, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetScaleBaseBone(bone_name String.Name) { //gd:SkeletonProfile.set_scale_base_bone
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scale_base_bone, 0|(gdextension.SizeStringName<<4), &struct{ bone_name gdextension.StringName }{pointers.Get(gd.InternalStringName(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetScaleBaseBone() String.Name { //gd:SkeletonProfile.get_scale_base_bone
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_scale_base_bone, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetGroupSize(size int64) { //gd:SkeletonProfile.set_group_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_group_size, 0|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGroupSize() int64 { //gd:SkeletonProfile.get_group_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_group_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetGroupName(group_idx int64) String.Name { //gd:SkeletonProfile.get_group_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_group_name, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ group_idx int64 }{group_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -504,9 +517,12 @@ func (self class) SetGroupName(group_idx int64, group_name String.Name) { //gd:S
 		group_idx  int64
 		group_name gdextension.StringName
 	}{group_idx, pointers.Get(gd.InternalStringName(group_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group_name)
 }
 func (self class) GetTexture(group_idx int64) [1]gdclass.Texture2D { //gd:SkeletonProfile.get_texture
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_texture, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ group_idx int64 }{group_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -515,22 +531,29 @@ func (self class) SetTexture(group_idx int64, texture [1]gdclass.Texture2D) { //
 		group_idx int64
 		texture   gdextension.Object
 	}{group_idx, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(texture[0].Anchor())
 }
 func (self class) SetBoneSize(size int64) { //gd:SkeletonProfile.set_bone_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_size, 0|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneSize() int64 { //gd:SkeletonProfile.get_bone_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_bone_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FindBone(bone_name String.Name) int64 { //gd:SkeletonProfile.find_bone
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.find_bone, gdextension.SizeInt|(gdextension.SizeStringName<<4), &struct{ bone_name gdextension.StringName }{pointers.Get(gd.InternalStringName(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBoneName(bone_idx int64) String.Name { //gd:SkeletonProfile.get_bone_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bone_name, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -539,9 +562,12 @@ func (self class) SetBoneName(bone_idx int64, bone_name String.Name) { //gd:Skel
 		bone_idx  int64
 		bone_name gdextension.StringName
 	}{bone_idx, pointers.Get(gd.InternalStringName(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetBoneParent(bone_idx int64) String.Name { //gd:SkeletonProfile.get_bone_parent
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bone_parent, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -550,9 +576,12 @@ func (self class) SetBoneParent(bone_idx int64, bone_parent String.Name) { //gd:
 		bone_idx    int64
 		bone_parent gdextension.StringName
 	}{bone_idx, pointers.Get(gd.InternalStringName(bone_parent))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_parent)
 }
 func (self class) GetTailDirection(bone_idx int64) TailDirection { //gd:SkeletonProfile.get_tail_direction
 	var r_ret = noescape.Call[TailDirection](gd.ObjectChecked(self.AsObject()), methods.get_tail_direction, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -561,9 +590,11 @@ func (self class) SetTailDirection(bone_idx int64, tail_direction TailDirection)
 		bone_idx       int64
 		tail_direction TailDirection
 	}{bone_idx, tail_direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneTail(bone_idx int64) String.Name { //gd:SkeletonProfile.get_bone_tail
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bone_tail, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -572,9 +603,12 @@ func (self class) SetBoneTail(bone_idx int64, bone_tail String.Name) { //gd:Skel
 		bone_idx  int64
 		bone_tail gdextension.StringName
 	}{bone_idx, pointers.Get(gd.InternalStringName(bone_tail))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_tail)
 }
 func (self class) GetReferencePose(bone_idx int64) Transform3D.BasisOrigin { //gd:SkeletonProfile.get_reference_pose
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.get_reference_pose, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
@@ -583,9 +617,11 @@ func (self class) SetReferencePose(bone_idx int64, bone_name Transform3D.BasisOr
 		bone_idx  int64
 		bone_name Transform3D.BasisOrigin
 	}{bone_idx, gd.Transposed(bone_name)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHandleOffset(bone_idx int64) Vector2.XY { //gd:SkeletonProfile.get_handle_offset
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_handle_offset, gdextension.SizeVector2|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -594,9 +630,11 @@ func (self class) SetHandleOffset(bone_idx int64, handle_offset Vector2.XY) { //
 		bone_idx      int64
 		handle_offset Vector2.XY
 	}{bone_idx, handle_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGroup(bone_idx int64) String.Name { //gd:SkeletonProfile.get_group
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_group, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -605,9 +643,12 @@ func (self class) SetGroup(bone_idx int64, group String.Name) { //gd:SkeletonPro
 		bone_idx int64
 		group    gdextension.StringName
 	}{bone_idx, pointers.Get(gd.InternalStringName(group))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(group)
 }
 func (self class) IsRequired(bone_idx int64) bool { //gd:SkeletonProfile.is_required
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_required, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -616,6 +657,7 @@ func (self class) SetRequired(bone_idx int64, required bool) { //gd:SkeletonProf
 		bone_idx int64
 		required bool
 	}{bone_idx, required})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -641,9 +683,9 @@ func (self class) ProfileUpdated() Signal.Any {
 func (o class) AsSkeletonProfile() Advanced           { return Advanced(o) }
 func (o Instance) AsSkeletonProfile() Instance        { return o }
 func (o *Extension[T]) AsSkeletonProfile() Instance   { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

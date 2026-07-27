@@ -21,6 +21,7 @@ Note: When exporting to Android, make sure to enable the INTERNET permission in 
 package WebRTCMultiplayerPeer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -56,6 +57,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -273,7 +277,7 @@ func (self Instance) GetPeers() map[int]Conn { //gd:WebRTCMultiplayerPeer.get_pe
 type Advanced = class
 type class [1]gdclass.WebRTCMultiplayerPeer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewWebRTCMultiplayerPeer(obj[0])
@@ -288,7 +292,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -313,6 +317,8 @@ func New() Instance {
 
 func (self class) CreateServer(channels_config Array.Any) Error.Code { //gd:WebRTCMultiplayerPeer.create_server
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.create_server, gdextension.SizeInt|(gdextension.SizeArray<<4), &struct{ channels_config gdextension.Array }{pointers.Get(gd.InternalArray(channels_config))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(channels_config)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -321,6 +327,8 @@ func (self class) CreateClient(peer_id int64, channels_config Array.Any) Error.C
 		peer_id         int64
 		channels_config gdextension.Array
 	}{peer_id, pointers.Get(gd.InternalArray(channels_config))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(channels_config)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -329,6 +337,8 @@ func (self class) CreateMesh(peer_id int64, channels_config Array.Any) Error.Cod
 		peer_id         int64
 		channels_config gdextension.Array
 	}{peer_id, pointers.Get(gd.InternalArray(channels_config))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(channels_config)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -338,24 +348,30 @@ func (self class) AddPeer(peer [1]gdclass.WebRTCPeerConnection, peer_id int64, u
 		peer_id             int64
 		unreliable_lifetime int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetWebRTCPeerConnection(peer[0])[0])), peer_id, unreliable_lifetime})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(peer[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) RemovePeer(peer_id int64) { //gd:WebRTCMultiplayerPeer.remove_peer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_peer, 0|(gdextension.SizeInt<<4), &struct{ peer_id int64 }{peer_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasPeer(peer_id int64) bool { //gd:WebRTCMultiplayerPeer.has_peer
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_peer, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ peer_id int64 }{peer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPeer(peer_id int64) Dictionary.Any { //gd:WebRTCMultiplayerPeer.get_peer
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_peer, gdextension.SizeDictionary|(gdextension.SizeInt<<4), &struct{ peer_id int64 }{peer_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetPeers() Dictionary.Any { //gd:WebRTCMultiplayerPeer.get_peers
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_peers, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -363,17 +379,17 @@ func (o class) AsWebRTCMultiplayerPeer() Advanced         { return Advanced(o) }
 func (o Instance) AsWebRTCMultiplayerPeer() Instance      { return o }
 func (o *Extension[T]) AsWebRTCMultiplayerPeer() Instance { return o.Super() }
 func (o class) AsMultiplayerPeer() MultiplayerPeer.Advanced {
-	return MultiplayerPeer.Advanced{gdclass.NewMultiplayerPeer(o[0].AsObject()[0])}
+	return *(*MultiplayerPeer.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsMultiplayerPeer() MultiplayerPeer.Instance {
 	return o.Super().AsMultiplayerPeer()
 }
 func (o Instance) AsMultiplayerPeer() MultiplayerPeer.Instance {
-	return MultiplayerPeer.Instance{gdclass.NewMultiplayerPeer(o[0].AsObject()[0])}
+	return *(*MultiplayerPeer.Instance)(ie.As(&o))
 }
-func (o class) AsPacketPeer() PacketPeer.Advanced         { return PacketPeer.Advanced{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o class) AsPacketPeer() PacketPeer.Advanced         { return *(*PacketPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPacketPeer() PacketPeer.Instance { return o.Super().AsPacketPeer() }
-func (o Instance) AsPacketPeer() PacketPeer.Instance      { return PacketPeer.Instance{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o Instance) AsPacketPeer() PacketPeer.Instance      { return *(*PacketPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

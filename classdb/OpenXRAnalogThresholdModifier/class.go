@@ -10,6 +10,7 @@ See [XR_VALVE_analog_threshold] for in-depth details.
 package OpenXRAnalogThresholdModifier
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -134,7 +138,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.OpenXRAnalogThresholdModifier
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRAnalogThresholdModifier(obj[0])
@@ -149,7 +153,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -228,33 +232,43 @@ func (self Instance) SetOffHaptic(value OpenXRHapticBase.Instance) Instance { //
 
 func (self class) SetOnThreshold(on_threshold float64) { //gd:OpenXRAnalogThresholdModifier.set_on_threshold
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_on_threshold, 0|(gdextension.SizeFloat<<4), &struct{ on_threshold float64 }{on_threshold})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOnThreshold() float64 { //gd:OpenXRAnalogThresholdModifier.get_on_threshold
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_on_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffThreshold(off_threshold float64) { //gd:OpenXRAnalogThresholdModifier.set_off_threshold
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_off_threshold, 0|(gdextension.SizeFloat<<4), &struct{ off_threshold float64 }{off_threshold})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffThreshold() float64 { //gd:OpenXRAnalogThresholdModifier.get_off_threshold
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_off_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOnHaptic(haptic [1]gdclass.OpenXRHapticBase) { //gd:OpenXRAnalogThresholdModifier.set_on_haptic
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_on_haptic, 0|(gdextension.SizeObject<<4), &struct{ haptic gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRHapticBase(haptic[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(haptic[0].Anchor())
 }
 func (self class) GetOnHaptic() [1]gdclass.OpenXRHapticBase { //gd:OpenXRAnalogThresholdModifier.get_on_haptic
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_on_haptic, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OpenXRHapticBase{gdclass.NewOpenXRHapticBase(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetOffHaptic(haptic [1]gdclass.OpenXRHapticBase) { //gd:OpenXRAnalogThresholdModifier.set_off_haptic
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_off_haptic, 0|(gdextension.SizeObject<<4), &struct{ haptic gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetOpenXRHapticBase(haptic[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(haptic[0].Anchor())
 }
 func (self class) GetOffHaptic() [1]gdclass.OpenXRHapticBase { //gd:OpenXRAnalogThresholdModifier.get_off_haptic
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_off_haptic, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.OpenXRHapticBase{gdclass.NewOpenXRHapticBase(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -262,26 +276,26 @@ func (o class) AsOpenXRAnalogThresholdModifier() Advanced         { return Advan
 func (o Instance) AsOpenXRAnalogThresholdModifier() Instance      { return o }
 func (o *Extension[T]) AsOpenXRAnalogThresholdModifier() Instance { return o.Super() }
 func (o class) AsOpenXRActionBindingModifier() OpenXRActionBindingModifier.Advanced {
-	return OpenXRActionBindingModifier.Advanced{gdclass.NewOpenXRActionBindingModifier(o[0].AsObject()[0])}
+	return *(*OpenXRActionBindingModifier.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRActionBindingModifier() OpenXRActionBindingModifier.Instance {
 	return o.Super().AsOpenXRActionBindingModifier()
 }
 func (o Instance) AsOpenXRActionBindingModifier() OpenXRActionBindingModifier.Instance {
-	return OpenXRActionBindingModifier.Instance{gdclass.NewOpenXRActionBindingModifier(o[0].AsObject()[0])}
+	return *(*OpenXRActionBindingModifier.Instance)(ie.As(&o))
 }
 func (o class) AsOpenXRBindingModifier() OpenXRBindingModifier.Advanced {
-	return OpenXRBindingModifier.Advanced{gdclass.NewOpenXRBindingModifier(o[0].AsObject()[0])}
+	return *(*OpenXRBindingModifier.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsOpenXRBindingModifier() OpenXRBindingModifier.Instance {
 	return o.Super().AsOpenXRBindingModifier()
 }
 func (o Instance) AsOpenXRBindingModifier() OpenXRBindingModifier.Instance {
-	return OpenXRBindingModifier.Instance{gdclass.NewOpenXRBindingModifier(o[0].AsObject()[0])}
+	return *(*OpenXRBindingModifier.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

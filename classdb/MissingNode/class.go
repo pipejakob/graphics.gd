@@ -8,6 +8,7 @@ Warning: Ignore missing nodes unless you know what you are doing. Existing prope
 package MissingNode
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -17,6 +18,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -41,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -128,7 +133,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.MissingNode
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMissingNode(obj[0])
@@ -143,7 +148,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -222,42 +227,52 @@ func (self Instance) SetRecordingSignals(value bool) Instance { //gd:MissingNode
 
 func (self class) SetOriginalClass(name String.Readable) { //gd:MissingNode.set_original_class
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_original_class, 0|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetOriginalClass() String.Readable { //gd:MissingNode.get_original_class
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_original_class, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOriginalScene(name String.Readable) { //gd:MissingNode.set_original_scene
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_original_scene, 0|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetOriginalScene() String.Readable { //gd:MissingNode.get_original_scene
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_original_scene, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetRecordingProperties(enable bool) { //gd:MissingNode.set_recording_properties
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_recording_properties, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRecordingProperties() bool { //gd:MissingNode.is_recording_properties
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_recording_properties, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRecordingSignals(enable bool) { //gd:MissingNode.set_recording_signals
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_recording_signals, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRecordingSignals() bool { //gd:MissingNode.is_recording_signals
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_recording_signals, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsMissingNode() Advanced         { return Advanced(o) }
 func (o Instance) AsMissingNode() Instance      { return o }
 func (o *Extension[T]) AsMissingNode() Instance { return o.Super() }
-func (o class) AsNode() Node.Advanced           { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o class) AsNode() Node.Advanced           { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance   { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance        { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance        { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

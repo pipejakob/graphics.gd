@@ -9,6 +9,7 @@ A custom control for editing properties that can be added to the [EditorInspecto
 package EditorProperty
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -18,6 +19,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -46,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -320,7 +325,7 @@ func (self MoreArgs) EmitChanged(property string, value any, field string, chang
 type Advanced = class
 type class [1]gdclass.EditorProperty
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorProperty(obj[0])
@@ -335,7 +340,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -523,138 +528,178 @@ func (class) _set_read_only(impl func(ptr gdclass.Receiver, read_only bool)) (cb
 
 func (self class) SetLabel(text String.Readable) { //gd:EditorProperty.set_label
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_label, 0|(gdextension.SizeString<<4), &struct{ text gdextension.String }{pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(text)
 }
 func (self class) GetLabel() String.Readable { //gd:EditorProperty.get_label
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_label, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetReadOnly(read_only bool) { //gd:EditorProperty.set_read_only
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_read_only, 0|(gdextension.SizeBool<<4), &struct{ read_only bool }{read_only})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsReadOnly() bool { //gd:EditorProperty.is_read_only
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_read_only, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDrawLabel(draw_label bool) { //gd:EditorProperty.set_draw_label
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_draw_label, 0|(gdextension.SizeBool<<4), &struct{ draw_label bool }{draw_label})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDrawLabel() bool { //gd:EditorProperty.is_draw_label
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_draw_label, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDrawBackground(draw_background bool) { //gd:EditorProperty.set_draw_background
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_draw_background, 0|(gdextension.SizeBool<<4), &struct{ draw_background bool }{draw_background})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDrawBackground() bool { //gd:EditorProperty.is_draw_background
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_draw_background, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCheckable(checkable bool) { //gd:EditorProperty.set_checkable
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_checkable, 0|(gdextension.SizeBool<<4), &struct{ checkable bool }{checkable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCheckable() bool { //gd:EditorProperty.is_checkable
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_checkable, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetChecked(checked bool) { //gd:EditorProperty.set_checked
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_checked, 0|(gdextension.SizeBool<<4), &struct{ checked bool }{checked})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsChecked() bool { //gd:EditorProperty.is_checked
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_checked, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDrawWarning(draw_warning bool) { //gd:EditorProperty.set_draw_warning
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_draw_warning, 0|(gdextension.SizeBool<<4), &struct{ draw_warning bool }{draw_warning})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDrawWarning() bool { //gd:EditorProperty.is_draw_warning
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_draw_warning, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetKeying(keying bool) { //gd:EditorProperty.set_keying
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_keying, 0|(gdextension.SizeBool<<4), &struct{ keying bool }{keying})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsKeying() bool { //gd:EditorProperty.is_keying
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_keying, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDeletable(deletable bool) { //gd:EditorProperty.set_deletable
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_deletable, 0|(gdextension.SizeBool<<4), &struct{ deletable bool }{deletable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDeletable() bool { //gd:EditorProperty.is_deletable
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_deletable, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetEditedProperty() String.Name { //gd:EditorProperty.get_edited_property
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_edited_property, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetEditedObject() [1]gdreference.Object { //gd:EditorProperty.get_edited_object
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_edited_object, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdreference.Object{gdreference.LetObject(r_ret)}
 	return ret
 }
 func (self class) UpdateProperty() { //gd:EditorProperty.update_property
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update_property, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddFocusable(control [1]gdclass.Control) { //gd:EditorProperty.add_focusable
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_focusable, 0|(gdextension.SizeObject<<4), &struct{ control gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetControl(control[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(control[0].Anchor())
 }
 func (self class) SetBottomEditor(editor [1]gdclass.Control) { //gd:EditorProperty.set_bottom_editor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bottom_editor, 0|(gdextension.SizeObject<<4), &struct{ editor gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetControl(editor[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(editor[0].Anchor())
 }
 func (self class) SetSelectable(selectable bool) { //gd:EditorProperty.set_selectable
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_selectable, 0|(gdextension.SizeBool<<4), &struct{ selectable bool }{selectable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSelectable() bool { //gd:EditorProperty.is_selectable
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_selectable, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseFolding(use_folding bool) { //gd:EditorProperty.set_use_folding
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_folding, 0|(gdextension.SizeBool<<4), &struct{ use_folding bool }{use_folding})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingFolding() bool { //gd:EditorProperty.is_using_folding
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_folding, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNameSplitRatio(ratio float64) { //gd:EditorProperty.set_name_split_ratio
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_name_split_ratio, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNameSplitRatio() float64 { //gd:EditorProperty.get_name_split_ratio
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_name_split_ratio, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Deselect() { //gd:EditorProperty.deselect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.deselect, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSelected() bool { //gd:EditorProperty.is_selected
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_selected, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Select(focusable int64) { //gd:EditorProperty.select_
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.select_, 0|(gdextension.SizeInt<<4), &struct{ focusable int64 }{focusable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetObjectAndProperty(obj [1]gdreference.Object, property String.Name) { //gd:EditorProperty.set_object_and_property
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_object_and_property, 0|(gdextension.SizeObject<<4)|(gdextension.SizeStringName<<8), &struct {
 		obj      gdextension.Object
 		property gdextension.StringName
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetObject(obj[0])[0])), pointers.Get(gd.InternalStringName(property))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(obj[0].Anchor())
+	runtime.KeepAlive(property)
 }
 func (self class) SetLabelReference(control [1]gdclass.Control) { //gd:EditorProperty.set_label_reference
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_label_reference, 0|(gdextension.SizeObject<<4), &struct{ control gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetControl(control[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(control[0].Anchor())
 }
 func (self class) EmitChanged(property String.Name, value variant.Any, field String.Name, changing bool) { //gd:EditorProperty.emit_changed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.emit_changed, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeVariant<<8)|(gdextension.SizeStringName<<12)|(gdextension.SizeBool<<16), &struct {
@@ -663,6 +708,10 @@ func (self class) EmitChanged(property String.Name, value variant.Any, field Str
 		field    gdextension.StringName
 		changing bool
 	}{pointers.Get(gd.InternalStringName(property)), gdextension.Variant(pointers.Get(gd.InternalVariant(value))), pointers.Get(gd.InternalStringName(field)), changing})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(property)
+	runtime.KeepAlive(value)
+	runtime.KeepAlive(field)
 }
 
 /*
@@ -882,18 +931,18 @@ func (self class) Selected() Signal.Any {
 func (o class) AsEditorProperty() Advanced                { return Advanced(o) }
 func (o Instance) AsEditorProperty() Instance             { return o }
 func (o *Extension[T]) AsEditorProperty() Instance        { return o.Super() }
-func (o class) AsContainer() Container.Advanced           { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o class) AsContainer() Container.Advanced           { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance   { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance        { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance        { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

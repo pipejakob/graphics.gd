@@ -8,6 +8,7 @@ Abstract base class of all types of input events. See [Node.Input].
 package InputEvent
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -408,7 +412,7 @@ func (self MoreArgs) XformedBy(xform Transform2D.OriginXY, local_ofs Vector2.XY)
 type Advanced = class
 type class [1]gdclass.InputEvent
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputEvent(obj[0])
@@ -423,7 +427,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -465,9 +469,11 @@ func (self Instance) SetDevice(value int) Instance { //gd:InputEvent.device
 
 func (self class) SetDevice(device int64) { //gd:InputEvent.set_device
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_device, 0|(gdextension.SizeInt<<4), &struct{ device int64 }{device})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDevice() int64 { //gd:InputEvent.get_device
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_device, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -476,6 +482,8 @@ func (self class) IsAction(action String.Name, exact_match bool) bool { //gd:Inp
 		action      gdextension.StringName
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), exact_match})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
@@ -485,6 +493,8 @@ func (self class) IsActionPressed(action String.Name, allow_echo bool, exact_mat
 		allow_echo  bool
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), allow_echo, exact_match})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
@@ -493,6 +503,8 @@ func (self class) IsActionReleased(action String.Name, exact_match bool) bool { 
 		action      gdextension.StringName
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), exact_match})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
@@ -501,31 +513,38 @@ func (self class) GetActionStrength(action String.Name, exact_match bool) float6
 		action      gdextension.StringName
 		exact_match bool
 	}{pointers.Get(gd.InternalStringName(action)), exact_match})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action)
 	var ret = r_ret
 	return ret
 }
 func (self class) IsCanceled() bool { //gd:InputEvent.is_canceled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_canceled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsPressed() bool { //gd:InputEvent.is_pressed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_pressed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsReleased() bool { //gd:InputEvent.is_released
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_released, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsEcho() bool { //gd:InputEvent.is_echo
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_echo, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AsText() String.Readable { //gd:InputEvent.as_text
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.as_text, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -534,16 +553,21 @@ func (self class) IsMatch(event [1]gdclass.InputEvent, exact_match bool) bool { 
 		event       gdextension.Object
 		exact_match bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(event[0])[0])), exact_match})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(event[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsActionType() bool { //gd:InputEvent.is_action_type
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_action_type, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Accumulate(with_event [1]gdclass.InputEvent) bool { //gd:InputEvent.accumulate
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.accumulate, gdextension.SizeBool|(gdextension.SizeObject<<4), &struct{ with_event gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetInputEvent(with_event[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(with_event[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -552,15 +576,16 @@ func (self class) XformedBy(xform Transform2D.OriginXY, local_ofs Vector2.XY) [1
 		xform     Transform2D.OriginXY
 		local_ofs Vector2.XY
 	}{xform, local_ofs})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.InputEvent{gdclass.NewInputEvent(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsInputEvent() Advanced                { return Advanced(o) }
 func (o Instance) AsInputEvent() Instance             { return o }
 func (o *Extension[T]) AsInputEvent() Instance        { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

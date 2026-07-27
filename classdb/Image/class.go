@@ -17,6 +17,7 @@ Note: The maximum image size is 16384×16384 pixels due to graphics hardware lim
 package Image
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -54,6 +55,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1069,7 +1073,7 @@ func (self MoreArgs) LoadSvgFromString(svg_str string, scale Float.X) error { //
 type Advanced = class
 type class [1]gdclass.Image
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewImage(obj[0])
@@ -1084,7 +1088,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1109,49 +1113,59 @@ func New() Instance {
 
 func (self class) GetWidth() int64 { //gd:Image.get_width
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_width, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetHeight() int64 { //gd:Image.get_height
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_height, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSize() Vector2i.XY { //gd:Image.get_size
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasMipmaps() bool { //gd:Image.has_mipmaps
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_mipmaps, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFormat() Format { //gd:Image.get_format
 	var r_ret = jumponly.Call[Format](gd.ObjectChecked(self.AsObject()), methods.get_format, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetData() Packed.Bytes { //gd:Image.get_data
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_data, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) GetDataSize() int64 { //gd:Image.get_data_size
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_data_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Convert(format Format) { //gd:Image.convert
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.convert, 0|(gdextension.SizeInt<<4), &struct{ format Format }{format})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMipmapCount() int64 { //gd:Image.get_mipmap_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_mipmap_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMipmapOffset(mipmap int64) int64 { //gd:Image.get_mipmap_offset
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_mipmap_offset, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ mipmap int64 }{mipmap})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1160,6 +1174,7 @@ func (self class) ResizeToPo2(square bool, interpolation Interpolation) { //gd:I
 		square        bool
 		interpolation Interpolation
 	}{square, interpolation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Resize(width int64, height int64, interpolation Interpolation) { //gd:Image.resize
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.resize, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -1167,29 +1182,36 @@ func (self class) Resize(width int64, height int64, interpolation Interpolation)
 		height        int64
 		interpolation Interpolation
 	}{width, height, interpolation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShrinkX2() { //gd:Image.shrink_x2
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.shrink_x2, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Crop(width int64, height int64) { //gd:Image.crop
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.crop, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		width  int64
 		height int64
 	}{width, height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FlipX() { //gd:Image.flip_x
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.flip_x, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FlipY() { //gd:Image.flip_y
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.flip_y, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GenerateMipmaps(renormalize bool) Error.Code { //gd:Image.generate_mipmaps
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.generate_mipmaps, gdextension.SizeInt|(gdextension.SizeBool<<4), &struct{ renormalize bool }{renormalize})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) ClearMipmaps() { //gd:Image.clear_mipmaps
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_mipmaps, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Create(width int64, height int64, use_mipmaps bool, format Format) [1]gdclass.Image { //gd:Image.create
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.create, gdextension.SizeObject|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeBool<<12)|(gdextension.SizeInt<<16), &struct {
@@ -1219,6 +1241,7 @@ func (self class) CreateFromData(width int64, height int64, use_mipmaps bool, fo
 		format      Format
 		data        gdextension.PackedArray[byte]
 	}{width, height, use_mipmaps, format, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(data)
 	var ret = [1]gdclass.Image{gdclass.NewImage(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -1230,29 +1253,38 @@ func (self class) SetData(width int64, height int64, use_mipmaps bool, format Fo
 		format      Format
 		data        gdextension.PackedArray[byte]
 	}{width, height, use_mipmaps, format, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 }
 func (self class) IsEmpty() bool { //gd:Image.is_empty
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_empty, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Load(path String.Readable) Error.Code { //gd:Image.load
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) LoadFromFile(path String.Readable) [1]gdclass.Image { //gd:Image.load_from_file
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.load_from_file, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(path)
 	var ret = [1]gdclass.Image{gdclass.NewImage(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SavePng(path String.Readable) Error.Code { //gd:Image.save_png
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.save_png, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) SavePngToBuffer() Packed.Bytes { //gd:Image.save_png_to_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.save_png_to_buffer, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
@@ -1261,11 +1293,14 @@ func (self class) SaveJpg(path String.Readable, quality float64) Error.Code { //
 		path    gdextension.String
 		quality float64
 	}{pointers.Get(gd.InternalString(path)), quality})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) SaveJpgToBuffer(quality float64) Packed.Bytes { //gd:Image.save_jpg_to_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.save_jpg_to_buffer, gdextension.SizePackedArray|(gdextension.SizeFloat<<4), &struct{ quality float64 }{quality})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
@@ -1276,6 +1311,8 @@ func (self class) SaveExr(path String.Readable, grayscale bool, color_image bool
 		color_image      bool
 		max_linear_value float64
 	}{pointers.Get(gd.InternalString(path)), grayscale, color_image, max_linear_value})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -1285,16 +1322,20 @@ func (self class) SaveExrToBuffer(grayscale bool, color_image bool, max_linear_v
 		color_image      bool
 		max_linear_value float64
 	}{grayscale, color_image, max_linear_value})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) SaveDds(path String.Readable) Error.Code { //gd:Image.save_dds
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.save_dds, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) SaveDdsToBuffer() Packed.Bytes { //gd:Image.save_dds_to_buffer
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.save_dds_to_buffer, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
@@ -1304,6 +1345,8 @@ func (self class) SaveWebp(path String.Readable, lossy bool, quality float64) Er
 		lossy   bool
 		quality float64
 	}{pointers.Get(gd.InternalString(path)), lossy, quality})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -1312,21 +1355,25 @@ func (self class) SaveWebpToBuffer(lossy bool, quality float64) Packed.Bytes { /
 		lossy   bool
 		quality float64
 	}{lossy, quality})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
 func (self class) DetectAlpha() AlphaMode { //gd:Image.detect_alpha
 	var r_ret = noescape.Call[AlphaMode](gd.ObjectChecked(self.AsObject()), methods.detect_alpha, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsInvisible() bool { //gd:Image.is_invisible
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_invisible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) DetectUsedChannels(source CompressSource) UsedChannels { //gd:Image.detect_used_channels
 	var r_ret = noescape.Call[UsedChannels](gd.ObjectChecked(self.AsObject()), methods.detect_used_channels, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ source CompressSource }{source})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1336,6 +1383,7 @@ func (self class) Compress(mode CompressMode, source CompressSource, astc_format
 		source      CompressSource
 		astc_format ASTCFormat
 	}{mode, source, astc_format})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -1345,53 +1393,67 @@ func (self class) CompressFromChannels(mode CompressMode, channels UsedChannels,
 		channels    UsedChannels
 		astc_format ASTCFormat
 	}{mode, channels, astc_format})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Decompress() Error.Code { //gd:Image.decompress
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.decompress, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) IsCompressed() bool { //gd:Image.is_compressed
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_compressed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Rotate90(direction Angle.Direction) { //gd:Image.rotate_90
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.rotate_90, 0|(gdextension.SizeInt<<4), &struct{ direction Angle.Direction }{direction})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Rotate180() { //gd:Image.rotate_180
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.rotate_180, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FixAlphaEdges() { //gd:Image.fix_alpha_edges
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.fix_alpha_edges, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PremultiplyAlpha() { //gd:Image.premultiply_alpha
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.premultiply_alpha, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SrgbToLinear() { //gd:Image.srgb_to_linear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.srgb_to_linear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) LinearToSrgb() { //gd:Image.linear_to_srgb
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.linear_to_srgb, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) NormalMapToXy() { //gd:Image.normal_map_to_xy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.normal_map_to_xy, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RgbeToSrgb() [1]gdclass.Image { //gd:Image.rgbe_to_srgb
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.rgbe_to_srgb, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Image{gdclass.NewImage(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) BumpMapToNormalMap(bump_scale float64) { //gd:Image.bump_map_to_normal_map
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.bump_map_to_normal_map, 0|(gdextension.SizeFloat<<4), &struct{ bump_scale float64 }{bump_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ComputeImageMetrics(compared_image [1]gdclass.Image, use_luma bool) Dictionary.Any { //gd:Image.compute_image_metrics
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.compute_image_metrics, gdextension.SizeDictionary|(gdextension.SizeObject<<4)|(gdextension.SizeBool<<8), &struct {
 		compared_image gdextension.Object
 		use_luma       bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(compared_image[0])[0])), use_luma})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(compared_image[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -1401,6 +1463,8 @@ func (self class) BlitRect(src [1]gdclass.Image, src_rect Rect2i.PositionSize, d
 		src_rect Rect2i.PositionSize
 		dst      Vector2i.XY
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(src[0])[0])), src_rect, dst})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src[0].Anchor())
 }
 func (self class) BlitRectMask(src [1]gdclass.Image, mask [1]gdclass.Image, src_rect Rect2i.PositionSize, dst Vector2i.XY) { //gd:Image.blit_rect_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.blit_rect_mask, 0|(gdextension.SizeObject<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeRect2i<<12)|(gdextension.SizeVector2i<<16), &struct {
@@ -1409,6 +1473,9 @@ func (self class) BlitRectMask(src [1]gdclass.Image, mask [1]gdclass.Image, src_
 		src_rect Rect2i.PositionSize
 		dst      Vector2i.XY
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(src[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetImage(mask[0])[0])), src_rect, dst})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src[0].Anchor())
+	runtime.KeepAlive(mask[0].Anchor())
 }
 func (self class) BlendRect(src [1]gdclass.Image, src_rect Rect2i.PositionSize, dst Vector2i.XY) { //gd:Image.blend_rect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.blend_rect, 0|(gdextension.SizeObject<<4)|(gdextension.SizeRect2i<<8)|(gdextension.SizeVector2i<<12), &struct {
@@ -1416,6 +1483,8 @@ func (self class) BlendRect(src [1]gdclass.Image, src_rect Rect2i.PositionSize, 
 		src_rect Rect2i.PositionSize
 		dst      Vector2i.XY
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(src[0])[0])), src_rect, dst})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src[0].Anchor())
 }
 func (self class) BlendRectMask(src [1]gdclass.Image, mask [1]gdclass.Image, src_rect Rect2i.PositionSize, dst Vector2i.XY) { //gd:Image.blend_rect_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.blend_rect_mask, 0|(gdextension.SizeObject<<4)|(gdextension.SizeObject<<8)|(gdextension.SizeRect2i<<12)|(gdextension.SizeVector2i<<16), &struct {
@@ -1424,31 +1493,41 @@ func (self class) BlendRectMask(src [1]gdclass.Image, mask [1]gdclass.Image, src
 		src_rect Rect2i.PositionSize
 		dst      Vector2i.XY
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(src[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetImage(mask[0])[0])), src_rect, dst})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src[0].Anchor())
+	runtime.KeepAlive(mask[0].Anchor())
 }
 func (self class) Fill(color Color.RGBA) { //gd:Image.fill
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.fill, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FillRect(rect Rect2i.PositionSize, color Color.RGBA) { //gd:Image.fill_rect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.fill_rect, 0|(gdextension.SizeRect2i<<4)|(gdextension.SizeColor<<8), &struct {
 		rect  Rect2i.PositionSize
 		color Color.RGBA
 	}{rect, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUsedRect() Rect2i.PositionSize { //gd:Image.get_used_rect
 	var r_ret = noescape.Call[Rect2i.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_used_rect, gdextension.SizeRect2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRegion(region Rect2i.PositionSize) [1]gdclass.Image { //gd:Image.get_region
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_region, gdextension.SizeObject|(gdextension.SizeRect2i<<4), &struct{ region Rect2i.PositionSize }{region})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Image{gdclass.NewImage(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) CopyFrom(src [1]gdclass.Image) { //gd:Image.copy_from
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.copy_from, 0|(gdextension.SizeObject<<4), &struct{ src gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetImage(src[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src[0].Anchor())
 }
 func (self class) GetPixelv(point Vector2i.XY) Color.RGBA { //gd:Image.get_pixelv
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_pixelv, gdextension.SizeColor|(gdextension.SizeVector2i<<4), &struct{ point Vector2i.XY }{point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1457,6 +1536,7 @@ func (self class) GetPixel(x int64, y int64) Color.RGBA { //gd:Image.get_pixel
 		x int64
 		y int64
 	}{x, y})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1465,6 +1545,7 @@ func (self class) SetPixelv(point Vector2i.XY, color Color.RGBA) { //gd:Image.se
 		point Vector2i.XY
 		color Color.RGBA
 	}{point, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPixel(x int64, y int64, color Color.RGBA) { //gd:Image.set_pixel
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pixel, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeColor<<12), &struct {
@@ -1472,6 +1553,7 @@ func (self class) SetPixel(x int64, y int64, color Color.RGBA) { //gd:Image.set_
 		y     int64
 		color Color.RGBA
 	}{x, y, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AdjustBcs(brightness float64, contrast float64, saturation float64) { //gd:Image.adjust_bcs
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.adjust_bcs, 0|(gdextension.SizeFloat<<4)|(gdextension.SizeFloat<<8)|(gdextension.SizeFloat<<12), &struct {
@@ -1479,44 +1561,61 @@ func (self class) AdjustBcs(brightness float64, contrast float64, saturation flo
 		contrast   float64
 		saturation float64
 	}{brightness, contrast, saturation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) LoadPngFromBuffer(buffer Packed.Bytes) Error.Code { //gd:Image.load_png_from_buffer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load_png_from_buffer, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ buffer gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) LoadJpgFromBuffer(buffer Packed.Bytes) Error.Code { //gd:Image.load_jpg_from_buffer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load_jpg_from_buffer, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ buffer gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) LoadWebpFromBuffer(buffer Packed.Bytes) Error.Code { //gd:Image.load_webp_from_buffer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load_webp_from_buffer, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ buffer gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) LoadTgaFromBuffer(buffer Packed.Bytes) Error.Code { //gd:Image.load_tga_from_buffer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load_tga_from_buffer, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ buffer gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) LoadBmpFromBuffer(buffer Packed.Bytes) Error.Code { //gd:Image.load_bmp_from_buffer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load_bmp_from_buffer, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ buffer gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) LoadKtxFromBuffer(buffer Packed.Bytes) Error.Code { //gd:Image.load_ktx_from_buffer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load_ktx_from_buffer, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ buffer gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) LoadDdsFromBuffer(buffer Packed.Bytes) Error.Code { //gd:Image.load_dds_from_buffer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load_dds_from_buffer, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ buffer gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) LoadExrFromBuffer(buffer Packed.Bytes) Error.Code { //gd:Image.load_exr_from_buffer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load_exr_from_buffer, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ buffer gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -1525,6 +1624,8 @@ func (self class) LoadSvgFromBuffer(buffer Packed.Bytes, scale float64) Error.Co
 		buffer gdextension.PackedArray[byte]
 		scale  float64
 	}{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array))), scale})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -1533,15 +1634,17 @@ func (self class) LoadSvgFromString(svg_str String.Readable, scale float64) Erro
 		svg_str gdextension.String
 		scale   float64
 	}{pointers.Get(gd.InternalString(svg_str)), scale})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(svg_str)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (o class) AsImage() Advanced                     { return Advanced(o) }
 func (o Instance) AsImage() Instance                  { return o }
 func (o *Extension[T]) AsImage() Instance             { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

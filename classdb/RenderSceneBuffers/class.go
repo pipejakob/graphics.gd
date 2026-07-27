@@ -10,6 +10,7 @@ Note: This is an internal rendering server object. Do not instantiate this class
 package RenderSceneBuffers
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -129,7 +133,7 @@ func (self Instance) Configure(config RenderSceneBuffersConfiguration.Instance) 
 type Advanced = class
 type class [1]gdclass.RenderSceneBuffers
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRenderSceneBuffers(obj[0])
@@ -144,7 +148,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -169,6 +173,8 @@ func New() Instance {
 
 func (self class) Configure(config [1]gdclass.RenderSceneBuffersConfiguration) { //gd:RenderSceneBuffers.configure
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.configure, 0|(gdextension.SizeObject<<4), &struct{ config gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetRenderSceneBuffersConfiguration(config[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(config[0].Anchor())
 }
 func (o class) AsRenderSceneBuffers() Advanced         { return Advanced(o) }
 func (o Instance) AsRenderSceneBuffers() Instance      { return o }

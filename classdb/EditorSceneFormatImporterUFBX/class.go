@@ -6,6 +6,7 @@ EditorSceneFormatImporterUFBX is designed to load FBX files and supports both bi
 package EditorSceneFormatImporterUFBX
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -39,6 +40,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -117,7 +121,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.EditorSceneFormatImporterUFBX
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorSceneFormatImporterUFBX(obj[0])
@@ -132,7 +136,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -159,13 +163,13 @@ func (o class) AsEditorSceneFormatImporterUFBX() Advanced         { return Advan
 func (o Instance) AsEditorSceneFormatImporterUFBX() Instance      { return o }
 func (o *Extension[T]) AsEditorSceneFormatImporterUFBX() Instance { return o.Super() }
 func (o class) AsEditorSceneFormatImporter() EditorSceneFormatImporter.Advanced {
-	return EditorSceneFormatImporter.Advanced{gdclass.NewEditorSceneFormatImporter(o[0].AsObject()[0])}
+	return *(*EditorSceneFormatImporter.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsEditorSceneFormatImporter() EditorSceneFormatImporter.Instance {
 	return o.Super().AsEditorSceneFormatImporter()
 }
 func (o Instance) AsEditorSceneFormatImporter() EditorSceneFormatImporter.Instance {
-	return EditorSceneFormatImporter.Instance{gdclass.NewEditorSceneFormatImporter(o[0].AsObject()[0])}
+	return *(*EditorSceneFormatImporter.Instance)(ie.As(&o))
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

@@ -17,6 +17,7 @@ Note: Keep in mind that [Node.GetChildren] will also return the connection layer
 package GraphEdit
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -26,6 +27,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -56,6 +58,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -774,7 +779,7 @@ func (self Instance) SetSelected(node Node.Instance) Instance { //gd:GraphEdit.s
 type Advanced = class
 type class [1]gdclass.GraphEdit
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGraphEdit(obj[0])
@@ -789,7 +794,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1200,6 +1205,9 @@ func (self class) ConnectNode(from_node String.Name, from_port int64, to_node St
 		to_port    int64
 		keep_alive bool
 	}{pointers.Get(gd.InternalStringName(from_node)), from_port, pointers.Get(gd.InternalStringName(to_node)), to_port, keep_alive})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from_node)
+	runtime.KeepAlive(to_node)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -1210,6 +1218,9 @@ func (self class) IsNodeConnected(from_node String.Name, from_port int64, to_nod
 		to_node   gdextension.StringName
 		to_port   int64
 	}{pointers.Get(gd.InternalStringName(from_node)), from_port, pointers.Get(gd.InternalStringName(to_node)), to_port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from_node)
+	runtime.KeepAlive(to_node)
 	var ret = r_ret
 	return ret
 }
@@ -1220,6 +1231,9 @@ func (self class) DisconnectNode(from_node String.Name, from_port int64, to_node
 		to_node   gdextension.StringName
 		to_port   int64
 	}{pointers.Get(gd.InternalStringName(from_node)), from_port, pointers.Get(gd.InternalStringName(to_node)), to_port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from_node)
+	runtime.KeepAlive(to_node)
 }
 func (self class) SetConnectionActivity(from_node String.Name, from_port int64, to_node String.Name, to_port int64, amount float64) { //gd:GraphEdit.set_connection_activity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_connection_activity, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeStringName<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeFloat<<20), &struct {
@@ -1229,12 +1243,18 @@ func (self class) SetConnectionActivity(from_node String.Name, from_port int64, 
 		to_port   int64
 		amount    float64
 	}{pointers.Get(gd.InternalStringName(from_node)), from_port, pointers.Get(gd.InternalStringName(to_node)), to_port, amount})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from_node)
+	runtime.KeepAlive(to_node)
 }
 func (self class) SetConnections(connections Array.Contains[Dictionary.Any]) { //gd:GraphEdit.set_connections
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_connections, 0|(gdextension.SizeArray<<4), &struct{ connections gdextension.Array }{pointers.Get(gd.InternalArray(connections))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(connections)
 }
 func (self class) GetConnectionList() Array.Contains[Dictionary.Any] { //gd:GraphEdit.get_connection_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_connection_list, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -1243,6 +1263,8 @@ func (self class) GetConnectionCount(from_node String.Name, from_port int64) int
 		from_node gdextension.StringName
 		from_port int64
 	}{pointers.Get(gd.InternalStringName(from_node)), from_port})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(from_node)
 	var ret = r_ret
 	return ret
 }
@@ -1251,62 +1273,77 @@ func (self class) GetClosestConnectionAtPoint(point Vector2.XY, max_distance flo
 		point        Vector2.XY
 		max_distance float64
 	}{point, max_distance})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetConnectionListFromNode(node String.Name) Array.Contains[Dictionary.Any] { //gd:GraphEdit.get_connection_list_from_node
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_connection_list_from_node, gdextension.SizeArray|(gdextension.SizeStringName<<4), &struct{ node gdextension.StringName }{pointers.Get(gd.InternalStringName(node))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node)
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetConnectionsIntersectingWithRect(rect Rect2.PositionSize) Array.Contains[Dictionary.Any] { //gd:GraphEdit.get_connections_intersecting_with_rect
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_connections_intersecting_with_rect, gdextension.SizeArray|(gdextension.SizeRect2<<4), &struct{ rect Rect2.PositionSize }{rect})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) ClearConnections() { //gd:GraphEdit.clear_connections
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_connections, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ForceConnectionDragEnd() { //gd:GraphEdit.force_connection_drag_end
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.force_connection_drag_end, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetScrollOffset() Vector2.XY { //gd:GraphEdit.get_scroll_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_scroll_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetScrollOffset(offset Vector2.XY) { //gd:GraphEdit.set_scroll_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_scroll_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddValidRightDisconnectType(atype int64) { //gd:GraphEdit.add_valid_right_disconnect_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_valid_right_disconnect_type, 0|(gdextension.SizeInt<<4), &struct{ atype int64 }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveValidRightDisconnectType(atype int64) { //gd:GraphEdit.remove_valid_right_disconnect_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_valid_right_disconnect_type, 0|(gdextension.SizeInt<<4), &struct{ atype int64 }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddValidLeftDisconnectType(atype int64) { //gd:GraphEdit.add_valid_left_disconnect_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_valid_left_disconnect_type, 0|(gdextension.SizeInt<<4), &struct{ atype int64 }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveValidLeftDisconnectType(atype int64) { //gd:GraphEdit.remove_valid_left_disconnect_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_valid_left_disconnect_type, 0|(gdextension.SizeInt<<4), &struct{ atype int64 }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddValidConnectionType(from_type int64, to_type int64) { //gd:GraphEdit.add_valid_connection_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_valid_connection_type, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		from_type int64
 		to_type   int64
 	}{from_type, to_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveValidConnectionType(from_type int64, to_type int64) { //gd:GraphEdit.remove_valid_connection_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_valid_connection_type, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		from_type int64
 		to_type   int64
 	}{from_type, to_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsValidConnectionType(from_type int64, to_type int64) bool { //gd:GraphEdit.is_valid_connection_type
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_valid_connection_type, gdextension.SizeBool|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		from_type int64
 		to_type   int64
 	}{from_type, to_type})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1315,6 +1352,7 @@ func (self class) GetConnectionLine(from_node Vector2.XY, to_node Vector2.XY) Pa
 		from_node Vector2.XY
 		to_node   Vector2.XY
 	}{from_node, to_node})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -1323,214 +1361,274 @@ func (self class) AttachGraphElementToFrame(element String.Name, frame_ String.N
 		element gdextension.StringName
 		frame_  gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(element)), pointers.Get(gd.InternalStringName(frame_))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(element)
+	runtime.KeepAlive(frame_)
 }
 func (self class) DetachGraphElementFromFrame(element String.Name) { //gd:GraphEdit.detach_graph_element_from_frame
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.detach_graph_element_from_frame, 0|(gdextension.SizeStringName<<4), &struct{ element gdextension.StringName }{pointers.Get(gd.InternalStringName(element))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(element)
 }
 func (self class) GetElementFrame(element String.Name) [1]gdclass.GraphFrame { //gd:GraphEdit.get_element_frame
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_element_frame, gdextension.SizeObject|(gdextension.SizeStringName<<4), &struct{ element gdextension.StringName }{pointers.Get(gd.InternalStringName(element))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(element)
 	var ret = [1]gdclass.GraphFrame{gdclass.NewGraphFrame(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) GetAttachedNodesOfFrame(frame_ String.Name) Array.Contains[String.Name] { //gd:GraphEdit.get_attached_nodes_of_frame
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_attached_nodes_of_frame, gdextension.SizeArray|(gdextension.SizeStringName<<4), &struct{ frame_ gdextension.StringName }{pointers.Get(gd.InternalStringName(frame_))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(frame_)
 	var ret = Array.Through(gd.WrapArray[String.Name](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetPanningScheme(scheme PanningScheme) { //gd:GraphEdit.set_panning_scheme
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_panning_scheme, 0|(gdextension.SizeInt<<4), &struct{ scheme PanningScheme }{scheme})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPanningScheme() PanningScheme { //gd:GraphEdit.get_panning_scheme
 	var r_ret = jumponly.Call[PanningScheme](gd.ObjectChecked(self.AsObject()), methods.get_panning_scheme, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetZoom(zoom float64) { //gd:GraphEdit.set_zoom
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_zoom, 0|(gdextension.SizeFloat<<4), &struct{ zoom float64 }{zoom})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetZoom() float64 { //gd:GraphEdit.get_zoom
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_zoom, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetZoomMin(zoom_min float64) { //gd:GraphEdit.set_zoom_min
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_zoom_min, 0|(gdextension.SizeFloat<<4), &struct{ zoom_min float64 }{zoom_min})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetZoomMin() float64 { //gd:GraphEdit.get_zoom_min
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_zoom_min, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetZoomMax(zoom_max float64) { //gd:GraphEdit.set_zoom_max
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_zoom_max, 0|(gdextension.SizeFloat<<4), &struct{ zoom_max float64 }{zoom_max})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetZoomMax() float64 { //gd:GraphEdit.get_zoom_max
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_zoom_max, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetZoomStep(zoom_step float64) { //gd:GraphEdit.set_zoom_step
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_zoom_step, 0|(gdextension.SizeFloat<<4), &struct{ zoom_step float64 }{zoom_step})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetZoomStep() float64 { //gd:GraphEdit.get_zoom_step
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_zoom_step, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShowGrid(enable bool) { //gd:GraphEdit.set_show_grid
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_grid, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShowingGrid() bool { //gd:GraphEdit.is_showing_grid
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_showing_grid, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGridPattern(pattern GridPattern) { //gd:GraphEdit.set_grid_pattern
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_grid_pattern, 0|(gdextension.SizeInt<<4), &struct{ pattern GridPattern }{pattern})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGridPattern() GridPattern { //gd:GraphEdit.get_grid_pattern
 	var r_ret = jumponly.Call[GridPattern](gd.ObjectChecked(self.AsObject()), methods.get_grid_pattern, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSnappingEnabled(enable bool) { //gd:GraphEdit.set_snapping_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_snapping_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSnappingEnabled() bool { //gd:GraphEdit.is_snapping_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_snapping_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSnappingDistance(pixels int64) { //gd:GraphEdit.set_snapping_distance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_snapping_distance, 0|(gdextension.SizeInt<<4), &struct{ pixels int64 }{pixels})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSnappingDistance() int64 { //gd:GraphEdit.get_snapping_distance
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_snapping_distance, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetConnectionLinesCurvature(curvature float64) { //gd:GraphEdit.set_connection_lines_curvature
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_connection_lines_curvature, 0|(gdextension.SizeFloat<<4), &struct{ curvature float64 }{curvature})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConnectionLinesCurvature() float64 { //gd:GraphEdit.get_connection_lines_curvature
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_connection_lines_curvature, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetConnectionLinesThickness(pixels float64) { //gd:GraphEdit.set_connection_lines_thickness
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_connection_lines_thickness, 0|(gdextension.SizeFloat<<4), &struct{ pixels float64 }{pixels})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConnectionLinesThickness() float64 { //gd:GraphEdit.get_connection_lines_thickness
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_connection_lines_thickness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetConnectionLinesAntialiased(pixels bool) { //gd:GraphEdit.set_connection_lines_antialiased
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_connection_lines_antialiased, 0|(gdextension.SizeBool<<4), &struct{ pixels bool }{pixels})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsConnectionLinesAntialiased() bool { //gd:GraphEdit.is_connection_lines_antialiased
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_connection_lines_antialiased, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinimapSize(size Vector2.XY) { //gd:GraphEdit.set_minimap_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_minimap_size, 0|(gdextension.SizeVector2<<4), &struct{ size Vector2.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMinimapSize() Vector2.XY { //gd:GraphEdit.get_minimap_size
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_minimap_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinimapOpacity(opacity float64) { //gd:GraphEdit.set_minimap_opacity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_minimap_opacity, 0|(gdextension.SizeFloat<<4), &struct{ opacity float64 }{opacity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMinimapOpacity() float64 { //gd:GraphEdit.get_minimap_opacity
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_minimap_opacity, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMinimapEnabled(enable bool) { //gd:GraphEdit.set_minimap_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_minimap_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsMinimapEnabled() bool { //gd:GraphEdit.is_minimap_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_minimap_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShowMenu(hidden bool) { //gd:GraphEdit.set_show_menu
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_menu, 0|(gdextension.SizeBool<<4), &struct{ hidden bool }{hidden})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShowingMenu() bool { //gd:GraphEdit.is_showing_menu
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_showing_menu, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShowZoomLabel(enable bool) { //gd:GraphEdit.set_show_zoom_label
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_zoom_label, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShowingZoomLabel() bool { //gd:GraphEdit.is_showing_zoom_label
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_showing_zoom_label, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShowGridButtons(hidden bool) { //gd:GraphEdit.set_show_grid_buttons
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_grid_buttons, 0|(gdextension.SizeBool<<4), &struct{ hidden bool }{hidden})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShowingGridButtons() bool { //gd:GraphEdit.is_showing_grid_buttons
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_showing_grid_buttons, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShowZoomButtons(hidden bool) { //gd:GraphEdit.set_show_zoom_buttons
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_zoom_buttons, 0|(gdextension.SizeBool<<4), &struct{ hidden bool }{hidden})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShowingZoomButtons() bool { //gd:GraphEdit.is_showing_zoom_buttons
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_showing_zoom_buttons, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShowMinimapButton(hidden bool) { //gd:GraphEdit.set_show_minimap_button
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_minimap_button, 0|(gdextension.SizeBool<<4), &struct{ hidden bool }{hidden})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShowingMinimapButton() bool { //gd:GraphEdit.is_showing_minimap_button
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_showing_minimap_button, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetShowArrangeButton(hidden bool) { //gd:GraphEdit.set_show_arrange_button
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_arrange_button, 0|(gdextension.SizeBool<<4), &struct{ hidden bool }{hidden})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShowingArrangeButton() bool { //gd:GraphEdit.is_showing_arrange_button
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_showing_arrange_button, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRightDisconnects(enable bool) { //gd:GraphEdit.set_right_disconnects
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_right_disconnects, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRightDisconnectsEnabled() bool { //gd:GraphEdit.is_right_disconnects_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_right_disconnects_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTypeNames(type_names Dictionary.Any) { //gd:GraphEdit.set_type_names
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_type_names, 0|(gdextension.SizeDictionary<<4), &struct{ type_names gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(type_names))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(type_names)
 }
 func (self class) GetTypeNames() Dictionary.Any { //gd:GraphEdit.get_type_names
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_type_names, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetMenuHbox() [1]gdclass.HBoxContainer { //gd:GraphEdit.get_menu_hbox
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_menu_hbox, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.HBoxContainer{gdclass.NewHBoxContainer(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) ArrangeNodes() { //gd:GraphEdit.arrange_nodes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.arrange_nodes, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSelected(node [1]gdclass.Node) { //gd:GraphEdit.set_selected
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_selected, 0|(gdextension.SizeObject<<4), &struct{ node gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNode(node[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(node[0].Anchor())
 }
 
 /*
@@ -1875,15 +1973,15 @@ func (self class) ScrollOffsetChanged() Signal.Any {
 func (o class) AsGraphEdit() Advanced                     { return Advanced(o) }
 func (o Instance) AsGraphEdit() Instance                  { return o }
 func (o *Extension[T]) AsGraphEdit() Instance             { return o.Super() }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

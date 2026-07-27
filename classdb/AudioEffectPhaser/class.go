@@ -8,6 +8,7 @@ This effect can be used to create a "glassy" or "bubbly" sound.
 package AudioEffectPhaser
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -132,7 +136,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AudioEffectPhaser
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioEffectPhaser(obj[0])
@@ -147,7 +151,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -237,53 +241,63 @@ func (self Instance) SetDepth(value Float.X) Instance { //gd:AudioEffectPhaser.d
 
 func (self class) SetRangeMinHz(hz float64) { //gd:AudioEffectPhaser.set_range_min_hz
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_range_min_hz, 0|(gdextension.SizeFloat<<4), &struct{ hz float64 }{hz})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRangeMinHz() float64 { //gd:AudioEffectPhaser.get_range_min_hz
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_range_min_hz, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRangeMaxHz(hz float64) { //gd:AudioEffectPhaser.set_range_max_hz
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_range_max_hz, 0|(gdextension.SizeFloat<<4), &struct{ hz float64 }{hz})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRangeMaxHz() float64 { //gd:AudioEffectPhaser.get_range_max_hz
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_range_max_hz, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRateHz(hz float64) { //gd:AudioEffectPhaser.set_rate_hz
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rate_hz, 0|(gdextension.SizeFloat<<4), &struct{ hz float64 }{hz})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRateHz() float64 { //gd:AudioEffectPhaser.get_rate_hz
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_rate_hz, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFeedback(fbk float64) { //gd:AudioEffectPhaser.set_feedback
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_feedback, 0|(gdextension.SizeFloat<<4), &struct{ fbk float64 }{fbk})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFeedback() float64 { //gd:AudioEffectPhaser.get_feedback
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_feedback, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDepth(depth float64) { //gd:AudioEffectPhaser.set_depth
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_depth, 0|(gdextension.SizeFloat<<4), &struct{ depth float64 }{depth})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDepth() float64 { //gd:AudioEffectPhaser.get_depth
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_depth, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAudioEffectPhaser() Advanced               { return Advanced(o) }
 func (o Instance) AsAudioEffectPhaser() Instance            { return o }
 func (o *Extension[T]) AsAudioEffectPhaser() Instance       { return o.Super() }
-func (o class) AsAudioEffect() AudioEffect.Advanced         { return AudioEffect.Advanced{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
+func (o class) AsAudioEffect() AudioEffect.Advanced         { return *(*AudioEffect.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAudioEffect() AudioEffect.Instance { return o.Super().AsAudioEffect() }
-func (o Instance) AsAudioEffect() AudioEffect.Instance      { return AudioEffect.Instance{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsAudioEffect() AudioEffect.Instance      { return *(*AudioEffect.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

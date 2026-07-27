@@ -12,6 +12,7 @@ Performance: Creating the BVH tree for complex geometry is a slow process and be
 package TriangleMesh
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -185,7 +189,7 @@ func (self Instance) IntersectRay(begin Vector3.XYZ, dir Vector3.XYZ) Intersecti
 type Advanced = class
 type class [1]gdclass.TriangleMesh
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTriangleMesh(obj[0])
@@ -200,7 +204,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -227,11 +231,14 @@ func (self class) CreateFromFaces(faces Packed.Array[Vector3.XYZ]) bool { //gd:T
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.create_from_faces, gdextension.SizeBool|(gdextension.SizePackedArray<<4), &struct {
 		faces gdextension.PackedArray[Vector3.XYZ]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](faces))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(faces)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFaces() Packed.Array[Vector3.XYZ] { //gd:TriangleMesh.get_faces
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_faces, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
@@ -240,6 +247,7 @@ func (self class) IntersectSegment(begin Vector3.XYZ, end Vector3.XYZ) Dictionar
 		begin Vector3.XYZ
 		end   Vector3.XYZ
 	}{begin, end})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
@@ -248,6 +256,7 @@ func (self class) IntersectRay(begin Vector3.XYZ, dir Vector3.XYZ) Dictionary.An
 		begin Vector3.XYZ
 		dir   Vector3.XYZ
 	}{begin, dir})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }

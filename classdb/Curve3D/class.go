@@ -10,6 +10,7 @@ It keeps a cache of precalculated points along the curve, to speed up further ca
 package Curve3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -46,6 +47,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -448,7 +452,7 @@ func (self MoreArgs) TessellateEvenLength(max_stages int, tolerance_length Float
 type Advanced = class
 type class [1]gdclass.Curve3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCurve3D(obj[0])
@@ -463,7 +467,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -545,11 +549,13 @@ func (self Instance) SetUpVectorEnabled(value bool) Instance { //gd:Curve3D.up_v
 
 func (self class) GetPointCount() int64 { //gd:Curve3D.get_point_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_point_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPointCount(count int64) { //gd:Curve3D.set_point_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_point_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddPoint(position Vector3.XYZ, in Vector3.XYZ, out Vector3.XYZ, index int64) { //gd:Curve3D.add_point
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_point, 0|(gdextension.SizeVector3<<4)|(gdextension.SizeVector3<<8)|(gdextension.SizeVector3<<12)|(gdextension.SizeInt<<16), &struct {
@@ -558,15 +564,18 @@ func (self class) AddPoint(position Vector3.XYZ, in Vector3.XYZ, out Vector3.XYZ
 		out      Vector3.XYZ
 		index    int64
 	}{position, in, out, index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPointPosition(idx int64, position Vector3.XYZ) { //gd:Curve3D.set_point_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_point_position, 0|(gdextension.SizeInt<<4)|(gdextension.SizeVector3<<8), &struct {
 		idx      int64
 		position Vector3.XYZ
 	}{idx, position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPointPosition(idx int64) Vector3.XYZ { //gd:Curve3D.get_point_position
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_point_position, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -575,9 +584,11 @@ func (self class) SetPointTilt(idx int64, tilt float64) { //gd:Curve3D.set_point
 		idx  int64
 		tilt float64
 	}{idx, tilt})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPointTilt(idx int64) float64 { //gd:Curve3D.get_point_tilt
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_point_tilt, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -586,9 +597,11 @@ func (self class) SetPointIn(idx int64, position Vector3.XYZ) { //gd:Curve3D.set
 		idx      int64
 		position Vector3.XYZ
 	}{idx, position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPointIn(idx int64) Vector3.XYZ { //gd:Curve3D.get_point_in
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_point_in, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -597,57 +610,70 @@ func (self class) SetPointOut(idx int64, position Vector3.XYZ) { //gd:Curve3D.se
 		idx      int64
 		position Vector3.XYZ
 	}{idx, position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPointOut(idx int64) Vector3.XYZ { //gd:Curve3D.get_point_out
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_point_out, gdextension.SizeVector3|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RemovePoint(idx int64) { //gd:Curve3D.remove_point
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_point, 0|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearPoints() { //gd:Curve3D.clear_points
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_points, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Sample(idx int64, t float64) Vector3.XYZ { //gd:Curve3D.sample
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.sample, gdextension.SizeVector3|(gdextension.SizeInt<<4)|(gdextension.SizeFloat<<8), &struct {
 		idx int64
 		t   float64
 	}{idx, t})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Samplef(fofs float64) Vector3.XYZ { //gd:Curve3D.samplef
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.samplef, gdextension.SizeVector3|(gdextension.SizeFloat<<4), &struct{ fofs float64 }{fofs})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetClosed(closed bool) { //gd:Curve3D.set_closed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_closed, 0|(gdextension.SizeBool<<4), &struct{ closed bool }{closed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsClosed() bool { //gd:Curve3D.is_closed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_closed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBakeInterval(distance float64) { //gd:Curve3D.set_bake_interval
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bake_interval, 0|(gdextension.SizeFloat<<4), &struct{ distance float64 }{distance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBakeInterval() float64 { //gd:Curve3D.get_bake_interval
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_bake_interval, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUpVectorEnabled(enable bool) { //gd:Curve3D.set_up_vector_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_up_vector_enabled, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUpVectorEnabled() bool { //gd:Curve3D.is_up_vector_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_up_vector_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBakedLength() float64 { //gd:Curve3D.get_baked_length
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_baked_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -656,6 +682,7 @@ func (self class) SampleBaked(offset float64, cubic bool) Vector3.XYZ { //gd:Cur
 		offset float64
 		cubic  bool
 	}{offset, cubic})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -665,6 +692,7 @@ func (self class) SampleBakedWithRotation(offset float64, cubic bool, apply_tilt
 		cubic      bool
 		apply_tilt bool
 	}{offset, cubic, apply_tilt})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
@@ -673,31 +701,37 @@ func (self class) SampleBakedUpVector(offset float64, apply_tilt bool) Vector3.X
 		offset     float64
 		apply_tilt bool
 	}{offset, apply_tilt})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetBakedPoints() Packed.Array[Vector3.XYZ] { //gd:Curve3D.get_baked_points
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_baked_points, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) GetBakedTilts() Packed.Array[float32] { //gd:Curve3D.get_baked_tilts
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_baked_tilts, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
 func (self class) GetBakedUpVectors() Packed.Array[Vector3.XYZ] { //gd:Curve3D.get_baked_up_vectors
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_baked_up_vectors, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (self class) GetClosestPoint(to_point Vector3.XYZ) Vector3.XYZ { //gd:Curve3D.get_closest_point
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_closest_point, gdextension.SizeVector3|(gdextension.SizeVector3<<4), &struct{ to_point Vector3.XYZ }{to_point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetClosestOffset(to_point Vector3.XYZ) float64 { //gd:Curve3D.get_closest_offset
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_closest_offset, gdextension.SizeFloat|(gdextension.SizeVector3<<4), &struct{ to_point Vector3.XYZ }{to_point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -706,6 +740,7 @@ func (self class) Tessellate(max_stages int64, tolerance_degrees float64) Packed
 		max_stages        int64
 		tolerance_degrees float64
 	}{max_stages, tolerance_degrees})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
@@ -714,15 +749,16 @@ func (self class) TessellateEvenLength(max_stages int64, tolerance_length float6
 		max_stages       int64
 		tolerance_length float64
 	}{max_stages, tolerance_length})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector3.XYZ](Array.Through(gd.WrapPacked[gd.PackedVector3Array, Vector3.XYZ](pointers.Let[gd.PackedVector3Array](r_ret))))
 	return ret
 }
 func (o class) AsCurve3D() Advanced                   { return Advanced(o) }
 func (o Instance) AsCurve3D() Instance                { return o }
 func (o *Extension[T]) AsCurve3D() Instance           { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

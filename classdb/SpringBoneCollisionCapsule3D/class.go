@@ -8,6 +8,7 @@ A capsule shape collision that interacts with [SpringBoneSimulator3D].
 package SpringBoneCollisionCapsule3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -17,6 +18,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -43,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -130,7 +135,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.SpringBoneCollisionCapsule3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSpringBoneCollisionCapsule3D(obj[0])
@@ -145,7 +150,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -234,33 +239,41 @@ func (self Instance) SetInside(value bool) Instance { //gd:SpringBoneCollisionCa
 
 func (self class) SetRadius(radius float64) { //gd:SpringBoneCollisionCapsule3D.set_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadius() float64 { //gd:SpringBoneCollisionCapsule3D.get_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHeight(height float64) { //gd:SpringBoneCollisionCapsule3D.set_height
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_height, 0|(gdextension.SizeFloat<<4), &struct{ height float64 }{height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHeight() float64 { //gd:SpringBoneCollisionCapsule3D.get_height
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_height, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMidHeight(mid_height float64) { //gd:SpringBoneCollisionCapsule3D.set_mid_height
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mid_height, 0|(gdextension.SizeFloat<<4), &struct{ mid_height float64 }{mid_height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMidHeight() float64 { //gd:SpringBoneCollisionCapsule3D.get_mid_height
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_mid_height, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInside(enabled bool) { //gd:SpringBoneCollisionCapsule3D.set_inside
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_inside, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsInside() bool { //gd:SpringBoneCollisionCapsule3D.is_inside
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_inside, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -268,20 +281,20 @@ func (o class) AsSpringBoneCollisionCapsule3D() Advanced         { return Advanc
 func (o Instance) AsSpringBoneCollisionCapsule3D() Instance      { return o }
 func (o *Extension[T]) AsSpringBoneCollisionCapsule3D() Instance { return o.Super() }
 func (o class) AsSpringBoneCollision3D() SpringBoneCollision3D.Advanced {
-	return SpringBoneCollision3D.Advanced{gdclass.NewSpringBoneCollision3D(o[0].AsObject()[0])}
+	return *(*SpringBoneCollision3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSpringBoneCollision3D() SpringBoneCollision3D.Instance {
 	return o.Super().AsSpringBoneCollision3D()
 }
 func (o Instance) AsSpringBoneCollision3D() SpringBoneCollision3D.Instance {
-	return SpringBoneCollision3D.Instance{gdclass.NewSpringBoneCollision3D(o[0].AsObject()[0])}
+	return *(*SpringBoneCollision3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

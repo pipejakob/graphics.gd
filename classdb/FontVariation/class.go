@@ -31,6 +31,7 @@ To set the coordinate of multiple variation axes:
 package FontVariation
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -68,6 +69,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -164,7 +168,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.FontVariation
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewFontVariation(obj[0])
@@ -179,7 +183,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -372,71 +376,91 @@ func (self Instance) SetPaletteCustomColors(value []Color.RGBA) Instance { //gd:
 
 func (self class) SetBaseFont(font [1]gdclass.Font) { //gd:FontVariation.set_base_font
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_base_font, 0|(gdextension.SizeObject<<4), &struct{ font gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetFont(font[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(font[0].Anchor())
 }
 func (self class) GetBaseFont() [1]gdclass.Font { //gd:FontVariation.get_base_font
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_base_font, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Font{gdclass.NewFont(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetVariationOpentype(coords Dictionary.Any) { //gd:FontVariation.set_variation_opentype
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_variation_opentype, 0|(gdextension.SizeDictionary<<4), &struct{ coords gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(coords))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(coords)
 }
 func (self class) GetVariationOpentype() Dictionary.Any { //gd:FontVariation.get_variation_opentype
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_variation_opentype, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetVariationEmbolden(strength float64) { //gd:FontVariation.set_variation_embolden
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_variation_embolden, 0|(gdextension.SizeFloat<<4), &struct{ strength float64 }{strength})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVariationEmbolden() float64 { //gd:FontVariation.get_variation_embolden
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_variation_embolden, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVariationFaceIndex(face_index int64) { //gd:FontVariation.set_variation_face_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_variation_face_index, 0|(gdextension.SizeInt<<4), &struct{ face_index int64 }{face_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVariationFaceIndex() int64 { //gd:FontVariation.get_variation_face_index
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_variation_face_index, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVariationTransform(transform Transform2D.OriginXY) { //gd:FontVariation.set_variation_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_variation_transform, 0|(gdextension.SizeTransform2D<<4), &struct{ transform Transform2D.OriginXY }{transform})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVariationTransform() Transform2D.OriginXY { //gd:FontVariation.get_variation_transform
 	var r_ret = noescape.Call[Transform2D.OriginXY](gd.ObjectChecked(self.AsObject()), methods.get_variation_transform, gdextension.SizeTransform2D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOpentypeFeatures(features Dictionary.Any) { //gd:FontVariation.set_opentype_features
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_opentype_features, 0|(gdextension.SizeDictionary<<4), &struct{ features gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(features))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(features)
 }
 func (self class) SetSpacing(spacing TextServer.SpacingType, value int64) { //gd:FontVariation.set_spacing
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_spacing, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		spacing TextServer.SpacingType
 		value   int64
 	}{spacing, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetBaselineOffset(baseline_offset float64) { //gd:FontVariation.set_baseline_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_baseline_offset, 0|(gdextension.SizeFloat<<4), &struct{ baseline_offset float64 }{baseline_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBaselineOffset() float64 { //gd:FontVariation.get_baseline_offset
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_baseline_offset, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPaletteIndex() int64 { //gd:FontVariation.get_palette_index
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_palette_index, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPaletteIndex(palette_index int64) { //gd:FontVariation.set_palette_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_palette_index, 0|(gdextension.SizeInt<<4), &struct{ palette_index int64 }{palette_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPaletteCustomColors() Packed.Array[Color.RGBA] { //gd:FontVariation.get_palette_custom_colors
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_palette_custom_colors, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
@@ -444,16 +468,18 @@ func (self class) SetPaletteCustomColors(colors Packed.Array[Color.RGBA]) { //gd
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_palette_custom_colors, 0|(gdextension.SizePackedArray<<4), &struct {
 		colors gdextension.PackedArray[Color.RGBA]
 	}{pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](colors))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(colors)
 }
 func (o class) AsFontVariation() Advanced             { return Advanced(o) }
 func (o Instance) AsFontVariation() Instance          { return o }
 func (o *Extension[T]) AsFontVariation() Instance     { return o.Super() }
-func (o class) AsFont() Font.Advanced                 { return Font.Advanced{gdclass.NewFont(o[0].AsObject()[0])} }
+func (o class) AsFont() Font.Advanced                 { return *(*Font.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsFont() Font.Instance         { return o.Super().AsFont() }
-func (o Instance) AsFont() Font.Instance              { return Font.Instance{gdclass.NewFont(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsFont() Font.Instance              { return *(*Font.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

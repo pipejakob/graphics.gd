@@ -60,6 +60,7 @@ To use the peer as part of a WebSocket server refer to [AcceptStream] and the on
 package WebSocketPeer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -96,6 +97,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -413,7 +417,7 @@ func (self Instance) GetCloseReason() string { //gd:WebSocketPeer.get_close_reas
 type Advanced = class
 type class [1]gdclass.WebSocketPeer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewWebSocketPeer(obj[0])
@@ -428,7 +432,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -538,11 +542,16 @@ func (self class) ConnectToUrl(url String.Readable, tls_client_options [1]gdclas
 		url                gdextension.String
 		tls_client_options gdextension.Object
 	}{pointers.Get(gd.InternalString(url)), gdextension.Object(gdreference.GetObject(gdclass.GetTLSOptions(tls_client_options[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(url)
+	runtime.KeepAlive(tls_client_options[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) AcceptStream(stream [1]gdclass.StreamPeer) Error.Code { //gd:WebSocketPeer.accept_stream
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.accept_stream, gdextension.SizeInt|(gdextension.SizeObject<<4), &struct{ stream gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetStreamPeer(stream[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(stream[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -551,73 +560,91 @@ func (self class) Send(message Packed.Bytes, write_mode WriteMode) Error.Code { 
 		message    gdextension.PackedArray[byte]
 		write_mode WriteMode
 	}{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](message.Array))), write_mode})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(message)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) SendText(message String.Readable) Error.Code { //gd:WebSocketPeer.send_text
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.send_text, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ message gdextension.String }{pointers.Get(gd.InternalString(message))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(message)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) WasStringPacket() bool { //gd:WebSocketPeer.was_string_packet
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.was_string_packet, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Poll() { //gd:WebSocketPeer.poll
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.poll, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Close(code int64, reason String.Readable) { //gd:WebSocketPeer.close
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.close, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8), &struct {
 		code   int64
 		reason gdextension.String
 	}{code, pointers.Get(gd.InternalString(reason))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(reason)
 }
 func (self class) GetConnectedHost() String.Readable { //gd:WebSocketPeer.get_connected_host
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_connected_host, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetConnectedPort() int64 { //gd:WebSocketPeer.get_connected_port
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_connected_port, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSelectedProtocol() String.Readable { //gd:WebSocketPeer.get_selected_protocol
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_selected_protocol, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetRequestedUrl() String.Readable { //gd:WebSocketPeer.get_requested_url
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_requested_url, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetNoDelay(enabled bool) { //gd:WebSocketPeer.set_no_delay
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_no_delay, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCurrentOutboundBufferedAmount() int64 { //gd:WebSocketPeer.get_current_outbound_buffered_amount
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_current_outbound_buffered_amount, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetReadyState() State { //gd:WebSocketPeer.get_ready_state
 	var r_ret = noescape.Call[State](gd.ObjectChecked(self.AsObject()), methods.get_ready_state, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCloseCode() int64 { //gd:WebSocketPeer.get_close_code
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_close_code, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCloseReason() String.Readable { //gd:WebSocketPeer.get_close_reason
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_close_reason, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetSupportedProtocols() Packed.Strings { //gd:WebSocketPeer.get_supported_protocols
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_supported_protocols, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -625,9 +652,12 @@ func (self class) SetSupportedProtocols(protocols Packed.Strings) { //gd:WebSock
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_supported_protocols, 0|(gdextension.SizePackedArray<<4), &struct {
 		protocols gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(protocols))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(protocols)
 }
 func (self class) GetHandshakeHeaders() Packed.Strings { //gd:WebSocketPeer.get_handshake_headers
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_handshake_headers, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
@@ -635,45 +665,55 @@ func (self class) SetHandshakeHeaders(protocols Packed.Strings) { //gd:WebSocket
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_handshake_headers, 0|(gdextension.SizePackedArray<<4), &struct {
 		protocols gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(protocols))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(protocols)
 }
 func (self class) GetInboundBufferSize() int64 { //gd:WebSocketPeer.get_inbound_buffer_size
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_inbound_buffer_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInboundBufferSize(buffer_size int64) { //gd:WebSocketPeer.set_inbound_buffer_size
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_inbound_buffer_size, 0|(gdextension.SizeInt<<4), &struct{ buffer_size int64 }{buffer_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOutboundBufferSize() int64 { //gd:WebSocketPeer.get_outbound_buffer_size
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_outbound_buffer_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOutboundBufferSize(buffer_size int64) { //gd:WebSocketPeer.set_outbound_buffer_size
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_outbound_buffer_size, 0|(gdextension.SizeInt<<4), &struct{ buffer_size int64 }{buffer_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetMaxQueuedPackets(buffer_size int64) { //gd:WebSocketPeer.set_max_queued_packets
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_queued_packets, 0|(gdextension.SizeInt<<4), &struct{ buffer_size int64 }{buffer_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxQueuedPackets() int64 { //gd:WebSocketPeer.get_max_queued_packets
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_queued_packets, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHeartbeatInterval(interval float64) { //gd:WebSocketPeer.set_heartbeat_interval
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_heartbeat_interval, 0|(gdextension.SizeFloat<<4), &struct{ interval float64 }{interval})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHeartbeatInterval() float64 { //gd:WebSocketPeer.get_heartbeat_interval
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_heartbeat_interval, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsWebSocketPeer() Advanced                 { return Advanced(o) }
 func (o Instance) AsWebSocketPeer() Instance              { return o }
 func (o *Extension[T]) AsWebSocketPeer() Instance         { return o.Super() }
-func (o class) AsPacketPeer() PacketPeer.Advanced         { return PacketPeer.Advanced{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o class) AsPacketPeer() PacketPeer.Advanced         { return *(*PacketPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPacketPeer() PacketPeer.Instance { return o.Super().AsPacketPeer() }
-func (o Instance) AsPacketPeer() PacketPeer.Instance      { return PacketPeer.Instance{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o Instance) AsPacketPeer() PacketPeer.Instance      { return *(*PacketPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

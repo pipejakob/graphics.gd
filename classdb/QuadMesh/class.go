@@ -11,6 +11,7 @@ Class representing a square [PrimitiveMesh]. This flat mesh does not have a thic
 package QuadMesh
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -125,7 +129,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.QuadMesh
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewQuadMesh(obj[0])
@@ -140,7 +144,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -166,20 +170,20 @@ func New() Instance {
 func (o class) AsQuadMesh() Advanced                            { return Advanced(o) }
 func (o Instance) AsQuadMesh() Instance                         { return o }
 func (o *Extension[T]) AsQuadMesh() Instance                    { return o.Super() }
-func (o class) AsPlaneMesh() PlaneMesh.Advanced                 { return PlaneMesh.Advanced{gdclass.NewPlaneMesh(o[0].AsObject()[0])} }
+func (o class) AsPlaneMesh() PlaneMesh.Advanced                 { return *(*PlaneMesh.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPlaneMesh() PlaneMesh.Instance         { return o.Super().AsPlaneMesh() }
-func (o Instance) AsPlaneMesh() PlaneMesh.Instance              { return PlaneMesh.Instance{gdclass.NewPlaneMesh(o[0].AsObject()[0])} }
-func (o class) AsPrimitiveMesh() PrimitiveMesh.Advanced         { return PrimitiveMesh.Advanced{gdclass.NewPrimitiveMesh(o[0].AsObject()[0])} }
+func (o Instance) AsPlaneMesh() PlaneMesh.Instance              { return *(*PlaneMesh.Instance)(ie.As(&o)) }
+func (o class) AsPrimitiveMesh() PrimitiveMesh.Advanced         { return *(*PrimitiveMesh.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPrimitiveMesh() PrimitiveMesh.Instance { return o.Super().AsPrimitiveMesh() }
 func (o Instance) AsPrimitiveMesh() PrimitiveMesh.Instance {
-	return PrimitiveMesh.Instance{gdclass.NewPrimitiveMesh(o[0].AsObject()[0])}
+	return *(*PrimitiveMesh.Instance)(ie.As(&o))
 }
-func (o class) AsMesh() Mesh.Advanced                 { return Mesh.Advanced{gdclass.NewMesh(o[0].AsObject()[0])} }
+func (o class) AsMesh() Mesh.Advanced                 { return *(*Mesh.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsMesh() Mesh.Instance         { return o.Super().AsMesh() }
-func (o Instance) AsMesh() Mesh.Instance              { return Mesh.Instance{gdclass.NewMesh(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsMesh() Mesh.Instance              { return *(*Mesh.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

@@ -21,6 +21,7 @@ Note: [RenderingDevice] is not available when running in headless mode or when u
 package RenderingDevice
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -30,6 +31,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -76,6 +78,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -2307,7 +2312,7 @@ func (self Instance) GetDeviceAllocsByObjectType(atype int) int { //gd:Rendering
 type Advanced = class
 type class [1]gdclass.RenderingDevice
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRenderingDevice(obj[0])
@@ -2322,7 +2327,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -2351,6 +2356,10 @@ func (self class) TextureCreate(format [1]gdclass.RDTextureFormat, view [1]gdcla
 		view   gdextension.Object
 		data   gdextension.Array
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetRDTextureFormat(format[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetRDTextureView(view[0])[0])), pointers.Get(gd.InternalArray(data))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(format[0].Anchor())
+	runtime.KeepAlive(view[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = r_ret
 	return ret
 }
@@ -2359,6 +2368,8 @@ func (self class) TextureCreateShared(view [1]gdclass.RDTextureView, with_textur
 		view         gdextension.Object
 		with_texture RID.Any
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetRDTextureView(view[0])[0])), with_texture})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(view[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2371,6 +2382,8 @@ func (self class) TextureCreateSharedFromSlice(view [1]gdclass.RDTextureView, wi
 		mipmaps      int64
 		slice_type   Rendering.TextureSliceType
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetRDTextureView(view[0])[0])), with_texture, layer, mipmap, mipmaps, slice_type})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(view[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2387,6 +2400,7 @@ func (self class) TextureCreateFromExtension(atype Rendering.TextureType, format
 		layers      int64
 		mipmaps     int64
 	}{atype, format, samples, usage_flags, image, width, height, depth, layers, mipmaps})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2396,6 +2410,8 @@ func (self class) TextureUpdate(texture RID.Any, layer int64, data Packed.Bytes)
 		layer   int64
 		data    gdextension.PackedArray[byte]
 	}{texture, layer, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2404,6 +2420,7 @@ func (self class) TextureGetData(texture RID.Any, layer int64) Packed.Bytes { //
 		texture RID.Any
 		layer   int64
 	}{texture, layer})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
@@ -2413,6 +2430,8 @@ func (self class) TextureGetDataAsync(texture RID.Any, layer int64, callback Cal
 		layer    int64
 		callback gdextension.Callable
 	}{texture, layer, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(callback)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2421,16 +2440,19 @@ func (self class) TextureIsFormatSupportedForUsage(format Rendering.DataFormat, 
 		format      Rendering.DataFormat
 		usage_flags Rendering.TextureUsageBits
 	}{format, usage_flags})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) TextureIsShared(texture RID.Any) bool { //gd:RenderingDevice.texture_is_shared
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.texture_is_shared, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ texture RID.Any }{texture})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) TextureIsValid(texture RID.Any) bool { //gd:RenderingDevice.texture_is_valid
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.texture_is_valid, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ texture RID.Any }{texture})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2439,9 +2461,11 @@ func (self class) TextureSetDiscardable(texture RID.Any, discardable bool) { //g
 		texture     RID.Any
 		discardable bool
 	}{texture, discardable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) TextureIsDiscardable(texture RID.Any) bool { //gd:RenderingDevice.texture_is_discardable
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.texture_is_discardable, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ texture RID.Any }{texture})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2457,6 +2481,7 @@ func (self class) TextureCopy(from_texture RID.Any, to_texture RID.Any, from_pos
 		src_layer    int64
 		dst_layer    int64
 	}{from_texture, to_texture, from_pos, to_pos, size, src_mipmap, dst_mipmap, src_layer, dst_layer})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2469,6 +2494,7 @@ func (self class) TextureClear(texture RID.Any, color Color.RGBA, base_mipmap in
 		base_layer   int64
 		layer_count  int64
 	}{texture, color, base_mipmap, mipmap_count, base_layer, layer_count})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2477,16 +2503,19 @@ func (self class) TextureResolveMultisample(from_texture RID.Any, to_texture RID
 		from_texture RID.Any
 		to_texture   RID.Any
 	}{from_texture, to_texture})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) TextureGetFormat(texture RID.Any) [1]gdclass.RDTextureFormat { //gd:RenderingDevice.texture_get_format
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.texture_get_format, gdextension.SizeObject|(gdextension.SizeRID<<4), &struct{ texture RID.Any }{texture})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.RDTextureFormat{gdclass.NewRDTextureFormat(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) TextureGetNativeHandle(texture RID.Any) int64 { //gd:RenderingDevice.texture_get_native_handle
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.texture_get_native_handle, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ texture RID.Any }{texture})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2495,6 +2524,8 @@ func (self class) FramebufferFormatCreate(attachments Array.Contains[[1]gdclass.
 		attachments gdextension.Array
 		view_count  int64
 	}{pointers.Get(gd.InternalArray(attachments)), view_count})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(attachments)
 	var ret = r_ret
 	return ret
 }
@@ -2504,11 +2535,15 @@ func (self class) FramebufferFormatCreateMultipass(attachments Array.Contains[[1
 		passes      gdextension.Array
 		view_count  int64
 	}{pointers.Get(gd.InternalArray(attachments)), pointers.Get(gd.InternalArray(passes)), view_count})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(attachments)
+	runtime.KeepAlive(passes)
 	var ret = r_ret
 	return ret
 }
 func (self class) FramebufferFormatCreateEmpty(samples Rendering.TextureSamples) int64 { //gd:RenderingDevice.framebuffer_format_create_empty
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.framebuffer_format_create_empty, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ samples Rendering.TextureSamples }{samples})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2517,6 +2552,7 @@ func (self class) FramebufferFormatGetTextureSamples(format int64, render_pass i
 		format      int64
 		render_pass int64
 	}{format, render_pass})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2526,6 +2562,8 @@ func (self class) FramebufferCreate(textures Array.Contains[RID.Any], validate_w
 		validate_with_format int64
 		view_count           int64
 	}{pointers.Get(gd.InternalArray(textures)), validate_with_format, view_count})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(textures)
 	var ret = r_ret
 	return ret
 }
@@ -2536,6 +2574,9 @@ func (self class) FramebufferCreateMultipass(textures Array.Contains[RID.Any], p
 		validate_with_format int64
 		view_count           int64
 	}{pointers.Get(gd.InternalArray(textures)), pointers.Get(gd.InternalArray(passes)), validate_with_format, view_count})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(textures)
+	runtime.KeepAlive(passes)
 	var ret = r_ret
 	return ret
 }
@@ -2545,21 +2586,26 @@ func (self class) FramebufferCreateEmpty(size Vector2i.XY, samples Rendering.Tex
 		samples              Rendering.TextureSamples
 		validate_with_format int64
 	}{size, samples, validate_with_format})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FramebufferGetFormat(framebuffer RID.Any) int64 { //gd:RenderingDevice.framebuffer_get_format
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.framebuffer_get_format, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ framebuffer RID.Any }{framebuffer})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) FramebufferIsValid(framebuffer RID.Any) bool { //gd:RenderingDevice.framebuffer_is_valid
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.framebuffer_is_valid, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ framebuffer RID.Any }{framebuffer})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SamplerCreate(state [1]gdclass.RDSamplerState) RID.Any { //gd:RenderingDevice.sampler_create
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.sampler_create, gdextension.SizeRID|(gdextension.SizeObject<<4), &struct{ state gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetRDSamplerState(state[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(state[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2568,6 +2614,7 @@ func (self class) SamplerIsFormatSupportedForFilter(format Rendering.DataFormat,
 		format         Rendering.DataFormat
 		sampler_filter Rendering.SamplerFilter
 	}{format, sampler_filter})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2577,11 +2624,15 @@ func (self class) VertexBufferCreate(size_bytes int64, data Packed.Bytes, creati
 		data          gdextension.PackedArray[byte]
 		creation_bits Rendering.BufferCreationBits
 	}{size_bytes, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array))), creation_bits})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = r_ret
 	return ret
 }
 func (self class) VertexFormatCreate(vertex_descriptions Array.Contains[[1]gdclass.RDVertexAttribute]) int64 { //gd:RenderingDevice.vertex_format_create
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.vertex_format_create, gdextension.SizeInt|(gdextension.SizeArray<<4), &struct{ vertex_descriptions gdextension.Array }{pointers.Get(gd.InternalArray(vertex_descriptions))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertex_descriptions)
 	var ret = r_ret
 	return ret
 }
@@ -2592,6 +2643,9 @@ func (self class) VertexArrayCreate(vertex_count int64, vertex_format int64, src
 		src_buffers   gdextension.Array
 		offsets       gdextension.PackedArray[int64]
 	}{vertex_count, vertex_format, pointers.Get(gd.InternalArray(src_buffers)), pointers.Get(gd.InternalPacked[gd.PackedInt64Array, int64](offsets))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(src_buffers)
+	runtime.KeepAlive(offsets)
 	var ret = r_ret
 	return ret
 }
@@ -2603,6 +2657,8 @@ func (self class) IndexBufferCreate(size_indices int64, format Rendering.IndexBu
 		use_restart_indices bool
 		creation_bits       Rendering.BufferCreationBits
 	}{size_indices, format, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array))), use_restart_indices, creation_bits})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = r_ret
 	return ret
 }
@@ -2612,6 +2668,7 @@ func (self class) IndexArrayCreate(index_buffer RID.Any, index_offset int64, ind
 		index_offset int64
 		index_count  int64
 	}{index_buffer, index_offset, index_count})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2620,6 +2677,8 @@ func (self class) ShaderCompileSpirvFromSource(shader_source [1]gdclass.RDShader
 		shader_source gdextension.Object
 		allow_cache   bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetRDShaderSource(shader_source[0])[0])), allow_cache})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shader_source[0].Anchor())
 	var ret = [1]gdclass.RDShaderSPIRV{gdclass.NewRDShaderSPIRV(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -2628,6 +2687,9 @@ func (self class) ShaderCompileBinaryFromSpirv(spirv_data [1]gdclass.RDShaderSPI
 		spirv_data gdextension.Object
 		name       gdextension.String
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetRDShaderSPIRV(spirv_data[0])[0])), pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(spirv_data[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
@@ -2636,6 +2698,9 @@ func (self class) ShaderCreateFromSpirv(spirv_data [1]gdclass.RDShaderSPIRV, nam
 		spirv_data gdextension.Object
 		name       gdextension.String
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetRDShaderSPIRV(spirv_data[0])[0])), pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(spirv_data[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -2644,16 +2709,20 @@ func (self class) ShaderCreateFromBytecode(binary_data Packed.Bytes, placeholder
 		binary_data     gdextension.PackedArray[byte]
 		placeholder_rid RID.Any
 	}{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](binary_data.Array))), placeholder_rid})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(binary_data)
 	var ret = r_ret
 	return ret
 }
 func (self class) ShaderCreatePlaceholder() RID.Any { //gd:RenderingDevice.shader_create_placeholder
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.shader_create_placeholder, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ShaderGetVertexInputAttributeMask(shader RID.Any) int64 { //gd:RenderingDevice.shader_get_vertex_input_attribute_mask
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shader_get_vertex_input_attribute_mask, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ shader RID.Any }{shader})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2663,6 +2732,8 @@ func (self class) UniformBufferCreate(size_bytes int64, data Packed.Bytes, creat
 		data          gdextension.PackedArray[byte]
 		creation_bits Rendering.BufferCreationBits
 	}{size_bytes, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array))), creation_bits})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = r_ret
 	return ret
 }
@@ -2673,6 +2744,8 @@ func (self class) StorageBufferCreate(size_bytes int64, data Packed.Bytes, usage
 		usage         Rendering.StorageBufferUsage
 		creation_bits Rendering.BufferCreationBits
 	}{size_bytes, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array))), usage, creation_bits})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = r_ret
 	return ret
 }
@@ -2682,6 +2755,8 @@ func (self class) TextureBufferCreate(size_bytes int64, format Rendering.DataFor
 		format     Rendering.DataFormat
 		data       gdextension.PackedArray[byte]
 	}{size_bytes, format, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = r_ret
 	return ret
 }
@@ -2691,11 +2766,14 @@ func (self class) UniformSetCreate(uniforms Array.Contains[[1]gdclass.RDUniform]
 		shader     RID.Any
 		shader_set int64
 	}{pointers.Get(gd.InternalArray(uniforms)), shader, shader_set})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(uniforms)
 	var ret = r_ret
 	return ret
 }
 func (self class) UniformSetIsValid(uniform_set RID.Any) bool { //gd:RenderingDevice.uniform_set_is_valid
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.uniform_set_is_valid, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ uniform_set RID.Any }{uniform_set})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2707,6 +2785,7 @@ func (self class) BufferCopy(src_buffer RID.Any, dst_buffer RID.Any, src_offset 
 		dst_offset int64
 		size       int64
 	}{src_buffer, dst_buffer, src_offset, dst_offset, size})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2717,6 +2796,8 @@ func (self class) BufferUpdate(buffer RID.Any, offset int64, size_bytes int64, d
 		size_bytes int64
 		data       gdextension.PackedArray[byte]
 	}{buffer, offset, size_bytes, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2726,6 +2807,7 @@ func (self class) BufferClear(buffer RID.Any, offset int64, size_bytes int64) Er
 		offset     int64
 		size_bytes int64
 	}{buffer, offset, size_bytes})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2735,6 +2817,7 @@ func (self class) BufferGetData(buffer RID.Any, offset_bytes int64, size_bytes i
 		offset_bytes int64
 		size_bytes   int64
 	}{buffer, offset_bytes, size_bytes})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Bytes{Array: Packed.Array[byte](Array.Through(gd.WrapPacked[gd.PackedByteArray, byte](pointers.Let[gd.PackedByteArray](r_ret))))}
 	return ret
 }
@@ -2745,11 +2828,14 @@ func (self class) BufferGetDataAsync(buffer RID.Any, callback Callable.Function,
 		offset_bytes int64
 		size_bytes   int64
 	}{buffer, pointers.Get(gd.InternalCallable(callback)), offset_bytes, size_bytes})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(callback)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) BufferGetDeviceAddress(buffer RID.Any) int64 { //gd:RenderingDevice.buffer_get_device_address
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.buffer_get_device_address, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ buffer RID.Any }{buffer})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2767,11 +2853,18 @@ func (self class) RenderPipelineCreate(shader RID.Any, framebuffer_format int64,
 		for_render_pass          int64
 		specialization_constants gdextension.Array
 	}{shader, framebuffer_format, vertex_format, primitive, gdextension.Object(gdreference.GetObject(gdclass.GetRDPipelineRasterizationState(rasterization_state[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetRDPipelineMultisampleState(multisample_state[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetRDPipelineDepthStencilState(stencil_state[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetRDPipelineColorBlendState(color_blend_state[0])[0])), dynamic_state_flags, for_render_pass, pointers.Get(gd.InternalArray(specialization_constants))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(rasterization_state[0].Anchor())
+	runtime.KeepAlive(multisample_state[0].Anchor())
+	runtime.KeepAlive(stencil_state[0].Anchor())
+	runtime.KeepAlive(color_blend_state[0].Anchor())
+	runtime.KeepAlive(specialization_constants)
 	var ret = r_ret
 	return ret
 }
 func (self class) RenderPipelineIsValid(render_pipeline RID.Any) bool { //gd:RenderingDevice.render_pipeline_is_valid
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.render_pipeline_is_valid, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ render_pipeline RID.Any }{render_pipeline})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2780,11 +2873,14 @@ func (self class) ComputePipelineCreate(shader RID.Any, specialization_constants
 		shader                   RID.Any
 		specialization_constants gdextension.Array
 	}{shader, pointers.Get(gd.InternalArray(specialization_constants))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(specialization_constants)
 	var ret = r_ret
 	return ret
 }
 func (self class) ComputePipelineIsValid(compute_pipeline RID.Any) bool { //gd:RenderingDevice.compute_pipeline_is_valid
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.compute_pipeline_is_valid, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ compute_pipeline RID.Any }{compute_pipeline})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2795,11 +2891,16 @@ func (self class) RaytracingPipelineCreate(raygen_shaders Array.Contains[[1]gdcl
 		hit_groups                gdextension.Array
 		max_trace_recursion_depth int64
 	}{pointers.Get(gd.InternalArray(raygen_shaders)), pointers.Get(gd.InternalArray(miss_shaders)), pointers.Get(gd.InternalArray(hit_groups)), max_trace_recursion_depth})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(raygen_shaders)
+	runtime.KeepAlive(miss_shaders)
+	runtime.KeepAlive(hit_groups)
 	var ret = r_ret
 	return ret
 }
 func (self class) RaytracingPipelineIsValid(raytracing_pipeline RID.Any) bool { //gd:RenderingDevice.raytracing_pipeline_is_valid
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.raytracing_pipeline_is_valid, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ raytracing_pipeline RID.Any }{raytracing_pipeline})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2808,6 +2909,8 @@ func (self class) BlasCreate(geometries Array.Contains[[1]gdclass.RDAcceleration
 		geometries gdextension.Array
 		flags      Rendering.AccelerationStructureFlagBits
 	}{pointers.Get(gd.InternalArray(geometries)), flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(geometries)
 	var ret = r_ret
 	return ret
 }
@@ -2816,11 +2919,13 @@ func (self class) TlasCreate(max_instance_count int64, flags Rendering.Accelerat
 		max_instance_count int64
 		flags              Rendering.AccelerationStructureFlagBits
 	}{max_instance_count, flags})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) BlasBuild(blas RID.Any) Error.Code { //gd:RenderingDevice.blas_build
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.blas_build, gdextension.SizeInt|(gdextension.SizeRID<<4), &struct{ blas RID.Any }{blas})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2829,6 +2934,8 @@ func (self class) TlasBuild(tlas RID.Any, instances Array.Contains[[1]gdclass.RD
 		tlas      RID.Any
 		instances gdextension.Array
 	}{tlas, pointers.Get(gd.InternalArray(instances))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(instances)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2837,6 +2944,7 @@ func (self class) HitSbtCreate(raytracing_pipeline RID.Any, initial_hit_group_ca
 		raytracing_pipeline        RID.Any
 		initial_hit_group_capacity int64
 	}{raytracing_pipeline, initial_hit_group_capacity})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2845,6 +2953,7 @@ func (self class) HitSbtSetPipeline(hit_sbt RID.Any, raytracing_pipeline RID.Any
 		hit_sbt             RID.Any
 		raytracing_pipeline RID.Any
 	}{hit_sbt, raytracing_pipeline})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2853,6 +2962,7 @@ func (self class) HitSbtRangeAlloc(hit_sbt RID.Any, hit_group_count int64) int64
 		hit_sbt         RID.Any
 		hit_group_count int64
 	}{hit_sbt, hit_group_count})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2861,6 +2971,7 @@ func (self class) HitSbtRangeFree(hit_sbt RID.Any, arange int64) Error.Code { //
 		hit_sbt RID.Any
 		arange  int64
 	}{hit_sbt, arange})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -2871,21 +2982,26 @@ func (self class) HitSbtRangeUpdate(hit_sbt RID.Any, arange int64, offset int64,
 		offset            int64
 		hit_group_indices gdextension.PackedArray[int32]
 	}{hit_sbt, arange, offset, pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](hit_group_indices))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(hit_group_indices)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) ScreenGetWidth(screen int64) int64 { //gd:RenderingDevice.screen_get_width
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.screen_get_width, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ screen int64 }{screen})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ScreenGetHeight(screen int64) int64 { //gd:RenderingDevice.screen_get_height
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.screen_get_height, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ screen int64 }{screen})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ScreenGetFramebufferFormat(screen int64) int64 { //gd:RenderingDevice.screen_get_framebuffer_format
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.screen_get_framebuffer_format, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ screen int64 }{screen})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2894,6 +3010,7 @@ func (self class) DrawListBeginForScreen(screen int64, clear_color Color.RGBA) i
 		screen      int64
 		clear_color Color.RGBA
 	}{screen, clear_color})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -2907,6 +3024,8 @@ func (self class) DrawListBegin(framebuffer RID.Any, draw_flags Rendering.DrawFl
 		region              Rect2.PositionSize
 		breadcrumb          int64
 	}{framebuffer, draw_flags, pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](clear_color_values)), clear_depth_value, clear_stencil_value, region, breadcrumb})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(clear_color_values)
 	var ret = r_ret
 	return ret
 }
@@ -2924,6 +3043,9 @@ func (self class) DrawListBeginSplit(framebuffer RID.Any, splits int64, initial_
 		region               Rect2.PositionSize
 		storage_textures     gdextension.Array
 	}{framebuffer, splits, initial_color_action, final_color_action, initial_depth_action, final_depth_action, pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](clear_color_values)), clear_depth, clear_stencil, region, pointers.Get(gd.InternalArray(storage_textures))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(clear_color_values)
+	runtime.KeepAlive(storage_textures)
 	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
@@ -2932,12 +3054,14 @@ func (self class) DrawListSetBlendConstants(draw_list int64, color Color.RGBA) {
 		draw_list int64
 		color     Color.RGBA
 	}{draw_list, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawListBindRenderPipeline(draw_list int64, render_pipeline RID.Any) { //gd:RenderingDevice.draw_list_bind_render_pipeline
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_bind_render_pipeline, 0|(gdextension.SizeInt<<4)|(gdextension.SizeRID<<8), &struct {
 		draw_list       int64
 		render_pipeline RID.Any
 	}{draw_list, render_pipeline})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawListBindUniformSet(draw_list int64, uniform_set RID.Any, set_index int64) { //gd:RenderingDevice.draw_list_bind_uniform_set
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_bind_uniform_set, 0|(gdextension.SizeInt<<4)|(gdextension.SizeRID<<8)|(gdextension.SizeInt<<12), &struct {
@@ -2945,12 +3069,14 @@ func (self class) DrawListBindUniformSet(draw_list int64, uniform_set RID.Any, s
 		uniform_set RID.Any
 		set_index   int64
 	}{draw_list, uniform_set, set_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawListBindVertexArray(draw_list int64, vertex_array RID.Any) { //gd:RenderingDevice.draw_list_bind_vertex_array
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_bind_vertex_array, 0|(gdextension.SizeInt<<4)|(gdextension.SizeRID<<8), &struct {
 		draw_list    int64
 		vertex_array RID.Any
 	}{draw_list, vertex_array})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawListBindVertexBuffersFormat(draw_list int64, vertex_format int64, vertex_count int64, vertex_buffers Array.Contains[RID.Any], offsets Packed.Array[int64]) { //gd:RenderingDevice.draw_list_bind_vertex_buffers_format
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_bind_vertex_buffers_format, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeArray<<16)|(gdextension.SizePackedArray<<20), &struct {
@@ -2960,12 +3086,16 @@ func (self class) DrawListBindVertexBuffersFormat(draw_list int64, vertex_format
 		vertex_buffers gdextension.Array
 		offsets        gdextension.PackedArray[int64]
 	}{draw_list, vertex_format, vertex_count, pointers.Get(gd.InternalArray(vertex_buffers)), pointers.Get(gd.InternalPacked[gd.PackedInt64Array, int64](offsets))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(vertex_buffers)
+	runtime.KeepAlive(offsets)
 }
 func (self class) DrawListBindIndexArray(draw_list int64, index_array RID.Any) { //gd:RenderingDevice.draw_list_bind_index_array
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_bind_index_array, 0|(gdextension.SizeInt<<4)|(gdextension.SizeRID<<8), &struct {
 		draw_list   int64
 		index_array RID.Any
 	}{draw_list, index_array})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawListSetPushConstant(draw_list int64, buffer Packed.Bytes, size_bytes int64) { //gd:RenderingDevice.draw_list_set_push_constant
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_set_push_constant, 0|(gdextension.SizeInt<<4)|(gdextension.SizePackedArray<<8)|(gdextension.SizeInt<<12), &struct {
@@ -2973,6 +3103,8 @@ func (self class) DrawListSetPushConstant(draw_list int64, buffer Packed.Bytes, 
 		buffer     gdextension.PackedArray[byte]
 		size_bytes int64
 	}{draw_list, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array))), size_bytes})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 }
 func (self class) DrawListDraw(draw_list int64, use_indices bool, instances int64, procedural_vertex_count int64) { //gd:RenderingDevice.draw_list_draw
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_draw, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16), &struct {
@@ -2981,6 +3113,7 @@ func (self class) DrawListDraw(draw_list int64, use_indices bool, instances int6
 		instances               int64
 		procedural_vertex_count int64
 	}{draw_list, use_indices, instances, procedural_vertex_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawListDrawIndirect(draw_list int64, use_indices bool, buffer RID.Any, offset int64, draw_count int64, stride int64) { //gd:RenderingDevice.draw_list_draw_indirect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_draw_indirect, 0|(gdextension.SizeInt<<4)|(gdextension.SizeBool<<8)|(gdextension.SizeRID<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeInt<<20)|(gdextension.SizeInt<<24), &struct {
@@ -2991,31 +3124,38 @@ func (self class) DrawListDrawIndirect(draw_list int64, use_indices bool, buffer
 		draw_count  int64
 		stride      int64
 	}{draw_list, use_indices, buffer, offset, draw_count, stride})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawListEnableScissor(draw_list int64, rect Rect2.PositionSize) { //gd:RenderingDevice.draw_list_enable_scissor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_enable_scissor, 0|(gdextension.SizeInt<<4)|(gdextension.SizeRect2<<8), &struct {
 		draw_list int64
 		rect      Rect2.PositionSize
 	}{draw_list, rect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawListDisableScissor(draw_list int64) { //gd:RenderingDevice.draw_list_disable_scissor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_disable_scissor, 0|(gdextension.SizeInt<<4), &struct{ draw_list int64 }{draw_list})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DrawListSwitchToNextPass() int64 { //gd:RenderingDevice.draw_list_switch_to_next_pass
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.draw_list_switch_to_next_pass, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) DrawListSwitchToNextPassSplit(splits int64) Packed.Array[int64] { //gd:RenderingDevice.draw_list_switch_to_next_pass_split
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.draw_list_switch_to_next_pass_split, gdextension.SizePackedArray|(gdextension.SizeInt<<4), &struct{ splits int64 }{splits})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
 func (self class) DrawListEnd() { //gd:RenderingDevice.draw_list_end
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_list_end, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ComputeListBegin() int64 { //gd:RenderingDevice.compute_list_begin
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.compute_list_begin, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3024,6 +3164,7 @@ func (self class) ComputeListBindComputePipeline(compute_list int64, compute_pip
 		compute_list     int64
 		compute_pipeline RID.Any
 	}{compute_list, compute_pipeline})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ComputeListSetPushConstant(compute_list int64, buffer Packed.Bytes, size_bytes int64) { //gd:RenderingDevice.compute_list_set_push_constant
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.compute_list_set_push_constant, 0|(gdextension.SizeInt<<4)|(gdextension.SizePackedArray<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3031,6 +3172,8 @@ func (self class) ComputeListSetPushConstant(compute_list int64, buffer Packed.B
 		buffer       gdextension.PackedArray[byte]
 		size_bytes   int64
 	}{compute_list, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array))), size_bytes})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 }
 func (self class) ComputeListBindUniformSet(compute_list int64, uniform_set RID.Any, set_index int64) { //gd:RenderingDevice.compute_list_bind_uniform_set
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.compute_list_bind_uniform_set, 0|(gdextension.SizeInt<<4)|(gdextension.SizeRID<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3038,6 +3181,7 @@ func (self class) ComputeListBindUniformSet(compute_list int64, uniform_set RID.
 		uniform_set  RID.Any
 		set_index    int64
 	}{compute_list, uniform_set, set_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ComputeListDispatch(compute_list int64, x_groups int64, y_groups int64, z_groups int64) { //gd:RenderingDevice.compute_list_dispatch
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.compute_list_dispatch, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16), &struct {
@@ -3046,6 +3190,7 @@ func (self class) ComputeListDispatch(compute_list int64, x_groups int64, y_grou
 		y_groups     int64
 		z_groups     int64
 	}{compute_list, x_groups, y_groups, z_groups})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ComputeListDispatchIndirect(compute_list int64, buffer RID.Any, offset int64) { //gd:RenderingDevice.compute_list_dispatch_indirect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.compute_list_dispatch_indirect, 0|(gdextension.SizeInt<<4)|(gdextension.SizeRID<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3053,15 +3198,19 @@ func (self class) ComputeListDispatchIndirect(compute_list int64, buffer RID.Any
 		buffer       RID.Any
 		offset       int64
 	}{compute_list, buffer, offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ComputeListAddBarrier(compute_list int64) { //gd:RenderingDevice.compute_list_add_barrier
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.compute_list_add_barrier, 0|(gdextension.SizeInt<<4), &struct{ compute_list int64 }{compute_list})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ComputeListEnd() { //gd:RenderingDevice.compute_list_end
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.compute_list_end, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RaytracingListBegin() int64 { //gd:RenderingDevice.raytracing_list_begin
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.raytracing_list_begin, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3070,6 +3219,7 @@ func (self class) RaytracingListBindRaytracingPipeline(raytracing_list int64, ra
 		raytracing_list     int64
 		raytracing_pipeline RID.Any
 	}{raytracing_list, raytracing_pipeline})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RaytracingListSetPushConstant(raytracing_list int64, buffer Packed.Bytes, size_bytes int64) { //gd:RenderingDevice.raytracing_list_set_push_constant
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.raytracing_list_set_push_constant, 0|(gdextension.SizeInt<<4)|(gdextension.SizePackedArray<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3077,6 +3227,8 @@ func (self class) RaytracingListSetPushConstant(raytracing_list int64, buffer Pa
 		buffer          gdextension.PackedArray[byte]
 		size_bytes      int64
 	}{raytracing_list, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](buffer.Array))), size_bytes})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(buffer)
 }
 func (self class) RaytracingListBindUniformSet(raytracing_list int64, uniform_set RID.Any, set_index int64) { //gd:RenderingDevice.raytracing_list_bind_uniform_set
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.raytracing_list_bind_uniform_set, 0|(gdextension.SizeInt<<4)|(gdextension.SizeRID<<8)|(gdextension.SizeInt<<12), &struct {
@@ -3084,6 +3236,7 @@ func (self class) RaytracingListBindUniformSet(raytracing_list int64, uniform_se
 		uniform_set     RID.Any
 		set_index       int64
 	}{raytracing_list, uniform_set, set_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RaytracingListTraceRays(raytracing_list int64, raygen_shader_index int64, hit_sbt RID.Any, width int64, height int64, depth int64) { //gd:RenderingDevice.raytracing_list_trace_rays
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.raytracing_list_trace_rays, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeRID<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeInt<<20)|(gdextension.SizeInt<<24), &struct {
@@ -3094,73 +3247,91 @@ func (self class) RaytracingListTraceRays(raytracing_list int64, raygen_shader_i
 		height              int64
 		depth               int64
 	}{raytracing_list, raygen_shader_index, hit_sbt, width, height, depth})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RaytracingListEnd() { //gd:RenderingDevice.raytracing_list_end
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.raytracing_list_end, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FreeRid(rid RID.Any) { //gd:RenderingDevice.free_rid
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.free_rid, 0|(gdextension.SizeRID<<4), &struct{ rid RID.Any }{rid})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CaptureTimestamp(name String.Readable) { //gd:RenderingDevice.capture_timestamp
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.capture_timestamp, 0|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetCapturedTimestampsCount() int64 { //gd:RenderingDevice.get_captured_timestamps_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_captured_timestamps_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCapturedTimestampsFrame() int64 { //gd:RenderingDevice.get_captured_timestamps_frame
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_captured_timestamps_frame, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCapturedTimestampGpuTime(index int64) int64 { //gd:RenderingDevice.get_captured_timestamp_gpu_time
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_captured_timestamp_gpu_time, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCapturedTimestampCpuTime(index int64) int64 { //gd:RenderingDevice.get_captured_timestamp_cpu_time
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_captured_timestamp_cpu_time, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCapturedTimestampName(index int64) String.Readable { //gd:RenderingDevice.get_captured_timestamp_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_captured_timestamp_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) HasFeature(feature Rendering.Features) bool { //gd:RenderingDevice.has_feature
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_feature, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ feature Rendering.Features }{feature})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) LimitGet(limit Rendering.Limit) int64 { //gd:RenderingDevice.limit_get
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.limit_get, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ limit Rendering.Limit }{limit})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFrameDelay() int64 { //gd:RenderingDevice.get_frame_delay
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_frame_delay, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Submit() { //gd:RenderingDevice.submit
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.submit, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Sync() { //gd:RenderingDevice.sync
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.sync, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Barrier(from Rendering.BarrierMask, to Rendering.BarrierMask) { //gd:RenderingDevice.barrier
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.barrier, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		from Rendering.BarrierMask
 		to   Rendering.BarrierMask
 	}{from, to})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FullBarrier() { //gd:RenderingDevice.full_barrier
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.full_barrier, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) CreateLocalDevice() [1]gdclass.RenderingDevice { //gd:RenderingDevice.create_local_device
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.create_local_device, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.RenderingDevice{gdclass.NewRenderingDevice(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -3169,39 +3340,50 @@ func (self class) SetResourceName(id RID.Any, name String.Readable) { //gd:Rende
 		id   RID.Any
 		name gdextension.String
 	}{id, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) DrawCommandBeginLabel(name String.Readable, color Color.RGBA) { //gd:RenderingDevice.draw_command_begin_label
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_command_begin_label, 0|(gdextension.SizeString<<4)|(gdextension.SizeColor<<8), &struct {
 		name  gdextension.String
 		color Color.RGBA
 	}{pointers.Get(gd.InternalString(name)), color})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) DrawCommandInsertLabel(name String.Readable, color Color.RGBA) { //gd:RenderingDevice.draw_command_insert_label
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_command_insert_label, 0|(gdextension.SizeString<<4)|(gdextension.SizeColor<<8), &struct {
 		name  gdextension.String
 		color Color.RGBA
 	}{pointers.Get(gd.InternalString(name)), color})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) DrawCommandEndLabel() { //gd:RenderingDevice.draw_command_end_label
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.draw_command_end_label, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDeviceVendorName() String.Readable { //gd:RenderingDevice.get_device_vendor_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_device_vendor_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDeviceName() String.Readable { //gd:RenderingDevice.get_device_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_device_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDevicePipelineCacheUuid() String.Readable { //gd:RenderingDevice.get_device_pipeline_cache_uuid
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_device_pipeline_cache_uuid, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetMemoryUsage(atype Rendering.MemoryType) int64 { //gd:RenderingDevice.get_memory_usage
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_memory_usage, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ atype Rendering.MemoryType }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -3211,66 +3393,79 @@ func (self class) GetDriverResource(resource Rendering.DriverResource, rid RID.A
 		rid      RID.Any
 		index    int64
 	}{resource, rid, index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPerfReport() String.Readable { //gd:RenderingDevice.get_perf_report
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_perf_report, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDriverAndDeviceMemoryReport() String.Readable { //gd:RenderingDevice.get_driver_and_device_memory_report
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_driver_and_device_memory_report, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTrackedObjectName(type_index int64) String.Readable { //gd:RenderingDevice.get_tracked_object_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tracked_object_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ type_index int64 }{type_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetTrackedObjectTypeCount() int64 { //gd:RenderingDevice.get_tracked_object_type_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_tracked_object_type_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDriverTotalMemory() int64 { //gd:RenderingDevice.get_driver_total_memory
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_driver_total_memory, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDriverAllocationCount() int64 { //gd:RenderingDevice.get_driver_allocation_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_driver_allocation_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDriverMemoryByObjectType(atype int64) int64 { //gd:RenderingDevice.get_driver_memory_by_object_type
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_driver_memory_by_object_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ atype int64 }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDriverAllocsByObjectType(atype int64) int64 { //gd:RenderingDevice.get_driver_allocs_by_object_type
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_driver_allocs_by_object_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ atype int64 }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDeviceTotalMemory() int64 { //gd:RenderingDevice.get_device_total_memory
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_device_total_memory, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDeviceAllocationCount() int64 { //gd:RenderingDevice.get_device_allocation_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_device_allocation_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDeviceMemoryByObjectType(atype int64) int64 { //gd:RenderingDevice.get_device_memory_by_object_type
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_device_memory_by_object_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ atype int64 }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDeviceAllocsByObjectType(atype int64) int64 { //gd:RenderingDevice.get_device_allocs_by_object_type
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_device_allocs_by_object_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ atype int64 }{atype})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

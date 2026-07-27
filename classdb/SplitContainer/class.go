@@ -6,6 +6,7 @@ A container that arranges child controls horizontally or vertically and creates 
 package SplitContainer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -15,6 +16,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -42,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -212,7 +217,7 @@ func (self Instance) GetDragAreaControl() Control.Instance { //gd:SplitContainer
 type Advanced = class
 type class [1]gdclass.SplitContainer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSplitContainer(obj[0])
@@ -227,7 +232,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -442,110 +447,138 @@ func (self class) SetSplitOffsets(offsets Packed.Array[int32]) { //gd:SplitConta
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_split_offsets, 0|(gdextension.SizePackedArray<<4), &struct {
 		offsets gdextension.PackedArray[int32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](offsets))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(offsets)
 }
 func (self class) GetSplitOffsets() Packed.Array[int32] { //gd:SplitContainer.get_split_offsets
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_split_offsets, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
 func (self class) ClampSplitOffset(priority_index int64) { //gd:SplitContainer.clamp_split_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clamp_split_offset, 0|(gdextension.SizeInt<<4), &struct{ priority_index int64 }{priority_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCollapsed(collapsed bool) { //gd:SplitContainer.set_collapsed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collapsed, 0|(gdextension.SizeBool<<4), &struct{ collapsed bool }{collapsed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCollapsed() bool { //gd:SplitContainer.is_collapsed
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_collapsed, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDraggerVisibility(mode DraggerVisibility) { //gd:SplitContainer.set_dragger_visibility
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_dragger_visibility, 0|(gdextension.SizeInt<<4), &struct{ mode DraggerVisibility }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDraggerVisibility() DraggerVisibility { //gd:SplitContainer.get_dragger_visibility
 	var r_ret = jumponly.Call[DraggerVisibility](gd.ObjectChecked(self.AsObject()), methods.get_dragger_visibility, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVertical(vertical bool) { //gd:SplitContainer.set_vertical
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vertical, 0|(gdextension.SizeBool<<4), &struct{ vertical bool }{vertical})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsVertical() bool { //gd:SplitContainer.is_vertical
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_vertical, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDraggingEnabled(dragging_enabled bool) { //gd:SplitContainer.set_dragging_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_dragging_enabled, 0|(gdextension.SizeBool<<4), &struct{ dragging_enabled bool }{dragging_enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDraggingEnabled() bool { //gd:SplitContainer.is_dragging_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_dragging_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragAreaMarginBegin(margin int64) { //gd:SplitContainer.set_drag_area_margin_begin
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_area_margin_begin, 0|(gdextension.SizeInt<<4), &struct{ margin int64 }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDragAreaMarginBegin() int64 { //gd:SplitContainer.get_drag_area_margin_begin
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_drag_area_margin_begin, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragAreaMarginEnd(margin int64) { //gd:SplitContainer.set_drag_area_margin_end
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_area_margin_end, 0|(gdextension.SizeInt<<4), &struct{ margin int64 }{margin})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDragAreaMarginEnd() int64 { //gd:SplitContainer.get_drag_area_margin_end
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_drag_area_margin_end, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragAreaOffset(offset int64) { //gd:SplitContainer.set_drag_area_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_area_offset, 0|(gdextension.SizeInt<<4), &struct{ offset int64 }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDragAreaOffset() int64 { //gd:SplitContainer.get_drag_area_offset
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_drag_area_offset, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragAreaHighlightInEditor(drag_area_highlight_in_editor bool) { //gd:SplitContainer.set_drag_area_highlight_in_editor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_area_highlight_in_editor, 0|(gdextension.SizeBool<<4), &struct{ drag_area_highlight_in_editor bool }{drag_area_highlight_in_editor})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDragAreaHighlightInEditorEnabled() bool { //gd:SplitContainer.is_drag_area_highlight_in_editor_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_drag_area_highlight_in_editor_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDragAreaControls() Array.Contains[[1]gdclass.Control] { //gd:SplitContainer.get_drag_area_controls
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_drag_area_controls, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.Control](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetTouchDraggerEnabled(enabled bool) { //gd:SplitContainer.set_touch_dragger_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_touch_dragger_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTouchDraggerEnabled() bool { //gd:SplitContainer.is_touch_dragger_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_touch_dragger_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragNestedIntersections(enabled bool) { //gd:SplitContainer.set_drag_nested_intersections
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_nested_intersections, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDraggingNestedIntersections() bool { //gd:SplitContainer.is_dragging_nested_intersections
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_dragging_nested_intersections, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDragAreaControl() [1]gdclass.Control { //gd:SplitContainer.get_drag_area_control
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_drag_area_control, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Control{gdclass.NewControl(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) SetSplitOffset(offset int64) { //gd:SplitContainer.set_split_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_split_offset, 0|(gdextension.SizeInt<<4), &struct{ offset int64 }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSplitOffset() int64 { //gd:SplitContainer.get_split_offset
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_split_offset, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -601,18 +634,18 @@ func (self class) DragEnded() Signal.Any {
 func (o class) AsSplitContainer() Advanced                { return Advanced(o) }
 func (o Instance) AsSplitContainer() Instance             { return o }
 func (o *Extension[T]) AsSplitContainer() Instance        { return o.Super() }
-func (o class) AsContainer() Container.Advanced           { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o class) AsContainer() Container.Advanced           { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance   { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance        { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance        { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

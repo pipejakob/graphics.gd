@@ -13,6 +13,7 @@ Ogg Vorbis requires more CPU to decode than [ResourceImporterWAV]. If you need t
 package ResourceImporterOggVorbis
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -47,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -147,7 +151,7 @@ func LoadFromFile(path string) AudioStreamOggVorbis.Instance { //gd:ResourceImpo
 type Advanced = class
 type class [1]gdclass.ResourceImporterOggVorbis
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewResourceImporterOggVorbis(obj[0])
@@ -162,7 +166,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -187,11 +191,13 @@ func New() Instance {
 
 func (self class) LoadFromBuffer(stream_data Packed.Bytes) [1]gdclass.AudioStreamOggVorbis { //gd:ResourceImporterOggVorbis.load_from_buffer
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.load_from_buffer, gdextension.SizeObject|(gdextension.SizePackedArray<<4), &struct{ stream_data gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](stream_data.Array)))})
+	runtime.KeepAlive(stream_data)
 	var ret = [1]gdclass.AudioStreamOggVorbis{gdclass.NewAudioStreamOggVorbis(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) LoadFromFile(path String.Readable) [1]gdclass.AudioStreamOggVorbis { //gd:ResourceImporterOggVorbis.load_from_file
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.load_from_file, gdextension.SizeObject|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(path)
 	var ret = [1]gdclass.AudioStreamOggVorbis{gdclass.NewAudioStreamOggVorbis(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -199,13 +205,13 @@ func (o class) AsResourceImporterOggVorbis() Advanced         { return Advanced(
 func (o Instance) AsResourceImporterOggVorbis() Instance      { return o }
 func (o *Extension[T]) AsResourceImporterOggVorbis() Instance { return o.Super() }
 func (o class) AsResourceImporter() ResourceImporter.Advanced {
-	return ResourceImporter.Advanced{gdclass.NewResourceImporter(o[0].AsObject()[0])}
+	return *(*ResourceImporter.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsResourceImporter() ResourceImporter.Instance {
 	return o.Super().AsResourceImporter()
 }
 func (o Instance) AsResourceImporter() ResourceImporter.Instance {
-	return ResourceImporter.Instance{gdclass.NewResourceImporter(o[0].AsObject()[0])}
+	return *(*ResourceImporter.Instance)(ie.As(&o))
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

@@ -15,6 +15,7 @@ Note: [VisibleOnScreenEnabler2D] uses the render culling code to determine wheth
 package VisibleOnScreenEnabler2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -24,6 +25,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -51,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -134,7 +139,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.VisibleOnScreenEnabler2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVisibleOnScreenEnabler2D(obj[0])
@@ -149,7 +154,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -202,17 +207,22 @@ func (self Instance) SetEnableNodePath(value string) Instance { //gd:VisibleOnSc
 
 func (self class) SetEnableMode(mode EnableMode) { //gd:VisibleOnScreenEnabler2D.set_enable_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_mode, 0|(gdextension.SizeInt<<4), &struct{ mode EnableMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableMode() EnableMode { //gd:VisibleOnScreenEnabler2D.get_enable_mode
 	var r_ret = jumponly.Call[EnableMode](gd.ObjectChecked(self.AsObject()), methods.get_enable_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnableNodePath(path Path.ToNode) { //gd:VisibleOnScreenEnabler2D.set_enable_node_path
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_node_path, 0|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetEnableNodePath() Path.ToNode { //gd:VisibleOnScreenEnabler2D.get_enable_node_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_enable_node_path, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
@@ -220,23 +230,23 @@ func (o class) AsVisibleOnScreenEnabler2D() Advanced         { return Advanced(o
 func (o Instance) AsVisibleOnScreenEnabler2D() Instance      { return o }
 func (o *Extension[T]) AsVisibleOnScreenEnabler2D() Instance { return o.Super() }
 func (o class) AsVisibleOnScreenNotifier2D() VisibleOnScreenNotifier2D.Advanced {
-	return VisibleOnScreenNotifier2D.Advanced{gdclass.NewVisibleOnScreenNotifier2D(o[0].AsObject()[0])}
+	return *(*VisibleOnScreenNotifier2D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisibleOnScreenNotifier2D() VisibleOnScreenNotifier2D.Instance {
 	return o.Super().AsVisibleOnScreenNotifier2D()
 }
 func (o Instance) AsVisibleOnScreenNotifier2D() VisibleOnScreenNotifier2D.Instance {
-	return VisibleOnScreenNotifier2D.Instance{gdclass.NewVisibleOnScreenNotifier2D(o[0].AsObject()[0])}
+	return *(*VisibleOnScreenNotifier2D.Instance)(ie.As(&o))
 }
-func (o class) AsNode2D() Node2D.Advanced                 { return Node2D.Advanced{gdclass.NewNode2D(o[0].AsObject()[0])} }
+func (o class) AsNode2D() Node2D.Advanced                 { return *(*Node2D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode2D() Node2D.Instance         { return o.Super().AsNode2D() }
-func (o Instance) AsNode2D() Node2D.Instance              { return Node2D.Instance{gdclass.NewNode2D(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsNode2D() Node2D.Instance              { return *(*Node2D.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

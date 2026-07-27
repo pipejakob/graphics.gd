@@ -8,6 +8,7 @@ A horizontal scrollbar, typically used to navigate through content that extends 
 package HScrollBar
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -16,6 +17,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -44,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -122,7 +127,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.HScrollBar
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewHScrollBar(obj[0])
@@ -137,7 +142,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -163,21 +168,21 @@ func New() Instance {
 func (o class) AsHScrollBar() Advanced                    { return Advanced(o) }
 func (o Instance) AsHScrollBar() Instance                 { return o }
 func (o *Extension[T]) AsHScrollBar() Instance            { return o.Super() }
-func (o class) AsScrollBar() ScrollBar.Advanced           { return ScrollBar.Advanced{gdclass.NewScrollBar(o[0].AsObject()[0])} }
+func (o class) AsScrollBar() ScrollBar.Advanced           { return *(*ScrollBar.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsScrollBar() ScrollBar.Instance   { return o.Super().AsScrollBar() }
-func (o Instance) AsScrollBar() ScrollBar.Instance        { return ScrollBar.Instance{gdclass.NewScrollBar(o[0].AsObject()[0])} }
-func (o class) AsRange() Range.Advanced                   { return Range.Advanced{gdclass.NewRange(o[0].AsObject()[0])} }
+func (o Instance) AsScrollBar() ScrollBar.Instance        { return *(*ScrollBar.Instance)(ie.As(&o)) }
+func (o class) AsRange() Range.Advanced                   { return *(*Range.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsRange() Range.Instance           { return o.Super().AsRange() }
-func (o Instance) AsRange() Range.Instance                { return Range.Instance{gdclass.NewRange(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsRange() Range.Instance                { return *(*Range.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -8,6 +8,7 @@ Note: When exporting to Android, make sure to enable the INTERNET permission in 
 package StreamPeer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -41,6 +42,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -466,7 +470,7 @@ func (self MoreArgs) GetVar(allow_objects bool) any { //gd:StreamPeer.get_var
 type Advanced = class
 type class [1]gdclass.StreamPeer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewStreamPeer(obj[0])
@@ -481,7 +485,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -521,149 +525,189 @@ func (self Instance) SetBigEndian(value bool) Instance { //gd:StreamPeer.big_end
 
 func (self class) PutData(data Packed.Bytes) Error.Code { //gd:StreamPeer.put_data
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.put_data, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct{ data gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) PutPartialData(data Packed.Bytes) Array.Any { //gd:StreamPeer.put_partial_data
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.put_partial_data, gdextension.SizeArray|(gdextension.SizePackedArray<<4), &struct{ data gdextension.PackedArray[byte] }{pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(data)
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetData(bytes int64) Array.Any { //gd:StreamPeer.get_data
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_data, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ bytes int64 }{bytes})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetPartialData(bytes int64) Array.Any { //gd:StreamPeer.get_partial_data
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_partial_data, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ bytes int64 }{bytes})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetAvailableBytes() int64 { //gd:StreamPeer.get_available_bytes
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_available_bytes, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBigEndian(enable bool) { //gd:StreamPeer.set_big_endian
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_big_endian, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsBigEndianEnabled() bool { //gd:StreamPeer.is_big_endian_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_big_endian_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Put8(value int64) { //gd:StreamPeer.put_8
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_8, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PutU8(value int64) { //gd:StreamPeer.put_u8
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_u8, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Put16(value int64) { //gd:StreamPeer.put_16
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_16, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PutU16(value int64) { //gd:StreamPeer.put_u16
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_u16, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Put32(value int64) { //gd:StreamPeer.put_32
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_32, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PutU32(value int64) { //gd:StreamPeer.put_u32
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_u32, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Put64(value int64) { //gd:StreamPeer.put_64
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_64, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PutU64(value int64) { //gd:StreamPeer.put_u64
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_u64, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PutHalf(value float64) { //gd:StreamPeer.put_half
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_half, 0|(gdextension.SizeFloat<<4), &struct{ value float64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PutFloat(value float64) { //gd:StreamPeer.put_float
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_float, 0|(gdextension.SizeFloat<<4), &struct{ value float64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PutDouble(value float64) { //gd:StreamPeer.put_double
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_double, 0|(gdextension.SizeFloat<<4), &struct{ value float64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PutString(value String.Readable) { //gd:StreamPeer.put_string
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_string, 0|(gdextension.SizeString<<4), &struct{ value gdextension.String }{pointers.Get(gd.InternalString(value))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(value)
 }
 func (self class) PutUtf8String(value String.Readable) { //gd:StreamPeer.put_utf8_string
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_utf8_string, 0|(gdextension.SizeString<<4), &struct{ value gdextension.String }{pointers.Get(gd.InternalString(value))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(value)
 }
 func (self class) PutVar(value variant.Any, full_objects bool) { //gd:StreamPeer.put_var
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.put_var, 0|(gdextension.SizeVariant<<4)|(gdextension.SizeBool<<8), &struct {
 		value        gdextension.Variant
 		full_objects bool
 	}{gdextension.Variant(pointers.Get(gd.InternalVariant(value))), full_objects})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(value)
 }
 func (self class) Get8() int64 { //gd:StreamPeer.get_8
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_8, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetU8() int64 { //gd:StreamPeer.get_u8
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_u8, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Get16() int64 { //gd:StreamPeer.get_16
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_16, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetU16() int64 { //gd:StreamPeer.get_u16
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_u16, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Get32() int64 { //gd:StreamPeer.get_32
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_32, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetU32() int64 { //gd:StreamPeer.get_u32
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_u32, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Get64() int64 { //gd:StreamPeer.get_64
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_64, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetU64() int64 { //gd:StreamPeer.get_u64
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_u64, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetHalf() float64 { //gd:StreamPeer.get_half
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_half, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFloat() float64 { //gd:StreamPeer.get_float
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_float, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDouble() float64 { //gd:StreamPeer.get_double
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_double, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetString(bytes int64) String.Readable { //gd:StreamPeer.get_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_string, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ bytes int64 }{bytes})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetUtf8String(bytes int64) String.Readable { //gd:StreamPeer.get_utf8_string
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_utf8_string, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ bytes int64 }{bytes})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetVar(allow_objects bool) variant.Any { //gd:StreamPeer.get_var
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_var, gdextension.SizeVariant|(gdextension.SizeBool<<4), &struct{ allow_objects bool }{allow_objects})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }

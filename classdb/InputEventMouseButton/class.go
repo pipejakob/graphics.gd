@@ -11,6 +11,7 @@ Note: On Wear OS devices, rotary input is mapped to [MouseButtonWheelUp] and [Mo
 package InputEventMouseButton
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -50,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -137,7 +141,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.InputEventMouseButton
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewInputEventMouseButton(obj[0])
@@ -152,7 +156,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -234,31 +238,39 @@ func (self Instance) SetDoubleClick(value bool) Instance { //gd:InputEventMouseB
 
 func (self class) SetFactor(factor float64) { //gd:InputEventMouseButton.set_factor
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_factor, 0|(gdextension.SizeFloat<<4), &struct{ factor float64 }{factor})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFactor() float64 { //gd:InputEventMouseButton.get_factor
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_factor, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetButtonIndex(button_index Input.MouseButton) { //gd:InputEventMouseButton.set_button_index
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_button_index, 0|(gdextension.SizeInt<<4), &struct{ button_index Input.MouseButton }{button_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetButtonIndex() Input.MouseButton { //gd:InputEventMouseButton.get_button_index
 	var r_ret = jumponly.Call[Input.MouseButton](gd.ObjectChecked(self.AsObject()), methods.get_button_index, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPressed(pressed bool) { //gd:InputEventMouseButton.set_pressed
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pressed, 0|(gdextension.SizeBool<<4), &struct{ pressed bool }{pressed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCanceled(canceled bool) { //gd:InputEventMouseButton.set_canceled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_canceled, 0|(gdextension.SizeBool<<4), &struct{ canceled bool }{canceled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetDoubleClick(double_click bool) { //gd:InputEventMouseButton.set_double_click
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_double_click, 0|(gdextension.SizeBool<<4), &struct{ double_click bool }{double_click})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDoubleClick() bool { //gd:InputEventMouseButton.is_double_click
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_double_click, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -266,38 +278,38 @@ func (o class) AsInputEventMouseButton() Advanced         { return Advanced(o) }
 func (o Instance) AsInputEventMouseButton() Instance      { return o }
 func (o *Extension[T]) AsInputEventMouseButton() Instance { return o.Super() }
 func (o class) AsInputEventMouse() InputEventMouse.Advanced {
-	return InputEventMouse.Advanced{gdclass.NewInputEventMouse(o[0].AsObject()[0])}
+	return *(*InputEventMouse.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventMouse() InputEventMouse.Instance {
 	return o.Super().AsInputEventMouse()
 }
 func (o Instance) AsInputEventMouse() InputEventMouse.Instance {
-	return InputEventMouse.Instance{gdclass.NewInputEventMouse(o[0].AsObject()[0])}
+	return *(*InputEventMouse.Instance)(ie.As(&o))
 }
 func (o class) AsInputEventWithModifiers() InputEventWithModifiers.Advanced {
-	return InputEventWithModifiers.Advanced{gdclass.NewInputEventWithModifiers(o[0].AsObject()[0])}
+	return *(*InputEventWithModifiers.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventWithModifiers() InputEventWithModifiers.Instance {
 	return o.Super().AsInputEventWithModifiers()
 }
 func (o Instance) AsInputEventWithModifiers() InputEventWithModifiers.Instance {
-	return InputEventWithModifiers.Instance{gdclass.NewInputEventWithModifiers(o[0].AsObject()[0])}
+	return *(*InputEventWithModifiers.Instance)(ie.As(&o))
 }
 func (o class) AsInputEventFromWindow() InputEventFromWindow.Advanced {
-	return InputEventFromWindow.Advanced{gdclass.NewInputEventFromWindow(o[0].AsObject()[0])}
+	return *(*InputEventFromWindow.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsInputEventFromWindow() InputEventFromWindow.Instance {
 	return o.Super().AsInputEventFromWindow()
 }
 func (o Instance) AsInputEventFromWindow() InputEventFromWindow.Instance {
-	return InputEventFromWindow.Instance{gdclass.NewInputEventFromWindow(o[0].AsObject()[0])}
+	return *(*InputEventFromWindow.Instance)(ie.As(&o))
 }
-func (o class) AsInputEvent() InputEvent.Advanced         { return InputEvent.Advanced{gdclass.NewInputEvent(o[0].AsObject()[0])} }
+func (o class) AsInputEvent() InputEvent.Advanced         { return *(*InputEvent.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsInputEvent() InputEvent.Instance { return o.Super().AsInputEvent() }
-func (o Instance) AsInputEvent() InputEvent.Instance      { return InputEvent.Instance{gdclass.NewInputEvent(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced             { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsInputEvent() InputEvent.Instance      { return *(*InputEvent.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced             { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance     { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance          { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance          { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

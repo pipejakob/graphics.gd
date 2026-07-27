@@ -12,6 +12,7 @@ The new method of a script subclass creates a new instance. [Object.SetScript] e
 package Script
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -299,7 +303,7 @@ func (self Instance) InstanceHas(base_object Object.Instance) bool { //gd:Script
 type Advanced = class
 type class [1]gdclass.Script
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewScript(obj[0])
@@ -314,7 +318,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -352,103 +356,127 @@ func (self Instance) SetSourceCode(value string) Instance { //gd:Script.source_c
 
 func (self class) CanInstantiate() bool { //gd:Script.can_instantiate
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.can_instantiate, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasSourceCode() bool { //gd:Script.has_source_code
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_source_code, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSourceCode() String.Readable { //gd:Script.get_source_code
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_source_code, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetSourceCode(source String.Readable) { //gd:Script.set_source_code
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_source_code, 0|(gdextension.SizeString<<4), &struct{ source gdextension.String }{pointers.Get(gd.InternalString(source))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(source)
 }
 func (self class) Reload(keep_state bool) Error.Code { //gd:Script.reload
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.reload, gdextension.SizeInt|(gdextension.SizeBool<<4), &struct{ keep_state bool }{keep_state})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) GetBaseScript() [1]gdclass.Script { //gd:Script.get_base_script
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_base_script, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Script{gdclass.NewScript(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetInstanceBaseType() String.Name { //gd:Script.get_instance_base_type
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_instance_base_type, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetGlobalName() String.Name { //gd:Script.get_global_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_global_name, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) HasScriptMethod(method_name String.Name) bool { //gd:Script.has_script_method
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_script_method, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ method_name gdextension.StringName }{pointers.Get(gd.InternalStringName(method_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(method_name)
 	var ret = r_ret
 	return ret
 }
 func (self class) HasScriptSignal(signal_name String.Name) bool { //gd:Script.has_script_signal
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_script_signal, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ signal_name gdextension.StringName }{pointers.Get(gd.InternalStringName(signal_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(signal_name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetScriptPropertyList() Array.Contains[Dictionary.Any] { //gd:Script.get_script_property_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_script_property_list, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetScriptMethodList() Array.Contains[Dictionary.Any] { //gd:Script.get_script_method_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_script_method_list, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetScriptSignalList() Array.Contains[Dictionary.Any] { //gd:Script.get_script_signal_list
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_script_signal_list, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetScriptConstantMap() Dictionary.Any { //gd:Script.get_script_constant_map
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_script_constant_map, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetPropertyDefaultValue(property String.Name) variant.Any { //gd:Script.get_property_default_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_property_default_value, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ property gdextension.StringName }{pointers.Get(gd.InternalStringName(property))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(property)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) IsTool() bool { //gd:Script.is_tool
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_tool, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsAbstract() bool { //gd:Script.is_abstract
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_abstract, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRpcConfig() variant.Any { //gd:Script.get_rpc_config
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_rpc_config, gdextension.SizeVariant, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) InstanceHas(base_object [1]gdreference.Object) bool { //gd:Script.instance_has
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.instance_has, gdextension.SizeBool|(gdextension.SizeObject<<4), &struct{ base_object gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetObject(base_object[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(base_object[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsScript() Advanced                    { return Advanced(o) }
 func (o Instance) AsScript() Instance                 { return o }
 func (o *Extension[T]) AsScript() Instance            { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

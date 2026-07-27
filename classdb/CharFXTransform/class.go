@@ -8,6 +8,7 @@ By setting various properties on this object, you can control how individual cha
 package CharFXTransform
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -150,7 +154,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.CharFXTransform
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCharFXTransform(obj[0])
@@ -165,7 +169,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -390,107 +394,134 @@ func (self Instance) SetFont(value RID.Font) Instance { //gd:CharFXTransform.fon
 
 func (self class) GetTransform() Transform2D.OriginXY { //gd:CharFXTransform.get_transform
 	var r_ret = jumponly.Call[Transform2D.OriginXY](gd.ObjectChecked(self.AsObject()), methods.get_transform, gdextension.SizeTransform2D, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTransform(transform Transform2D.OriginXY) { //gd:CharFXTransform.set_transform
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transform, 0|(gdextension.SizeTransform2D<<4), &struct{ transform Transform2D.OriginXY }{transform})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRange() Vector2i.XY { //gd:CharFXTransform.get_range
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_range, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRange(arange Vector2i.XY) { //gd:CharFXTransform.set_range
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_range, 0|(gdextension.SizeVector2i<<4), &struct{ arange Vector2i.XY }{arange})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetElapsedTime() float64 { //gd:CharFXTransform.get_elapsed_time
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_elapsed_time, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetElapsedTime(time float64) { //gd:CharFXTransform.set_elapsed_time
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_elapsed_time, 0|(gdextension.SizeFloat<<4), &struct{ time float64 }{time})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsVisible() bool { //gd:CharFXTransform.is_visible
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVisibility(visibility bool) { //gd:CharFXTransform.set_visibility
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_visibility, 0|(gdextension.SizeBool<<4), &struct{ visibility bool }{visibility})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsOutline() bool { //gd:CharFXTransform.is_outline
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_outline, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOutline(outline bool) { //gd:CharFXTransform.set_outline
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_outline, 0|(gdextension.SizeBool<<4), &struct{ outline bool }{outline})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffset() Vector2.XY { //gd:CharFXTransform.get_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffset(offset Vector2.XY) { //gd:CharFXTransform.set_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetColor() Color.RGBA { //gd:CharFXTransform.get_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetColor(color Color.RGBA) { //gd:CharFXTransform.set_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnvironment() Dictionary.Any { //gd:CharFXTransform.get_environment
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.get_environment, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) SetEnvironment(environment Dictionary.Any) { //gd:CharFXTransform.set_environment
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_environment, 0|(gdextension.SizeDictionary<<4), &struct{ environment gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(environment))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(environment)
 }
 func (self class) GetGlyphIndex() int64 { //gd:CharFXTransform.get_glyph_index
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_glyph_index, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlyphIndex(glyph_index int64) { //gd:CharFXTransform.set_glyph_index
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glyph_index, 0|(gdextension.SizeInt<<4), &struct{ glyph_index int64 }{glyph_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRelativeIndex() int64 { //gd:CharFXTransform.get_relative_index
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_relative_index, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRelativeIndex(relative_index int64) { //gd:CharFXTransform.set_relative_index
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_relative_index, 0|(gdextension.SizeInt<<4), &struct{ relative_index int64 }{relative_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlyphCount() int64 { //gd:CharFXTransform.get_glyph_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_glyph_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlyphCount(glyph_count int64) { //gd:CharFXTransform.set_glyph_count
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glyph_count, 0|(gdextension.SizeInt<<4), &struct{ glyph_count int64 }{glyph_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGlyphFlags() int64 { //gd:CharFXTransform.get_glyph_flags
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_glyph_flags, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetGlyphFlags(glyph_flags int64) { //gd:CharFXTransform.set_glyph_flags
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_glyph_flags, 0|(gdextension.SizeInt<<4), &struct{ glyph_flags int64 }{glyph_flags})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFont() RID.Any { //gd:CharFXTransform.get_font
 	var r_ret = jumponly.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_font, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFont(font RID.Any) { //gd:CharFXTransform.set_font
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_font, 0|(gdextension.SizeRID<<4), &struct{ font RID.Any }{font})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsCharFXTransform() Advanced         { return Advanced(o) }
 func (o Instance) AsCharFXTransform() Instance      { return o }

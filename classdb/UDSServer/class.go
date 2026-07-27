@@ -10,6 +10,7 @@ Note: Unix Domain Sockets are only available on Unix-like systems (Linux, macOS,
 package UDSServer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -140,7 +144,7 @@ func (self Instance) TakeConnection() StreamPeerUDS.Instance { //gd:UDSServer.ta
 type Advanced = class
 type class [1]gdclass.UDSServer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewUDSServer(obj[0])
@@ -155,7 +159,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -180,20 +184,23 @@ func New() Instance {
 
 func (self class) Listen(path String.Readable) Error.Code { //gd:UDSServer.listen
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.listen, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) TakeConnection() [1]gdclass.StreamPeerUDS { //gd:UDSServer.take_connection
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.take_connection, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.StreamPeerUDS{gdclass.NewStreamPeerUDS(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsUDSServer() Advanced                         { return Advanced(o) }
 func (o Instance) AsUDSServer() Instance                      { return o }
 func (o *Extension[T]) AsUDSServer() Instance                 { return o.Super() }
-func (o class) AsSocketServer() SocketServer.Advanced         { return SocketServer.Advanced{gdclass.NewSocketServer(o[0].AsObject()[0])} }
+func (o class) AsSocketServer() SocketServer.Advanced         { return *(*SocketServer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsSocketServer() SocketServer.Instance { return o.Super().AsSocketServer() }
-func (o Instance) AsSocketServer() SocketServer.Instance      { return SocketServer.Instance{gdclass.NewSocketServer(o[0].AsObject()[0])} }
+func (o Instance) AsSocketServer() SocketServer.Instance      { return *(*SocketServer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                           { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                   { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                        { return *(*ie.RC)(ie.As(&o)) }

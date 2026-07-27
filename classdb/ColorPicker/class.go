@@ -11,6 +11,7 @@ Note: This control is the color picker widget itself. You can use a [ColorPicker
 package ColorPicker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -50,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -205,7 +210,7 @@ func (self Instance) GetRecentPresets() []Color.RGBA { //gd:ColorPicker.get_rece
 type Advanced = class
 type class [1]gdclass.ColorPicker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewColorPicker(obj[0])
@@ -220,7 +225,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -401,119 +406,149 @@ func (self Instance) SetPresetsVisible(value bool) Instance { //gd:ColorPicker.p
 
 func (self class) SetPickColor(color Color.RGBA) { //gd:ColorPicker.set_pick_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pick_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPickColor() Color.RGBA { //gd:ColorPicker.get_pick_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_pick_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDeferredMode(mode bool) { //gd:ColorPicker.set_deferred_mode
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_deferred_mode, 0|(gdextension.SizeBool<<4), &struct{ mode bool }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDeferredMode() bool { //gd:ColorPicker.is_deferred_mode
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_deferred_mode, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetColorMode(color_mode ColorModeType) { //gd:ColorPicker.set_color_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color_mode, 0|(gdextension.SizeInt<<4), &struct{ color_mode ColorModeType }{color_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetColorMode() ColorModeType { //gd:ColorPicker.get_color_mode
 	var r_ret = jumponly.Call[ColorModeType](gd.ObjectChecked(self.AsObject()), methods.get_color_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEditAlpha(show bool) { //gd:ColorPicker.set_edit_alpha
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_edit_alpha, 0|(gdextension.SizeBool<<4), &struct{ show bool }{show})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEditingAlpha() bool { //gd:ColorPicker.is_editing_alpha
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_editing_alpha, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEditIntensity(show bool) { //gd:ColorPicker.set_edit_intensity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_edit_intensity, 0|(gdextension.SizeBool<<4), &struct{ show bool }{show})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsEditingIntensity() bool { //gd:ColorPicker.is_editing_intensity
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_editing_intensity, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCanAddSwatches(enabled bool) { //gd:ColorPicker.set_can_add_swatches
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_can_add_swatches, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AreSwatchesEnabled() bool { //gd:ColorPicker.are_swatches_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.are_swatches_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPresetsVisible(visible bool) { //gd:ColorPicker.set_presets_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_presets_visible, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ArePresetsVisible() bool { //gd:ColorPicker.are_presets_visible
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.are_presets_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetModesVisible(visible bool) { //gd:ColorPicker.set_modes_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_modes_visible, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AreModesVisible() bool { //gd:ColorPicker.are_modes_visible
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.are_modes_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSamplerVisible(visible bool) { //gd:ColorPicker.set_sampler_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sampler_visible, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSamplerVisible() bool { //gd:ColorPicker.is_sampler_visible
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_sampler_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSlidersVisible(visible bool) { //gd:ColorPicker.set_sliders_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sliders_visible, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AreSlidersVisible() bool { //gd:ColorPicker.are_sliders_visible
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.are_sliders_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHexVisible(visible bool) { //gd:ColorPicker.set_hex_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hex_visible, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsHexVisible() bool { //gd:ColorPicker.is_hex_visible
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_hex_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddPreset(color Color.RGBA) { //gd:ColorPicker.add_preset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_preset, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ErasePreset(color Color.RGBA) { //gd:ColorPicker.erase_preset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.erase_preset, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPresets() Packed.Array[Color.RGBA] { //gd:ColorPicker.get_presets
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_presets, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) AddRecentPreset(color Color.RGBA) { //gd:ColorPicker.add_recent_preset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_recent_preset, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) EraseRecentPreset(color Color.RGBA) { //gd:ColorPicker.erase_recent_preset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.erase_recent_preset, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRecentPresets() Packed.Array[Color.RGBA] { //gd:ColorPicker.get_recent_presets
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_recent_presets, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Color.RGBA](Array.Through(gd.WrapPacked[gd.PackedColorArray, Color.RGBA](pointers.Let[gd.PackedColorArray](r_ret))))
 	return ret
 }
 func (self class) SetPickerShape(shape PickerShapeType) { //gd:ColorPicker.set_picker_shape
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_picker_shape, 0|(gdextension.SizeInt<<4), &struct{ shape PickerShapeType }{shape})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPickerShape() PickerShapeType { //gd:ColorPicker.get_picker_shape
 	var r_ret = jumponly.Call[PickerShapeType](gd.ObjectChecked(self.AsObject()), methods.get_picker_shape, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -569,26 +604,26 @@ func (self class) PresetRemoved() Signal.Any {
 func (o class) AsColorPicker() Advanced                         { return Advanced(o) }
 func (o Instance) AsColorPicker() Instance                      { return o }
 func (o *Extension[T]) AsColorPicker() Instance                 { return o.Super() }
-func (o class) AsVBoxContainer() VBoxContainer.Advanced         { return VBoxContainer.Advanced{gdclass.NewVBoxContainer(o[0].AsObject()[0])} }
+func (o class) AsVBoxContainer() VBoxContainer.Advanced         { return *(*VBoxContainer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsVBoxContainer() VBoxContainer.Instance { return o.Super().AsVBoxContainer() }
 func (o Instance) AsVBoxContainer() VBoxContainer.Instance {
-	return VBoxContainer.Instance{gdclass.NewVBoxContainer(o[0].AsObject()[0])}
+	return *(*VBoxContainer.Instance)(ie.As(&o))
 }
-func (o class) AsBoxContainer() BoxContainer.Advanced         { return BoxContainer.Advanced{gdclass.NewBoxContainer(o[0].AsObject()[0])} }
+func (o class) AsBoxContainer() BoxContainer.Advanced         { return *(*BoxContainer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsBoxContainer() BoxContainer.Instance { return o.Super().AsBoxContainer() }
-func (o Instance) AsBoxContainer() BoxContainer.Instance      { return BoxContainer.Instance{gdclass.NewBoxContainer(o[0].AsObject()[0])} }
-func (o class) AsContainer() Container.Advanced               { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o Instance) AsBoxContainer() BoxContainer.Instance      { return *(*BoxContainer.Instance)(ie.As(&o)) }
+func (o class) AsContainer() Container.Advanced               { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance       { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance            { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced                   { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance            { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced                   { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance           { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance                { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced             { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance                { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced             { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance     { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance          { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                         { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance          { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                         { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance                 { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                      { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                      { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

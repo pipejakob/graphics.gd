@@ -25,6 +25,7 @@ Note: PCK is Godot's own pack file format. To create ZIP archives that can be re
 package PCKPacker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -57,6 +58,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -218,7 +222,7 @@ func (self MoreArgs) Flush(verbose bool) error { //gd:PCKPacker.flush
 type Advanced = class
 type class [1]gdclass.PCKPacker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPCKPacker(obj[0])
@@ -233,7 +237,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -263,6 +267,9 @@ func (self class) PckStart(pck_path String.Readable, alignment int64, key String
 		key               gdextension.String
 		encrypt_directory bool
 	}{pointers.Get(gd.InternalString(pck_path)), alignment, pointers.Get(gd.InternalString(key)), encrypt_directory})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(pck_path)
+	runtime.KeepAlive(key)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -272,6 +279,9 @@ func (self class) AddFile(target_path String.Readable, source_path String.Readab
 		source_path gdextension.String
 		encrypt     bool
 	}{pointers.Get(gd.InternalString(target_path)), pointers.Get(gd.InternalString(source_path)), encrypt})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(target_path)
+	runtime.KeepAlive(source_path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -281,16 +291,22 @@ func (self class) AddFileFromBuffer(target_path String.Readable, data Packed.Byt
 		data        gdextension.PackedArray[byte]
 		encrypt     bool
 	}{pointers.Get(gd.InternalString(target_path)), pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array))), encrypt})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(target_path)
+	runtime.KeepAlive(data)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) AddFileRemoval(target_path String.Readable) Error.Code { //gd:PCKPacker.add_file_removal
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.add_file_removal, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ target_path gdextension.String }{pointers.Get(gd.InternalString(target_path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(target_path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Flush(verbose bool) Error.Code { //gd:PCKPacker.flush
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.flush, gdextension.SizeInt|(gdextension.SizeBool<<4), &struct{ verbose bool }{verbose})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }

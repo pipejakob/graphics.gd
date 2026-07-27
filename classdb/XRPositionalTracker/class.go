@@ -15,6 +15,7 @@ The [XRNode3D] and [XRAnchor3D] both consume objects of this type and should be 
 package XRPositionalTracker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -53,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -198,7 +202,7 @@ func (self Instance) SetInput(name string, value any) Instance { //gd:XRPosition
 type Advanced = class
 type class [1]gdclass.XRPositionalTracker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewXRPositionalTracker(obj[0])
@@ -213,7 +217,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -264,32 +268,43 @@ func (self Instance) SetHand(value TrackerHand) Instance { //gd:XRPositionalTrac
 
 func (self class) GetTrackerProfile() String.Readable { //gd:XRPositionalTracker.get_tracker_profile
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tracker_profile, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetTrackerProfile(profile String.Readable) { //gd:XRPositionalTracker.set_tracker_profile
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tracker_profile, 0|(gdextension.SizeString<<4), &struct{ profile gdextension.String }{pointers.Get(gd.InternalString(profile))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(profile)
 }
 func (self class) GetTrackerHand() TrackerHand { //gd:XRPositionalTracker.get_tracker_hand
 	var r_ret = jumponly.Call[TrackerHand](gd.ObjectChecked(self.AsObject()), methods.get_tracker_hand, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTrackerHand(hand TrackerHand) { //gd:XRPositionalTracker.set_tracker_hand
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tracker_hand, 0|(gdextension.SizeInt<<4), &struct{ hand TrackerHand }{hand})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasPose(name String.Name) bool { //gd:XRPositionalTracker.has_pose
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_pose, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPose(name String.Name) [1]gdclass.XRPose { //gd:XRPositionalTracker.get_pose
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_pose, gdextension.SizeObject|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = [1]gdclass.XRPose{gdclass.NewXRPose(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) InvalidatePose(name String.Name) { //gd:XRPositionalTracker.invalidate_pose
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.invalidate_pose, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) SetPose(name String.Name, transform Transform3D.BasisOrigin, linear_velocity Vector3.XYZ, angular_velocity Vector3.XYZ, tracking_confidence XRPose.TrackingConfidence) { //gd:XRPositionalTracker.set_pose
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pose, 0|(gdextension.SizeStringName<<4)|(gdextension.SizeTransform3D<<8)|(gdextension.SizeVector3<<12)|(gdextension.SizeVector3<<16)|(gdextension.SizeInt<<20), &struct {
@@ -299,9 +314,13 @@ func (self class) SetPose(name String.Name, transform Transform3D.BasisOrigin, l
 		angular_velocity    Vector3.XYZ
 		tracking_confidence XRPose.TrackingConfidence
 	}{pointers.Get(gd.InternalStringName(name)), gd.Transposed(transform), linear_velocity, angular_velocity, tracking_confidence})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetInput(name String.Name) variant.Any { //gd:XRPositionalTracker.get_input
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_input, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -310,6 +329,9 @@ func (self class) SetInput(name String.Name, value variant.Any) { //gd:XRPositio
 		name  gdextension.StringName
 		value gdextension.Variant
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(value)
 }
 
 /*
@@ -427,9 +449,9 @@ func (self class) ProfileChanged() Signal.Any {
 func (o class) AsXRPositionalTracker() Advanced         { return Advanced(o) }
 func (o Instance) AsXRPositionalTracker() Instance      { return o }
 func (o *Extension[T]) AsXRPositionalTracker() Instance { return o.Super() }
-func (o class) AsXRTracker() XRTracker.Advanced         { return XRTracker.Advanced{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o class) AsXRTracker() XRTracker.Advanced         { return *(*XRTracker.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRTracker() XRTracker.Instance { return o.Super().AsXRTracker() }
-func (o Instance) AsXRTracker() XRTracker.Instance      { return XRTracker.Instance{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o Instance) AsXRTracker() XRTracker.Instance      { return *(*XRTracker.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }

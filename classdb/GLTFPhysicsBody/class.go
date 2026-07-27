@@ -6,6 +6,7 @@ Represents a physics body as an intermediary between the OMI_physics_body glTF d
 package GLTFPhysicsBody
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -177,7 +181,7 @@ func (self Instance) ToDictionary() Structure { //gd:GLTFPhysicsBody.to_dictiona
 type Advanced = class
 type class [1]gdclass.GLTFPhysicsBody
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGLTFPhysicsBody(obj[0])
@@ -192,7 +196,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -337,94 +341,115 @@ func (self Instance) SetInertiaTensor(value Basis.XYZ) Instance { //gd:GLTFPhysi
 
 func (self class) FromNode(body_node [1]gdclass.CollisionObject3D) [1]gdclass.GLTFPhysicsBody { //gd:GLTFPhysicsBody.from_node
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.from_node, gdextension.SizeObject|(gdextension.SizeObject<<4), &struct{ body_node gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCollisionObject3D(body_node[0])[0]))})
+	runtime.KeepAlive(body_node[0].Anchor())
 	var ret = [1]gdclass.GLTFPhysicsBody{gdclass.NewGLTFPhysicsBody(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) ToNode() [1]gdclass.CollisionObject3D { //gd:GLTFPhysicsBody.to_node
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.to_node, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.CollisionObject3D{gdclass.NewCollisionObject3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) FromDictionary(dictionary Dictionary.Any) [1]gdclass.GLTFPhysicsBody { //gd:GLTFPhysicsBody.from_dictionary
 	var r_ret = noescape.CallStatic[gdextension.Object](methods.from_dictionary, gdextension.SizeObject|(gdextension.SizeDictionary<<4), &struct{ dictionary gdextension.Dictionary }{pointers.Get(gd.InternalDictionary(dictionary))})
+	runtime.KeepAlive(dictionary)
 	var ret = [1]gdclass.GLTFPhysicsBody{gdclass.NewGLTFPhysicsBody(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) ToDictionary() Dictionary.Any { //gd:GLTFPhysicsBody.to_dictionary
 	var r_ret = noescape.Call[gdextension.Dictionary](gd.ObjectChecked(self.AsObject()), methods.to_dictionary, gdextension.SizeDictionary, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Dictionary.Through(gd.WrapDictionary[variant.Any, variant.Any](pointers.New[gd.Dictionary](r_ret)))
 	return ret
 }
 func (self class) GetBodyType() String.Readable { //gd:GLTFPhysicsBody.get_body_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_body_type, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBodyType(body_type String.Readable) { //gd:GLTFPhysicsBody.set_body_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_body_type, 0|(gdextension.SizeString<<4), &struct{ body_type gdextension.String }{pointers.Get(gd.InternalString(body_type))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(body_type)
 }
 func (self class) GetMass() float64 { //gd:GLTFPhysicsBody.get_mass
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_mass, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMass(mass float64) { //gd:GLTFPhysicsBody.set_mass
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mass, 0|(gdextension.SizeFloat<<4), &struct{ mass float64 }{mass})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLinearVelocity() Vector3.XYZ { //gd:GLTFPhysicsBody.get_linear_velocity
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_linear_velocity, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLinearVelocity(linear_velocity Vector3.XYZ) { //gd:GLTFPhysicsBody.set_linear_velocity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_linear_velocity, 0|(gdextension.SizeVector3<<4), &struct{ linear_velocity Vector3.XYZ }{linear_velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAngularVelocity() Vector3.XYZ { //gd:GLTFPhysicsBody.get_angular_velocity
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_angular_velocity, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAngularVelocity(angular_velocity Vector3.XYZ) { //gd:GLTFPhysicsBody.set_angular_velocity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_angular_velocity, 0|(gdextension.SizeVector3<<4), &struct{ angular_velocity Vector3.XYZ }{angular_velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCenterOfMass() Vector3.XYZ { //gd:GLTFPhysicsBody.get_center_of_mass
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_center_of_mass, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCenterOfMass(center_of_mass Vector3.XYZ) { //gd:GLTFPhysicsBody.set_center_of_mass
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_center_of_mass, 0|(gdextension.SizeVector3<<4), &struct{ center_of_mass Vector3.XYZ }{center_of_mass})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInertiaDiagonal() Vector3.XYZ { //gd:GLTFPhysicsBody.get_inertia_diagonal
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_inertia_diagonal, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInertiaDiagonal(inertia_diagonal Vector3.XYZ) { //gd:GLTFPhysicsBody.set_inertia_diagonal
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_inertia_diagonal, 0|(gdextension.SizeVector3<<4), &struct{ inertia_diagonal Vector3.XYZ }{inertia_diagonal})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInertiaOrientation() Quaternion.IJKX { //gd:GLTFPhysicsBody.get_inertia_orientation
 	var r_ret = jumponly.Call[Quaternion.IJKX](gd.ObjectChecked(self.AsObject()), methods.get_inertia_orientation, gdextension.SizeQuaternion, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInertiaOrientation(inertia_orientation Quaternion.IJKX) { //gd:GLTFPhysicsBody.set_inertia_orientation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_inertia_orientation, 0|(gdextension.SizeQuaternion<<4), &struct{ inertia_orientation Quaternion.IJKX }{inertia_orientation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInertiaTensor() Basis.XYZ { //gd:GLTFPhysicsBody.get_inertia_tensor
 	var r_ret = noescape.Call[Basis.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_inertia_tensor, gdextension.SizeBasis, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Basis.Transposed(r_ret)
 	return ret
 }
 func (self class) SetInertiaTensor(inertia_tensor Basis.XYZ) { //gd:GLTFPhysicsBody.set_inertia_tensor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_inertia_tensor, 0|(gdextension.SizeBasis<<4), &struct{ inertia_tensor Basis.XYZ }{Basis.Transposed(inertia_tensor)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsGLTFPhysicsBody() Advanced           { return Advanced(o) }
 func (o Instance) AsGLTFPhysicsBody() Instance        { return o }
 func (o *Extension[T]) AsGLTFPhysicsBody() Instance   { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

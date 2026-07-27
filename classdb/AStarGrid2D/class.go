@@ -37,6 +37,7 @@ To remove a point from the pathfinding grid, it must be set as "solid" with [Set
 package AStarGrid2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -73,6 +74,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -477,7 +481,7 @@ func (self MoreArgs) GetIdPath(from_id Point, to_id Point, allow_partial_path bo
 type Advanced = class
 type class [1]gdclass.AStarGrid2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAStarGrid2D(obj[0])
@@ -492,7 +496,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -671,41 +675,51 @@ func (class) _compute_cost(impl func(ptr gdclass.Receiver, from_id Vector2i.XY, 
 
 func (self class) SetRegion(region Rect2i.PositionSize) { //gd:AStarGrid2D.set_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_region, 0|(gdextension.SizeRect2i<<4), &struct{ region Rect2i.PositionSize }{region})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRegion() Rect2i.PositionSize { //gd:AStarGrid2D.get_region
 	var r_ret = jumponly.Call[Rect2i.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_region, gdextension.SizeRect2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSize(size Vector2i.XY) { //gd:AStarGrid2D.set_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSize() Vector2i.XY { //gd:AStarGrid2D.get_size
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffset(offset Vector2.XY) { //gd:AStarGrid2D.set_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset, 0|(gdextension.SizeVector2<<4), &struct{ offset Vector2.XY }{offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffset() Vector2.XY { //gd:AStarGrid2D.get_offset
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_offset, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCellSize(cell_size Vector2.XY) { //gd:AStarGrid2D.set_cell_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cell_size, 0|(gdextension.SizeVector2<<4), &struct{ cell_size Vector2.XY }{cell_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCellSize() Vector2.XY { //gd:AStarGrid2D.get_cell_size
 	var r_ret = jumponly.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_cell_size, gdextension.SizeVector2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCellShape(cell_shape CellShape) { //gd:AStarGrid2D.set_cell_shape
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cell_shape, 0|(gdextension.SizeInt<<4), &struct{ cell_shape CellShape }{cell_shape})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCellShape() CellShape { //gd:AStarGrid2D.get_cell_shape
 	var r_ret = jumponly.Call[CellShape](gd.ObjectChecked(self.AsObject()), methods.get_cell_shape, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -714,51 +728,63 @@ func (self class) IsInBounds(x int64, y int64) bool { //gd:AStarGrid2D.is_in_bou
 		x int64
 		y int64
 	}{x, y})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsInBoundsv(id Vector2i.XY) bool { //gd:AStarGrid2D.is_in_boundsv
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_in_boundsv, gdextension.SizeBool|(gdextension.SizeVector2i<<4), &struct{ id Vector2i.XY }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsDirty() bool { //gd:AStarGrid2D.is_dirty
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_dirty, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Update() { //gd:AStarGrid2D.update
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.update, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetJumpingEnabled(enabled bool) { //gd:AStarGrid2D.set_jumping_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_jumping_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsJumpingEnabled() bool { //gd:AStarGrid2D.is_jumping_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_jumping_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDiagonalMode(mode DiagonalMode) { //gd:AStarGrid2D.set_diagonal_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_diagonal_mode, 0|(gdextension.SizeInt<<4), &struct{ mode DiagonalMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDiagonalMode() DiagonalMode { //gd:AStarGrid2D.get_diagonal_mode
 	var r_ret = jumponly.Call[DiagonalMode](gd.ObjectChecked(self.AsObject()), methods.get_diagonal_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDefaultComputeHeuristic(heuristic Heuristic) { //gd:AStarGrid2D.set_default_compute_heuristic
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_compute_heuristic, 0|(gdextension.SizeInt<<4), &struct{ heuristic Heuristic }{heuristic})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDefaultComputeHeuristic() Heuristic { //gd:AStarGrid2D.get_default_compute_heuristic
 	var r_ret = jumponly.Call[Heuristic](gd.ObjectChecked(self.AsObject()), methods.get_default_compute_heuristic, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDefaultEstimateHeuristic(heuristic Heuristic) { //gd:AStarGrid2D.set_default_estimate_heuristic
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_estimate_heuristic, 0|(gdextension.SizeInt<<4), &struct{ heuristic Heuristic }{heuristic})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDefaultEstimateHeuristic() Heuristic { //gd:AStarGrid2D.get_default_estimate_heuristic
 	var r_ret = jumponly.Call[Heuristic](gd.ObjectChecked(self.AsObject()), methods.get_default_estimate_heuristic, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -767,9 +793,11 @@ func (self class) SetPointSolid(id Vector2i.XY, solid bool) { //gd:AStarGrid2D.s
 		id    Vector2i.XY
 		solid bool
 	}{id, solid})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPointSolid(id Vector2i.XY) bool { //gd:AStarGrid2D.is_point_solid
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_point_solid, gdextension.SizeBool|(gdextension.SizeVector2i<<4), &struct{ id Vector2i.XY }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -778,9 +806,11 @@ func (self class) SetPointWeightScale(id Vector2i.XY, weight_scale float64) { //
 		id           Vector2i.XY
 		weight_scale float64
 	}{id, weight_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPointWeightScale(id Vector2i.XY) float64 { //gd:AStarGrid2D.get_point_weight_scale
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_point_weight_scale, gdextension.SizeFloat|(gdextension.SizeVector2i<<4), &struct{ id Vector2i.XY }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -789,23 +819,28 @@ func (self class) FillSolidRegion(region Rect2i.PositionSize, solid bool) { //gd
 		region Rect2i.PositionSize
 		solid  bool
 	}{region, solid})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) FillWeightScaleRegion(region Rect2i.PositionSize, weight_scale float64) { //gd:AStarGrid2D.fill_weight_scale_region
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.fill_weight_scale_region, 0|(gdextension.SizeRect2i<<4)|(gdextension.SizeFloat<<8), &struct {
 		region       Rect2i.PositionSize
 		weight_scale float64
 	}{region, weight_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Clear() { //gd:AStarGrid2D.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPointPosition(id Vector2i.XY) Vector2.XY { //gd:AStarGrid2D.get_point_position
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_point_position, gdextension.SizeVector2|(gdextension.SizeVector2i<<4), &struct{ id Vector2i.XY }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPointDataInRegion(region Rect2i.PositionSize) Array.Contains[Dictionary.Any] { //gd:AStarGrid2D.get_point_data_in_region
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_point_data_in_region, gdextension.SizeArray|(gdextension.SizeRect2i<<4), &struct{ region Rect2i.PositionSize }{region})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Dictionary.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -815,6 +850,7 @@ func (self class) GetPointPath(from_id Vector2i.XY, to_id Vector2i.XY, allow_par
 		to_id              Vector2i.XY
 		allow_partial_path bool
 	}{from_id, to_id, allow_partial_path})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -824,6 +860,7 @@ func (self class) GetIdPath(from_id Vector2i.XY, to_id Vector2i.XY, allow_partia
 		to_id              Vector2i.XY
 		allow_partial_path bool
 	}{from_id, to_id, allow_partial_path})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector2i.XY](pointers.New[gd.Array](r_ret)))
 	return ret
 }

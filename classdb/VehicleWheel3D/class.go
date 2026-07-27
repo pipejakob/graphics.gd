@@ -11,6 +11,7 @@ Note: This class has known issues and isn't designed to provide realistic 3D veh
 package VehicleWheel3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -46,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -207,7 +212,7 @@ func (self Instance) GetRpm() Float.X { //gd:VehicleWheel3D.get_rpm
 type Advanced = class
 type class [1]gdclass.VehicleWheel3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVehicleWheel3D(obj[0])
@@ -222,7 +227,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -450,155 +455,189 @@ func (self Instance) SetDampingRelaxation(value Float.X) Instance { //gd:Vehicle
 
 func (self class) SetRadius(length float64) { //gd:VehicleWheel3D.set_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_radius, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadius() float64 { //gd:VehicleWheel3D.get_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSuspensionRestLength(length float64) { //gd:VehicleWheel3D.set_suspension_rest_length
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_suspension_rest_length, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSuspensionRestLength() float64 { //gd:VehicleWheel3D.get_suspension_rest_length
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_suspension_rest_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSuspensionTravel(length float64) { //gd:VehicleWheel3D.set_suspension_travel
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_suspension_travel, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSuspensionTravel() float64 { //gd:VehicleWheel3D.get_suspension_travel
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_suspension_travel, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSuspensionStiffness(length float64) { //gd:VehicleWheel3D.set_suspension_stiffness
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_suspension_stiffness, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSuspensionStiffness() float64 { //gd:VehicleWheel3D.get_suspension_stiffness
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_suspension_stiffness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSuspensionMaxForce(length float64) { //gd:VehicleWheel3D.set_suspension_max_force
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_suspension_max_force, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSuspensionMaxForce() float64 { //gd:VehicleWheel3D.get_suspension_max_force
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_suspension_max_force, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDampingCompression(length float64) { //gd:VehicleWheel3D.set_damping_compression
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_damping_compression, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDampingCompression() float64 { //gd:VehicleWheel3D.get_damping_compression
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_damping_compression, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDampingRelaxation(length float64) { //gd:VehicleWheel3D.set_damping_relaxation
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_damping_relaxation, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDampingRelaxation() float64 { //gd:VehicleWheel3D.get_damping_relaxation
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_damping_relaxation, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseAsTraction(enable bool) { //gd:VehicleWheel3D.set_use_as_traction
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_as_traction, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsedAsTraction() bool { //gd:VehicleWheel3D.is_used_as_traction
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_used_as_traction, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseAsSteering(enable bool) { //gd:VehicleWheel3D.set_use_as_steering
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_as_steering, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsedAsSteering() bool { //gd:VehicleWheel3D.is_used_as_steering
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_used_as_steering, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrictionSlip(length float64) { //gd:VehicleWheel3D.set_friction_slip
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_friction_slip, 0|(gdextension.SizeFloat<<4), &struct{ length float64 }{length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrictionSlip() float64 { //gd:VehicleWheel3D.get_friction_slip
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_friction_slip, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsInContact() bool { //gd:VehicleWheel3D.is_in_contact
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_in_contact, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetContactBody() [1]gdclass.Node3D { //gd:VehicleWheel3D.get_contact_body
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_contact_body, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Node3D{gdclass.NewNode3D(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) GetContactPoint() Vector3.XYZ { //gd:VehicleWheel3D.get_contact_point
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_contact_point, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetContactNormal() Vector3.XYZ { //gd:VehicleWheel3D.get_contact_normal
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_contact_normal, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRollInfluence(roll_influence float64) { //gd:VehicleWheel3D.set_roll_influence
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_roll_influence, 0|(gdextension.SizeFloat<<4), &struct{ roll_influence float64 }{roll_influence})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRollInfluence() float64 { //gd:VehicleWheel3D.get_roll_influence
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_roll_influence, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSkidinfo() float64 { //gd:VehicleWheel3D.get_skidinfo
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_skidinfo, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRpm() float64 { //gd:VehicleWheel3D.get_rpm
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_rpm, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEngineForce(engine_force float64) { //gd:VehicleWheel3D.set_engine_force
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_engine_force, 0|(gdextension.SizeFloat<<4), &struct{ engine_force float64 }{engine_force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEngineForce() float64 { //gd:VehicleWheel3D.get_engine_force
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_engine_force, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBrake(brake float64) { //gd:VehicleWheel3D.set_brake
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_brake, 0|(gdextension.SizeFloat<<4), &struct{ brake float64 }{brake})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBrake() float64 { //gd:VehicleWheel3D.get_brake
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_brake, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSteering(steering float64) { //gd:VehicleWheel3D.set_steering
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_steering, 0|(gdextension.SizeFloat<<4), &struct{ steering float64 }{steering})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSteering() float64 { //gd:VehicleWheel3D.get_steering
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_steering, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsVehicleWheel3D() Advanced         { return Advanced(o) }
 func (o Instance) AsVehicleWheel3D() Instance      { return o }
 func (o *Extension[T]) AsVehicleWheel3D() Instance { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced          { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced          { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance  { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance       { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced              { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance       { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced              { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance      { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance           { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance           { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

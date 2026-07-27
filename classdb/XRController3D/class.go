@@ -15,6 +15,7 @@ The current [XRInterface] defines the names of inputs. In the case of OpenXR, th
 package XRController3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -23,6 +24,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -51,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -186,7 +191,7 @@ func (self Instance) GetTrackerHand() XRPositionalTracker.TrackerHand { //gd:XRC
 type Advanced = class
 type class [1]gdclass.XRController3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewXRController3D(obj[0])
@@ -201,7 +206,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -226,26 +231,35 @@ func New() Instance {
 
 func (self class) IsButtonPressed(name String.Name) bool { //gd:XRController3D.is_button_pressed
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_button_pressed, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInput(name String.Name) variant.Any { //gd:XRController3D.get_input
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_input, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetFloat(name String.Name) float64 { //gd:XRController3D.get_float
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_float, gdextension.SizeFloat|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVector2(name String.Name) Vector2.XY { //gd:XRController3D.get_vector2
 	var r_ret = noescape.Call[Vector2.XY](gd.ObjectChecked(self.AsObject()), methods.get_vector2, gdextension.SizeVector2|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetTrackerHand() XRPositionalTracker.TrackerHand { //gd:XRController3D.get_tracker_hand
 	var r_ret = noescape.Call[XRPositionalTracker.TrackerHand](gd.ObjectChecked(self.AsObject()), methods.get_tracker_hand, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -333,15 +347,15 @@ func (self class) ProfileChanged() Signal.Any {
 func (o class) AsXRController3D() Advanced            { return Advanced(o) }
 func (o Instance) AsXRController3D() Instance         { return o }
 func (o *Extension[T]) AsXRController3D() Instance    { return o.Super() }
-func (o class) AsXRNode3D() XRNode3D.Advanced         { return XRNode3D.Advanced{gdclass.NewXRNode3D(o[0].AsObject()[0])} }
+func (o class) AsXRNode3D() XRNode3D.Advanced         { return *(*XRNode3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRNode3D() XRNode3D.Instance { return o.Super().AsXRNode3D() }
-func (o Instance) AsXRNode3D() XRNode3D.Instance      { return XRNode3D.Instance{gdclass.NewXRNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode3D() Node3D.Advanced             { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o Instance) AsXRNode3D() XRNode3D.Instance      { return *(*XRNode3D.Instance)(ie.As(&o)) }
+func (o class) AsNode3D() Node3D.Advanced             { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance     { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance          { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                 { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance          { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                 { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance         { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance              { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance              { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

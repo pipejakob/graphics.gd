@@ -3,6 +3,7 @@
 package SceneReplicationConfig
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -36,6 +37,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -240,7 +244,7 @@ func (self Instance) PropertySetWatch(path string, enabled bool) { //gd:SceneRep
 type Advanced = class
 type class [1]gdclass.SceneReplicationConfig
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewSceneReplicationConfig(obj[0])
@@ -255,7 +259,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -280,6 +284,7 @@ func New() Instance {
 
 func (self class) GetProperties() Array.Contains[Path.ToNode] { //gd:SceneReplicationConfig.get_properties
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_properties, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Path.ToNode](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -288,22 +293,32 @@ func (self class) AddProperty(path Path.ToNode, index int64) { //gd:SceneReplica
 		path  gdextension.NodePath
 		index int64
 	}{pointers.Get(gd.InternalNodePath(path)), index})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) HasProperty(path Path.ToNode) bool { //gd:SceneReplicationConfig.has_property
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_property, gdextension.SizeBool|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
 func (self class) RemoveProperty(path Path.ToNode) { //gd:SceneReplicationConfig.remove_property
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_property, 0|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) PropertyGetIndex(path Path.ToNode) int64 { //gd:SceneReplicationConfig.property_get_index
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.property_get_index, gdextension.SizeInt|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
 func (self class) PropertyGetSpawn(path Path.ToNode) bool { //gd:SceneReplicationConfig.property_get_spawn
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.property_get_spawn, gdextension.SizeBool|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
@@ -312,9 +327,13 @@ func (self class) PropertySetSpawn(path Path.ToNode, enabled bool) { //gd:SceneR
 		path    gdextension.NodePath
 		enabled bool
 	}{pointers.Get(gd.InternalNodePath(path)), enabled})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) PropertyGetReplicationMode(path Path.ToNode) ReplicationMode { //gd:SceneReplicationConfig.property_get_replication_mode
 	var r_ret = noescape.Call[ReplicationMode](gd.ObjectChecked(self.AsObject()), methods.property_get_replication_mode, gdextension.SizeInt|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
@@ -323,9 +342,13 @@ func (self class) PropertySetReplicationMode(path Path.ToNode, mode ReplicationM
 		path gdextension.NodePath
 		mode ReplicationMode
 	}{pointers.Get(gd.InternalNodePath(path)), mode})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) PropertyGetSync(path Path.ToNode) bool { //gd:SceneReplicationConfig.property_get_sync
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.property_get_sync, gdextension.SizeBool|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
@@ -334,9 +357,13 @@ func (self class) PropertySetSync(path Path.ToNode, enabled bool) { //gd:SceneRe
 		path    gdextension.NodePath
 		enabled bool
 	}{pointers.Get(gd.InternalNodePath(path)), enabled})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) PropertyGetWatch(path Path.ToNode) bool { //gd:SceneReplicationConfig.property_get_watch
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.property_get_watch, gdextension.SizeBool|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = r_ret
 	return ret
 }
@@ -345,13 +372,15 @@ func (self class) PropertySetWatch(path Path.ToNode, enabled bool) { //gd:SceneR
 		path    gdextension.NodePath
 		enabled bool
 	}{pointers.Get(gd.InternalNodePath(path)), enabled})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (o class) AsSceneReplicationConfig() Advanced         { return Advanced(o) }
 func (o Instance) AsSceneReplicationConfig() Instance      { return o }
 func (o *Extension[T]) AsSceneReplicationConfig() Instance { return o.Super() }
-func (o class) AsResource() Resource.Advanced              { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced              { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance      { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance           { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance           { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                        { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }

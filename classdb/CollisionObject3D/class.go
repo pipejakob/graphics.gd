@@ -11,6 +11,7 @@ Warning: With a non-uniform scale, this node will likely not behave as expected.
 package CollisionObject3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -50,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -419,7 +424,7 @@ func (self Instance) ShapeFindOwner(shape_index int) int { //gd:CollisionObject3
 type Advanced = class
 type class [1]gdclass.CollisionObject3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCollisionObject3D(obj[0])
@@ -434,7 +439,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -580,17 +585,21 @@ func (class) _mouse_exit(impl func(ptr gdclass.Receiver)) (cb gd.ExtensionClassC
 
 func (self class) SetCollisionLayer(layer int64) { //gd:CollisionObject3D.set_collision_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_layer, 0|(gdextension.SizeInt<<4), &struct{ layer int64 }{layer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionLayer() int64 { //gd:CollisionObject3D.get_collision_layer
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_layer, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollisionMask(mask int64) { //gd:CollisionObject3D.set_collision_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_mask, 0|(gdextension.SizeInt<<4), &struct{ mask int64 }{mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionMask() int64 { //gd:CollisionObject3D.get_collision_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -599,9 +608,11 @@ func (self class) SetCollisionLayerValue(layer_number int64, value bool) { //gd:
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionLayerValue(layer_number int64) bool { //gd:CollisionObject3D.get_collision_layer_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_collision_layer_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -610,59 +621,74 @@ func (self class) SetCollisionMaskValue(layer_number int64, value bool) { //gd:C
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionMaskValue(layer_number int64) bool { //gd:CollisionObject3D.get_collision_mask_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_collision_mask_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollisionPriority(priority float64) { //gd:CollisionObject3D.set_collision_priority
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_priority, 0|(gdextension.SizeFloat<<4), &struct{ priority float64 }{priority})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionPriority() float64 { //gd:CollisionObject3D.get_collision_priority
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_collision_priority, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDisableMode(mode DisableMode) { //gd:CollisionObject3D.set_disable_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_disable_mode, 0|(gdextension.SizeInt<<4), &struct{ mode DisableMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDisableMode() DisableMode { //gd:CollisionObject3D.get_disable_mode
 	var r_ret = jumponly.Call[DisableMode](gd.ObjectChecked(self.AsObject()), methods.get_disable_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRayPickable(ray_pickable bool) { //gd:CollisionObject3D.set_ray_pickable
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ray_pickable, 0|(gdextension.SizeBool<<4), &struct{ ray_pickable bool }{ray_pickable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRayPickable() bool { //gd:CollisionObject3D.is_ray_pickable
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_ray_pickable, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCaptureInputOnDrag(enable bool) { //gd:CollisionObject3D.set_capture_input_on_drag
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_capture_input_on_drag, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCaptureInputOnDrag() bool { //gd:CollisionObject3D.get_capture_input_on_drag
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_capture_input_on_drag, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRid() RID.Any { //gd:CollisionObject3D.get_rid
 	var r_ret = jumponly.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_rid, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) CreateShapeOwner(owner [1]gdreference.Object) int64 { //gd:CollisionObject3D.create_shape_owner
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.create_shape_owner, gdextension.SizeInt|(gdextension.SizeObject<<4), &struct{ owner gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetObject(owner[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(owner[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RemoveShapeOwner(owner_id int64) { //gd:CollisionObject3D.remove_shape_owner
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_shape_owner, 0|(gdextension.SizeInt<<4), &struct{ owner_id int64 }{owner_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShapeOwners() Packed.Array[int32] { //gd:CollisionObject3D.get_shape_owners
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_shape_owners, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -671,14 +697,17 @@ func (self class) ShapeOwnerSetTransform(owner_id int64, transform Transform3D.B
 		owner_id  int64
 		transform Transform3D.BasisOrigin
 	}{owner_id, gd.Transposed(transform)})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapeOwnerGetTransform(owner_id int64) Transform3D.BasisOrigin { //gd:CollisionObject3D.shape_owner_get_transform
 	var r_ret = noescape.Call[Transform3D.BasisOrigin](gd.ObjectChecked(self.AsObject()), methods.shape_owner_get_transform, gdextension.SizeTransform3D|(gdextension.SizeInt<<4), &struct{ owner_id int64 }{owner_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = gd.Transposed(r_ret)
 	return ret
 }
 func (self class) ShapeOwnerGetOwner(owner_id int64) [1]gdreference.Object { //gd:CollisionObject3D.shape_owner_get_owner
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.shape_owner_get_owner, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ owner_id int64 }{owner_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdreference.Object{gdreference.LetObject(r_ret)}
 	return ret
 }
@@ -687,9 +716,11 @@ func (self class) ShapeOwnerSetDisabled(owner_id int64, disabled bool) { //gd:Co
 		owner_id int64
 		disabled bool
 	}{owner_id, disabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsShapeOwnerDisabled(owner_id int64) bool { //gd:CollisionObject3D.is_shape_owner_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_shape_owner_disabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ owner_id int64 }{owner_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -698,9 +729,12 @@ func (self class) ShapeOwnerAddShape(owner_id int64, shape [1]gdclass.Shape3D) {
 		owner_id int64
 		shape    gdextension.Object
 	}{owner_id, gdextension.Object(gdreference.GetObject(gdclass.GetShape3D(shape[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shape[0].Anchor())
 }
 func (self class) ShapeOwnerGetShapeCount(owner_id int64) int64 { //gd:CollisionObject3D.shape_owner_get_shape_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shape_owner_get_shape_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ owner_id int64 }{owner_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -709,6 +743,7 @@ func (self class) ShapeOwnerGetShape(owner_id int64, shape_id int64) [1]gdclass.
 		owner_id int64
 		shape_id int64
 	}{owner_id, shape_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Shape3D{gdclass.NewShape3D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -717,6 +752,7 @@ func (self class) ShapeOwnerGetShapeIndex(owner_id int64, shape_id int64) int64 
 		owner_id int64
 		shape_id int64
 	}{owner_id, shape_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -725,12 +761,15 @@ func (self class) ShapeOwnerRemoveShape(owner_id int64, shape_id int64) { //gd:C
 		owner_id int64
 		shape_id int64
 	}{owner_id, shape_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapeOwnerClearShapes(owner_id int64) { //gd:CollisionObject3D.shape_owner_clear_shapes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.shape_owner_clear_shapes, 0|(gdextension.SizeInt<<4), &struct{ owner_id int64 }{owner_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ShapeFindOwner(shape_index int64) int64 { //gd:CollisionObject3D.shape_find_owner
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.shape_find_owner, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ shape_index int64 }{shape_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -800,12 +839,12 @@ func (self class) MouseExited() Signal.Any {
 func (o class) AsCollisionObject3D() Advanced         { return Advanced(o) }
 func (o Instance) AsCollisionObject3D() Instance      { return o }
 func (o *Extension[T]) AsCollisionObject3D() Instance { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced             { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced             { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance     { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance          { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                 { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance          { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                 { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance         { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance              { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance              { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

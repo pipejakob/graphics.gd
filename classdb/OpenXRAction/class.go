@@ -14,6 +14,7 @@ Note that the name of the resource is used to register the action with.
 package OpenXRAction
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -133,7 +137,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.OpenXRAction
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewOpenXRAction(obj[0])
@@ -148,7 +152,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -212,17 +216,22 @@ func (self Instance) SetToplevelPaths(value []string) Instance { //gd:OpenXRActi
 
 func (self class) SetLocalizedName(localized_name String.Readable) { //gd:OpenXRAction.set_localized_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_localized_name, 0|(gdextension.SizeString<<4), &struct{ localized_name gdextension.String }{pointers.Get(gd.InternalString(localized_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(localized_name)
 }
 func (self class) GetLocalizedName() String.Readable { //gd:OpenXRAction.get_localized_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_localized_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetActionType(action_type ActionType) { //gd:OpenXRAction.set_action_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_action_type, 0|(gdextension.SizeInt<<4), &struct{ action_type ActionType }{action_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetActionType() ActionType { //gd:OpenXRAction.get_action_type
 	var r_ret = jumponly.Call[ActionType](gd.ObjectChecked(self.AsObject()), methods.get_action_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -230,18 +239,21 @@ func (self class) SetToplevelPaths(toplevel_paths Packed.Strings) { //gd:OpenXRA
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_toplevel_paths, 0|(gdextension.SizePackedArray<<4), &struct {
 		toplevel_paths gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(toplevel_paths))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(toplevel_paths)
 }
 func (self class) GetToplevelPaths() Packed.Strings { //gd:OpenXRAction.get_toplevel_paths
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_toplevel_paths, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (o class) AsOpenXRAction() Advanced              { return Advanced(o) }
 func (o Instance) AsOpenXRAction() Instance           { return o }
 func (o *Extension[T]) AsOpenXRAction() Instance      { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

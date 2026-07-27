@@ -12,6 +12,7 @@ Note: Most methods in this class take an index parameter. This parameter specifi
 package LimitAngularVelocityModifier3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -21,6 +22,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -47,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -226,7 +231,7 @@ func (self Instance) Reset() { //gd:LimitAngularVelocityModifier3D.reset
 type Advanced = class
 type class [1]gdclass.LimitAngularVelocityModifier3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewLimitAngularVelocityModifier3D(obj[0])
@@ -241,7 +246,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -310,9 +315,12 @@ func (self class) SetRootBoneName(index int64, bone_name String.Readable) { //gd
 		index     int64
 		bone_name gdextension.String
 	}{index, pointers.Get(gd.InternalString(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetRootBoneName(index int64) String.Readable { //gd:LimitAngularVelocityModifier3D.get_root_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_root_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -321,9 +329,11 @@ func (self class) SetRootBone(index int64, bone int64) { //gd:LimitAngularVeloci
 		index int64
 		bone  int64
 	}{index, bone})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRootBone(index int64) int64 { //gd:LimitAngularVelocityModifier3D.get_root_bone
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_root_bone, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -332,9 +342,12 @@ func (self class) SetEndBoneName(index int64, bone_name String.Readable) { //gd:
 		index     int64
 		bone_name gdextension.String
 	}{index, pointers.Get(gd.InternalString(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetEndBoneName(index int64) String.Readable { //gd:LimitAngularVelocityModifier3D.get_end_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_end_bone_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -343,60 +356,70 @@ func (self class) SetEndBone(index int64, bone int64) { //gd:LimitAngularVelocit
 		index int64
 		bone  int64
 	}{index, bone})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEndBone(index int64) int64 { //gd:LimitAngularVelocityModifier3D.get_end_bone
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_end_bone, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetChainCount(count int64) { //gd:LimitAngularVelocityModifier3D.set_chain_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_chain_count, 0|(gdextension.SizeInt<<4), &struct{ count int64 }{count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetChainCount() int64 { //gd:LimitAngularVelocityModifier3D.get_chain_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_chain_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearChains() { //gd:LimitAngularVelocityModifier3D.clear_chains
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_chains, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetMaxAngularVelocity(angular_velocity float64) { //gd:LimitAngularVelocityModifier3D.set_max_angular_velocity
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_angular_velocity, 0|(gdextension.SizeFloat<<4), &struct{ angular_velocity float64 }{angular_velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxAngularVelocity() float64 { //gd:LimitAngularVelocityModifier3D.get_max_angular_velocity
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_max_angular_velocity, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetExclude(exclude bool) { //gd:LimitAngularVelocityModifier3D.set_exclude
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_exclude, 0|(gdextension.SizeBool<<4), &struct{ exclude bool }{exclude})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsExclude() bool { //gd:LimitAngularVelocityModifier3D.is_exclude
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_exclude, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Reset() { //gd:LimitAngularVelocityModifier3D.reset
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsLimitAngularVelocityModifier3D() Advanced         { return Advanced(o) }
 func (o Instance) AsLimitAngularVelocityModifier3D() Instance      { return o }
 func (o *Extension[T]) AsLimitAngularVelocityModifier3D() Instance { return o.Super() }
 func (o class) AsSkeletonModifier3D() SkeletonModifier3D.Advanced {
-	return SkeletonModifier3D.Advanced{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
 	return o.Super().AsSkeletonModifier3D()
 }
 func (o Instance) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
-	return SkeletonModifier3D.Instance{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

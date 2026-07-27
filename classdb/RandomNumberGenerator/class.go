@@ -22,6 +22,7 @@ To generate a random float number (within a given range) based on a time-depende
 package RandomNumberGenerator
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -54,6 +55,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -239,7 +243,7 @@ func (self Instance) Randomize() { //gd:RandomNumberGenerator.randomize
 type Advanced = class
 type class [1]gdclass.RandomNumberGenerator
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRandomNumberGenerator(obj[0])
@@ -254,7 +258,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -321,27 +325,33 @@ func (self Instance) SetState(value int) Instance { //gd:RandomNumberGenerator.s
 
 func (self class) SetSeed(seed int64) { //gd:RandomNumberGenerator.set_seed
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_seed, 0|(gdextension.SizeInt<<4), &struct{ seed int64 }{seed})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSeed() int64 { //gd:RandomNumberGenerator.get_seed
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_seed, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetState(state int64) { //gd:RandomNumberGenerator.set_state
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_state, 0|(gdextension.SizeInt<<4), &struct{ state int64 }{state})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetState() int64 { //gd:RandomNumberGenerator.get_state
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_state, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Randi() int64 { //gd:RandomNumberGenerator.randi
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.randi, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Randf() float64 { //gd:RandomNumberGenerator.randf
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.randf, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -350,6 +360,7 @@ func (self class) Randfn(mean float64, deviation float64) float64 { //gd:RandomN
 		mean      float64
 		deviation float64
 	}{mean, deviation})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -358,6 +369,7 @@ func (self class) RandfRange(from float64, to float64) float64 { //gd:RandomNumb
 		from float64
 		to   float64
 	}{from, to})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -366,6 +378,7 @@ func (self class) RandiRange(from int64, to int64) int64 { //gd:RandomNumberGene
 		from int64
 		to   int64
 	}{from, to})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -373,11 +386,14 @@ func (self class) RandWeighted(weights Packed.Array[float32]) int64 { //gd:Rando
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.rand_weighted, gdextension.SizeInt|(gdextension.SizePackedArray<<4), &struct {
 		weights gdextension.PackedArray[float32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](weights))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(weights)
 	var ret = r_ret
 	return ret
 }
 func (self class) Randomize() { //gd:RandomNumberGenerator.randomize
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.randomize, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsRandomNumberGenerator() Advanced         { return Advanced(o) }
 func (o Instance) AsRandomNumberGenerator() Instance      { return o }

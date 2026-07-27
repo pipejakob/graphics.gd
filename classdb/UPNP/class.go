@@ -79,6 +79,7 @@ Further reading: If you want to know more about UPnP (and the Internet Gateway D
 package UPNP
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -112,6 +113,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -368,7 +372,7 @@ func (self MoreArgs) DeletePortMapping(port int, proto string) int { //gd:UPNP.d
 type Advanced = class
 type class [1]gdclass.UPNP
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewUPNP(obj[0])
@@ -383,7 +387,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -449,31 +453,40 @@ func (self Instance) SetDiscoverIpv6(value bool) Instance { //gd:UPNP.discover_i
 
 func (self class) GetDeviceCount() int64 { //gd:UPNP.get_device_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_device_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDevice(index int64) [1]gdclass.UPNPDevice { //gd:UPNP.get_device
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_device, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.UPNPDevice{gdclass.NewUPNPDevice(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) AddDevice(device [1]gdclass.UPNPDevice) { //gd:UPNP.add_device
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_device, 0|(gdextension.SizeObject<<4), &struct{ device gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetUPNPDevice(device[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(device[0].Anchor())
 }
 func (self class) SetDevice(index int64, device [1]gdclass.UPNPDevice) { //gd:UPNP.set_device
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_device, 0|(gdextension.SizeInt<<4)|(gdextension.SizeObject<<8), &struct {
 		index  int64
 		device gdextension.Object
 	}{index, gdextension.Object(gdreference.GetObject(gdclass.GetUPNPDevice(device[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(device[0].Anchor())
 }
 func (self class) RemoveDevice(index int64) { //gd:UPNP.remove_device
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_device, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearDevices() { //gd:UPNP.clear_devices
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_devices, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGateway() [1]gdclass.UPNPDevice { //gd:UPNP.get_gateway
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_gateway, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.UPNPDevice{gdclass.NewUPNPDevice(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -483,11 +496,14 @@ func (self class) Discover(timeout int64, ttl int64, device_filter String.Readab
 		ttl           int64
 		device_filter gdextension.String
 	}{timeout, ttl, pointers.Get(gd.InternalString(device_filter))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(device_filter)
 	var ret = r_ret
 	return ret
 }
 func (self class) QueryExternalAddress() String.Readable { //gd:UPNP.query_external_address
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.query_external_address, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -499,6 +515,9 @@ func (self class) AddPortMapping(port int64, port_internal int64, desc String.Re
 		proto         gdextension.String
 		duration      int64
 	}{port, port_internal, pointers.Get(gd.InternalString(desc)), pointers.Get(gd.InternalString(proto)), duration})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(desc)
+	runtime.KeepAlive(proto)
 	var ret = r_ret
 	return ret
 }
@@ -507,30 +526,39 @@ func (self class) DeletePortMapping(port int64, proto String.Readable) int64 { /
 		port  int64
 		proto gdextension.String
 	}{port, pointers.Get(gd.InternalString(proto))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(proto)
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDiscoverMulticastIf(m_if String.Readable) { //gd:UPNP.set_discover_multicast_if
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_discover_multicast_if, 0|(gdextension.SizeString<<4), &struct{ m_if gdextension.String }{pointers.Get(gd.InternalString(m_if))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(m_if)
 }
 func (self class) GetDiscoverMulticastIf() String.Readable { //gd:UPNP.get_discover_multicast_if
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_discover_multicast_if, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetDiscoverLocalPort(port int64) { //gd:UPNP.set_discover_local_port
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_discover_local_port, 0|(gdextension.SizeInt<<4), &struct{ port int64 }{port})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDiscoverLocalPort() int64 { //gd:UPNP.get_discover_local_port
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_discover_local_port, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDiscoverIpv6(ipv6 bool) { //gd:UPNP.set_discover_ipv6
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_discover_ipv6, 0|(gdextension.SizeBool<<4), &struct{ ipv6 bool }{ipv6})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDiscoverIpv6() bool { //gd:UPNP.is_discover_ipv6
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_discover_ipv6, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

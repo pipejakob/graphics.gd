@@ -14,6 +14,7 @@ Playback instance for [AudioStreamPolyphonic]. After setting the stream property
 package AudioStreamPlaybackPolyphonic
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -217,7 +221,7 @@ func (self Instance) StopStream(stream Stream) { //gd:AudioStreamPlaybackPolypho
 type Advanced = class
 type class [1]gdclass.AudioStreamPlaybackPolyphonic
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioStreamPlaybackPolyphonic(obj[0])
@@ -232,7 +236,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -264,6 +268,9 @@ func (self class) PlayStream(stream [1]gdclass.AudioStream, from_offset float64,
 		playback_type AudioServer.PlaybackType
 		bus           gdextension.StringName
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetAudioStream(stream[0])[0])), from_offset, volume_db, pitch_scale, playback_type, pointers.Get(gd.InternalStringName(bus))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(stream[0].Anchor())
+	runtime.KeepAlive(bus)
 	var ret = r_ret
 	return ret
 }
@@ -272,32 +279,36 @@ func (self class) SetStreamVolume(stream int64, volume_db float64) { //gd:AudioS
 		stream    int64
 		volume_db float64
 	}{stream, volume_db})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetStreamPitchScale(stream int64, pitch_scale float64) { //gd:AudioStreamPlaybackPolyphonic.set_stream_pitch_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stream_pitch_scale, 0|(gdextension.SizeInt<<4)|(gdextension.SizeFloat<<8), &struct {
 		stream      int64
 		pitch_scale float64
 	}{stream, pitch_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsStreamPlaying(stream int64) bool { //gd:AudioStreamPlaybackPolyphonic.is_stream_playing
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_stream_playing, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ stream int64 }{stream})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) StopStream(stream int64) { //gd:AudioStreamPlaybackPolyphonic.stop_stream
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.stop_stream, 0|(gdextension.SizeInt<<4), &struct{ stream int64 }{stream})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsAudioStreamPlaybackPolyphonic() Advanced         { return Advanced(o) }
 func (o Instance) AsAudioStreamPlaybackPolyphonic() Instance      { return o }
 func (o *Extension[T]) AsAudioStreamPlaybackPolyphonic() Instance { return o.Super() }
 func (o class) AsAudioStreamPlayback() AudioStreamPlayback.Advanced {
-	return AudioStreamPlayback.Advanced{gdclass.NewAudioStreamPlayback(o[0].AsObject()[0])}
+	return *(*AudioStreamPlayback.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsAudioStreamPlayback() AudioStreamPlayback.Instance {
 	return o.Super().AsAudioStreamPlayback()
 }
 func (o Instance) AsAudioStreamPlayback() AudioStreamPlayback.Instance {
-	return AudioStreamPlayback.Instance{gdclass.NewAudioStreamPlayback(o[0].AsObject()[0])}
+	return *(*AudioStreamPlayback.Instance)(ie.As(&o))
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

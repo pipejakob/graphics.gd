@@ -32,6 +32,7 @@ package RenderingServer
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -41,6 +42,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -79,6 +81,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -5815,7 +5820,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.RenderingServer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRenderingServer(obj[0])
@@ -5830,7 +5835,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 /*
@@ -5850,6 +5855,7 @@ func SetRenderLoopEnabled(value bool) { //gd:RenderingServer.render_loop_enabled
 func (self class) Texture2dCreate(image [1]gdclass.Image) RID.Any { //gd:RenderingServer.texture_2d_create
 	once.Do(singleton)
 	var r_ret = noescape.CallThreadSafe[RID.Any](gdreference.GetObject(self.AsObject()[0]), methods.texture_2d_create, gdextension.SizeRID|(gdextension.SizeObject<<4), &struct{ image gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0]))})
+	runtime.KeepAlive(image[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -5859,6 +5865,7 @@ func (self class) Texture2dLayeredCreate(layers Array.Contains[[1]gdclass.Image]
 		layers       gdextension.Array
 		layered_type TextureLayeredType
 	}{pointers.Get(gd.InternalArray(layers)), layered_type})
+	runtime.KeepAlive(layers)
 	var ret = r_ret
 	return ret
 }
@@ -5872,6 +5879,7 @@ func (self class) Texture3dCreate(format Image.Format, width int64, height int64
 		mipmaps bool
 		data    gdextension.Array
 	}{format, width, height, depth, mipmaps, pointers.Get(gd.InternalArray(data))})
+	runtime.KeepAlive(data)
 	var ret = r_ret
 	return ret
 }
@@ -5915,6 +5923,7 @@ func (self class) Texture2dUpdate(texture RID.Any, image [1]gdclass.Image, layer
 		image   gdextension.Object
 		layer   int64
 	}{texture, gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0])), layer})
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (self class) Texture3dUpdate(texture RID.Any, data Array.Contains[[1]gdclass.Image]) { //gd:RenderingServer.texture_3d_update
 	once.Do(singleton)
@@ -5922,6 +5931,7 @@ func (self class) Texture3dUpdate(texture RID.Any, data Array.Contains[[1]gdclas
 		texture RID.Any
 		data    gdextension.Array
 	}{texture, pointers.Get(gd.InternalArray(data))})
+	runtime.KeepAlive(data)
 }
 func (self class) TextureProxyUpdate(texture RID.Any, proxy_to RID.Any) { //gd:RenderingServer.texture_proxy_update
 	once.Do(singleton)
@@ -5940,6 +5950,8 @@ func (self class) TextureDrawableBlitRect(textures Array.Contains[RID.Any], rect
 		source_textures gdextension.Array
 		to_mipmap       int64
 	}{pointers.Get(gd.InternalArray(textures)), rect, material, modulate, pointers.Get(gd.InternalArray(source_textures)), to_mipmap})
+	runtime.KeepAlive(textures)
+	runtime.KeepAlive(source_textures)
 }
 func (self class) Texture2dPlaceholderCreate() RID.Any { //gd:RenderingServer.texture_2d_placeholder_create
 	once.Do(singleton)
@@ -6011,6 +6023,7 @@ func (self class) TextureSetPath(texture RID.Any, path String.Readable) { //gd:R
 		texture RID.Any
 		path    gdextension.String
 	}{texture, pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(path)
 }
 func (self class) TextureGetPath(texture RID.Any) String.Readable { //gd:RenderingServer.texture_get_path
 	once.Do(singleton)
@@ -6070,6 +6083,7 @@ func (self class) ShaderSetCode(shader RID.Any, code String.Readable) { //gd:Ren
 		shader RID.Any
 		code   gdextension.String
 	}{shader, pointers.Get(gd.InternalString(code))})
+	runtime.KeepAlive(code)
 }
 func (self class) ShaderSetPathHint(shader RID.Any, path String.Readable) { //gd:RenderingServer.shader_set_path_hint
 	once.Do(singleton)
@@ -6077,6 +6091,7 @@ func (self class) ShaderSetPathHint(shader RID.Any, path String.Readable) { //gd
 		shader RID.Any
 		path   gdextension.String
 	}{shader, pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(path)
 }
 func (self class) ShaderGetCode(shader RID.Any) String.Readable { //gd:RenderingServer.shader_get_code
 	once.Do(singleton)
@@ -6096,6 +6111,7 @@ func (self class) ShaderGetParameterDefault(shader RID.Any, name String.Name) va
 		shader RID.Any
 		name   gdextension.StringName
 	}{shader, pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -6107,6 +6123,7 @@ func (self class) ShaderSetDefaultTextureParameter(shader RID.Any, name String.N
 		texture RID.Any
 		index   int64
 	}{shader, pointers.Get(gd.InternalStringName(name)), texture, index})
+	runtime.KeepAlive(name)
 }
 func (self class) ShaderGetDefaultTextureParameter(shader RID.Any, name String.Name, index int64) RID.Any { //gd:RenderingServer.shader_get_default_texture_parameter
 	once.Do(singleton)
@@ -6115,6 +6132,7 @@ func (self class) ShaderGetDefaultTextureParameter(shader RID.Any, name String.N
 		name   gdextension.StringName
 		index  int64
 	}{shader, pointers.Get(gd.InternalStringName(name)), index})
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -6138,6 +6156,8 @@ func (self class) MaterialSetParam(material RID.Any, parameter String.Name, valu
 		parameter gdextension.StringName
 		value     gdextension.Variant
 	}{material, pointers.Get(gd.InternalStringName(parameter)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(parameter)
+	runtime.KeepAlive(value)
 }
 func (self class) MaterialGetParam(material RID.Any, parameter String.Name) variant.Any { //gd:RenderingServer.material_get_param
 	once.Do(singleton)
@@ -6145,6 +6165,7 @@ func (self class) MaterialGetParam(material RID.Any, parameter String.Name) vari
 		material  RID.Any
 		parameter gdextension.StringName
 	}{material, pointers.Get(gd.InternalStringName(parameter))})
+	runtime.KeepAlive(parameter)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -6172,6 +6193,7 @@ func (self class) MeshCreateFromSurfaces(surfaces Array.Contains[Dictionary.Any]
 		surfaces          gdextension.Array
 		blend_shape_count int64
 	}{pointers.Get(gd.InternalArray(surfaces)), blend_shape_count})
+	runtime.KeepAlive(surfaces)
 	var ret = r_ret
 	return ret
 }
@@ -6242,6 +6264,7 @@ func (self class) MeshAddSurface(mesh RID.Any, surface Dictionary.Any) { //gd:Re
 		mesh    RID.Any
 		surface gdextension.Dictionary
 	}{mesh, pointers.Get(gd.InternalDictionary(surface))})
+	runtime.KeepAlive(surface)
 }
 func (self class) MeshAddSurfaceFromArrays(mesh RID.Any, primitive PrimitiveType, arrays Array.Any, blend_shapes Array.Any, lods Dictionary.Any, compress_format ArrayFormat) { //gd:RenderingServer.mesh_add_surface_from_arrays
 	once.Do(singleton)
@@ -6253,6 +6276,9 @@ func (self class) MeshAddSurfaceFromArrays(mesh RID.Any, primitive PrimitiveType
 		lods            gdextension.Dictionary
 		compress_format ArrayFormat
 	}{mesh, primitive, pointers.Get(gd.InternalArray(arrays)), pointers.Get(gd.InternalArray(blend_shapes)), pointers.Get(gd.InternalDictionary(lods)), compress_format})
+	runtime.KeepAlive(arrays)
+	runtime.KeepAlive(blend_shapes)
+	runtime.KeepAlive(lods)
 }
 func (self class) MeshGetBlendShapeCount(mesh RID.Any) int64 { //gd:RenderingServer.mesh_get_blend_shape_count
 	once.Do(singleton)
@@ -6355,6 +6381,7 @@ func (self class) MeshSurfaceUpdateVertexRegion(mesh RID.Any, surface int64, off
 		offset  int64
 		data    gdextension.PackedArray[byte]
 	}{mesh, surface, offset, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(data)
 }
 func (self class) MeshSurfaceUpdateAttributeRegion(mesh RID.Any, surface int64, offset int64, data Packed.Bytes) { //gd:RenderingServer.mesh_surface_update_attribute_region
 	once.Do(singleton)
@@ -6364,6 +6391,7 @@ func (self class) MeshSurfaceUpdateAttributeRegion(mesh RID.Any, surface int64, 
 		offset  int64
 		data    gdextension.PackedArray[byte]
 	}{mesh, surface, offset, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(data)
 }
 func (self class) MeshSurfaceUpdateSkinRegion(mesh RID.Any, surface int64, offset int64, data Packed.Bytes) { //gd:RenderingServer.mesh_surface_update_skin_region
 	once.Do(singleton)
@@ -6373,6 +6401,7 @@ func (self class) MeshSurfaceUpdateSkinRegion(mesh RID.Any, surface int64, offse
 		offset  int64
 		data    gdextension.PackedArray[byte]
 	}{mesh, surface, offset, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(data)
 }
 func (self class) MeshSurfaceUpdateIndexRegion(mesh RID.Any, surface int64, offset int64, data Packed.Bytes) { //gd:RenderingServer.mesh_surface_update_index_region
 	once.Do(singleton)
@@ -6382,6 +6411,7 @@ func (self class) MeshSurfaceUpdateIndexRegion(mesh RID.Any, surface int64, offs
 		offset  int64
 		data    gdextension.PackedArray[byte]
 	}{mesh, surface, offset, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data.Array)))})
+	runtime.KeepAlive(data)
 }
 func (self class) MeshSetShadowMesh(mesh RID.Any, shadow_mesh RID.Any) { //gd:RenderingServer.mesh_set_shadow_mesh
 	once.Do(singleton)
@@ -6532,6 +6562,7 @@ func (self class) MultimeshSetBuffer(multimesh RID.Any, buffer Packed.Array[floa
 		multimesh RID.Any
 		buffer    gdextension.PackedArray[float32]
 	}{multimesh, pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](buffer))})
+	runtime.KeepAlive(buffer)
 }
 func (self class) MultimeshGetCommandBufferRdRid(multimesh RID.Any) RID.Any { //gd:RenderingServer.multimesh_get_command_buffer_rd_rid
 	once.Do(singleton)
@@ -6558,6 +6589,8 @@ func (self class) MultimeshSetBufferInterpolated(multimesh RID.Any, buffer Packe
 		buffer          gdextension.PackedArray[float32]
 		buffer_previous gdextension.PackedArray[float32]
 	}{multimesh, pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](buffer)), pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](buffer_previous))})
+	runtime.KeepAlive(buffer)
+	runtime.KeepAlive(buffer_previous)
 }
 func (self class) MultimeshSetPhysicsInterpolated(multimesh RID.Any, interpolated bool) { //gd:RenderingServer.multimesh_set_physics_interpolated
 	once.Do(singleton)
@@ -7032,6 +7065,10 @@ func (self class) VoxelGiAllocateData(voxel_gi RID.Any, to_cell_xform Transform3
 		distance_field gdextension.PackedArray[byte]
 		level_counts   gdextension.PackedArray[int32]
 	}{voxel_gi, gd.Transposed(to_cell_xform), aabb, octree_size, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](octree_cells.Array))), pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](data_cells.Array))), pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](distance_field.Array))), pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](level_counts))})
+	runtime.KeepAlive(octree_cells)
+	runtime.KeepAlive(data_cells)
+	runtime.KeepAlive(distance_field)
+	runtime.KeepAlive(level_counts)
 }
 func (self class) VoxelGiGetOctreeSize(voxel_gi RID.Any) Vector3i.XYZ { //gd:RenderingServer.voxel_gi_get_octree_size
 	once.Do(singleton)
@@ -7166,6 +7203,10 @@ func (self class) LightmapSetProbeCaptureData(lightmap RID.Any, points Packed.Ar
 		tetrahedra gdextension.PackedArray[int32]
 		bsp_tree   gdextension.PackedArray[int32]
 	}{lightmap, pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](points)), pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](point_sh)), pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](tetrahedra)), pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](bsp_tree))})
+	runtime.KeepAlive(points)
+	runtime.KeepAlive(point_sh)
+	runtime.KeepAlive(tetrahedra)
+	runtime.KeepAlive(bsp_tree)
 }
 func (self class) LightmapGetProbeCapturePoints(lightmap RID.Any) Packed.Array[Vector3.XYZ] { //gd:RenderingServer.lightmap_get_probe_capture_points
 	once.Do(singleton)
@@ -7390,6 +7431,7 @@ func (self class) ParticlesSetTrailBindPoses(particles RID.Any, bind_poses Array
 		particles  RID.Any
 		bind_poses gdextension.Array
 	}{particles, pointers.Get(gd.InternalArray(bind_poses))})
+	runtime.KeepAlive(bind_poses)
 }
 func (self class) ParticlesIsInactive(particles RID.Any) bool { //gd:RenderingServer.particles_is_inactive
 	once.Do(singleton)
@@ -7585,6 +7627,8 @@ func (self class) VisibilityNotifierSetCallbacks(notifier RID.Any, enter_callabl
 		enter_callable gdextension.Callable
 		exit_callable  gdextension.Callable
 	}{notifier, pointers.Get(gd.InternalCallable(enter_callable)), pointers.Get(gd.InternalCallable(exit_callable))})
+	runtime.KeepAlive(enter_callable)
+	runtime.KeepAlive(exit_callable)
 }
 func (self class) OccluderCreate() RID.Any { //gd:RenderingServer.occluder_create
 	once.Do(singleton)
@@ -7599,6 +7643,8 @@ func (self class) OccluderSetMesh(occluder RID.Any, vertices Packed.Array[Vector
 		vertices gdextension.PackedArray[Vector3.XYZ]
 		indices  gdextension.PackedArray[int32]
 	}{occluder, pointers.Get(gd.InternalPacked[gd.PackedVector3Array, Vector3.XYZ](vertices)), pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](indices))})
+	runtime.KeepAlive(vertices)
+	runtime.KeepAlive(indices)
 }
 func (self class) CameraCreate() RID.Any { //gd:RenderingServer.camera_create
 	once.Do(singleton)
@@ -8107,6 +8153,7 @@ func (self class) CompositorEffectSetCallback(effect RID.Any, callback_type Comp
 		callback_type CompositorEffectCallbackType
 		callback      gdextension.Callable
 	}{effect, callback_type, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) CompositorEffectSetFlag(effect RID.Any, flag CompositorEffectFlags, set bool) { //gd:RenderingServer.compositor_effect_set_flag
 	once.Do(singleton)
@@ -8128,6 +8175,7 @@ func (self class) CompositorSetCompositorEffects(compositor RID.Any, effects Arr
 		compositor RID.Any
 		effects    gdextension.Array
 	}{compositor, pointers.Get(gd.InternalArray(effects))})
+	runtime.KeepAlive(effects)
 }
 func (self class) EnvironmentCreate() RID.Any { //gd:RenderingServer.environment_create
 	once.Do(singleton)
@@ -8220,6 +8268,7 @@ func (self class) EnvironmentSetGlow(env RID.Any, enable bool, levels Packed.Arr
 		glow_map_strength   float64
 		glow_map            RID.Any
 	}{env, enable, pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](levels)), intensity, strength, mix, bloom_threshold, blend_mode, hdr_bleed_threshold, hdr_bleed_scale, hdr_luminance_cap, glow_map_strength, glow_map})
+	runtime.KeepAlive(levels)
 }
 func (self class) EnvironmentSetTonemap(env RID.Any, tone_mapper EnvironmentToneMapper, exposure float64, white float64) { //gd:RenderingServer.environment_set_tonemap
 	once.Do(singleton)
@@ -8700,6 +8749,8 @@ func (self class) InstanceGeometrySetShaderParameter(instance RID.Any, parameter
 		parameter gdextension.StringName
 		value     gdextension.Variant
 	}{instance, pointers.Get(gd.InternalStringName(parameter)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(parameter)
+	runtime.KeepAlive(value)
 }
 func (self class) InstanceGeometryGetShaderParameter(instance RID.Any, parameter String.Name) variant.Any { //gd:RenderingServer.instance_geometry_get_shader_parameter
 	once.Do(singleton)
@@ -8707,6 +8758,7 @@ func (self class) InstanceGeometryGetShaderParameter(instance RID.Any, parameter
 		instance  RID.Any
 		parameter gdextension.StringName
 	}{instance, pointers.Get(gd.InternalStringName(parameter))})
+	runtime.KeepAlive(parameter)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -8716,6 +8768,7 @@ func (self class) InstanceGeometryGetShaderParameterDefaultValue(instance RID.An
 		instance  RID.Any
 		parameter gdextension.StringName
 	}{instance, pointers.Get(gd.InternalStringName(parameter))})
+	runtime.KeepAlive(parameter)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -8750,6 +8803,7 @@ func (self class) InstancesCullConvex(convex Array.Contains[Plane.NormalD], scen
 		convex   gdextension.Array
 		scenario RID.Any
 	}{pointers.Get(gd.InternalArray(convex)), scenario})
+	runtime.KeepAlive(convex)
 	var ret = Packed.Array[int64](Array.Through(gd.WrapPacked[gd.PackedInt64Array, int64](pointers.Let[gd.PackedInt64Array](r_ret))))
 	return ret
 }
@@ -8760,6 +8814,7 @@ func (self class) BakeRenderUv2(base RID.Any, material_overrides Array.Contains[
 		material_overrides gdextension.Array
 		image_size         Vector2i.XY
 	}{base, pointers.Get(gd.InternalArray(material_overrides)), image_size})
+	runtime.KeepAlive(material_overrides)
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.Image](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -8968,6 +9023,8 @@ func (self class) CanvasItemAddPolyline(item RID.Any, points Packed.Array[Vector
 		width       float64
 		antialiased bool
 	}{item, pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](points)), pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](colors)), width, antialiased})
+	runtime.KeepAlive(points)
+	runtime.KeepAlive(colors)
 }
 func (self class) CanvasItemAddMultiline(item RID.Any, points Packed.Array[Vector2.XY], colors Packed.Array[Color.RGBA], width float64, antialiased bool) { //gd:RenderingServer.canvas_item_add_multiline
 	once.Do(singleton)
@@ -8978,6 +9035,8 @@ func (self class) CanvasItemAddMultiline(item RID.Any, points Packed.Array[Vecto
 		width       float64
 		antialiased bool
 	}{item, pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](points)), pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](colors)), width, antialiased})
+	runtime.KeepAlive(points)
+	runtime.KeepAlive(colors)
 }
 func (self class) CanvasItemAddRect(item RID.Any, rect Rect2.PositionSize, color Color.RGBA, antialiased bool) { //gd:RenderingServer.canvas_item_add_rect
 	once.Do(singleton)
@@ -9079,6 +9138,9 @@ func (self class) CanvasItemAddPrimitive(item RID.Any, points Packed.Array[Vecto
 		uvs     gdextension.PackedArray[Vector2.XY]
 		texture RID.Any
 	}{item, pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](points)), pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](colors)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](uvs)), texture})
+	runtime.KeepAlive(points)
+	runtime.KeepAlive(colors)
+	runtime.KeepAlive(uvs)
 }
 func (self class) CanvasItemAddPolygon(item RID.Any, points Packed.Array[Vector2.XY], colors Packed.Array[Color.RGBA], uvs Packed.Array[Vector2.XY], texture RID.Any) { //gd:RenderingServer.canvas_item_add_polygon
 	once.Do(singleton)
@@ -9089,6 +9151,9 @@ func (self class) CanvasItemAddPolygon(item RID.Any, points Packed.Array[Vector2
 		uvs     gdextension.PackedArray[Vector2.XY]
 		texture RID.Any
 	}{item, pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](points)), pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](colors)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](uvs)), texture})
+	runtime.KeepAlive(points)
+	runtime.KeepAlive(colors)
+	runtime.KeepAlive(uvs)
 }
 func (self class) CanvasItemAddTriangleArray(item RID.Any, indices Packed.Array[int32], points Packed.Array[Vector2.XY], colors Packed.Array[Color.RGBA], uvs Packed.Array[Vector2.XY], bones Packed.Array[int32], weights Packed.Array[float32], texture RID.Any, count int64) { //gd:RenderingServer.canvas_item_add_triangle_array
 	once.Do(singleton)
@@ -9103,6 +9168,12 @@ func (self class) CanvasItemAddTriangleArray(item RID.Any, indices Packed.Array[
 		texture RID.Any
 		count   int64
 	}{item, pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](indices)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](points)), pointers.Get(gd.InternalPacked[gd.PackedColorArray, Color.RGBA](colors)), pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](uvs)), pointers.Get(gd.InternalPacked[gd.PackedInt32Array, int32](bones)), pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](weights)), texture, count})
+	runtime.KeepAlive(indices)
+	runtime.KeepAlive(points)
+	runtime.KeepAlive(colors)
+	runtime.KeepAlive(uvs)
+	runtime.KeepAlive(bones)
+	runtime.KeepAlive(weights)
 }
 func (self class) CanvasItemAddMesh(item RID.Any, mesh RID.Any, transform Transform2D.OriginXY, modulate Color.RGBA, texture RID.Any) { //gd:RenderingServer.canvas_item_add_mesh
 	once.Do(singleton)
@@ -9222,6 +9293,8 @@ func (self class) CanvasItemSetInstanceShaderParameter(instance RID.Any, paramet
 		parameter gdextension.StringName
 		value     gdextension.Variant
 	}{instance, pointers.Get(gd.InternalStringName(parameter)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(parameter)
+	runtime.KeepAlive(value)
 }
 func (self class) CanvasItemGetInstanceShaderParameter(instance RID.Any, parameter String.Name) variant.Any { //gd:RenderingServer.canvas_item_get_instance_shader_parameter
 	once.Do(singleton)
@@ -9229,6 +9302,7 @@ func (self class) CanvasItemGetInstanceShaderParameter(instance RID.Any, paramet
 		instance  RID.Any
 		parameter gdextension.StringName
 	}{instance, pointers.Get(gd.InternalStringName(parameter))})
+	runtime.KeepAlive(parameter)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -9238,6 +9312,7 @@ func (self class) CanvasItemGetInstanceShaderParameterDefaultValue(instance RID.
 		instance  RID.Any
 		parameter gdextension.StringName
 	}{instance, pointers.Get(gd.InternalStringName(parameter))})
+	runtime.KeepAlive(parameter)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -9256,6 +9331,8 @@ func (self class) CanvasItemSetVisibilityNotifier(item RID.Any, enable bool, are
 		enter_callable gdextension.Callable
 		exit_callable  gdextension.Callable
 	}{item, enable, area, pointers.Get(gd.InternalCallable(enter_callable)), pointers.Get(gd.InternalCallable(exit_callable))})
+	runtime.KeepAlive(enter_callable)
+	runtime.KeepAlive(exit_callable)
 }
 func (self class) CanvasItemSetCanvasGroupMode(item RID.Any, mode CanvasGroupMode, clear_margin float64, fit_empty bool, fit_margin float64, blur_mipmaps bool) { //gd:RenderingServer.canvas_item_set_canvas_group_mode
 	once.Do(singleton)
@@ -9512,6 +9589,7 @@ func (self class) CanvasOccluderPolygonSetShape(occluder_polygon RID.Any, shape 
 		shape            gdextension.PackedArray[Vector2.XY]
 		closed           bool
 	}{occluder_polygon, pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](shape)), closed})
+	runtime.KeepAlive(shape)
 }
 func (self class) CanvasOccluderPolygonSetCullMode(occluder_polygon RID.Any, mode CanvasOccluderPolygonCullMode) { //gd:RenderingServer.canvas_occluder_polygon_set_cull_mode
 	once.Do(singleton)
@@ -9531,10 +9609,13 @@ func (self class) GlobalShaderParameterAdd(name String.Name, atype GlobalShaderP
 		atype         GlobalShaderParameterType
 		default_value gdextension.Variant
 	}{pointers.Get(gd.InternalStringName(name)), atype, gdextension.Variant(pointers.Get(gd.InternalVariant(default_value)))})
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(default_value)
 }
 func (self class) GlobalShaderParameterRemove(name String.Name) { //gd:RenderingServer.global_shader_parameter_remove
 	once.Do(singleton)
 	noescape.CallThreadSafe[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.global_shader_parameter_remove, 0|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) GlobalShaderParameterGetList() Array.Contains[String.Name] { //gd:RenderingServer.global_shader_parameter_get_list
 	once.Do(singleton)
@@ -9548,6 +9629,8 @@ func (self class) GlobalShaderParameterSet(name String.Name, value variant.Any) 
 		name  gdextension.StringName
 		value gdextension.Variant
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(value)
 }
 func (self class) GlobalShaderParameterSetOverride(name String.Name, value variant.Any) { //gd:RenderingServer.global_shader_parameter_set_override
 	once.Do(singleton)
@@ -9555,16 +9638,20 @@ func (self class) GlobalShaderParameterSetOverride(name String.Name, value varia
 		name  gdextension.StringName
 		value gdextension.Variant
 	}{pointers.Get(gd.InternalStringName(name)), gdextension.Variant(pointers.Get(gd.InternalVariant(value)))})
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(value)
 }
 func (self class) GlobalShaderParameterGet(name String.Name) variant.Any { //gd:RenderingServer.global_shader_parameter_get
 	once.Do(singleton)
 	var r_ret = noescape.CallThreadSafe[gdextension.Variant](gdreference.GetObject(self.AsObject()[0]), methods.global_shader_parameter_get, gdextension.SizeVariant|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GlobalShaderParameterGetType(name String.Name) GlobalShaderParameterType { //gd:RenderingServer.global_shader_parameter_get_type
 	once.Do(singleton)
 	var r_ret = noescape.CallThreadSafe[GlobalShaderParameterType](gdreference.GetObject(self.AsObject()[0]), methods.global_shader_parameter_get_type, gdextension.SizeInt|(gdextension.SizeStringName<<4), &struct{ name gdextension.StringName }{pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -9575,6 +9662,7 @@ func (self class) FreeRid(rid RID.Any) { //gd:RenderingServer.free_rid
 func (self class) RequestFrameDrawnCallback(callable Callable.Function) { //gd:RenderingServer.request_frame_drawn_callback
 	once.Do(singleton)
 	noescape.CallThreadSafe[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.request_frame_drawn_callback, 0|(gdextension.SizeCallable<<4), &struct{ callable gdextension.Callable }{pointers.Get(gd.InternalCallable(callable))})
+	runtime.KeepAlive(callable)
 }
 func (self class) HasChanged() bool { //gd:RenderingServer.has_changed
 	once.Do(singleton)
@@ -9660,6 +9748,7 @@ func (self class) SetBootImageWithStretch(image [1]gdclass.Image, color Color.RG
 		stretch_mode SplashStretchMode
 		use_filter   bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0])), color, stretch_mode, use_filter})
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (self class) SetBootImage(image [1]gdclass.Image, color Color.RGBA, scale bool, use_filter bool) { //gd:RenderingServer.set_boot_image
 	once.Do(singleton)
@@ -9669,6 +9758,7 @@ func (self class) SetBootImage(image [1]gdclass.Image, color Color.RGBA, scale b
 		scale      bool
 		use_filter bool
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetImage(image[0])[0])), color, scale, use_filter})
+	runtime.KeepAlive(image[0].Anchor())
 }
 func (self class) GetDefaultClearColor() Color.RGBA { //gd:RenderingServer.get_default_clear_color
 	once.Do(singleton)
@@ -9683,6 +9773,7 @@ func (self class) SetDefaultClearColor(color Color.RGBA) { //gd:RenderingServer.
 func (self class) HasOsFeature(feature String.Readable) bool { //gd:RenderingServer.has_os_feature
 	once.Do(singleton)
 	var r_ret = noescape.CallThreadSafe[bool](gdreference.GetObject(self.AsObject()[0]), methods.has_os_feature, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ feature gdextension.String }{pointers.Get(gd.InternalString(feature))})
+	runtime.KeepAlive(feature)
 	var ret = r_ret
 	return ret
 }
@@ -9738,6 +9829,7 @@ func (self class) IsOnRenderThread() bool { //gd:RenderingServer.is_on_render_th
 func (self class) CallOnRenderThread(callable Callable.Function) { //gd:RenderingServer.call_on_render_thread
 	once.Do(singleton)
 	noescape.CallThreadSafe[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.call_on_render_thread, 0|(gdextension.SizeCallable<<4), &struct{ callable gdextension.Callable }{pointers.Get(gd.InternalCallable(callable))})
+	runtime.KeepAlive(callable)
 }
 func (self class) HasFeature(feature Features) bool { //gd:RenderingServer.has_feature
 	once.Do(singleton)

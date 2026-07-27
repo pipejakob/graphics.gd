@@ -13,6 +13,7 @@ This primitive mesh is usually used for particle trails.
 package TubeTrailMesh
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -50,6 +51,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -145,7 +149,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.TubeTrailMesh
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTubeTrailMesh(obj[0])
@@ -160,7 +164,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -296,82 +300,99 @@ func (self Instance) SetCurve(value Curve.Instance) Instance { //gd:TubeTrailMes
 
 func (self class) SetRadius(radius float64) { //gd:TubeTrailMesh.set_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadius() float64 { //gd:TubeTrailMesh.get_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRadialSteps(radial_steps int64) { //gd:TubeTrailMesh.set_radial_steps
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_radial_steps, 0|(gdextension.SizeInt<<4), &struct{ radial_steps int64 }{radial_steps})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadialSteps() int64 { //gd:TubeTrailMesh.get_radial_steps
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_radial_steps, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSections(sections int64) { //gd:TubeTrailMesh.set_sections
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sections, 0|(gdextension.SizeInt<<4), &struct{ sections int64 }{sections})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSections() int64 { //gd:TubeTrailMesh.get_sections
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_sections, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSectionLength(section_length float64) { //gd:TubeTrailMesh.set_section_length
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_section_length, 0|(gdextension.SizeFloat<<4), &struct{ section_length float64 }{section_length})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSectionLength() float64 { //gd:TubeTrailMesh.get_section_length
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_section_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSectionRings(section_rings int64) { //gd:TubeTrailMesh.set_section_rings
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_section_rings, 0|(gdextension.SizeInt<<4), &struct{ section_rings int64 }{section_rings})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSectionRings() int64 { //gd:TubeTrailMesh.get_section_rings
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_section_rings, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCapTop(cap_top bool) { //gd:TubeTrailMesh.set_cap_top
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cap_top, 0|(gdextension.SizeBool<<4), &struct{ cap_top bool }{cap_top})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCapTop() bool { //gd:TubeTrailMesh.is_cap_top
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_cap_top, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCapBottom(cap_bottom bool) { //gd:TubeTrailMesh.set_cap_bottom
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cap_bottom, 0|(gdextension.SizeBool<<4), &struct{ cap_bottom bool }{cap_bottom})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsCapBottom() bool { //gd:TubeTrailMesh.is_cap_bottom
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_cap_bottom, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCurve(curve [1]gdclass.Curve) { //gd:TubeTrailMesh.set_curve
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_curve, 0|(gdextension.SizeObject<<4), &struct{ curve gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetCurve(curve[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(curve[0].Anchor())
 }
 func (self class) GetCurve() [1]gdclass.Curve { //gd:TubeTrailMesh.get_curve
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_curve, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Curve{gdclass.NewCurve(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsTubeTrailMesh() Advanced                       { return Advanced(o) }
 func (o Instance) AsTubeTrailMesh() Instance                    { return o }
 func (o *Extension[T]) AsTubeTrailMesh() Instance               { return o.Super() }
-func (o class) AsPrimitiveMesh() PrimitiveMesh.Advanced         { return PrimitiveMesh.Advanced{gdclass.NewPrimitiveMesh(o[0].AsObject()[0])} }
+func (o class) AsPrimitiveMesh() PrimitiveMesh.Advanced         { return *(*PrimitiveMesh.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPrimitiveMesh() PrimitiveMesh.Instance { return o.Super().AsPrimitiveMesh() }
 func (o Instance) AsPrimitiveMesh() PrimitiveMesh.Instance {
-	return PrimitiveMesh.Instance{gdclass.NewPrimitiveMesh(o[0].AsObject()[0])}
+	return *(*PrimitiveMesh.Instance)(ie.As(&o))
 }
-func (o class) AsMesh() Mesh.Advanced                 { return Mesh.Advanced{gdclass.NewMesh(o[0].AsObject()[0])} }
+func (o class) AsMesh() Mesh.Advanced                 { return *(*Mesh.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsMesh() Mesh.Instance         { return o.Super().AsMesh() }
-func (o Instance) AsMesh() Mesh.Instance              { return Mesh.Instance{gdclass.NewMesh(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsMesh() Mesh.Instance              { return *(*Mesh.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

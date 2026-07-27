@@ -14,6 +14,7 @@ Note: When exporting to Android, make sure to enable the INTERNET permission in 
 package ENetPacketPeer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -306,7 +310,7 @@ func (self Instance) IsActive() bool { //gd:ENetPacketPeer.is_active
 type Advanced = class
 type class [1]gdclass.ENetPacketPeer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewENetPacketPeer(obj[0])
@@ -321,7 +325,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -346,21 +350,27 @@ func New() Instance {
 
 func (self class) PeerDisconnect(data int64) { //gd:ENetPacketPeer.peer_disconnect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.peer_disconnect, 0|(gdextension.SizeInt<<4), &struct{ data int64 }{data})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PeerDisconnectLater(data int64) { //gd:ENetPacketPeer.peer_disconnect_later
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.peer_disconnect_later, 0|(gdextension.SizeInt<<4), &struct{ data int64 }{data})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PeerDisconnectNow(data int64) { //gd:ENetPacketPeer.peer_disconnect_now
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.peer_disconnect_now, 0|(gdextension.SizeInt<<4), &struct{ data int64 }{data})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Ping() { //gd:ENetPacketPeer.ping
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.ping, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PingInterval(ping_interval int64) { //gd:ENetPacketPeer.ping_interval
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.ping_interval, 0|(gdextension.SizeInt<<4), &struct{ ping_interval int64 }{ping_interval})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Reset() { //gd:ENetPacketPeer.reset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.reset, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Send(channel int64, packet Packed.Bytes, flags int64) Error.Code { //gd:ENetPacketPeer.send
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.send, gdextension.SizeInt|(gdextension.SizeInt<<4)|(gdextension.SizePackedArray<<8)|(gdextension.SizeInt<<12), &struct {
@@ -368,6 +378,8 @@ func (self class) Send(channel int64, packet Packed.Bytes, flags int64) Error.Co
 		packet  gdextension.PackedArray[byte]
 		flags   int64
 	}{channel, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](packet.Array))), flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(packet)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -377,6 +389,7 @@ func (self class) ThrottleConfigure(interval int64, acceleration int64, decelera
 		acceleration int64
 		deceleration int64
 	}{interval, acceleration, deceleration})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTimeout(timeout int64, timeout_min int64, timeout_max int64) { //gd:ENetPacketPeer.set_timeout
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_timeout, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -384,48 +397,56 @@ func (self class) SetTimeout(timeout int64, timeout_min int64, timeout_max int64
 		timeout_min int64
 		timeout_max int64
 	}{timeout, timeout_min, timeout_max})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPacketFlags() int64 { //gd:ENetPacketPeer.get_packet_flags
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_packet_flags, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRemoteAddress() String.Readable { //gd:ENetPacketPeer.get_remote_address
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_remote_address, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetRemotePort() int64 { //gd:ENetPacketPeer.get_remote_port
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_remote_port, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetStatistic(statistic PeerStatistic) float64 { //gd:ENetPacketPeer.get_statistic
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_statistic, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ statistic PeerStatistic }{statistic})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetState() PeerState { //gd:ENetPacketPeer.get_state
 	var r_ret = noescape.Call[PeerState](gd.ObjectChecked(self.AsObject()), methods.get_state, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetChannels() int64 { //gd:ENetPacketPeer.get_channels
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_channels, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) IsActive() bool { //gd:ENetPacketPeer.is_active
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_active, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsENetPacketPeer() Advanced                { return Advanced(o) }
 func (o Instance) AsENetPacketPeer() Instance             { return o }
 func (o *Extension[T]) AsENetPacketPeer() Instance        { return o.Super() }
-func (o class) AsPacketPeer() PacketPeer.Advanced         { return PacketPeer.Advanced{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o class) AsPacketPeer() PacketPeer.Advanced         { return *(*PacketPeer.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPacketPeer() PacketPeer.Instance { return o.Super().AsPacketPeer() }
-func (o Instance) AsPacketPeer() PacketPeer.Instance      { return PacketPeer.Instance{gdclass.NewPacketPeer(o[0].AsObject()[0])} }
+func (o Instance) AsPacketPeer() PacketPeer.Instance      { return *(*PacketPeer.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                       { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC               { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                    { return *(*ie.RC)(ie.As(&o)) }

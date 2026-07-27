@@ -115,6 +115,7 @@ You can use both methods to allow your game or app to support a wider or narrowe
 package WebXRInterface
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -149,6 +150,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -336,7 +340,7 @@ func (self Instance) GetAvailableDisplayRefreshRates() []float32 { //gd:WebXRInt
 type Advanced = class
 type class [1]gdclass.WebXRInterface
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewWebXRInterface(obj[0])
@@ -351,7 +355,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -508,79 +512,102 @@ func (self Instance) VisibilityState() string { //gd:WebXRInterface.visibility_s
 
 func (self class) IsSessionSupported(session_mode String.Readable) { //gd:WebXRInterface.is_session_supported
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.is_session_supported, 0|(gdextension.SizeString<<4), &struct{ session_mode gdextension.String }{pointers.Get(gd.InternalString(session_mode))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(session_mode)
 }
 func (self class) SetSessionMode(session_mode String.Readable) { //gd:WebXRInterface.set_session_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_session_mode, 0|(gdextension.SizeString<<4), &struct{ session_mode gdextension.String }{pointers.Get(gd.InternalString(session_mode))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(session_mode)
 }
 func (self class) GetSessionMode() String.Readable { //gd:WebXRInterface.get_session_mode
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_session_mode, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetRequiredFeatures(required_features String.Readable) { //gd:WebXRInterface.set_required_features
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_required_features, 0|(gdextension.SizeString<<4), &struct{ required_features gdextension.String }{pointers.Get(gd.InternalString(required_features))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(required_features)
 }
 func (self class) GetRequiredFeatures() String.Readable { //gd:WebXRInterface.get_required_features
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_required_features, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOptionalFeatures(optional_features String.Readable) { //gd:WebXRInterface.set_optional_features
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_optional_features, 0|(gdextension.SizeString<<4), &struct{ optional_features gdextension.String }{pointers.Get(gd.InternalString(optional_features))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(optional_features)
 }
 func (self class) GetOptionalFeatures() String.Readable { //gd:WebXRInterface.get_optional_features
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_optional_features, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetReferenceSpaceType() String.Readable { //gd:WebXRInterface.get_reference_space_type
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_reference_space_type, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetEnabledFeatures() String.Readable { //gd:WebXRInterface.get_enabled_features
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_enabled_features, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetRequestedReferenceSpaceTypes(requested_reference_space_types String.Readable) { //gd:WebXRInterface.set_requested_reference_space_types
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_requested_reference_space_types, 0|(gdextension.SizeString<<4), &struct{ requested_reference_space_types gdextension.String }{pointers.Get(gd.InternalString(requested_reference_space_types))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(requested_reference_space_types)
 }
 func (self class) GetRequestedReferenceSpaceTypes() String.Readable { //gd:WebXRInterface.get_requested_reference_space_types
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_requested_reference_space_types, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsInputSourceActive(input_source_id int64) bool { //gd:WebXRInterface.is_input_source_active
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_input_source_active, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ input_source_id int64 }{input_source_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInputSourceTracker(input_source_id int64) [1]gdclass.XRControllerTracker { //gd:WebXRInterface.get_input_source_tracker
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_input_source_tracker, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ input_source_id int64 }{input_source_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.XRControllerTracker{gdclass.NewXRControllerTracker(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetInputSourceTargetRayMode(input_source_id int64) TargetRayMode { //gd:WebXRInterface.get_input_source_target_ray_mode
 	var r_ret = noescape.Call[TargetRayMode](gd.ObjectChecked(self.AsObject()), methods.get_input_source_target_ray_mode, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ input_source_id int64 }{input_source_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVisibilityState() String.Readable { //gd:WebXRInterface.get_visibility_state
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_visibility_state, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetDisplayRefreshRate() float64 { //gd:WebXRInterface.get_display_refresh_rate
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_display_refresh_rate, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDisplayRefreshRate(refresh_rate float64) { //gd:WebXRInterface.set_display_refresh_rate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_display_refresh_rate, 0|(gdextension.SizeFloat<<4), &struct{ refresh_rate float64 }{refresh_rate})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAvailableDisplayRefreshRates() Array.Any { //gd:WebXRInterface.get_available_display_refresh_rates
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_available_display_refresh_rates, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -847,9 +874,9 @@ func (self class) DisplayRefreshRateChanged() Signal.Any {
 func (o class) AsWebXRInterface() Advanced                  { return Advanced(o) }
 func (o Instance) AsWebXRInterface() Instance               { return o }
 func (o *Extension[T]) AsWebXRInterface() Instance          { return o.Super() }
-func (o class) AsXRInterface() XRInterface.Advanced         { return XRInterface.Advanced{gdclass.NewXRInterface(o[0].AsObject()[0])} }
+func (o class) AsXRInterface() XRInterface.Advanced         { return *(*XRInterface.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRInterface() XRInterface.Instance { return o.Super().AsXRInterface() }
-func (o Instance) AsXRInterface() XRInterface.Instance      { return XRInterface.Instance{gdclass.NewXRInterface(o[0].AsObject()[0])} }
+func (o Instance) AsXRInterface() XRInterface.Instance      { return *(*XRInterface.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

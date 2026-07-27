@@ -9,6 +9,7 @@ This node selects a bone in a [Skeleton3D] and attaches to it. This means that t
 package BoneAttachment3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -18,6 +19,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -44,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -154,7 +159,7 @@ func (self Instance) OnSkeletonUpdate() { //gd:BoneAttachment3D.on_skeleton_upda
 type Advanced = class
 type class [1]gdclass.BoneAttachment3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewBoneAttachment3D(obj[0])
@@ -169,7 +174,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -270,61 +275,75 @@ func (self Instance) SetExternalSkeleton(value string) Instance { //gd:BoneAttac
 
 func (self class) GetSkeleton() [1]gdclass.Skeleton3D { //gd:BoneAttachment3D.get_skeleton
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_skeleton, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Skeleton3D{gdclass.NewSkeleton3D(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetBoneName(bone_name String.Readable) { //gd:BoneAttachment3D.set_bone_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_name, 0|(gdextension.SizeString<<4), &struct{ bone_name gdextension.String }{pointers.Get(gd.InternalString(bone_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bone_name)
 }
 func (self class) GetBoneName() String.Readable { //gd:BoneAttachment3D.get_bone_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_bone_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetBoneIdx(bone_idx int64) { //gd:BoneAttachment3D.set_bone_idx
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bone_idx, 0|(gdextension.SizeInt<<4), &struct{ bone_idx int64 }{bone_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBoneIdx() int64 { //gd:BoneAttachment3D.get_bone_idx
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_bone_idx, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) OnSkeletonUpdate() { //gd:BoneAttachment3D.on_skeleton_update
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.on_skeleton_update, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetOverridePose(override_pose bool) { //gd:BoneAttachment3D.set_override_pose
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_override_pose, 0|(gdextension.SizeBool<<4), &struct{ override_pose bool }{override_pose})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOverridePose() bool { //gd:BoneAttachment3D.get_override_pose
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_override_pose, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseExternalSkeleton(use_external_skeleton bool) { //gd:BoneAttachment3D.set_use_external_skeleton
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_external_skeleton, 0|(gdextension.SizeBool<<4), &struct{ use_external_skeleton bool }{use_external_skeleton})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseExternalSkeleton() bool { //gd:BoneAttachment3D.get_use_external_skeleton
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_external_skeleton, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetExternalSkeleton(external_skeleton Path.ToNode) { //gd:BoneAttachment3D.set_external_skeleton
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_external_skeleton, 0|(gdextension.SizeNodePath<<4), &struct{ external_skeleton gdextension.NodePath }{pointers.Get(gd.InternalNodePath(external_skeleton))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(external_skeleton)
 }
 func (self class) GetExternalSkeleton() Path.ToNode { //gd:BoneAttachment3D.get_external_skeleton
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_external_skeleton, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (o class) AsBoneAttachment3D() Advanced         { return Advanced(o) }
 func (o Instance) AsBoneAttachment3D() Instance      { return o }
 func (o *Extension[T]) AsBoneAttachment3D() Instance { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced            { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced            { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance    { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance         { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance         { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance        { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance             { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance             { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

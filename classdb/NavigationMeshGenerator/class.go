@@ -26,6 +26,7 @@ package NavigationMeshGenerator
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -34,6 +35,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -60,6 +62,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -178,7 +183,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.NavigationMeshGenerator
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNavigationMeshGenerator(obj[0])
@@ -193,7 +198,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) Bake(navigation_mesh [1]gdclass.NavigationMesh, root_node [1]gdclass.Node) { //gd:NavigationMeshGenerator.bake
@@ -202,10 +207,13 @@ func (self class) Bake(navigation_mesh [1]gdclass.NavigationMesh, root_node [1]g
 		navigation_mesh gdextension.Object
 		root_node       gdextension.Object
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetNode(root_node[0])[0]))})
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
+	runtime.KeepAlive(root_node[0].Anchor())
 }
 func (self class) Clear(navigation_mesh [1]gdclass.NavigationMesh) { //gd:NavigationMeshGenerator.clear
 	once.Do(singleton)
 	noescape.Call[struct{}](gdreference.GetObject(self.AsObject()[0]), methods.clear, 0|(gdextension.SizeObject<<4), &struct{ navigation_mesh gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0]))})
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
 }
 func (self class) ParseSourceGeometryData(navigation_mesh [1]gdclass.NavigationMesh, source_geometry_data [1]gdclass.NavigationMeshSourceGeometryData3D, root_node [1]gdclass.Node, callback Callable.Function) { //gd:NavigationMeshGenerator.parse_source_geometry_data
 	once.Do(singleton)
@@ -215,6 +223,10 @@ func (self class) ParseSourceGeometryData(navigation_mesh [1]gdclass.NavigationM
 		root_node            gdextension.Object
 		callback             gdextension.Callable
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMeshSourceGeometryData3D(source_geometry_data[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetNode(root_node[0])[0])), pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
+	runtime.KeepAlive(source_geometry_data[0].Anchor())
+	runtime.KeepAlive(root_node[0].Anchor())
+	runtime.KeepAlive(callback)
 }
 func (self class) BakeFromSourceGeometryData(navigation_mesh [1]gdclass.NavigationMesh, source_geometry_data [1]gdclass.NavigationMeshSourceGeometryData3D, callback Callable.Function) { //gd:NavigationMeshGenerator.bake_from_source_geometry_data
 	once.Do(singleton)
@@ -223,6 +235,9 @@ func (self class) BakeFromSourceGeometryData(navigation_mesh [1]gdclass.Navigati
 		source_geometry_data gdextension.Object
 		callback             gdextension.Callable
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMesh(navigation_mesh[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetNavigationMeshSourceGeometryData3D(source_geometry_data[0])[0])), pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(navigation_mesh[0].Anchor())
+	runtime.KeepAlive(source_geometry_data[0].Anchor())
+	runtime.KeepAlive(callback)
 }
 
 func (self class) Virtual(name string) reflect.Value {

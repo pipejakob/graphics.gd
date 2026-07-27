@@ -12,6 +12,7 @@ See [ProjectSettings] "debug/settings/gdscript/always_track_call_stacks" and [Pr
 package ScriptBacktrace
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -296,7 +300,7 @@ func (self MoreArgs) Format(indent_all int, indent_frames int) string { //gd:Scr
 type Advanced = class
 type class [1]gdclass.ScriptBacktrace
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewScriptBacktrace(obj[0])
@@ -311,7 +315,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -336,51 +340,61 @@ func New() Instance {
 
 func (self class) GetLanguageName() String.Readable { //gd:ScriptBacktrace.get_language_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_language_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsEmpty() bool { //gd:ScriptBacktrace.is_empty
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_empty, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFrameCount() int64 { //gd:ScriptBacktrace.get_frame_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_frame_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFrameFunction(index int64) String.Readable { //gd:ScriptBacktrace.get_frame_function
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_frame_function, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetFrameFile(index int64) String.Readable { //gd:ScriptBacktrace.get_frame_file
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_frame_file, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetFrameLine(index int64) int64 { //gd:ScriptBacktrace.get_frame_line
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_frame_line, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetGlobalVariableCount() int64 { //gd:ScriptBacktrace.get_global_variable_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_global_variable_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetGlobalVariableName(variable_index int64) String.Readable { //gd:ScriptBacktrace.get_global_variable_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_global_variable_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ variable_index int64 }{variable_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetGlobalVariableValue(variable_index int64) variant.Any { //gd:ScriptBacktrace.get_global_variable_value
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_global_variable_value, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ variable_index int64 }{variable_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetLocalVariableCount(frame_index int64) int64 { //gd:ScriptBacktrace.get_local_variable_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_local_variable_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ frame_index int64 }{frame_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -389,6 +403,7 @@ func (self class) GetLocalVariableName(frame_index int64, variable_index int64) 
 		frame_index    int64
 		variable_index int64
 	}{frame_index, variable_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -397,11 +412,13 @@ func (self class) GetLocalVariableValue(frame_index int64, variable_index int64)
 		frame_index    int64
 		variable_index int64
 	}{frame_index, variable_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
 func (self class) GetMemberVariableCount(frame_index int64) int64 { //gd:ScriptBacktrace.get_member_variable_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_member_variable_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ frame_index int64 }{frame_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -410,6 +427,7 @@ func (self class) GetMemberVariableName(frame_index int64, variable_index int64)
 		frame_index    int64
 		variable_index int64
 	}{frame_index, variable_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -418,6 +436,7 @@ func (self class) GetMemberVariableValue(frame_index int64, variable_index int64
 		frame_index    int64
 		variable_index int64
 	}{frame_index, variable_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -426,6 +445,7 @@ func (self class) Format(indent_all int64, indent_frames int64) String.Readable 
 		indent_all    int64
 		indent_frames int64
 	}{indent_all, indent_frames})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }

@@ -1,6 +1,7 @@
 package gd
 
 import (
+	"runtime"
 	"unsafe"
 
 	"graphics.gd/internal/gdextension"
@@ -509,12 +510,23 @@ var refcounted_methods struct {
 	get_reference_count gdextension.MethodForClass `hash:"3905245786"`
 }
 
+// Each of the calls below takes raw pointers out of its object and its
+// reference-typed arguments and hands them to the engine, which off the main
+// thread means recording them in the cross-thread ring. The wrappers those
+// pointers came from are dead at that point as far as the collector is
+// concerned, and the frees they queue when collected are only ordered behind
+// calls that have already been recorded, so each one is held alive across the
+// call with [runtime.KeepAlive] — see [gdreference.Object.Anchor].
+
 func ObjectGet(o gdreference.Object, name StringName) Variant {
-	return pointers.New[Variant]([3]uint64(noescape.Call[gdextension.Variant](gdreference.GetObject(o), object_methods.get, gdextension.SizeVariant|gdextension.SizeStringName<<4, unsafe.Pointer(&struct {
+	var ret = noescape.Call[gdextension.Variant](gdreference.GetObject(o), object_methods.get, gdextension.SizeVariant|gdextension.SizeStringName<<4, unsafe.Pointer(&struct {
 		Name gdextension.StringName
 	}{
 		pointers.Get(name),
-	}))))
+	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(name)
+	return pointers.New[Variant]([3]uint64(ret))
 }
 func ObjectSet(o gdreference.Object, name StringName, value Variant) {
 	noescape.Call[struct{}](gdreference.GetObject(o), object_methods.set, 0|gdextension.SizeStringName<<4|gdextension.SizeVariant<<8, unsafe.Pointer(&struct {
@@ -523,14 +535,20 @@ func ObjectSet(o gdreference.Object, name StringName, value Variant) {
 	}{
 		pointers.Get(name), gdextension.Variant(pointers.Get(value)),
 	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(value)
 }
 
 func ObjectGetMeta(o gdreference.Object, name StringName) Variant {
-	return pointers.New[Variant]([3]uint64(noescape.Call[gdextension.Variant](gdreference.GetObject(o), object_methods.get_meta, gdextension.SizeVariant|gdextension.SizeStringName<<4, unsafe.Pointer(&struct {
+	var ret = noescape.Call[gdextension.Variant](gdreference.GetObject(o), object_methods.get_meta, gdextension.SizeVariant|gdextension.SizeStringName<<4, unsafe.Pointer(&struct {
 		Name gdextension.StringName
 	}{
 		pointers.Get(name),
-	}))))
+	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(name)
+	return pointers.New[Variant]([3]uint64(ret))
 }
 func ObjectSetMeta(o gdreference.Object, name StringName, value Variant) {
 	noescape.Call[struct{}](gdreference.GetObject(o), object_methods.set_meta, 0|gdextension.SizeStringName<<4|gdextension.SizeVariant<<8, unsafe.Pointer(&struct {
@@ -539,14 +557,20 @@ func ObjectSetMeta(o gdreference.Object, name StringName, value Variant) {
 	}{
 		pointers.Get(name), gdextension.Variant(pointers.Get(value)),
 	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(value)
 }
 
 func ObjectHasMethod(o gdreference.Object, name StringName) bool {
-	return noescape.Call[bool](gdreference.GetObject(o), object_methods.has_method, gdextension.SizeBool|gdextension.SizeStringName<<4, unsafe.Pointer(&struct {
+	var ret = noescape.Call[bool](gdreference.GetObject(o), object_methods.has_method, gdextension.SizeBool|gdextension.SizeStringName<<4, unsafe.Pointer(&struct {
 		Name gdextension.StringName
 	}{
 		pointers.Get(name),
 	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(name)
+	return ret
 }
 func ObjectCall(o gdreference.Object, method StringName, args ...Variant) (Variant, error) {
 	if threadcheck.Main() {
@@ -564,6 +588,9 @@ func ObjectCall(o gdreference.Object, method StringName, args ...Variant) (Varia
 			// callables re-enter under, so their nested callbacks take the
 			// resident fast path (and the result/error write-backs are staged
 			// through non-moving memory, immune to callback stack moves).
+			runtime.KeepAlive(o.Anchor())
+			runtime.KeepAlive(method)
+			runtime.KeepAlive(args)
 			return pointers.New[Variant]([3]uint64(result)), err.Err()
 		}
 		var err gdextension.CallError
@@ -574,19 +601,27 @@ func ObjectCall(o gdreference.Object, method StringName, args ...Variant) (Varia
 			gdextension.CallAccepts[gdextension.Variant](unsafe.SliceData(converted)),
 			gdextension.CallReturns[gdextension.CallError](&err),
 		)
+		runtime.KeepAlive(o.Anchor())
+		runtime.KeepAlive(method)
+		runtime.KeepAlive(args)
 		return pointers.New[Variant]([3]uint64(result)), err.Err()
 	}
 	return NewVariant(o).Call(method, args...) // FIXME is this ok?
 }
 
 func ObjectCanTranslateMessages(o gdreference.Object) bool {
-	return jumponly.Call[bool](gdreference.GetObject(o), object_methods.can_translate_messages, gdextension.SizeBool, nil)
+	var ret = jumponly.Call[bool](gdreference.GetObject(o), object_methods.can_translate_messages, gdextension.SizeBool, nil)
+	runtime.KeepAlive(o.Anchor())
+	return ret
 }
 func ObjectGetScript(o gdreference.Object) Variant {
-	return pointers.New[Variant]([3]uint64(noescape.Call[gdextension.Variant](gdreference.GetObject(o), object_methods.get_script, gdextension.SizeVariant, nil)))
+	var ret = noescape.Call[gdextension.Variant](gdreference.GetObject(o), object_methods.get_script, gdextension.SizeVariant, nil)
+	runtime.KeepAlive(o.Anchor())
+	return pointers.New[Variant]([3]uint64(ret))
 }
 func ObjectNotifyPropertyListChanged(o gdreference.Object) {
 	noescape.Call[struct{}](gdreference.GetObject(o), object_methods.notify_property_list_changed, 0, nil)
+	runtime.KeepAlive(o.Anchor())
 }
 func ObjectSetBlockSignals(o gdreference.Object, blocking bool) {
 	jumponly.Call[struct{}](gdreference.GetObject(o), object_methods.set_block_signals, 0|gdextension.SizeBool<<4, unsafe.Pointer(&struct {
@@ -594,6 +629,7 @@ func ObjectSetBlockSignals(o gdreference.Object, blocking bool) {
 	}{
 		blocking,
 	}))
+	runtime.KeepAlive(o.Anchor())
 }
 func ObjectSetScript(o gdreference.Object, script Variant) {
 	noescape.Call[struct{}](gdreference.GetObject(o), object_methods.set_script, 0|gdextension.SizeVariant<<4, unsafe.Pointer(&struct {
@@ -601,27 +637,40 @@ func ObjectSetScript(o gdreference.Object, script Variant) {
 	}{
 		gdextension.Variant(pointers.Get(script)),
 	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(script)
 }
 func ObjectToString(o gdreference.Object) String {
-	return pointers.New[String](noescape.Call[gdextension.String](gdreference.GetObject(o), object_methods.to_string, gdextension.SizeString, nil))
+	var ret = noescape.Call[gdextension.String](gdreference.GetObject(o), object_methods.to_string, gdextension.SizeString, nil)
+	runtime.KeepAlive(o.Anchor())
+	return pointers.New[String](ret)
 }
 func ObjectTr(o gdreference.Object, message StringName, context StringName) String {
-	return pointers.New[String](noescape.Call[gdextension.String](gdreference.GetObject(o), object_methods.tr, gdextension.SizeString|gdextension.SizeStringName<<4|gdextension.SizeStringName<<8, unsafe.Pointer(&struct {
+	var ret = noescape.Call[gdextension.String](gdreference.GetObject(o), object_methods.tr, gdextension.SizeString|gdextension.SizeStringName<<4|gdextension.SizeStringName<<8, unsafe.Pointer(&struct {
 		Message gdextension.StringName
 		Context gdextension.StringName
 	}{
 		pointers.Get(message), pointers.Get(context),
-	})))
+	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(message)
+	runtime.KeepAlive(context)
+	return pointers.New[String](ret)
 }
 func ObjectTrN(o gdreference.Object, message StringName, plural StringName, n int64, context StringName) String {
-	return pointers.New[String](noescape.Call[gdextension.String](gdreference.GetObject(o), object_methods.tr_n, gdextension.SizeString|gdextension.SizeStringName<<4|gdextension.SizeStringName<<8|gdextension.SizeInt<<12|gdextension.SizeStringName<<16, unsafe.Pointer(&struct {
+	var ret = noescape.Call[gdextension.String](gdreference.GetObject(o), object_methods.tr_n, gdextension.SizeString|gdextension.SizeStringName<<4|gdextension.SizeStringName<<8|gdextension.SizeInt<<12|gdextension.SizeStringName<<16, unsafe.Pointer(&struct {
 		Message gdextension.StringName
 		Plural  gdextension.StringName
 		N       int64
 		Context gdextension.StringName
 	}{
 		pointers.Get(message), pointers.Get(plural), n, pointers.Get(context),
-	})))
+	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(message)
+	runtime.KeepAlive(plural)
+	runtime.KeepAlive(context)
+	return pointers.New[String](ret)
 }
 func ObjectSetMessageTranslation(o gdreference.Object, enable bool) {
 	jumponly.Call[struct{}](gdreference.GetObject(o), object_methods.set_message_translation, 0|gdextension.SizeBool<<4, unsafe.Pointer(&struct {
@@ -629,29 +678,42 @@ func ObjectSetMessageTranslation(o gdreference.Object, enable bool) {
 	}{
 		enable,
 	}))
+	runtime.KeepAlive(o.Anchor())
 }
 func ObjectIsBlockingSignals(o gdreference.Object) bool {
-	return jumponly.Call[bool](gdreference.GetObject(o), object_methods.is_blocking_signals, gdextension.SizeBool, nil)
+	var ret = jumponly.Call[bool](gdreference.GetObject(o), object_methods.is_blocking_signals, gdextension.SizeBool, nil)
+	runtime.KeepAlive(o.Anchor())
+	return ret
 }
 func ObjectGetClass(o gdreference.Object) String {
-	return pointers.New[String](noescape.Call[gdextension.String](gdreference.GetObject(o), object_methods.get_class, gdextension.SizeString, nil))
+	var ret = noescape.Call[gdextension.String](gdreference.GetObject(o), object_methods.get_class, gdextension.SizeString, nil)
+	runtime.KeepAlive(o.Anchor())
+	return pointers.New[String](ret)
 }
 func ObjectConnect(o gdreference.Object, signal StringName, callable Callable, flags int64) int64 {
-	return noescape.Call[int64](gdreference.GetObject(o), object_methods.connect, gdextension.SizeInt|gdextension.SizeStringName<<4|gdextension.SizeCallable<<8|gdextension.SizeInt<<12, unsafe.Pointer(&struct {
+	var ret = noescape.Call[int64](gdreference.GetObject(o), object_methods.connect, gdextension.SizeInt|gdextension.SizeStringName<<4|gdextension.SizeCallable<<8|gdextension.SizeInt<<12, unsafe.Pointer(&struct {
 		Signal   gdextension.StringName
 		Callable gdextension.Callable
 		Flags    int64
 	}{
 		pointers.Get(signal), gdextension.Callable(pointers.Get(callable)), flags,
 	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(signal)
+	runtime.KeepAlive(callable)
+	return ret
 }
 func ObjectIsConnected(o gdreference.Object, signal StringName, callable Callable) bool {
-	return noescape.Call[bool](gdreference.GetObject(o), object_methods.is_connected, gdextension.SizeBool|gdextension.SizeStringName<<4|gdextension.SizeCallable<<8, unsafe.Pointer(&struct {
+	var ret = noescape.Call[bool](gdreference.GetObject(o), object_methods.is_connected, gdextension.SizeBool|gdextension.SizeStringName<<4|gdextension.SizeCallable<<8, unsafe.Pointer(&struct {
 		Signal   gdextension.StringName
 		Callable gdextension.Callable
 	}{
 		pointers.Get(signal), gdextension.Callable(pointers.Get(callable)),
 	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(signal)
+	runtime.KeepAlive(callable)
+	return ret
 }
 func ObjectDisconnect(o gdreference.Object, signal StringName, callable Callable) {
 	noescape.Call[struct{}](gdreference.GetObject(o), object_methods.disconnect, 0|gdextension.SizeStringName<<4|gdextension.SizeCallable<<8, unsafe.Pointer(&struct {
@@ -660,9 +722,14 @@ func ObjectDisconnect(o gdreference.Object, signal StringName, callable Callable
 	}{
 		pointers.Get(signal), gdextension.Callable(pointers.Get(callable)),
 	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(signal)
+	runtime.KeepAlive(callable)
 }
 func ObjectIsQueuedForDeletion(o gdreference.Object) bool {
-	return jumponly.Call[bool](gdreference.GetObject(o), object_methods.is_queued_for_deletion, gdextension.SizeBool, nil)
+	var ret = jumponly.Call[bool](gdreference.GetObject(o), object_methods.is_queued_for_deletion, gdextension.SizeBool, nil)
+	runtime.KeepAlive(o.Anchor())
+	return ret
 }
 func ObjectNotification(o gdreference.Object, what Int, reversed bool) {
 	noescape.Call[struct{}](gdreference.GetObject(o), object_methods.notification, 0|gdextension.SizeInt<<4|gdextension.SizeBool<<8, unsafe.Pointer(&struct {
@@ -671,9 +738,12 @@ func ObjectNotification(o gdreference.Object, what Int, reversed bool) {
 	}{
 		int64(what), reversed,
 	}))
+	runtime.KeepAlive(o.Anchor())
 }
 func ObjectGetPropertyList(o gdreference.Object) Array {
-	return pointers.New[Array](noescape.Call[gdextension.Array](gdreference.GetObject(o), object_methods.get_property_list, gdextension.SizeArray, nil))
+	var ret = noescape.Call[gdextension.Array](gdreference.GetObject(o), object_methods.get_property_list, gdextension.SizeArray, nil)
+	runtime.KeepAlive(o.Anchor())
+	return pointers.New[Array](ret)
 }
 
 func ObjectSetIndex(o gdreference.Object, i int, v Variant) {
@@ -683,30 +753,41 @@ func ObjectSetIndex(o gdreference.Object, i int, v Variant) {
 	}{
 		int64(i), gdextension.Variant(pointers.Get(v)),
 	}))
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(v)
 }
 
 func ObjectGetIndex(o gdreference.Object, i int) Variant {
-	return pointers.New[Variant]([3]uint64(noescape.Call[gdextension.Variant](gdreference.GetObject(o), object_methods.get_indexed, gdextension.SizeVariant|gdextension.SizeInt<<4, unsafe.Pointer(&struct {
+	var ret = noescape.Call[gdextension.Variant](gdreference.GetObject(o), object_methods.get_indexed, gdextension.SizeVariant|gdextension.SizeInt<<4, unsafe.Pointer(&struct {
 		Index int64
 	}{
 		int64(i),
-	}))))
+	}))
+	runtime.KeepAlive(o.Anchor())
+	return pointers.New[Variant]([3]uint64(ret))
 }
 
 func (rc RefCounted) Reference() {
 	noescape.Call[struct{}](ObjectChecked(rc.AsObject()), refcounted_methods.reference, 0, nil)
+	runtime.KeepAlive(rc.AsObject()[0].Anchor())
 }
 func (rc RefCounted) Unreference() bool {
 	raw := ObjectChecked(rc.AsObject())
 	if raw == 0 {
 		return false
 	}
-	return noescape.Call[bool](raw, refcounted_methods.unreference, gdextension.SizeBool, nil)
+	var ret = noescape.Call[bool](raw, refcounted_methods.unreference, gdextension.SizeBool, nil)
+	runtime.KeepAlive(rc.AsObject()[0].Anchor())
+	return ret
 }
 func (rc RefCounted) InitRef() bool {
-	return noescape.Call[bool](ObjectChecked(rc.AsObject()), refcounted_methods.init_ref, gdextension.SizeBool, nil)
+	var ret = noescape.Call[bool](ObjectChecked(rc.AsObject()), refcounted_methods.init_ref, gdextension.SizeBool, nil)
+	runtime.KeepAlive(rc.AsObject()[0].Anchor())
+	return ret
 }
 
 func (rc RefCounted) GetReferenceCount() int {
-	return int(noescape.Call[int64](ObjectChecked(rc.AsObject()), refcounted_methods.get_reference_count, gdextension.SizeInt, nil))
+	var ret = noescape.Call[int64](ObjectChecked(rc.AsObject()), refcounted_methods.get_reference_count, gdextension.SizeInt, nil)
+	runtime.KeepAlive(rc.AsObject()[0].Anchor())
+	return int(ret)
 }

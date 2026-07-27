@@ -25,6 +25,7 @@ Note: Changing the 3D transform or [LinearVelocity] of a [RigidBody3D] very ofte
 package RigidBody3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -34,6 +35,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -65,6 +67,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -411,7 +416,7 @@ func (self Instance) GetCollidingBodies() []Node3D.Instance { //gd:RigidBody3D.g
 type Advanced = class
 type class [1]gdclass.RigidBody3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRigidBody3D(obj[0])
@@ -426,7 +431,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -839,239 +844,299 @@ func (class) _integrate_forces(impl func(ptr gdclass.Receiver, state [1]gdclass.
 
 func (self class) SetMass(mass float64) { //gd:RigidBody3D.set_mass
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mass, 0|(gdextension.SizeFloat<<4), &struct{ mass float64 }{mass})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMass() float64 { //gd:RigidBody3D.get_mass
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_mass, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInertia(inertia Vector3.XYZ) { //gd:RigidBody3D.set_inertia
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_inertia, 0|(gdextension.SizeVector3<<4), &struct{ inertia Vector3.XYZ }{inertia})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInertia() Vector3.XYZ { //gd:RigidBody3D.get_inertia
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_inertia, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCenterOfMassMode(mode CenterOfMassMode) { //gd:RigidBody3D.set_center_of_mass_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_center_of_mass_mode, 0|(gdextension.SizeInt<<4), &struct{ mode CenterOfMassMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCenterOfMassMode() CenterOfMassMode { //gd:RigidBody3D.get_center_of_mass_mode
 	var r_ret = jumponly.Call[CenterOfMassMode](gd.ObjectChecked(self.AsObject()), methods.get_center_of_mass_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCenterOfMass(center_of_mass Vector3.XYZ) { //gd:RigidBody3D.set_center_of_mass
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_center_of_mass, 0|(gdextension.SizeVector3<<4), &struct{ center_of_mass Vector3.XYZ }{center_of_mass})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCenterOfMass() Vector3.XYZ { //gd:RigidBody3D.get_center_of_mass
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_center_of_mass, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPhysicsMaterialOverride(physics_material_override [1]gdclass.PhysicsMaterial) { //gd:RigidBody3D.set_physics_material_override
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_physics_material_override, 0|(gdextension.SizeObject<<4), &struct{ physics_material_override gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsMaterial(physics_material_override[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(physics_material_override[0].Anchor())
 }
 func (self class) GetPhysicsMaterialOverride() [1]gdclass.PhysicsMaterial { //gd:RigidBody3D.get_physics_material_override
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_physics_material_override, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.PhysicsMaterial{gdclass.NewPhysicsMaterial(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetLinearVelocity(linear_velocity Vector3.XYZ) { //gd:RigidBody3D.set_linear_velocity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_linear_velocity, 0|(gdextension.SizeVector3<<4), &struct{ linear_velocity Vector3.XYZ }{linear_velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLinearVelocity() Vector3.XYZ { //gd:RigidBody3D.get_linear_velocity
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_linear_velocity, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAngularVelocity(angular_velocity Vector3.XYZ) { //gd:RigidBody3D.set_angular_velocity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_angular_velocity, 0|(gdextension.SizeVector3<<4), &struct{ angular_velocity Vector3.XYZ }{angular_velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAngularVelocity() Vector3.XYZ { //gd:RigidBody3D.get_angular_velocity
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_angular_velocity, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInverseInertiaTensor() Basis.XYZ { //gd:RigidBody3D.get_inverse_inertia_tensor
 	var r_ret = jumponly.Call[Basis.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_inverse_inertia_tensor, gdextension.SizeBasis, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Basis.Transposed(r_ret)
 	return ret
 }
 func (self class) SetGravityScale(gravity_scale float64) { //gd:RigidBody3D.set_gravity_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_gravity_scale, 0|(gdextension.SizeFloat<<4), &struct{ gravity_scale float64 }{gravity_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetGravityScale() float64 { //gd:RigidBody3D.get_gravity_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_gravity_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLinearDampMode(linear_damp_mode DampMode) { //gd:RigidBody3D.set_linear_damp_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_linear_damp_mode, 0|(gdextension.SizeInt<<4), &struct{ linear_damp_mode DampMode }{linear_damp_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLinearDampMode() DampMode { //gd:RigidBody3D.get_linear_damp_mode
 	var r_ret = jumponly.Call[DampMode](gd.ObjectChecked(self.AsObject()), methods.get_linear_damp_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAngularDampMode(angular_damp_mode DampMode) { //gd:RigidBody3D.set_angular_damp_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_angular_damp_mode, 0|(gdextension.SizeInt<<4), &struct{ angular_damp_mode DampMode }{angular_damp_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAngularDampMode() DampMode { //gd:RigidBody3D.get_angular_damp_mode
 	var r_ret = jumponly.Call[DampMode](gd.ObjectChecked(self.AsObject()), methods.get_angular_damp_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLinearDamp(linear_damp float64) { //gd:RigidBody3D.set_linear_damp
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_linear_damp, 0|(gdextension.SizeFloat<<4), &struct{ linear_damp float64 }{linear_damp})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetLinearDamp() float64 { //gd:RigidBody3D.get_linear_damp
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_linear_damp, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAngularDamp(angular_damp float64) { //gd:RigidBody3D.set_angular_damp
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_angular_damp, 0|(gdextension.SizeFloat<<4), &struct{ angular_damp float64 }{angular_damp})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAngularDamp() float64 { //gd:RigidBody3D.get_angular_damp
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_angular_damp, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxContactsReported(amount int64) { //gd:RigidBody3D.set_max_contacts_reported
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_contacts_reported, 0|(gdextension.SizeInt<<4), &struct{ amount int64 }{amount})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxContactsReported() int64 { //gd:RigidBody3D.get_max_contacts_reported
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_contacts_reported, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetContactCount() int64 { //gd:RigidBody3D.get_contact_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_contact_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseCustomIntegrator(enable bool) { //gd:RigidBody3D.set_use_custom_integrator
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_custom_integrator, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingCustomIntegrator() bool { //gd:RigidBody3D.is_using_custom_integrator
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_custom_integrator, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetContactMonitor(enabled bool) { //gd:RigidBody3D.set_contact_monitor
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_contact_monitor, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsContactMonitorEnabled() bool { //gd:RigidBody3D.is_contact_monitor_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_contact_monitor_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseContinuousCollisionDetection(enable bool) { //gd:RigidBody3D.set_use_continuous_collision_detection
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_continuous_collision_detection, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingContinuousCollisionDetection() bool { //gd:RigidBody3D.is_using_continuous_collision_detection
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_continuous_collision_detection, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAxisVelocity(axis_velocity Vector3.XYZ) { //gd:RigidBody3D.set_axis_velocity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_axis_velocity, 0|(gdextension.SizeVector3<<4), &struct{ axis_velocity Vector3.XYZ }{axis_velocity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ApplyCentralImpulse(impulse Vector3.XYZ) { //gd:RigidBody3D.apply_central_impulse
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.apply_central_impulse, 0|(gdextension.SizeVector3<<4), &struct{ impulse Vector3.XYZ }{impulse})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ApplyImpulse(impulse Vector3.XYZ, position Vector3.XYZ) { //gd:RigidBody3D.apply_impulse
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.apply_impulse, 0|(gdextension.SizeVector3<<4)|(gdextension.SizeVector3<<8), &struct {
 		impulse  Vector3.XYZ
 		position Vector3.XYZ
 	}{impulse, position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ApplyTorqueImpulse(impulse Vector3.XYZ) { //gd:RigidBody3D.apply_torque_impulse
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.apply_torque_impulse, 0|(gdextension.SizeVector3<<4), &struct{ impulse Vector3.XYZ }{impulse})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ApplyCentralForce(force Vector3.XYZ) { //gd:RigidBody3D.apply_central_force
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.apply_central_force, 0|(gdextension.SizeVector3<<4), &struct{ force Vector3.XYZ }{force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ApplyForce(force Vector3.XYZ, position Vector3.XYZ) { //gd:RigidBody3D.apply_force
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.apply_force, 0|(gdextension.SizeVector3<<4)|(gdextension.SizeVector3<<8), &struct {
 		force    Vector3.XYZ
 		position Vector3.XYZ
 	}{force, position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ApplyTorque(torque Vector3.XYZ) { //gd:RigidBody3D.apply_torque
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.apply_torque, 0|(gdextension.SizeVector3<<4), &struct{ torque Vector3.XYZ }{torque})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddConstantCentralForce(force Vector3.XYZ) { //gd:RigidBody3D.add_constant_central_force
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_constant_central_force, 0|(gdextension.SizeVector3<<4), &struct{ force Vector3.XYZ }{force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddConstantForce(force Vector3.XYZ, position Vector3.XYZ) { //gd:RigidBody3D.add_constant_force
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_constant_force, 0|(gdextension.SizeVector3<<4)|(gdextension.SizeVector3<<8), &struct {
 		force    Vector3.XYZ
 		position Vector3.XYZ
 	}{force, position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddConstantTorque(torque Vector3.XYZ) { //gd:RigidBody3D.add_constant_torque
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_constant_torque, 0|(gdextension.SizeVector3<<4), &struct{ torque Vector3.XYZ }{torque})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetConstantForce(force Vector3.XYZ) { //gd:RigidBody3D.set_constant_force
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_constant_force, 0|(gdextension.SizeVector3<<4), &struct{ force Vector3.XYZ }{force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConstantForce() Vector3.XYZ { //gd:RigidBody3D.get_constant_force
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_constant_force, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetConstantTorque(torque Vector3.XYZ) { //gd:RigidBody3D.set_constant_torque
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_constant_torque, 0|(gdextension.SizeVector3<<4), &struct{ torque Vector3.XYZ }{torque})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetConstantTorque() Vector3.XYZ { //gd:RigidBody3D.get_constant_torque
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_constant_torque, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSleeping(sleeping bool) { //gd:RigidBody3D.set_sleeping
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_sleeping, 0|(gdextension.SizeBool<<4), &struct{ sleeping bool }{sleeping})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSleeping() bool { //gd:RigidBody3D.is_sleeping
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_sleeping, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCanSleep(able_to_sleep bool) { //gd:RigidBody3D.set_can_sleep
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_can_sleep, 0|(gdextension.SizeBool<<4), &struct{ able_to_sleep bool }{able_to_sleep})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAbleToSleep() bool { //gd:RigidBody3D.is_able_to_sleep
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_able_to_sleep, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLockRotationEnabled(lock_rotation bool) { //gd:RigidBody3D.set_lock_rotation_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_lock_rotation_enabled, 0|(gdextension.SizeBool<<4), &struct{ lock_rotation bool }{lock_rotation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsLockRotationEnabled() bool { //gd:RigidBody3D.is_lock_rotation_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_lock_rotation_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFreezeEnabled(freeze_mode bool) { //gd:RigidBody3D.set_freeze_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_freeze_enabled, 0|(gdextension.SizeBool<<4), &struct{ freeze_mode bool }{freeze_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFreezeEnabled() bool { //gd:RigidBody3D.is_freeze_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_freeze_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFreezeMode(freeze_mode FreezeMode) { //gd:RigidBody3D.set_freeze_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_freeze_mode, 0|(gdextension.SizeInt<<4), &struct{ freeze_mode FreezeMode }{freeze_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFreezeMode() FreezeMode { //gd:RigidBody3D.get_freeze_mode
 	var r_ret = jumponly.Call[FreezeMode](gd.ObjectChecked(self.AsObject()), methods.get_freeze_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCollidingBodies() Array.Contains[[1]gdclass.Node3D] { //gd:RigidBody3D.get_colliding_bodies
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_colliding_bodies, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.Node3D](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -1223,26 +1288,26 @@ func (self class) SleepingStateChanged() Signal.Any {
 func (o class) AsRigidBody3D() Advanced                         { return Advanced(o) }
 func (o Instance) AsRigidBody3D() Instance                      { return o }
 func (o *Extension[T]) AsRigidBody3D() Instance                 { return o.Super() }
-func (o class) AsPhysicsBody3D() PhysicsBody3D.Advanced         { return PhysicsBody3D.Advanced{gdclass.NewPhysicsBody3D(o[0].AsObject()[0])} }
+func (o class) AsPhysicsBody3D() PhysicsBody3D.Advanced         { return *(*PhysicsBody3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsPhysicsBody3D() PhysicsBody3D.Instance { return o.Super().AsPhysicsBody3D() }
 func (o Instance) AsPhysicsBody3D() PhysicsBody3D.Instance {
-	return PhysicsBody3D.Instance{gdclass.NewPhysicsBody3D(o[0].AsObject()[0])}
+	return *(*PhysicsBody3D.Instance)(ie.As(&o))
 }
 func (o class) AsCollisionObject3D() CollisionObject3D.Advanced {
-	return CollisionObject3D.Advanced{gdclass.NewCollisionObject3D(o[0].AsObject()[0])}
+	return *(*CollisionObject3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsCollisionObject3D() CollisionObject3D.Instance {
 	return o.Super().AsCollisionObject3D()
 }
 func (o Instance) AsCollisionObject3D() CollisionObject3D.Instance {
-	return CollisionObject3D.Instance{gdclass.NewCollisionObject3D(o[0].AsObject()[0])}
+	return *(*CollisionObject3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -44,6 +44,7 @@ You can add a dock by using [EditorPlugin.AddDock]. The dock can be customized b
 package EditorDock
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -53,6 +54,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -85,6 +87,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -317,7 +322,7 @@ func (self Instance) Close() { //gd:EditorDock.close
 type Advanced = class
 type class [1]gdclass.EditorDock
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorDock(obj[0])
@@ -332,7 +337,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -562,106 +567,138 @@ func (class) _load_layout_from_config(impl func(ptr gdclass.Receiver, config [1]
 
 func (self class) Open() { //gd:EditorDock.open
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.open, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MakeVisible() { //gd:EditorDock.make_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.make_visible, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Close() { //gd:EditorDock.close
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.close, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTitle(title String.Readable) { //gd:EditorDock.set_title
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_title, 0|(gdextension.SizeString<<4), &struct{ title gdextension.String }{pointers.Get(gd.InternalString(title))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(title)
 }
 func (self class) GetTitle() String.Readable { //gd:EditorDock.get_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_title, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetLayoutKey(layout_key String.Readable) { //gd:EditorDock.set_layout_key
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_layout_key, 0|(gdextension.SizeString<<4), &struct{ layout_key gdextension.String }{pointers.Get(gd.InternalString(layout_key))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(layout_key)
 }
 func (self class) GetLayoutKey() String.Readable { //gd:EditorDock.get_layout_key
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_layout_key, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetGlobal(global bool) { //gd:EditorDock.set_global
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_global, 0|(gdextension.SizeBool<<4), &struct{ global bool }{global})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsGlobal() bool { //gd:EditorDock.is_global
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_global, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTransient(transient bool) { //gd:EditorDock.set_transient
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_transient, 0|(gdextension.SizeBool<<4), &struct{ transient bool }{transient})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTransient() bool { //gd:EditorDock.is_transient
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_transient, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetClosable(closable bool) { //gd:EditorDock.set_closable
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_closable, 0|(gdextension.SizeBool<<4), &struct{ closable bool }{closable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsClosable() bool { //gd:EditorDock.is_closable
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_closable, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIconName(icon_name String.Name) { //gd:EditorDock.set_icon_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_icon_name, 0|(gdextension.SizeStringName<<4), &struct{ icon_name gdextension.StringName }{pointers.Get(gd.InternalStringName(icon_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(icon_name)
 }
 func (self class) GetIconName() String.Name { //gd:EditorDock.get_icon_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_icon_name, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetDockIcon(icon [1]gdclass.Texture2D) { //gd:EditorDock.set_dock_icon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_dock_icon, 0|(gdextension.SizeObject<<4), &struct{ icon gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(icon[0].Anchor())
 }
 func (self class) GetDockIcon() [1]gdclass.Texture2D { //gd:EditorDock.get_dock_icon
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_dock_icon, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetForceShowIcon(force bool) { //gd:EditorDock.set_force_show_icon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_force_show_icon, 0|(gdextension.SizeBool<<4), &struct{ force bool }{force})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetForceShowIcon() bool { //gd:EditorDock.get_force_show_icon
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_force_show_icon, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTitleColor(color Color.RGBA) { //gd:EditorDock.set_title_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_title_color, 0|(gdextension.SizeColor<<4), &struct{ color Color.RGBA }{color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTitleColor() Color.RGBA { //gd:EditorDock.get_title_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_title_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDockShortcut(shortcut [1]gdclass.Shortcut) { //gd:EditorDock.set_dock_shortcut
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_dock_shortcut, 0|(gdextension.SizeObject<<4), &struct{ shortcut gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetShortcut(shortcut[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shortcut[0].Anchor())
 }
 func (self class) GetDockShortcut() [1]gdclass.Shortcut { //gd:EditorDock.get_dock_shortcut
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_dock_shortcut, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Shortcut{gdclass.NewShortcut(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetDefaultSlot(slot DockSlot) { //gd:EditorDock.set_default_slot
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_slot, 0|(gdextension.SizeInt<<4), &struct{ slot DockSlot }{slot})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDefaultSlot() DockSlot { //gd:EditorDock.get_default_slot
 	var r_ret = jumponly.Call[DockSlot](gd.ObjectChecked(self.AsObject()), methods.get_default_slot, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAvailableLayouts(layouts DockLayout) { //gd:EditorDock.set_available_layouts
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_available_layouts, 0|(gdextension.SizeInt<<4), &struct{ layouts DockLayout }{layouts})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAvailableLayouts() DockLayout { //gd:EditorDock.get_available_layouts
 	var r_ret = jumponly.Call[DockLayout](gd.ObjectChecked(self.AsObject()), methods.get_available_layouts, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -704,26 +741,26 @@ func (o class) AsEditorDock() Advanced         { return Advanced(o) }
 func (o Instance) AsEditorDock() Instance      { return o }
 func (o *Extension[T]) AsEditorDock() Instance { return o.Super() }
 func (o class) AsMarginContainer() MarginContainer.Advanced {
-	return MarginContainer.Advanced{gdclass.NewMarginContainer(o[0].AsObject()[0])}
+	return *(*MarginContainer.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsMarginContainer() MarginContainer.Instance {
 	return o.Super().AsMarginContainer()
 }
 func (o Instance) AsMarginContainer() MarginContainer.Instance {
-	return MarginContainer.Instance{gdclass.NewMarginContainer(o[0].AsObject()[0])}
+	return *(*MarginContainer.Instance)(ie.As(&o))
 }
-func (o class) AsContainer() Container.Advanced           { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o class) AsContainer() Container.Advanced           { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance   { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance        { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance        { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -6,6 +6,7 @@ External XR interface plugins should inherit from this class.
 package XRInterfaceExtension
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -756,7 +760,7 @@ func (self Instance) GetRenderTargetTexture(render_target RID.Framebuffer) RID.T
 type Advanced = class
 type class [1]gdclass.XRInterfaceExtension
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewXRInterfaceExtension(obj[0])
@@ -771,7 +775,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1065,16 +1069,19 @@ func (class) _get_velocity_texture(impl func(ptr gdclass.Receiver) RID.Any) (cb 
 
 func (self class) GetColorTexture() RID.Any { //gd:XRInterfaceExtension.get_color_texture
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_color_texture, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDepthTexture() RID.Any { //gd:XRInterfaceExtension.get_depth_texture
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_depth_texture, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVelocityTexture() RID.Any { //gd:XRInterfaceExtension.get_velocity_texture
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_velocity_texture, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1092,18 +1099,20 @@ func (self class) AddBlit(render_target RID.Any, src_rect Rect2.PositionSize, ds
 		upscale               float64
 		aspect_ratio          float64
 	}{render_target, src_rect, dst_rect, use_layer, layer, apply_lens_distortion, eye_center, k1, k2, upscale, aspect_ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRenderTargetTexture(render_target RID.Any) RID.Any { //gd:XRInterfaceExtension.get_render_target_texture
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_render_target_texture, gdextension.SizeRID|(gdextension.SizeRID<<4), &struct{ render_target RID.Any }{render_target})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsXRInterfaceExtension() Advanced            { return Advanced(o) }
 func (o Instance) AsXRInterfaceExtension() Instance         { return o }
 func (o *Extension[T]) AsXRInterfaceExtension() Instance    { return o.Super() }
-func (o class) AsXRInterface() XRInterface.Advanced         { return XRInterface.Advanced{gdclass.NewXRInterface(o[0].AsObject()[0])} }
+func (o class) AsXRInterface() XRInterface.Advanced         { return *(*XRInterface.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRInterface() XRInterface.Instance { return o.Super().AsXRInterface() }
-func (o Instance) AsXRInterface() XRInterface.Instance      { return XRInterface.Instance{gdclass.NewXRInterface(o[0].AsObject()[0])} }
+func (o Instance) AsXRInterface() XRInterface.Instance      { return *(*XRInterface.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

@@ -10,6 +10,7 @@ If hard clipping is desired, consider [Audioeffectdistortion.ModeClip].
 package AudioEffectLimiter
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -132,7 +136,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.AudioEffectLimiter
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioEffectLimiter(obj[0])
@@ -147,7 +151,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -226,45 +230,53 @@ func (self Instance) SetSoftClipRatio(value Float.X) Instance { //gd:AudioEffect
 
 func (self class) SetCeilingDb(ceiling float64) { //gd:AudioEffectLimiter.set_ceiling_db
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ceiling_db, 0|(gdextension.SizeFloat<<4), &struct{ ceiling float64 }{ceiling})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCeilingDb() float64 { //gd:AudioEffectLimiter.get_ceiling_db
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ceiling_db, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetThresholdDb(threshold float64) { //gd:AudioEffectLimiter.set_threshold_db
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_threshold_db, 0|(gdextension.SizeFloat<<4), &struct{ threshold float64 }{threshold})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetThresholdDb() float64 { //gd:AudioEffectLimiter.get_threshold_db
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_threshold_db, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSoftClipDb(soft_clip float64) { //gd:AudioEffectLimiter.set_soft_clip_db
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_soft_clip_db, 0|(gdextension.SizeFloat<<4), &struct{ soft_clip float64 }{soft_clip})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSoftClipDb() float64 { //gd:AudioEffectLimiter.get_soft_clip_db
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_soft_clip_db, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSoftClipRatio(soft_clip float64) { //gd:AudioEffectLimiter.set_soft_clip_ratio
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_soft_clip_ratio, 0|(gdextension.SizeFloat<<4), &struct{ soft_clip float64 }{soft_clip})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSoftClipRatio() float64 { //gd:AudioEffectLimiter.get_soft_clip_ratio
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_soft_clip_ratio, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAudioEffectLimiter() Advanced              { return Advanced(o) }
 func (o Instance) AsAudioEffectLimiter() Instance           { return o }
 func (o *Extension[T]) AsAudioEffectLimiter() Instance      { return o.Super() }
-func (o class) AsAudioEffect() AudioEffect.Advanced         { return AudioEffect.Advanced{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
+func (o class) AsAudioEffect() AudioEffect.Advanced         { return *(*AudioEffect.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAudioEffect() AudioEffect.Instance { return o.Super().AsAudioEffect() }
-func (o Instance) AsAudioEffect() AudioEffect.Instance      { return AudioEffect.Instance{gdclass.NewAudioEffect(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsAudioEffect() AudioEffect.Instance      { return *(*AudioEffect.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

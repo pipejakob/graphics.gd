@@ -10,6 +10,7 @@ Used by [RenderingDevice.RaytracingPipelineCreate] for ray generation, miss, and
 package RDPipelineShader
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -125,7 +129,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.RDPipelineShader
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDPipelineShader(obj[0])
@@ -140,7 +144,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -191,17 +195,22 @@ func (self Instance) SetSpecializationConstants(value []RDPipelineSpecialization
 
 func (self class) SetShader(p_member RID.Any) { //gd:RDPipelineShader.set_shader
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shader, 0|(gdextension.SizeRID<<4), &struct{ p_member RID.Any }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShader() RID.Any { //gd:RDPipelineShader.get_shader
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_shader, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSpecializationConstants(specialization_constants Array.Contains[[1]gdclass.RDPipelineSpecializationConstant]) { //gd:RDPipelineShader.set_specialization_constants
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_specialization_constants, 0|(gdextension.SizeArray<<4), &struct{ specialization_constants gdextension.Array }{pointers.Get(gd.InternalArray(specialization_constants))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(specialization_constants)
 }
 func (self class) GetSpecializationConstants() Array.Contains[[1]gdclass.RDPipelineSpecializationConstant] { //gd:RDPipelineShader.get_specialization_constants
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_specialization_constants, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.RDPipelineSpecializationConstant](pointers.New[gd.Array](r_ret)))
 	return ret
 }

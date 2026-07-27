@@ -6,6 +6,7 @@ Currently, has no direct usage, use the derived classes instead.
 package VisualShaderNodeGroupBase
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -42,6 +43,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -323,7 +327,7 @@ func (self Instance) GetFreeOutputPortId() int { //gd:VisualShaderNodeGroupBase.
 type Advanced = class
 type class [1]gdclass.VisualShaderNodeGroupBase
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVisualShaderNodeGroupBase(obj[0])
@@ -338,7 +342,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -363,22 +367,30 @@ func New() Instance {
 
 func (self class) SetInputs(inputs String.Readable) { //gd:VisualShaderNodeGroupBase.set_inputs
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_inputs, 0|(gdextension.SizeString<<4), &struct{ inputs gdextension.String }{pointers.Get(gd.InternalString(inputs))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(inputs)
 }
 func (self class) GetInputs() String.Readable { //gd:VisualShaderNodeGroupBase.get_inputs
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_inputs, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SetOutputs(outputs String.Readable) { //gd:VisualShaderNodeGroupBase.set_outputs
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_outputs, 0|(gdextension.SizeString<<4), &struct{ outputs gdextension.String }{pointers.Get(gd.InternalString(outputs))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(outputs)
 }
 func (self class) GetOutputs() String.Readable { //gd:VisualShaderNodeGroupBase.get_outputs
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_outputs, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) IsValidPortName(name String.Readable) bool { //gd:VisualShaderNodeGroupBase.is_valid_port_name
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_valid_port_name, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ name gdextension.String }{pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -388,22 +400,28 @@ func (self class) AddInputPort(id int64, atype int64, name String.Readable) { //
 		atype int64
 		name  gdextension.String
 	}{id, atype, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveInputPort(id int64) { //gd:VisualShaderNodeGroupBase.remove_input_port
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_input_port, 0|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInputPortCount() int64 { //gd:VisualShaderNodeGroupBase.get_input_port_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_input_port_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasInputPort(id int64) bool { //gd:VisualShaderNodeGroupBase.has_input_port
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_input_port, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearInputPorts() { //gd:VisualShaderNodeGroupBase.clear_input_ports
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_input_ports, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddOutputPort(id int64, atype int64, name String.Readable) { //gd:VisualShaderNodeGroupBase.add_output_port
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_output_port, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeString<<12), &struct {
@@ -411,54 +429,68 @@ func (self class) AddOutputPort(id int64, atype int64, name String.Readable) { /
 		atype int64
 		name  gdextension.String
 	}{id, atype, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) RemoveOutputPort(id int64) { //gd:VisualShaderNodeGroupBase.remove_output_port
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_output_port, 0|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOutputPortCount() int64 { //gd:VisualShaderNodeGroupBase.get_output_port_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_output_port_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasOutputPort(id int64) bool { //gd:VisualShaderNodeGroupBase.has_output_port
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_output_port, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ id int64 }{id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearOutputPorts() { //gd:VisualShaderNodeGroupBase.clear_output_ports
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_output_ports, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetInputPortName(id int64, name String.Readable) { //gd:VisualShaderNodeGroupBase.set_input_port_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_input_port_name, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8), &struct {
 		id   int64
 		name gdextension.String
 	}{id, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) SetInputPortType(id int64, atype int64) { //gd:VisualShaderNodeGroupBase.set_input_port_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_input_port_type, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		id    int64
 		atype int64
 	}{id, atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetOutputPortName(id int64, name String.Readable) { //gd:VisualShaderNodeGroupBase.set_output_port_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_output_port_name, 0|(gdextension.SizeInt<<4)|(gdextension.SizeString<<8), &struct {
 		id   int64
 		name gdextension.String
 	}{id, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) SetOutputPortType(id int64, atype int64) { //gd:VisualShaderNodeGroupBase.set_output_port_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_output_port_type, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		id    int64
 		atype int64
 	}{id, atype})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFreeInputPortId() int64 { //gd:VisualShaderNodeGroupBase.get_free_input_port_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_free_input_port_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFreeOutputPortId() int64 { //gd:VisualShaderNodeGroupBase.get_free_output_port_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_free_output_port_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -466,26 +498,26 @@ func (o class) AsVisualShaderNodeGroupBase() Advanced         { return Advanced(
 func (o Instance) AsVisualShaderNodeGroupBase() Instance      { return o }
 func (o *Extension[T]) AsVisualShaderNodeGroupBase() Instance { return o.Super() }
 func (o class) AsVisualShaderNodeResizableBase() VisualShaderNodeResizableBase.Advanced {
-	return VisualShaderNodeResizableBase.Advanced{gdclass.NewVisualShaderNodeResizableBase(o[0].AsObject()[0])}
+	return *(*VisualShaderNodeResizableBase.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualShaderNodeResizableBase() VisualShaderNodeResizableBase.Instance {
 	return o.Super().AsVisualShaderNodeResizableBase()
 }
 func (o Instance) AsVisualShaderNodeResizableBase() VisualShaderNodeResizableBase.Instance {
-	return VisualShaderNodeResizableBase.Instance{gdclass.NewVisualShaderNodeResizableBase(o[0].AsObject()[0])}
+	return *(*VisualShaderNodeResizableBase.Instance)(ie.As(&o))
 }
 func (o class) AsVisualShaderNode() VisualShaderNode.Advanced {
-	return VisualShaderNode.Advanced{gdclass.NewVisualShaderNode(o[0].AsObject()[0])}
+	return *(*VisualShaderNode.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualShaderNode() VisualShaderNode.Instance {
 	return o.Super().AsVisualShaderNode()
 }
 func (o Instance) AsVisualShaderNode() VisualShaderNode.Instance {
-	return VisualShaderNode.Instance{gdclass.NewVisualShaderNode(o[0].AsObject()[0])}
+	return *(*VisualShaderNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

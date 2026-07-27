@@ -25,6 +25,7 @@ Note: When using the Mobile rendering method, reflection probes will only correc
 package ReflectionProbe
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -34,6 +35,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -62,6 +64,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -171,7 +176,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.ReflectionProbe
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewReflectionProbe(obj[0])
@@ -186,7 +191,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -456,121 +461,151 @@ func (self Instance) SetAmbientColorEnergy(value Float.X) Instance { //gd:Reflec
 
 func (self class) SetIntensity(intensity float64) { //gd:ReflectionProbe.set_intensity
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_intensity, 0|(gdextension.SizeFloat<<4), &struct{ intensity float64 }{intensity})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIntensity() float64 { //gd:ReflectionProbe.get_intensity
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_intensity, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBlendDistance(blend_distance float64) { //gd:ReflectionProbe.set_blend_distance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_blend_distance, 0|(gdextension.SizeFloat<<4), &struct{ blend_distance float64 }{blend_distance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBlendDistance() float64 { //gd:ReflectionProbe.get_blend_distance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_blend_distance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAmbientMode(ambient AmbientMode) { //gd:ReflectionProbe.set_ambient_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ambient_mode, 0|(gdextension.SizeInt<<4), &struct{ ambient AmbientMode }{ambient})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAmbientMode() AmbientMode { //gd:ReflectionProbe.get_ambient_mode
 	var r_ret = jumponly.Call[AmbientMode](gd.ObjectChecked(self.AsObject()), methods.get_ambient_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAmbientColor(ambient Color.RGBA) { //gd:ReflectionProbe.set_ambient_color
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ambient_color, 0|(gdextension.SizeColor<<4), &struct{ ambient Color.RGBA }{ambient})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAmbientColor() Color.RGBA { //gd:ReflectionProbe.get_ambient_color
 	var r_ret = jumponly.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_ambient_color, gdextension.SizeColor, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAmbientColorEnergy(ambient_energy float64) { //gd:ReflectionProbe.set_ambient_color_energy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_ambient_color_energy, 0|(gdextension.SizeFloat<<4), &struct{ ambient_energy float64 }{ambient_energy})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAmbientColorEnergy() float64 { //gd:ReflectionProbe.get_ambient_color_energy
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_ambient_color_energy, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaxDistance(max_distance float64) { //gd:ReflectionProbe.set_max_distance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max_distance, 0|(gdextension.SizeFloat<<4), &struct{ max_distance float64 }{max_distance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMaxDistance() float64 { //gd:ReflectionProbe.get_max_distance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_max_distance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMeshLodThreshold(ratio float64) { //gd:ReflectionProbe.set_mesh_lod_threshold
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mesh_lod_threshold, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMeshLodThreshold() float64 { //gd:ReflectionProbe.get_mesh_lod_threshold
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_mesh_lod_threshold, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSize(size Vector3.XYZ) { //gd:ReflectionProbe.set_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size, 0|(gdextension.SizeVector3<<4), &struct{ size Vector3.XYZ }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSize() Vector3.XYZ { //gd:ReflectionProbe.get_size
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOriginOffset(origin_offset Vector3.XYZ) { //gd:ReflectionProbe.set_origin_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_origin_offset, 0|(gdextension.SizeVector3<<4), &struct{ origin_offset Vector3.XYZ }{origin_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOriginOffset() Vector3.XYZ { //gd:ReflectionProbe.get_origin_offset
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_origin_offset, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAsInterior(enable bool) { //gd:ReflectionProbe.set_as_interior
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_as_interior, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsSetAsInterior() bool { //gd:ReflectionProbe.is_set_as_interior
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_set_as_interior, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnableBoxProjection(enable bool) { //gd:ReflectionProbe.set_enable_box_projection
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_box_projection, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsBoxProjectionEnabled() bool { //gd:ReflectionProbe.is_box_projection_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_box_projection_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnableShadows(enable bool) { //gd:ReflectionProbe.set_enable_shadows
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_shadows, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AreShadowsEnabled() bool { //gd:ReflectionProbe.are_shadows_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.are_shadows_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCullMask(layers int64) { //gd:ReflectionProbe.set_cull_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cull_mask, 0|(gdextension.SizeInt<<4), &struct{ layers int64 }{layers})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCullMask() int64 { //gd:ReflectionProbe.get_cull_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_cull_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetReflectionMask(layers int64) { //gd:ReflectionProbe.set_reflection_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_reflection_mask, 0|(gdextension.SizeInt<<4), &struct{ layers int64 }{layers})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetReflectionMask() int64 { //gd:ReflectionProbe.get_reflection_mask
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_reflection_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUpdateMode(mode UpdateMode) { //gd:ReflectionProbe.set_update_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_update_mode, 0|(gdextension.SizeInt<<4), &struct{ mode UpdateMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUpdateMode() UpdateMode { //gd:ReflectionProbe.get_update_mode
 	var r_ret = jumponly.Call[UpdateMode](gd.ObjectChecked(self.AsObject()), methods.get_update_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -578,20 +613,20 @@ func (o class) AsReflectionProbe() Advanced         { return Advanced(o) }
 func (o Instance) AsReflectionProbe() Instance      { return o }
 func (o *Extension[T]) AsReflectionProbe() Instance { return o.Super() }
 func (o class) AsVisualInstance3D() VisualInstance3D.Advanced {
-	return VisualInstance3D.Advanced{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualInstance3D() VisualInstance3D.Instance {
 	return o.Super().AsVisualInstance3D()
 }
 func (o Instance) AsVisualInstance3D() VisualInstance3D.Instance {
-	return VisualInstance3D.Instance{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

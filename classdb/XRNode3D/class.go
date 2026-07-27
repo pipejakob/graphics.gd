@@ -11,6 +11,7 @@ This node can be bound to a specific pose of an [XRPositionalTracker] and will a
 package XRNode3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -46,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -181,7 +186,7 @@ func (self Instance) TriggerHapticPulse(action_name string, frequency Float.X, a
 type Advanced = class
 type class [1]gdclass.XRNode3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewXRNode3D(obj[0])
@@ -196,7 +201,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -268,40 +273,51 @@ func (self Instance) SetShowWhenTracked(value bool) Instance { //gd:XRNode3D.sho
 
 func (self class) SetTracker(tracker_name String.Name) { //gd:XRNode3D.set_tracker
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tracker, 0|(gdextension.SizeStringName<<4), &struct{ tracker_name gdextension.StringName }{pointers.Get(gd.InternalStringName(tracker_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tracker_name)
 }
 func (self class) GetTracker() String.Name { //gd:XRNode3D.get_tracker
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_tracker, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetPoseName(pose String.Name) { //gd:XRNode3D.set_pose_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_pose_name, 0|(gdextension.SizeStringName<<4), &struct{ pose gdextension.StringName }{pointers.Get(gd.InternalStringName(pose))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(pose)
 }
 func (self class) GetPoseName() String.Name { //gd:XRNode3D.get_pose_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_pose_name, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) SetShowWhenTracked(show bool) { //gd:XRNode3D.set_show_when_tracked
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_show_when_tracked, 0|(gdextension.SizeBool<<4), &struct{ show bool }{show})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetShowWhenTracked() bool { //gd:XRNode3D.get_show_when_tracked
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_show_when_tracked, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetIsActive() bool { //gd:XRNode3D.get_is_active
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_is_active, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetHasTrackingData() bool { //gd:XRNode3D.get_has_tracking_data
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_has_tracking_data, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPose() [1]gdclass.XRPose { //gd:XRNode3D.get_pose
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_pose, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.XRPose{gdclass.NewXRPose(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -313,6 +329,8 @@ func (self class) TriggerHapticPulse(action_name String.Readable, frequency floa
 		duration_sec float64
 		delay_sec    float64
 	}{pointers.Get(gd.InternalString(action_name)), frequency, amplitude, duration_sec, delay_sec})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(action_name)
 }
 
 /*
@@ -337,12 +355,12 @@ func (self class) TrackingChanged() Signal.Any {
 func (o class) AsXRNode3D() Advanced              { return Advanced(o) }
 func (o Instance) AsXRNode3D() Instance           { return o }
 func (o *Extension[T]) AsXRNode3D() Instance      { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

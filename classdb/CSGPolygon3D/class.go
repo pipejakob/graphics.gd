@@ -12,6 +12,7 @@ Note: CSG nodes are intended to be used for level prototyping. Creating CSG node
 package CSGPolygon3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -21,6 +22,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -52,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -165,7 +170,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.CSGPolygon3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCSGPolygon3D(obj[0])
@@ -180,7 +185,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -471,137 +476,174 @@ func (self class) SetPolygon(polygon Packed.Array[Vector2.XY]) { //gd:CSGPolygon
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_polygon, 0|(gdextension.SizePackedArray<<4), &struct {
 		polygon gdextension.PackedArray[Vector2.XY]
 	}{pointers.Get(gd.InternalPacked[gd.PackedVector2Array, Vector2.XY](polygon))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(polygon)
 }
 func (self class) GetPolygon() Packed.Array[Vector2.XY] { //gd:CSGPolygon3D.get_polygon
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_polygon, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
 func (self class) SetMode(mode Mode) { //gd:CSGPolygon3D.set_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mode, 0|(gdextension.SizeInt<<4), &struct{ mode Mode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMode() Mode { //gd:CSGPolygon3D.get_mode
 	var r_ret = jumponly.Call[Mode](gd.ObjectChecked(self.AsObject()), methods.get_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDepth(depth float64) { //gd:CSGPolygon3D.set_depth
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_depth, 0|(gdextension.SizeFloat<<4), &struct{ depth float64 }{depth})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDepth() float64 { //gd:CSGPolygon3D.get_depth
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_depth, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSpinDegrees(degrees float64) { //gd:CSGPolygon3D.set_spin_degrees
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_spin_degrees, 0|(gdextension.SizeFloat<<4), &struct{ degrees float64 }{degrees})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpinDegrees() float64 { //gd:CSGPolygon3D.get_spin_degrees
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_spin_degrees, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSpinSides(spin_sides int64) { //gd:CSGPolygon3D.set_spin_sides
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_spin_sides, 0|(gdextension.SizeInt<<4), &struct{ spin_sides int64 }{spin_sides})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpinSides() int64 { //gd:CSGPolygon3D.get_spin_sides
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_spin_sides, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathNode(path Path.ToNode) { //gd:CSGPolygon3D.set_path_node
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_node, 0|(gdextension.SizeNodePath<<4), &struct{ path gdextension.NodePath }{pointers.Get(gd.InternalNodePath(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetPathNode() Path.ToNode { //gd:CSGPolygon3D.get_path_node
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_path_node, gdextension.SizeNodePath, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) SetPathIntervalType(interval_type PathIntervalType) { //gd:CSGPolygon3D.set_path_interval_type
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_interval_type, 0|(gdextension.SizeInt<<4), &struct{ interval_type PathIntervalType }{interval_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathIntervalType() PathIntervalType { //gd:CSGPolygon3D.get_path_interval_type
 	var r_ret = jumponly.Call[PathIntervalType](gd.ObjectChecked(self.AsObject()), methods.get_path_interval_type, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathInterval(interval float64) { //gd:CSGPolygon3D.set_path_interval
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_interval, 0|(gdextension.SizeFloat<<4), &struct{ interval float64 }{interval})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathInterval() float64 { //gd:CSGPolygon3D.get_path_interval
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_path_interval, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathSimplifyAngle(degrees float64) { //gd:CSGPolygon3D.set_path_simplify_angle
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_simplify_angle, 0|(gdextension.SizeFloat<<4), &struct{ degrees float64 }{degrees})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathSimplifyAngle() float64 { //gd:CSGPolygon3D.get_path_simplify_angle
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_path_simplify_angle, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathRotation(path_rotation PathRotation) { //gd:CSGPolygon3D.set_path_rotation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_rotation, 0|(gdextension.SizeInt<<4), &struct{ path_rotation PathRotation }{path_rotation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathRotation() PathRotation { //gd:CSGPolygon3D.get_path_rotation
 	var r_ret = jumponly.Call[PathRotation](gd.ObjectChecked(self.AsObject()), methods.get_path_rotation, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathRotationAccurate(enable bool) { //gd:CSGPolygon3D.set_path_rotation_accurate
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_rotation_accurate, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathRotationAccurate() bool { //gd:CSGPolygon3D.get_path_rotation_accurate
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_path_rotation_accurate, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathLocal(enable bool) { //gd:CSGPolygon3D.set_path_local
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_local, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPathLocal() bool { //gd:CSGPolygon3D.is_path_local
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_path_local, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathContinuousU(enable bool) { //gd:CSGPolygon3D.set_path_continuous_u
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_continuous_u, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPathContinuousU() bool { //gd:CSGPolygon3D.is_path_continuous_u
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_path_continuous_u, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathUDistance(distance float64) { //gd:CSGPolygon3D.set_path_u_distance
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_u_distance, 0|(gdextension.SizeFloat<<4), &struct{ distance float64 }{distance})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPathUDistance() float64 { //gd:CSGPolygon3D.get_path_u_distance
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_path_u_distance, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPathJoined(enable bool) { //gd:CSGPolygon3D.set_path_joined
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_path_joined, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPathJoined() bool { //gd:CSGPolygon3D.is_path_joined
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_path_joined, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaterial(material [1]gdclass.Material) { //gd:CSGPolygon3D.set_material
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_material, 0|(gdextension.SizeObject<<4), &struct{ material gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) GetMaterial() [1]gdclass.Material { //gd:CSGPolygon3D.get_material
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_material, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Material{gdclass.NewMaterial(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetSmoothFaces(smooth_faces bool) { //gd:CSGPolygon3D.set_smooth_faces
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_smooth_faces, 0|(gdextension.SizeBool<<4), &struct{ smooth_faces bool }{smooth_faces})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSmoothFaces() bool { //gd:CSGPolygon3D.get_smooth_faces
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_smooth_faces, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -609,41 +651,41 @@ func (o class) AsCSGPolygon3D() Advanced         { return Advanced(o) }
 func (o Instance) AsCSGPolygon3D() Instance      { return o }
 func (o *Extension[T]) AsCSGPolygon3D() Instance { return o.Super() }
 func (o class) AsCSGPrimitive3D() CSGPrimitive3D.Advanced {
-	return CSGPrimitive3D.Advanced{gdclass.NewCSGPrimitive3D(o[0].AsObject()[0])}
+	return *(*CSGPrimitive3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsCSGPrimitive3D() CSGPrimitive3D.Instance {
 	return o.Super().AsCSGPrimitive3D()
 }
 func (o Instance) AsCSGPrimitive3D() CSGPrimitive3D.Instance {
-	return CSGPrimitive3D.Instance{gdclass.NewCSGPrimitive3D(o[0].AsObject()[0])}
+	return *(*CSGPrimitive3D.Instance)(ie.As(&o))
 }
-func (o class) AsCSGShape3D() CSGShape3D.Advanced         { return CSGShape3D.Advanced{gdclass.NewCSGShape3D(o[0].AsObject()[0])} }
+func (o class) AsCSGShape3D() CSGShape3D.Advanced         { return *(*CSGShape3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCSGShape3D() CSGShape3D.Instance { return o.Super().AsCSGShape3D() }
-func (o Instance) AsCSGShape3D() CSGShape3D.Instance      { return CSGShape3D.Instance{gdclass.NewCSGShape3D(o[0].AsObject()[0])} }
+func (o Instance) AsCSGShape3D() CSGShape3D.Instance      { return *(*CSGShape3D.Instance)(ie.As(&o)) }
 func (o class) AsGeometryInstance3D() GeometryInstance3D.Advanced {
-	return GeometryInstance3D.Advanced{gdclass.NewGeometryInstance3D(o[0].AsObject()[0])}
+	return *(*GeometryInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsGeometryInstance3D() GeometryInstance3D.Instance {
 	return o.Super().AsGeometryInstance3D()
 }
 func (o Instance) AsGeometryInstance3D() GeometryInstance3D.Instance {
-	return GeometryInstance3D.Instance{gdclass.NewGeometryInstance3D(o[0].AsObject()[0])}
+	return *(*GeometryInstance3D.Instance)(ie.As(&o))
 }
 func (o class) AsVisualInstance3D() VisualInstance3D.Advanced {
-	return VisualInstance3D.Advanced{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualInstance3D() VisualInstance3D.Instance {
 	return o.Super().AsVisualInstance3D()
 }
 func (o Instance) AsVisualInstance3D() VisualInstance3D.Instance {
-	return VisualInstance3D.Instance{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

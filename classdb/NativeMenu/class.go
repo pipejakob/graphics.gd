@@ -51,6 +51,7 @@ package NativeMenu
 
 import "sync"
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -59,6 +60,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -86,6 +88,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -1101,7 +1106,7 @@ func Advanced() class { once.Do(singleton); return self }
 
 type class [1]gdclass.NativeMenu
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewNativeMenu(obj[0])
@@ -1116,7 +1121,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 
 func (self class) HasFeature(feature Feature) bool { //gd:NativeMenu.has_feature
@@ -1155,6 +1160,7 @@ func (self class) SetSystemMenuText(menu_id SystemMenus, name String.Readable) {
 		menu_id SystemMenus
 		name    gdextension.String
 	}{menu_id, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(name)
 }
 func (self class) CreateMenu() RID.Any { //gd:NativeMenu.create_menu
 	once.Do(singleton)
@@ -1198,6 +1204,7 @@ func (self class) SetPopupOpenCallback(rid RID.Any, callback Callable.Function) 
 		rid      RID.Any
 		callback gdextension.Callable
 	}{rid, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) GetPopupOpenCallback(rid RID.Any) Callable.Function { //gd:NativeMenu.get_popup_open_callback
 	once.Do(singleton)
@@ -1211,6 +1218,7 @@ func (self class) SetPopupCloseCallback(rid RID.Any, callback Callable.Function)
 		rid      RID.Any
 		callback gdextension.Callable
 	}{rid, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) GetPopupCloseCallback(rid RID.Any) Callable.Function { //gd:NativeMenu.get_popup_close_callback
 	once.Do(singleton)
@@ -1246,6 +1254,8 @@ func (self class) AddSubmenuItem(rid RID.Any, label String.Readable, submenu_rid
 		tag         gdextension.Variant
 		index       int64
 	}{rid, pointers.Get(gd.InternalString(label)), submenu_rid, gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), index})
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -1260,6 +1270,10 @@ func (self class) AddItem(rid RID.Any, label String.Readable, callback Callable.
 		accelerator  Input.Key
 		index        int64
 	}{rid, pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -1274,6 +1288,10 @@ func (self class) AddCheckItem(rid RID.Any, label String.Readable, callback Call
 		accelerator  Input.Key
 		index        int64
 	}{rid, pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -1289,6 +1307,11 @@ func (self class) AddIconItem(rid RID.Any, icon [1]gdclass.Texture2D, label Stri
 		accelerator  Input.Key
 		index        int64
 	}{rid, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0])), pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(icon[0].Anchor())
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -1304,6 +1327,11 @@ func (self class) AddIconCheckItem(rid RID.Any, icon [1]gdclass.Texture2D, label
 		accelerator  Input.Key
 		index        int64
 	}{rid, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0])), pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(icon[0].Anchor())
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -1318,6 +1346,10 @@ func (self class) AddRadioCheckItem(rid RID.Any, label String.Readable, callback
 		accelerator  Input.Key
 		index        int64
 	}{rid, pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -1333,6 +1365,11 @@ func (self class) AddIconRadioCheckItem(rid RID.Any, icon [1]gdclass.Texture2D, 
 		accelerator  Input.Key
 		index        int64
 	}{rid, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0])), pointers.Get(gd.InternalString(label)), pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(icon[0].Anchor())
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -1349,6 +1386,10 @@ func (self class) AddMultistateItem(rid RID.Any, label String.Readable, max_stat
 		accelerator   Input.Key
 		index         int64
 	}{rid, pointers.Get(gd.InternalString(label)), max_states, default_state, pointers.Get(gd.InternalCallable(callback)), pointers.Get(gd.InternalCallable(key_callback)), gdextension.Variant(pointers.Get(gd.InternalVariant(tag))), accelerator, index})
+	runtime.KeepAlive(label)
+	runtime.KeepAlive(callback)
+	runtime.KeepAlive(key_callback)
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -1367,6 +1408,7 @@ func (self class) FindItemIndexWithText(rid RID.Any, text String.Readable) int64
 		rid  RID.Any
 		text gdextension.String
 	}{rid, pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(text)
 	var ret = r_ret
 	return ret
 }
@@ -1376,6 +1418,7 @@ func (self class) FindItemIndexWithTag(rid RID.Any, tag variant.Any) int64 { //g
 		rid RID.Any
 		tag gdextension.Variant
 	}{rid, gdextension.Variant(pointers.Get(gd.InternalVariant(tag)))})
+	runtime.KeepAlive(tag)
 	var ret = r_ret
 	return ret
 }
@@ -1563,6 +1606,7 @@ func (self class) SetItemCallback(rid RID.Any, idx int64, callback Callable.Func
 		idx      int64
 		callback gdextension.Callable
 	}{rid, idx, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) SetItemHoverCallbacks(rid RID.Any, idx int64, callback Callable.Function) { //gd:NativeMenu.set_item_hover_callbacks
 	once.Do(singleton)
@@ -1571,6 +1615,7 @@ func (self class) SetItemHoverCallbacks(rid RID.Any, idx int64, callback Callabl
 		idx      int64
 		callback gdextension.Callable
 	}{rid, idx, pointers.Get(gd.InternalCallable(callback))})
+	runtime.KeepAlive(callback)
 }
 func (self class) SetItemKeyCallback(rid RID.Any, idx int64, key_callback Callable.Function) { //gd:NativeMenu.set_item_key_callback
 	once.Do(singleton)
@@ -1579,6 +1624,7 @@ func (self class) SetItemKeyCallback(rid RID.Any, idx int64, key_callback Callab
 		idx          int64
 		key_callback gdextension.Callable
 	}{rid, idx, pointers.Get(gd.InternalCallable(key_callback))})
+	runtime.KeepAlive(key_callback)
 }
 func (self class) SetItemTag(rid RID.Any, idx int64, tag variant.Any) { //gd:NativeMenu.set_item_tag
 	once.Do(singleton)
@@ -1587,6 +1633,7 @@ func (self class) SetItemTag(rid RID.Any, idx int64, tag variant.Any) { //gd:Nat
 		idx int64
 		tag gdextension.Variant
 	}{rid, idx, gdextension.Variant(pointers.Get(gd.InternalVariant(tag)))})
+	runtime.KeepAlive(tag)
 }
 func (self class) SetItemText(rid RID.Any, idx int64, text String.Readable) { //gd:NativeMenu.set_item_text
 	once.Do(singleton)
@@ -1595,6 +1642,7 @@ func (self class) SetItemText(rid RID.Any, idx int64, text String.Readable) { //
 		idx  int64
 		text gdextension.String
 	}{rid, idx, pointers.Get(gd.InternalString(text))})
+	runtime.KeepAlive(text)
 }
 func (self class) SetItemSubmenu(rid RID.Any, idx int64, submenu_rid RID.Any) { //gd:NativeMenu.set_item_submenu
 	once.Do(singleton)
@@ -1635,6 +1683,7 @@ func (self class) SetItemTooltip(rid RID.Any, idx int64, tooltip String.Readable
 		idx     int64
 		tooltip gdextension.String
 	}{rid, idx, pointers.Get(gd.InternalString(tooltip))})
+	runtime.KeepAlive(tooltip)
 }
 func (self class) SetItemState(rid RID.Any, idx int64, state int64) { //gd:NativeMenu.set_item_state
 	once.Do(singleton)
@@ -1659,6 +1708,7 @@ func (self class) SetItemIcon(rid RID.Any, idx int64, icon [1]gdclass.Texture2D)
 		idx  int64
 		icon gdextension.Object
 	}{rid, idx, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0]))})
+	runtime.KeepAlive(icon[0].Anchor())
 }
 func (self class) SetItemIndentationLevel(rid RID.Any, idx int64, level int64) { //gd:NativeMenu.set_item_indentation_level
 	once.Do(singleton)

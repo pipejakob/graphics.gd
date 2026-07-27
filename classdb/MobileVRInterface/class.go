@@ -31,6 +31,7 @@ Note: For Android, [ProjectSettings] "input_devices/sensors/enable_accelerometer
 package MobileVRInterface
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -66,6 +67,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -165,7 +169,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.MobileVRInterface
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewMobileVRInterface(obj[0])
@@ -180,7 +184,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -345,90 +349,110 @@ func (self Instance) SetVrsStrength(value Float.X) Instance { //gd:MobileVRInter
 
 func (self class) SetEyeHeight(eye_height float64) { //gd:MobileVRInterface.set_eye_height
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_eye_height, 0|(gdextension.SizeFloat<<4), &struct{ eye_height float64 }{eye_height})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEyeHeight() float64 { //gd:MobileVRInterface.get_eye_height
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_eye_height, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetIod(iod float64) { //gd:MobileVRInterface.set_iod
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_iod, 0|(gdextension.SizeFloat<<4), &struct{ iod float64 }{iod})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetIod() float64 { //gd:MobileVRInterface.get_iod
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_iod, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDisplayWidth(display_width float64) { //gd:MobileVRInterface.set_display_width
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_display_width, 0|(gdextension.SizeFloat<<4), &struct{ display_width float64 }{display_width})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDisplayWidth() float64 { //gd:MobileVRInterface.get_display_width
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_display_width, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDisplayToLens(display_to_lens float64) { //gd:MobileVRInterface.set_display_to_lens
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_display_to_lens, 0|(gdextension.SizeFloat<<4), &struct{ display_to_lens float64 }{display_to_lens})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDisplayToLens() float64 { //gd:MobileVRInterface.get_display_to_lens
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_display_to_lens, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOffsetRect(offset_rect Rect2.PositionSize) { //gd:MobileVRInterface.set_offset_rect
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_offset_rect, 0|(gdextension.SizeRect2<<4), &struct{ offset_rect Rect2.PositionSize }{offset_rect})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOffsetRect() Rect2.PositionSize { //gd:MobileVRInterface.get_offset_rect
 	var r_ret = jumponly.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_offset_rect, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOversample(oversample float64) { //gd:MobileVRInterface.set_oversample
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_oversample, 0|(gdextension.SizeFloat<<4), &struct{ oversample float64 }{oversample})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOversample() float64 { //gd:MobileVRInterface.get_oversample
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_oversample, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetK1(k float64) { //gd:MobileVRInterface.set_k1
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_k1, 0|(gdextension.SizeFloat<<4), &struct{ k float64 }{k})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetK1() float64 { //gd:MobileVRInterface.get_k1
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_k1, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetK2(k float64) { //gd:MobileVRInterface.set_k2
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_k2, 0|(gdextension.SizeFloat<<4), &struct{ k float64 }{k})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetK2() float64 { //gd:MobileVRInterface.get_k2
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_k2, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVrsMinRadius() float64 { //gd:MobileVRInterface.get_vrs_min_radius
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_vrs_min_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVrsMinRadius(radius float64) { //gd:MobileVRInterface.set_vrs_min_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vrs_min_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVrsStrength() float64 { //gd:MobileVRInterface.get_vrs_strength
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_vrs_strength, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVrsStrength(strength float64) { //gd:MobileVRInterface.set_vrs_strength
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_vrs_strength, 0|(gdextension.SizeFloat<<4), &struct{ strength float64 }{strength})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsMobileVRInterface() Advanced               { return Advanced(o) }
 func (o Instance) AsMobileVRInterface() Instance            { return o }
 func (o *Extension[T]) AsMobileVRInterface() Instance       { return o.Super() }
-func (o class) AsXRInterface() XRInterface.Advanced         { return XRInterface.Advanced{gdclass.NewXRInterface(o[0].AsObject()[0])} }
+func (o class) AsXRInterface() XRInterface.Advanced         { return *(*XRInterface.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRInterface() XRInterface.Instance { return o.Super().AsXRInterface() }
-func (o Instance) AsXRInterface() XRInterface.Instance      { return XRInterface.Instance{gdclass.NewXRInterface(o[0].AsObject()[0])} }
+func (o Instance) AsXRInterface() XRInterface.Instance      { return *(*XRInterface.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

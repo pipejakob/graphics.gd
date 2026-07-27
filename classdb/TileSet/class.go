@@ -21,6 +21,7 @@ See the functions to add new layers for more information.
 package TileSet
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -60,6 +61,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -977,7 +981,7 @@ func (self Instance) GetPatternsCount() int { //gd:TileSet.get_patterns_count
 type Advanced = class
 type class [1]gdclass.TileSet
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTileSet(obj[0])
@@ -992,7 +996,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -1084,6 +1088,7 @@ func (self Instance) SetUvClipping(value bool) Instance { //gd:TileSet.uv_clippi
 
 func (self class) GetNextSourceId() int64 { //gd:TileSet.get_next_source_id
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_next_source_id, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1092,103 +1097,127 @@ func (self class) AddSource(source [1]gdclass.TileSetSource, atlas_source_id_ove
 		source                   gdextension.Object
 		atlas_source_id_override int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTileSetSource(source[0])[0])), atlas_source_id_override})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(source[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RemoveSource(source_id int64) { //gd:TileSet.remove_source
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_source, 0|(gdextension.SizeInt<<4), &struct{ source_id int64 }{source_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetSourceId(source_id int64, new_source_id int64) { //gd:TileSet.set_source_id
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_source_id, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		source_id     int64
 		new_source_id int64
 	}{source_id, new_source_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSourceCount() int64 { //gd:TileSet.get_source_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_source_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSourceId(index int64) int64 { //gd:TileSet.get_source_id
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_source_id, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasSource(source_id int64) bool { //gd:TileSet.has_source
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_source, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ source_id int64 }{source_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetSource(source_id int64) [1]gdclass.TileSetSource { //gd:TileSet.get_source
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_source, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ source_id int64 }{source_id})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.TileSetSource{gdclass.NewTileSetSource(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetTileShape(shape TileShape) { //gd:TileSet.set_tile_shape
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tile_shape, 0|(gdextension.SizeInt<<4), &struct{ shape TileShape }{shape})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileShape() TileShape { //gd:TileSet.get_tile_shape
 	var r_ret = jumponly.Call[TileShape](gd.ObjectChecked(self.AsObject()), methods.get_tile_shape, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTileLayout(layout TileLayout) { //gd:TileSet.set_tile_layout
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tile_layout, 0|(gdextension.SizeInt<<4), &struct{ layout TileLayout }{layout})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileLayout() TileLayout { //gd:TileSet.get_tile_layout
 	var r_ret = jumponly.Call[TileLayout](gd.ObjectChecked(self.AsObject()), methods.get_tile_layout, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTileOffsetAxis(alignment TileOffsetAxis) { //gd:TileSet.set_tile_offset_axis
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tile_offset_axis, 0|(gdextension.SizeInt<<4), &struct{ alignment TileOffsetAxis }{alignment})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileOffsetAxis() TileOffsetAxis { //gd:TileSet.get_tile_offset_axis
 	var r_ret = jumponly.Call[TileOffsetAxis](gd.ObjectChecked(self.AsObject()), methods.get_tile_offset_axis, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTileSize(size Vector2i.XY) { //gd:TileSet.set_tile_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tile_size, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTileSize() Vector2i.XY { //gd:TileSet.get_tile_size
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_tile_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUvClipping(uv_clipping bool) { //gd:TileSet.set_uv_clipping
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_uv_clipping, 0|(gdextension.SizeBool<<4), &struct{ uv_clipping bool }{uv_clipping})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUvClipping() bool { //gd:TileSet.is_uv_clipping
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_uv_clipping, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetOcclusionLayersCount() int64 { //gd:TileSet.get_occlusion_layers_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_occlusion_layers_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddOcclusionLayer(to_position int64) { //gd:TileSet.add_occlusion_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_occlusion_layer, 0|(gdextension.SizeInt<<4), &struct{ to_position int64 }{to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MoveOcclusionLayer(layer_index int64, to_position int64) { //gd:TileSet.move_occlusion_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_occlusion_layer, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_index int64
 		to_position int64
 	}{layer_index, to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveOcclusionLayer(layer_index int64) { //gd:TileSet.remove_occlusion_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_occlusion_layer, 0|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetOcclusionLayerLightMask(layer_index int64, light_mask int64) { //gd:TileSet.set_occlusion_layer_light_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_occlusion_layer_light_mask, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_index int64
 		light_mask  int64
 	}{layer_index, light_mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOcclusionLayerLightMask(layer_index int64) int64 { //gd:TileSet.get_occlusion_layer_light_mask
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_occlusion_layer_light_mask, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1197,37 +1226,45 @@ func (self class) SetOcclusionLayerSdfCollision(layer_index int64, sdf_collision
 		layer_index   int64
 		sdf_collision bool
 	}{layer_index, sdf_collision})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOcclusionLayerSdfCollision(layer_index int64) bool { //gd:TileSet.get_occlusion_layer_sdf_collision
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_occlusion_layer_sdf_collision, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPhysicsLayersCount() int64 { //gd:TileSet.get_physics_layers_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_physics_layers_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddPhysicsLayer(to_position int64) { //gd:TileSet.add_physics_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_physics_layer, 0|(gdextension.SizeInt<<4), &struct{ to_position int64 }{to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MovePhysicsLayer(layer_index int64, to_position int64) { //gd:TileSet.move_physics_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_physics_layer, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_index int64
 		to_position int64
 	}{layer_index, to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemovePhysicsLayer(layer_index int64) { //gd:TileSet.remove_physics_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_physics_layer, 0|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetPhysicsLayerCollisionLayer(layer_index int64, layer int64) { //gd:TileSet.set_physics_layer_collision_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_physics_layer_collision_layer, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_index int64
 		layer       int64
 	}{layer_index, layer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPhysicsLayerCollisionLayer(layer_index int64) int64 { //gd:TileSet.get_physics_layer_collision_layer
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_physics_layer_collision_layer, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1236,9 +1273,11 @@ func (self class) SetPhysicsLayerCollisionMask(layer_index int64, mask int64) { 
 		layer_index int64
 		mask        int64
 	}{layer_index, mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPhysicsLayerCollisionMask(layer_index int64) int64 { //gd:TileSet.get_physics_layer_collision_mask
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_physics_layer_collision_mask, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1247,9 +1286,11 @@ func (self class) SetPhysicsLayerCollisionPriority(layer_index int64, priority f
 		layer_index int64
 		priority    float64
 	}{layer_index, priority})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPhysicsLayerCollisionPriority(layer_index int64) float64 { //gd:TileSet.get_physics_layer_collision_priority
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_physics_layer_collision_priority, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1258,42 +1299,52 @@ func (self class) SetPhysicsLayerPhysicsMaterial(layer_index int64, physics_mate
 		layer_index      int64
 		physics_material gdextension.Object
 	}{layer_index, gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsMaterial(physics_material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(physics_material[0].Anchor())
 }
 func (self class) GetPhysicsLayerPhysicsMaterial(layer_index int64) [1]gdclass.PhysicsMaterial { //gd:TileSet.get_physics_layer_physics_material
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_physics_layer_physics_material, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.PhysicsMaterial{gdclass.NewPhysicsMaterial(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetTerrainSetsCount() int64 { //gd:TileSet.get_terrain_sets_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_terrain_sets_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddTerrainSet(to_position int64) { //gd:TileSet.add_terrain_set
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_terrain_set, 0|(gdextension.SizeInt<<4), &struct{ to_position int64 }{to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MoveTerrainSet(terrain_set int64, to_position int64) { //gd:TileSet.move_terrain_set
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_terrain_set, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		terrain_set int64
 		to_position int64
 	}{terrain_set, to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveTerrainSet(terrain_set int64) { //gd:TileSet.remove_terrain_set
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_terrain_set, 0|(gdextension.SizeInt<<4), &struct{ terrain_set int64 }{terrain_set})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTerrainSetMode(terrain_set int64, mode TerrainMode) { //gd:TileSet.set_terrain_set_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_terrain_set_mode, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		terrain_set int64
 		mode        TerrainMode
 	}{terrain_set, mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTerrainSetMode(terrain_set int64) TerrainMode { //gd:TileSet.get_terrain_set_mode
 	var r_ret = noescape.Call[TerrainMode](gd.ObjectChecked(self.AsObject()), methods.get_terrain_set_mode, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ terrain_set int64 }{terrain_set})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetTerrainsCount(terrain_set int64) int64 { //gd:TileSet.get_terrains_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_terrains_count, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ terrain_set int64 }{terrain_set})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1302,6 +1353,7 @@ func (self class) AddTerrain(terrain_set int64, to_position int64) { //gd:TileSe
 		terrain_set int64
 		to_position int64
 	}{terrain_set, to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MoveTerrain(terrain_set int64, terrain_index int64, to_position int64) { //gd:TileSet.move_terrain
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_terrain, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12), &struct {
@@ -1309,15 +1361,18 @@ func (self class) MoveTerrain(terrain_set int64, terrain_index int64, to_positio
 		terrain_index int64
 		to_position   int64
 	}{terrain_set, terrain_index, to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveTerrain(terrain_set int64, terrain_index int64) { //gd:TileSet.remove_terrain
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_terrain, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		terrain_set   int64
 		terrain_index int64
 	}{terrain_set, terrain_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearTerrains(terrain_set int64) { //gd:TileSet.clear_terrains
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_terrains, 0|(gdextension.SizeInt<<4), &struct{ terrain_set int64 }{terrain_set})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetTerrainName(terrain_set int64, terrain_index int64, name String.Readable) { //gd:TileSet.set_terrain_name
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_terrain_name, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeString<<12), &struct {
@@ -1325,12 +1380,15 @@ func (self class) SetTerrainName(terrain_set int64, terrain_index int64, name St
 		terrain_index int64
 		name          gdextension.String
 	}{terrain_set, terrain_index, pointers.Get(gd.InternalString(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetTerrainName(terrain_set int64, terrain_index int64) String.Readable { //gd:TileSet.get_terrain_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_terrain_name, gdextension.SizeString|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		terrain_set   int64
 		terrain_index int64
 	}{terrain_set, terrain_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1340,40 +1398,48 @@ func (self class) SetTerrainColor(terrain_set int64, terrain_index int64, color 
 		terrain_index int64
 		color         Color.RGBA
 	}{terrain_set, terrain_index, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTerrainColor(terrain_set int64, terrain_index int64) Color.RGBA { //gd:TileSet.get_terrain_color
 	var r_ret = noescape.Call[Color.RGBA](gd.ObjectChecked(self.AsObject()), methods.get_terrain_color, gdextension.SizeColor|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		terrain_set   int64
 		terrain_index int64
 	}{terrain_set, terrain_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetNavigationLayersCount() int64 { //gd:TileSet.get_navigation_layers_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_navigation_layers_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddNavigationLayer(to_position int64) { //gd:TileSet.add_navigation_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_navigation_layer, 0|(gdextension.SizeInt<<4), &struct{ to_position int64 }{to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MoveNavigationLayer(layer_index int64, to_position int64) { //gd:TileSet.move_navigation_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_navigation_layer, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_index int64
 		to_position int64
 	}{layer_index, to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveNavigationLayer(layer_index int64) { //gd:TileSet.remove_navigation_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_navigation_layer, 0|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetNavigationLayerLayers(layer_index int64, layers int64) { //gd:TileSet.set_navigation_layer_layers
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_navigation_layer_layers, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_index int64
 		layers      int64
 	}{layer_index, layers})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNavigationLayerLayers(layer_index int64) int64 { //gd:TileSet.get_navigation_layer_layers
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_navigation_layer_layers, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1383,34 +1449,42 @@ func (self class) SetNavigationLayerLayerValue(layer_index int64, layer_number i
 		layer_number int64
 		value        bool
 	}{layer_index, layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNavigationLayerLayerValue(layer_index int64, layer_number int64) bool { //gd:TileSet.get_navigation_layer_layer_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_navigation_layer_layer_value, gdextension.SizeBool|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_index  int64
 		layer_number int64
 	}{layer_index, layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCustomDataLayersCount() int64 { //gd:TileSet.get_custom_data_layers_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_custom_data_layers_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) AddCustomDataLayer(to_position int64) { //gd:TileSet.add_custom_data_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.add_custom_data_layer, 0|(gdextension.SizeInt<<4), &struct{ to_position int64 }{to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MoveCustomDataLayer(layer_index int64, to_position int64) { //gd:TileSet.move_custom_data_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.move_custom_data_layer, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		layer_index int64
 		to_position int64
 	}{layer_index, to_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) RemoveCustomDataLayer(layer_index int64) { //gd:TileSet.remove_custom_data_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_custom_data_layer, 0|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCustomDataLayerByName(layer_name String.Readable) int64 { //gd:TileSet.get_custom_data_layer_by_name
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_custom_data_layer_by_name, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ layer_name gdextension.String }{pointers.Get(gd.InternalString(layer_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(layer_name)
 	var ret = r_ret
 	return ret
 }
@@ -1419,14 +1493,19 @@ func (self class) SetCustomDataLayerName(layer_index int64, layer_name String.Re
 		layer_index int64
 		layer_name  gdextension.String
 	}{layer_index, pointers.Get(gd.InternalString(layer_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(layer_name)
 }
 func (self class) HasCustomDataLayerByName(layer_name String.Readable) bool { //gd:TileSet.has_custom_data_layer_by_name
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_custom_data_layer_by_name, gdextension.SizeBool|(gdextension.SizeString<<4), &struct{ layer_name gdextension.String }{pointers.Get(gd.InternalString(layer_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(layer_name)
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCustomDataLayerName(layer_index int64) String.Readable { //gd:TileSet.get_custom_data_layer_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_custom_data_layer_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -1435,9 +1514,11 @@ func (self class) SetCustomDataLayerType(layer_index int64, layer_type variant.T
 		layer_index int64
 		layer_type  variant.Type
 	}{layer_index, layer_type})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCustomDataLayerType(layer_index int64) variant.Type { //gd:TileSet.get_custom_data_layer_type
 	var r_ret = noescape.Call[variant.Type](gd.ObjectChecked(self.AsObject()), methods.get_custom_data_layer_type, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ layer_index int64 }{layer_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1446,19 +1527,23 @@ func (self class) SetSourceLevelTileProxy(source_from int64, source_to int64) { 
 		source_from int64
 		source_to   int64
 	}{source_from, source_to})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSourceLevelTileProxy(source_from int64) int64 { //gd:TileSet.get_source_level_tile_proxy
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_source_level_tile_proxy, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ source_from int64 }{source_from})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) HasSourceLevelTileProxy(source_from int64) bool { //gd:TileSet.has_source_level_tile_proxy
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_source_level_tile_proxy, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ source_from int64 }{source_from})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) RemoveSourceLevelTileProxy(source_from int64) { //gd:TileSet.remove_source_level_tile_proxy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_source_level_tile_proxy, 0|(gdextension.SizeInt<<4), &struct{ source_from int64 }{source_from})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetCoordsLevelTileProxy(source_from int64, coords_from Vector2i.XY, source_to int64, coords_to Vector2i.XY) { //gd:TileSet.set_coords_level_tile_proxy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_coords_level_tile_proxy, 0|(gdextension.SizeInt<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeVector2i<<16), &struct {
@@ -1467,12 +1552,14 @@ func (self class) SetCoordsLevelTileProxy(source_from int64, coords_from Vector2
 		source_to   int64
 		coords_to   Vector2i.XY
 	}{source_from, coords_from, source_to, coords_to})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCoordsLevelTileProxy(source_from int64, coords_from Vector2i.XY) Array.Any { //gd:TileSet.get_coords_level_tile_proxy
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_coords_level_tile_proxy, gdextension.SizeArray|(gdextension.SizeInt<<4)|(gdextension.SizeVector2i<<8), &struct {
 		source_from int64
 		coords_from Vector2i.XY
 	}{source_from, coords_from})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -1481,6 +1568,7 @@ func (self class) HasCoordsLevelTileProxy(source_from int64, coords_from Vector2
 		source_from int64
 		coords_from Vector2i.XY
 	}{source_from, coords_from})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1489,6 +1577,7 @@ func (self class) RemoveCoordsLevelTileProxy(source_from int64, coords_from Vect
 		source_from int64
 		coords_from Vector2i.XY
 	}{source_from, coords_from})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetAlternativeLevelTileProxy(source_from int64, coords_from Vector2i.XY, alternative_from int64, source_to int64, coords_to Vector2i.XY, alternative_to int64) { //gd:TileSet.set_alternative_level_tile_proxy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_alternative_level_tile_proxy, 0|(gdextension.SizeInt<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16)|(gdextension.SizeVector2i<<20)|(gdextension.SizeInt<<24), &struct {
@@ -1499,6 +1588,7 @@ func (self class) SetAlternativeLevelTileProxy(source_from int64, coords_from Ve
 		coords_to        Vector2i.XY
 		alternative_to   int64
 	}{source_from, coords_from, alternative_from, source_to, coords_to, alternative_to})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAlternativeLevelTileProxy(source_from int64, coords_from Vector2i.XY, alternative_from int64) Array.Any { //gd:TileSet.get_alternative_level_tile_proxy
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_alternative_level_tile_proxy, gdextension.SizeArray|(gdextension.SizeInt<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -1506,6 +1596,7 @@ func (self class) GetAlternativeLevelTileProxy(source_from int64, coords_from Ve
 		coords_from      Vector2i.XY
 		alternative_from int64
 	}{source_from, coords_from, alternative_from})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -1515,6 +1606,7 @@ func (self class) HasAlternativeLevelTileProxy(source_from int64, coords_from Ve
 		coords_from      Vector2i.XY
 		alternative_from int64
 	}{source_from, coords_from, alternative_from})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -1524,6 +1616,7 @@ func (self class) RemoveAlternativeLevelTileProxy(source_from int64, coords_from
 		coords_from      Vector2i.XY
 		alternative_from int64
 	}{source_from, coords_from, alternative_from})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MapTileProxy(source_from int64, coords_from Vector2i.XY, alternative_from int64) Array.Any { //gd:TileSet.map_tile_proxy
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.map_tile_proxy, gdextension.SizeArray|(gdextension.SizeInt<<4)|(gdextension.SizeVector2i<<8)|(gdextension.SizeInt<<12), &struct {
@@ -1531,42 +1624,50 @@ func (self class) MapTileProxy(source_from int64, coords_from Vector2i.XY, alter
 		coords_from      Vector2i.XY
 		alternative_from int64
 	}{source_from, coords_from, alternative_from})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) CleanupInvalidTileProxies() { //gd:TileSet.cleanup_invalid_tile_proxies
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.cleanup_invalid_tile_proxies, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ClearTileProxies() { //gd:TileSet.clear_tile_proxies
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_tile_proxies, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AddPattern(pattern [1]gdclass.TileMapPattern, index int64) int64 { //gd:TileSet.add_pattern
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.add_pattern, gdextension.SizeInt|(gdextension.SizeObject<<4)|(gdextension.SizeInt<<8), &struct {
 		pattern gdextension.Object
 		index   int64
 	}{gdextension.Object(gdreference.GetObject(gdclass.GetTileMapPattern(pattern[0])[0])), index})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(pattern[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPattern(index int64) [1]gdclass.TileMapPattern { //gd:TileSet.get_pattern
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_pattern, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.TileMapPattern{gdclass.NewTileMapPattern(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) RemovePattern(index int64) { //gd:TileSet.remove_pattern
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.remove_pattern, 0|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPatternsCount() int64 { //gd:TileSet.get_patterns_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_patterns_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsTileSet() Advanced                   { return Advanced(o) }
 func (o Instance) AsTileSet() Instance                { return o }
 func (o *Extension[T]) AsTileSet() Instance           { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

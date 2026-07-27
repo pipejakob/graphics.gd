@@ -14,6 +14,7 @@ Note: This is not intended to be used as an actual texture for rendering. It is 
 package PlaceholderTextureLayered
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -51,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -133,7 +137,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.PlaceholderTextureLayered
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPlaceholderTextureLayered(obj[0])
@@ -148,7 +152,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -195,33 +199,36 @@ func (self Instance) SetLayers(value int) Instance { //gd:PlaceholderTextureLaye
 
 func (self class) SetSize(size Vector2i.XY) { //gd:PlaceholderTextureLayered.set_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_size, 0|(gdextension.SizeVector2i<<4), &struct{ size Vector2i.XY }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSize() Vector2i.XY { //gd:PlaceholderTextureLayered.get_size
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLayers(layers int64) { //gd:PlaceholderTextureLayered.set_layers
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_layers, 0|(gdextension.SizeInt<<4), &struct{ layers int64 }{layers})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (o class) AsPlaceholderTextureLayered() Advanced         { return Advanced(o) }
 func (o Instance) AsPlaceholderTextureLayered() Instance      { return o }
 func (o *Extension[T]) AsPlaceholderTextureLayered() Instance { return o.Super() }
 func (o class) AsTextureLayered() TextureLayered.Advanced {
-	return TextureLayered.Advanced{gdclass.NewTextureLayered(o[0].AsObject()[0])}
+	return *(*TextureLayered.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsTextureLayered() TextureLayered.Instance {
 	return o.Super().AsTextureLayered()
 }
 func (o Instance) AsTextureLayered() TextureLayered.Instance {
-	return TextureLayered.Instance{gdclass.NewTextureLayered(o[0].AsObject()[0])}
+	return *(*TextureLayered.Instance)(ie.As(&o))
 }
-func (o class) AsTexture() Texture.Advanced           { return Texture.Advanced{gdclass.NewTexture(o[0].AsObject()[0])} }
+func (o class) AsTexture() Texture.Advanced           { return *(*Texture.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsTexture() Texture.Instance   { return o.Super().AsTexture() }
-func (o Instance) AsTexture() Texture.Instance        { return Texture.Instance{gdclass.NewTexture(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsTexture() Texture.Instance        { return *(*Texture.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

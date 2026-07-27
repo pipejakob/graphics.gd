@@ -18,6 +18,7 @@ Note: GridMap doesn't extend [VisualInstance3D] and therefore can't be hidden or
 package GridMap
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -27,6 +28,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -59,6 +61,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -517,7 +522,7 @@ func (self MoreArgs) MakeBakedMeshes(gen_lightmap_uv bool, lightmap_uv_texel_siz
 type Advanced = class
 type class [1]gdclass.GridMap
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewGridMap(obj[0])
@@ -532,7 +537,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -744,17 +749,21 @@ func (self Instance) SetBakeNavigation(value bool) Instance { //gd:GridMap.bake_
 
 func (self class) SetCollisionLayer(layer int64) { //gd:GridMap.set_collision_layer
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_layer, 0|(gdextension.SizeInt<<4), &struct{ layer int64 }{layer})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionLayer() int64 { //gd:GridMap.get_collision_layer
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_layer, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollisionMask(mask int64) { //gd:GridMap.set_collision_mask
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_mask, 0|(gdextension.SizeInt<<4), &struct{ mask int64 }{mask})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionMask() int64 { //gd:GridMap.get_collision_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_collision_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -763,9 +772,11 @@ func (self class) SetCollisionMaskValue(layer_number int64, value bool) { //gd:G
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionMaskValue(layer_number int64) bool { //gd:GridMap.get_collision_mask_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_collision_mask_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -774,81 +785,103 @@ func (self class) SetCollisionLayerValue(layer_number int64, value bool) { //gd:
 		layer_number int64
 		value        bool
 	}{layer_number, value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionLayerValue(layer_number int64) bool { //gd:GridMap.get_collision_layer_value
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_collision_layer_value, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ layer_number int64 }{layer_number})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollisionPriority(priority float64) { //gd:GridMap.set_collision_priority
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_priority, 0|(gdextension.SizeFloat<<4), &struct{ priority float64 }{priority})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionPriority() float64 { //gd:GridMap.get_collision_priority
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_collision_priority, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCollisionVisibilityMode(visibility_mode DebugVisibilityMode) { //gd:GridMap.set_collision_visibility_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_collision_visibility_mode, 0|(gdextension.SizeInt<<4), &struct{ visibility_mode DebugVisibilityMode }{visibility_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCollisionVisibilityMode() DebugVisibilityMode { //gd:GridMap.get_collision_visibility_mode
 	var r_ret = noescape.Call[DebugVisibilityMode](gd.ObjectChecked(self.AsObject()), methods.get_collision_visibility_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPhysicsMaterial(material [1]gdclass.PhysicsMaterial) { //gd:GridMap.set_physics_material
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_physics_material, 0|(gdextension.SizeObject<<4), &struct{ material gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetPhysicsMaterial(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) GetPhysicsMaterial() [1]gdclass.PhysicsMaterial { //gd:GridMap.get_physics_material
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_physics_material, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.PhysicsMaterial{gdclass.NewPhysicsMaterial(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetBakeNavigation(bake_navigation bool) { //gd:GridMap.set_bake_navigation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bake_navigation, 0|(gdextension.SizeBool<<4), &struct{ bake_navigation bool }{bake_navigation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsBakingNavigation() bool { //gd:GridMap.is_baking_navigation
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_baking_navigation, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetNavigationMap(navigation_map RID.Any) { //gd:GridMap.set_navigation_map
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_navigation_map, 0|(gdextension.SizeRID<<4), &struct{ navigation_map RID.Any }{navigation_map})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetNavigationMap() RID.Any { //gd:GridMap.get_navigation_map
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_navigation_map, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMeshLibrary(mesh_library [1]gdclass.MeshLibrary) { //gd:GridMap.set_mesh_library
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_mesh_library, 0|(gdextension.SizeObject<<4), &struct{ mesh_library gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMeshLibrary(mesh_library[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(mesh_library[0].Anchor())
 }
 func (self class) GetMeshLibrary() [1]gdclass.MeshLibrary { //gd:GridMap.get_mesh_library
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_mesh_library, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.MeshLibrary{gdclass.NewMeshLibrary(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) SetCellSize(size Vector3.XYZ) { //gd:GridMap.set_cell_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cell_size, 0|(gdextension.SizeVector3<<4), &struct{ size Vector3.XYZ }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCellSize() Vector3.XYZ { //gd:GridMap.get_cell_size
 	var r_ret = jumponly.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_cell_size, gdextension.SizeVector3, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCellScale(scale float64) { //gd:GridMap.set_cell_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cell_scale, 0|(gdextension.SizeFloat<<4), &struct{ scale float64 }{scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCellScale() float64 { //gd:GridMap.get_cell_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_cell_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetOctantSize(size int64) { //gd:GridMap.set_octant_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_octant_size, 0|(gdextension.SizeInt<<4), &struct{ size int64 }{size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetOctantSize() int64 { //gd:GridMap.get_octant_size
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_octant_size, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -858,94 +891,116 @@ func (self class) SetCellItem(position Vector3i.XYZ, item int64, orientation int
 		item        int64
 		orientation int64
 	}{position, item, orientation})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCellItem(position Vector3i.XYZ) int64 { //gd:GridMap.get_cell_item
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_cell_item, gdextension.SizeInt|(gdextension.SizeVector3i<<4), &struct{ position Vector3i.XYZ }{position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCellItemOrientation(position Vector3i.XYZ) int64 { //gd:GridMap.get_cell_item_orientation
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_cell_item_orientation, gdextension.SizeInt|(gdextension.SizeVector3i<<4), &struct{ position Vector3i.XYZ }{position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCellItemBasis(position Vector3i.XYZ) Basis.XYZ { //gd:GridMap.get_cell_item_basis
 	var r_ret = noescape.Call[Basis.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_cell_item_basis, gdextension.SizeBasis|(gdextension.SizeVector3i<<4), &struct{ position Vector3i.XYZ }{position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Basis.Transposed(r_ret)
 	return ret
 }
 func (self class) GetBasisWithOrthogonalIndex(index int64) Basis.XYZ { //gd:GridMap.get_basis_with_orthogonal_index
 	var r_ret = noescape.Call[Basis.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_basis_with_orthogonal_index, gdextension.SizeBasis|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Basis.Transposed(r_ret)
 	return ret
 }
 func (self class) GetOrthogonalIndexFromBasis(basis Basis.XYZ) int64 { //gd:GridMap.get_orthogonal_index_from_basis
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_orthogonal_index_from_basis, gdextension.SizeInt|(gdextension.SizeBasis<<4), &struct{ basis Basis.XYZ }{Basis.Transposed(basis)})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) LocalToMap(local_position Vector3.XYZ) Vector3i.XYZ { //gd:GridMap.local_to_map
 	var r_ret = noescape.Call[Vector3i.XYZ](gd.ObjectChecked(self.AsObject()), methods.local_to_map, gdextension.SizeVector3i|(gdextension.SizeVector3<<4), &struct{ local_position Vector3.XYZ }{local_position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) MapToLocal(map_position Vector3i.XYZ) Vector3.XYZ { //gd:GridMap.map_to_local
 	var r_ret = noescape.Call[Vector3.XYZ](gd.ObjectChecked(self.AsObject()), methods.map_to_local, gdextension.SizeVector3|(gdextension.SizeVector3i<<4), &struct{ map_position Vector3i.XYZ }{map_position})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ResourceChanged(resource [1]gdclass.Resource) { //gd:GridMap.resource_changed
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.resource_changed, 0|(gdextension.SizeObject<<4), &struct{ resource gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetResource(resource[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(resource[0].Anchor())
 }
 func (self class) SetCenterX(enable bool) { //gd:GridMap.set_center_x
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_center_x, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCenterX() bool { //gd:GridMap.get_center_x
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_center_x, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCenterY(enable bool) { //gd:GridMap.set_center_y
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_center_y, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCenterY() bool { //gd:GridMap.get_center_y
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_center_y, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCenterZ(enable bool) { //gd:GridMap.set_center_z
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_center_z, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCenterZ() bool { //gd:GridMap.get_center_z
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_center_z, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) Clear() { //gd:GridMap.clear
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUsedCells() Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_cells
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_cells, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedCellsByItem(item int64) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_cells_by_item
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_cells_by_item, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ item int64 }{item})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedOctants() Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_octants
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_octants, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedOctantsByItem(item int64) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_octants_by_item
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_octants_by_item, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ item int64 }{item})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedCellsInOctant(octant_coords Vector3i.XYZ) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_cells_in_octant
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_cells_in_octant, gdextension.SizeArray|(gdextension.SizeVector3i<<4), &struct{ octant_coords Vector3i.XYZ }{octant_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -954,47 +1009,56 @@ func (self class) GetUsedCellsInOctantByItem(octant_coords Vector3i.XYZ, item in
 		octant_coords Vector3i.XYZ
 		item          int64
 	}{octant_coords, item})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetOctantsInBounds(bounds AABB.PositionSize) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_octants_in_bounds
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_octants_in_bounds, gdextension.SizeArray|(gdextension.SizeAABB<<4), &struct{ bounds AABB.PositionSize }{bounds})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetUsedOctantsInBounds(bounds AABB.PositionSize) Array.Contains[Vector3i.XYZ] { //gd:GridMap.get_used_octants_in_bounds
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_used_octants_in_bounds, gdextension.SizeArray|(gdextension.SizeAABB<<4), &struct{ bounds AABB.PositionSize }{bounds})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[Vector3i.XYZ](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetOctantCoordsFromCellCoords(cell_coords Vector3i.XYZ) Vector3i.XYZ { //gd:GridMap.get_octant_coords_from_cell_coords
 	var r_ret = noescape.Call[Vector3i.XYZ](gd.ObjectChecked(self.AsObject()), methods.get_octant_coords_from_cell_coords, gdextension.SizeVector3i|(gdextension.SizeVector3i<<4), &struct{ cell_coords Vector3i.XYZ }{cell_coords})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMeshes() Array.Any { //gd:GridMap.get_meshes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_meshes, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBakeMeshes() Array.Any { //gd:GridMap.get_bake_meshes
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_bake_meshes, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) GetBakeMeshInstance(idx int64) RID.Any { //gd:GridMap.get_bake_mesh_instance
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_bake_mesh_instance, gdextension.SizeRID|(gdextension.SizeInt<<4), &struct{ idx int64 }{idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearBakedMeshes() { //gd:GridMap.clear_baked_meshes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_baked_meshes, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) MakeBakedMeshes(gen_lightmap_uv bool, lightmap_uv_texel_size float64) { //gd:GridMap.make_baked_meshes
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.make_baked_meshes, 0|(gdextension.SizeBool<<4)|(gdextension.SizeFloat<<8), &struct {
 		gen_lightmap_uv        bool
 		lightmap_uv_texel_size float64
 	}{gen_lightmap_uv, lightmap_uv_texel_size})
+	runtime.KeepAlive(self[0].Anchor())
 }
 
 /*
@@ -1036,12 +1100,12 @@ func (self class) Changed() Signal.Any {
 func (o class) AsGridMap() Advanced               { return Advanced(o) }
 func (o Instance) AsGridMap() Instance            { return o }
 func (o *Extension[T]) AsGridMap() Instance       { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

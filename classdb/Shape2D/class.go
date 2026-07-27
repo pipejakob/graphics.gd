@@ -12,6 +12,7 @@ Performance: Primitive shapes, especially [CircleShape2D], are fast to check col
 package Shape2D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -49,6 +50,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -198,7 +202,7 @@ func (self Instance) GetRect() Rect2.PositionSize { //gd:Shape2D.get_rect
 type Advanced = class
 type class [1]gdclass.Shape2D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewShape2D(obj[0])
@@ -213,7 +217,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -255,9 +259,11 @@ func (self Instance) SetCustomSolverBias(value Float.X) Instance { //gd:Shape2D.
 
 func (self class) SetCustomSolverBias(bias float64) { //gd:Shape2D.set_custom_solver_bias
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_custom_solver_bias, 0|(gdextension.SizeFloat<<4), &struct{ bias float64 }{bias})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCustomSolverBias() float64 { //gd:Shape2D.get_custom_solver_bias
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_custom_solver_bias, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -267,6 +273,8 @@ func (self class) Collide(local_xform Transform2D.OriginXY, with_shape [1]gdclas
 		with_shape  gdextension.Object
 		shape_xform Transform2D.OriginXY
 	}{local_xform, gdextension.Object(gdreference.GetObject(gdclass.GetShape2D(with_shape[0])[0])), shape_xform})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(with_shape[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -278,6 +286,8 @@ func (self class) CollideWithMotion(local_xform Transform2D.OriginXY, local_moti
 		shape_xform  Transform2D.OriginXY
 		shape_motion Vector2.XY
 	}{local_xform, local_motion, gdextension.Object(gdreference.GetObject(gdclass.GetShape2D(with_shape[0])[0])), shape_xform, shape_motion})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(with_shape[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -287,6 +297,8 @@ func (self class) CollideAndGetContacts(local_xform Transform2D.OriginXY, with_s
 		with_shape  gdextension.Object
 		shape_xform Transform2D.OriginXY
 	}{local_xform, gdextension.Object(gdreference.GetObject(gdclass.GetShape2D(with_shape[0])[0])), shape_xform})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(with_shape[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -298,6 +310,8 @@ func (self class) CollideWithMotionAndGetContacts(local_xform Transform2D.Origin
 		shape_xform  Transform2D.OriginXY
 		shape_motion Vector2.XY
 	}{local_xform, local_motion, gdextension.Object(gdreference.GetObject(gdclass.GetShape2D(with_shape[0])[0])), shape_xform, shape_motion})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(with_shape[0].Anchor())
 	var ret = Packed.Array[Vector2.XY](Array.Through(gd.WrapPacked[gd.PackedVector2Array, Vector2.XY](pointers.Let[gd.PackedVector2Array](r_ret))))
 	return ret
 }
@@ -306,18 +320,20 @@ func (self class) Draw(canvas_item RID.Any, color Color.RGBA) { //gd:Shape2D.dra
 		canvas_item RID.Any
 		color       Color.RGBA
 	}{canvas_item, color})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRect() Rect2.PositionSize { //gd:Shape2D.get_rect
 	var r_ret = noescape.Call[Rect2.PositionSize](gd.ObjectChecked(self.AsObject()), methods.get_rect, gdextension.SizeRect2, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsShape2D() Advanced                   { return Advanced(o) }
 func (o Instance) AsShape2D() Instance                { return o }
 func (o *Extension[T]) AsShape2D() Instance           { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

@@ -9,6 +9,7 @@
 package RDPipelineDepthStencilState
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -43,6 +44,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -164,7 +168,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.RDPipelineDepthStencilState
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDPipelineDepthStencilState(obj[0])
@@ -179,7 +183,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -488,169 +492,211 @@ func (self Instance) SetBackOpReference(value int) Instance { //gd:RDPipelineDep
 
 func (self class) SetEnableDepthTest(p_member bool) { //gd:RDPipelineDepthStencilState.set_enable_depth_test
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_depth_test, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableDepthTest() bool { //gd:RDPipelineDepthStencilState.get_enable_depth_test
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enable_depth_test, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnableDepthWrite(p_member bool) { //gd:RDPipelineDepthStencilState.set_enable_depth_write
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_depth_write, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableDepthWrite() bool { //gd:RDPipelineDepthStencilState.get_enable_depth_write
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enable_depth_write, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDepthCompareOperator(p_member Rendering.CompareOperator) { //gd:RDPipelineDepthStencilState.set_depth_compare_operator
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_depth_compare_operator, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.CompareOperator }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDepthCompareOperator() Rendering.CompareOperator { //gd:RDPipelineDepthStencilState.get_depth_compare_operator
 	var r_ret = jumponly.Call[Rendering.CompareOperator](gd.ObjectChecked(self.AsObject()), methods.get_depth_compare_operator, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnableDepthRange(p_member bool) { //gd:RDPipelineDepthStencilState.set_enable_depth_range
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_depth_range, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableDepthRange() bool { //gd:RDPipelineDepthStencilState.get_enable_depth_range
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enable_depth_range, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDepthRangeMin(p_member float64) { //gd:RDPipelineDepthStencilState.set_depth_range_min
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_depth_range_min, 0|(gdextension.SizeFloat<<4), &struct{ p_member float64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDepthRangeMin() float64 { //gd:RDPipelineDepthStencilState.get_depth_range_min
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_depth_range_min, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDepthRangeMax(p_member float64) { //gd:RDPipelineDepthStencilState.set_depth_range_max
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_depth_range_max, 0|(gdextension.SizeFloat<<4), &struct{ p_member float64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDepthRangeMax() float64 { //gd:RDPipelineDepthStencilState.get_depth_range_max
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_depth_range_max, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetEnableStencil(p_member bool) { //gd:RDPipelineDepthStencilState.set_enable_stencil
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_stencil, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableStencil() bool { //gd:RDPipelineDepthStencilState.get_enable_stencil
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enable_stencil, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrontOpFail(p_member Rendering.StencilOperation) { //gd:RDPipelineDepthStencilState.set_front_op_fail
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_front_op_fail, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.StencilOperation }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrontOpFail() Rendering.StencilOperation { //gd:RDPipelineDepthStencilState.get_front_op_fail
 	var r_ret = jumponly.Call[Rendering.StencilOperation](gd.ObjectChecked(self.AsObject()), methods.get_front_op_fail, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrontOpPass(p_member Rendering.StencilOperation) { //gd:RDPipelineDepthStencilState.set_front_op_pass
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_front_op_pass, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.StencilOperation }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrontOpPass() Rendering.StencilOperation { //gd:RDPipelineDepthStencilState.get_front_op_pass
 	var r_ret = jumponly.Call[Rendering.StencilOperation](gd.ObjectChecked(self.AsObject()), methods.get_front_op_pass, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrontOpDepthFail(p_member Rendering.StencilOperation) { //gd:RDPipelineDepthStencilState.set_front_op_depth_fail
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_front_op_depth_fail, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.StencilOperation }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrontOpDepthFail() Rendering.StencilOperation { //gd:RDPipelineDepthStencilState.get_front_op_depth_fail
 	var r_ret = jumponly.Call[Rendering.StencilOperation](gd.ObjectChecked(self.AsObject()), methods.get_front_op_depth_fail, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrontOpCompare(p_member Rendering.CompareOperator) { //gd:RDPipelineDepthStencilState.set_front_op_compare
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_front_op_compare, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.CompareOperator }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrontOpCompare() Rendering.CompareOperator { //gd:RDPipelineDepthStencilState.get_front_op_compare
 	var r_ret = jumponly.Call[Rendering.CompareOperator](gd.ObjectChecked(self.AsObject()), methods.get_front_op_compare, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrontOpCompareMask(p_member int64) { //gd:RDPipelineDepthStencilState.set_front_op_compare_mask
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_front_op_compare_mask, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrontOpCompareMask() int64 { //gd:RDPipelineDepthStencilState.get_front_op_compare_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_front_op_compare_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrontOpWriteMask(p_member int64) { //gd:RDPipelineDepthStencilState.set_front_op_write_mask
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_front_op_write_mask, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrontOpWriteMask() int64 { //gd:RDPipelineDepthStencilState.get_front_op_write_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_front_op_write_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetFrontOpReference(p_member int64) { //gd:RDPipelineDepthStencilState.set_front_op_reference
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_front_op_reference, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetFrontOpReference() int64 { //gd:RDPipelineDepthStencilState.get_front_op_reference
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_front_op_reference, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBackOpFail(p_member Rendering.StencilOperation) { //gd:RDPipelineDepthStencilState.set_back_op_fail
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_back_op_fail, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.StencilOperation }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBackOpFail() Rendering.StencilOperation { //gd:RDPipelineDepthStencilState.get_back_op_fail
 	var r_ret = jumponly.Call[Rendering.StencilOperation](gd.ObjectChecked(self.AsObject()), methods.get_back_op_fail, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBackOpPass(p_member Rendering.StencilOperation) { //gd:RDPipelineDepthStencilState.set_back_op_pass
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_back_op_pass, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.StencilOperation }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBackOpPass() Rendering.StencilOperation { //gd:RDPipelineDepthStencilState.get_back_op_pass
 	var r_ret = jumponly.Call[Rendering.StencilOperation](gd.ObjectChecked(self.AsObject()), methods.get_back_op_pass, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBackOpDepthFail(p_member Rendering.StencilOperation) { //gd:RDPipelineDepthStencilState.set_back_op_depth_fail
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_back_op_depth_fail, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.StencilOperation }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBackOpDepthFail() Rendering.StencilOperation { //gd:RDPipelineDepthStencilState.get_back_op_depth_fail
 	var r_ret = jumponly.Call[Rendering.StencilOperation](gd.ObjectChecked(self.AsObject()), methods.get_back_op_depth_fail, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBackOpCompare(p_member Rendering.CompareOperator) { //gd:RDPipelineDepthStencilState.set_back_op_compare
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_back_op_compare, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.CompareOperator }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBackOpCompare() Rendering.CompareOperator { //gd:RDPipelineDepthStencilState.get_back_op_compare
 	var r_ret = jumponly.Call[Rendering.CompareOperator](gd.ObjectChecked(self.AsObject()), methods.get_back_op_compare, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBackOpCompareMask(p_member int64) { //gd:RDPipelineDepthStencilState.set_back_op_compare_mask
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_back_op_compare_mask, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBackOpCompareMask() int64 { //gd:RDPipelineDepthStencilState.get_back_op_compare_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_back_op_compare_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBackOpWriteMask(p_member int64) { //gd:RDPipelineDepthStencilState.set_back_op_write_mask
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_back_op_write_mask, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBackOpWriteMask() int64 { //gd:RDPipelineDepthStencilState.get_back_op_write_mask
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_back_op_write_mask, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBackOpReference(p_member int64) { //gd:RDPipelineDepthStencilState.set_back_op_reference
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_back_op_reference, 0|(gdextension.SizeInt<<4), &struct{ p_member int64 }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBackOpReference() int64 { //gd:RDPipelineDepthStencilState.get_back_op_reference
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_back_op_reference, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

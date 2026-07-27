@@ -110,6 +110,7 @@ Pre-multiplied alpha:
 package RDPipelineColorBlendStateAttachment
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -144,6 +145,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -262,7 +266,7 @@ func (self Instance) SetAsMix() Instance { //gd:RDPipelineColorBlendStateAttachm
 type Advanced = class
 type class [1]gdclass.RDPipelineColorBlendStateAttachment
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRDPipelineColorBlendStateAttachment(obj[0])
@@ -277,7 +281,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -456,92 +460,115 @@ func (self Instance) SetWriteA(value bool) Instance { //gd:RDPipelineColorBlendS
 
 func (self class) SetAsMix() { //gd:RDPipelineColorBlendStateAttachment.set_as_mix
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_as_mix, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetEnableBlend(p_member bool) { //gd:RDPipelineColorBlendStateAttachment.set_enable_blend
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enable_blend, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetEnableBlend() bool { //gd:RDPipelineColorBlendStateAttachment.get_enable_blend
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_enable_blend, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSrcColorBlendFactor(p_member Rendering.BlendFactor) { //gd:RDPipelineColorBlendStateAttachment.set_src_color_blend_factor
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_src_color_blend_factor, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.BlendFactor }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSrcColorBlendFactor() Rendering.BlendFactor { //gd:RDPipelineColorBlendStateAttachment.get_src_color_blend_factor
 	var r_ret = jumponly.Call[Rendering.BlendFactor](gd.ObjectChecked(self.AsObject()), methods.get_src_color_blend_factor, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDstColorBlendFactor(p_member Rendering.BlendFactor) { //gd:RDPipelineColorBlendStateAttachment.set_dst_color_blend_factor
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_dst_color_blend_factor, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.BlendFactor }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDstColorBlendFactor() Rendering.BlendFactor { //gd:RDPipelineColorBlendStateAttachment.get_dst_color_blend_factor
 	var r_ret = jumponly.Call[Rendering.BlendFactor](gd.ObjectChecked(self.AsObject()), methods.get_dst_color_blend_factor, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetColorBlendOp(p_member Rendering.BlendOperation) { //gd:RDPipelineColorBlendStateAttachment.set_color_blend_op
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_color_blend_op, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.BlendOperation }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetColorBlendOp() Rendering.BlendOperation { //gd:RDPipelineColorBlendStateAttachment.get_color_blend_op
 	var r_ret = jumponly.Call[Rendering.BlendOperation](gd.ObjectChecked(self.AsObject()), methods.get_color_blend_op, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSrcAlphaBlendFactor(p_member Rendering.BlendFactor) { //gd:RDPipelineColorBlendStateAttachment.set_src_alpha_blend_factor
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_src_alpha_blend_factor, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.BlendFactor }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSrcAlphaBlendFactor() Rendering.BlendFactor { //gd:RDPipelineColorBlendStateAttachment.get_src_alpha_blend_factor
 	var r_ret = jumponly.Call[Rendering.BlendFactor](gd.ObjectChecked(self.AsObject()), methods.get_src_alpha_blend_factor, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDstAlphaBlendFactor(p_member Rendering.BlendFactor) { //gd:RDPipelineColorBlendStateAttachment.set_dst_alpha_blend_factor
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_dst_alpha_blend_factor, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.BlendFactor }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDstAlphaBlendFactor() Rendering.BlendFactor { //gd:RDPipelineColorBlendStateAttachment.get_dst_alpha_blend_factor
 	var r_ret = jumponly.Call[Rendering.BlendFactor](gd.ObjectChecked(self.AsObject()), methods.get_dst_alpha_blend_factor, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAlphaBlendOp(p_member Rendering.BlendOperation) { //gd:RDPipelineColorBlendStateAttachment.set_alpha_blend_op
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_alpha_blend_op, 0|(gdextension.SizeInt<<4), &struct{ p_member Rendering.BlendOperation }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAlphaBlendOp() Rendering.BlendOperation { //gd:RDPipelineColorBlendStateAttachment.get_alpha_blend_op
 	var r_ret = jumponly.Call[Rendering.BlendOperation](gd.ObjectChecked(self.AsObject()), methods.get_alpha_blend_op, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWriteR(p_member bool) { //gd:RDPipelineColorBlendStateAttachment.set_write_r
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_write_r, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWriteR() bool { //gd:RDPipelineColorBlendStateAttachment.get_write_r
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_write_r, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWriteG(p_member bool) { //gd:RDPipelineColorBlendStateAttachment.set_write_g
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_write_g, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWriteG() bool { //gd:RDPipelineColorBlendStateAttachment.get_write_g
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_write_g, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWriteB(p_member bool) { //gd:RDPipelineColorBlendStateAttachment.set_write_b
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_write_b, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWriteB() bool { //gd:RDPipelineColorBlendStateAttachment.get_write_b
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_write_b, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetWriteA(p_member bool) { //gd:RDPipelineColorBlendStateAttachment.set_write_a
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_write_a, 0|(gdextension.SizeBool<<4), &struct{ p_member bool }{p_member})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetWriteA() bool { //gd:RDPipelineColorBlendStateAttachment.get_write_a
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_write_a, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }

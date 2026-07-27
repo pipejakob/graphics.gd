@@ -14,6 +14,7 @@ Warning: On Web, video playback will perform poorly due to missing architecture-
 package VideoStreamPlayer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -23,6 +24,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -51,6 +53,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -208,7 +213,7 @@ func (self Instance) GetVideoTexture() Texture2D.Instance { //gd:VideoStreamPlay
 type Advanced = class
 type class [1]gdclass.VideoStreamPlayer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVideoStreamPlayer(obj[0])
@@ -223,7 +228,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -406,123 +411,155 @@ func (self Instance) SetBus(value string) Instance { //gd:VideoStreamPlayer.bus
 
 func (self class) SetStream(stream [1]gdclass.VideoStream) { //gd:VideoStreamPlayer.set_stream
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stream, 0|(gdextension.SizeObject<<4), &struct{ stream gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetVideoStream(stream[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(stream[0].Anchor())
 }
 func (self class) GetStream() [1]gdclass.VideoStream { //gd:VideoStreamPlayer.get_stream
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_stream, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.VideoStream{gdclass.NewVideoStream(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) Play() { //gd:VideoStreamPlayer.play
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.play, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Stop() { //gd:VideoStreamPlayer.stop
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.stop, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPlaying() bool { //gd:VideoStreamPlayer.is_playing
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_playing, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPaused(paused bool) { //gd:VideoStreamPlayer.set_paused
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_paused, 0|(gdextension.SizeBool<<4), &struct{ paused bool }{paused})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsPaused() bool { //gd:VideoStreamPlayer.is_paused
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_paused, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLoop(loop bool) { //gd:VideoStreamPlayer.set_loop
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_loop, 0|(gdextension.SizeBool<<4), &struct{ loop bool }{loop})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasLoop() bool { //gd:VideoStreamPlayer.has_loop
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_loop, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolume(volume float64) { //gd:VideoStreamPlayer.set_volume
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volume, 0|(gdextension.SizeFloat<<4), &struct{ volume float64 }{volume})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolume() float64 { //gd:VideoStreamPlayer.get_volume
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volume, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVolumeDb(db float64) { //gd:VideoStreamPlayer.set_volume_db
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_volume_db, 0|(gdextension.SizeFloat<<4), &struct{ db float64 }{db})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVolumeDb() float64 { //gd:VideoStreamPlayer.get_volume_db
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_volume_db, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSpeedScale(speed_scale float64) { //gd:VideoStreamPlayer.set_speed_scale
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_speed_scale, 0|(gdextension.SizeFloat<<4), &struct{ speed_scale float64 }{speed_scale})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSpeedScale() float64 { //gd:VideoStreamPlayer.get_speed_scale
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_speed_scale, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAudioTrack(track int64) { //gd:VideoStreamPlayer.set_audio_track
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_audio_track, 0|(gdextension.SizeInt<<4), &struct{ track int64 }{track})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetAudioTrack() int64 { //gd:VideoStreamPlayer.get_audio_track
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_audio_track, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetStreamName() String.Readable { //gd:VideoStreamPlayer.get_stream_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_stream_name, gdextension.SizeString, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) GetStreamLength() float64 { //gd:VideoStreamPlayer.get_stream_length
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_stream_length, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStreamPosition(position float64) { //gd:VideoStreamPlayer.set_stream_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_stream_position, 0|(gdextension.SizeFloat<<4), &struct{ position float64 }{position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStreamPosition() float64 { //gd:VideoStreamPlayer.get_stream_position
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_stream_position, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAutoplay(enabled bool) { //gd:VideoStreamPlayer.set_autoplay
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_autoplay, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasAutoplay() bool { //gd:VideoStreamPlayer.has_autoplay
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_autoplay, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetExpand(enable bool) { //gd:VideoStreamPlayer.set_expand
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_expand, 0|(gdextension.SizeBool<<4), &struct{ enable bool }{enable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasExpand() bool { //gd:VideoStreamPlayer.has_expand
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_expand, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBufferingMsec(msec int64) { //gd:VideoStreamPlayer.set_buffering_msec
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_buffering_msec, 0|(gdextension.SizeInt<<4), &struct{ msec int64 }{msec})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBufferingMsec() int64 { //gd:VideoStreamPlayer.get_buffering_msec
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_buffering_msec, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetBus(bus String.Name) { //gd:VideoStreamPlayer.set_bus
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_bus, 0|(gdextension.SizeStringName<<4), &struct{ bus gdextension.StringName }{pointers.Get(gd.InternalStringName(bus))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bus)
 }
 func (self class) GetBus() String.Name { //gd:VideoStreamPlayer.get_bus
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_bus, gdextension.SizeStringName, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
 func (self class) GetVideoTexture() [1]gdclass.Texture2D { //gd:VideoStreamPlayer.get_video_texture
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_video_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -546,15 +583,15 @@ func (self class) Finished() Signal.Any {
 func (o class) AsVideoStreamPlayer() Advanced             { return Advanced(o) }
 func (o Instance) AsVideoStreamPlayer() Instance          { return o }
 func (o *Extension[T]) AsVideoStreamPlayer() Instance     { return o.Super() }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

@@ -11,6 +11,7 @@ The feature is simplified, but instead it is implemented with smooth tracking wi
 package AimModifier3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -19,6 +20,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -47,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -236,7 +241,7 @@ func (self Instance) IsRelative(index int) bool { //gd:AimModifier3D.is_relative
 type Advanced = class
 type class [1]gdclass.AimModifier3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAimModifier3D(obj[0])
@@ -251,7 +256,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -279,9 +284,11 @@ func (self class) SetForwardAxis(index int64, axis SkeletonModifier3D.BoneAxis) 
 		index int64
 		axis  SkeletonModifier3D.BoneAxis
 	}{index, axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetForwardAxis(index int64) SkeletonModifier3D.BoneAxis { //gd:AimModifier3D.get_forward_axis
 	var r_ret = noescape.Call[SkeletonModifier3D.BoneAxis](gd.ObjectChecked(self.AsObject()), methods.get_forward_axis, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -290,9 +297,11 @@ func (self class) SetUseEuler(index int64, enabled bool) { //gd:AimModifier3D.se
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingEuler(index int64) bool { //gd:AimModifier3D.is_using_euler
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_euler, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -301,9 +310,11 @@ func (self class) SetPrimaryRotationAxis(index int64, axis Vector3.Axis) { //gd:
 		index int64
 		axis  Vector3.Axis
 	}{index, axis})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetPrimaryRotationAxis(index int64) Vector3.Axis { //gd:AimModifier3D.get_primary_rotation_axis
 	var r_ret = noescape.Call[Vector3.Axis](gd.ObjectChecked(self.AsObject()), methods.get_primary_rotation_axis, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -312,9 +323,11 @@ func (self class) SetUseSecondaryRotation(index int64, enabled bool) { //gd:AimM
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingSecondaryRotation(index int64) bool { //gd:AimModifier3D.is_using_secondary_rotation
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_secondary_rotation, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -323,9 +336,11 @@ func (self class) SetRelative(index int64, enabled bool) { //gd:AimModifier3D.se
 		index   int64
 		enabled bool
 	}{index, enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsRelative(index int64) bool { //gd:AimModifier3D.is_relative
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_relative, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ index int64 }{index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -333,29 +348,29 @@ func (o class) AsAimModifier3D() Advanced         { return Advanced(o) }
 func (o Instance) AsAimModifier3D() Instance      { return o }
 func (o *Extension[T]) AsAimModifier3D() Instance { return o.Super() }
 func (o class) AsBoneConstraint3D() BoneConstraint3D.Advanced {
-	return BoneConstraint3D.Advanced{gdclass.NewBoneConstraint3D(o[0].AsObject()[0])}
+	return *(*BoneConstraint3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsBoneConstraint3D() BoneConstraint3D.Instance {
 	return o.Super().AsBoneConstraint3D()
 }
 func (o Instance) AsBoneConstraint3D() BoneConstraint3D.Instance {
-	return BoneConstraint3D.Instance{gdclass.NewBoneConstraint3D(o[0].AsObject()[0])}
+	return *(*BoneConstraint3D.Instance)(ie.As(&o))
 }
 func (o class) AsSkeletonModifier3D() SkeletonModifier3D.Advanced {
-	return SkeletonModifier3D.Advanced{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
 	return o.Super().AsSkeletonModifier3D()
 }
 func (o Instance) AsSkeletonModifier3D() SkeletonModifier3D.Instance {
-	return SkeletonModifier3D.Instance{gdclass.NewSkeletonModifier3D(o[0].AsObject()[0])}
+	return *(*SkeletonModifier3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

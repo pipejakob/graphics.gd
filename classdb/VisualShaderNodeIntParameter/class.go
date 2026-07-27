@@ -8,6 +8,7 @@ A [VisualShaderNodeParameter] of type int. Offers additional customization for r
 package VisualShaderNodeIntParameter
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -44,6 +45,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -137,7 +141,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.VisualShaderNodeIntParameter
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewVisualShaderNodeIntParameter(obj[0])
@@ -152,7 +156,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -278,33 +282,41 @@ func (self Instance) SetDefaultValue(value int) Instance { //gd:VisualShaderNode
 
 func (self class) SetHint(hint Hint) { //gd:VisualShaderNodeIntParameter.set_hint
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_hint, 0|(gdextension.SizeInt<<4), &struct{ hint Hint }{hint})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHint() Hint { //gd:VisualShaderNodeIntParameter.get_hint
 	var r_ret = jumponly.Call[Hint](gd.ObjectChecked(self.AsObject()), methods.get_hint, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMin(value int64) { //gd:VisualShaderNodeIntParameter.set_min
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_min, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMin() int64 { //gd:VisualShaderNodeIntParameter.get_min
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_min, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMax(value int64) { //gd:VisualShaderNodeIntParameter.set_max
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_max, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetMax() int64 { //gd:VisualShaderNodeIntParameter.get_max
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetStep(value int64) { //gd:VisualShaderNodeIntParameter.set_step
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_step, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetStep() int64 { //gd:VisualShaderNodeIntParameter.get_step
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_step, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -312,25 +324,32 @@ func (self class) SetEnumNames(names Packed.Strings) { //gd:VisualShaderNodeIntP
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_enum_names, 0|(gdextension.SizePackedArray<<4), &struct {
 		names gdextension.PackedArray[gdextension.String]
 	}{pointers.Get(gd.InternalPackedStrings(names))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(names)
 }
 func (self class) GetEnumNames() Packed.Strings { //gd:VisualShaderNodeIntParameter.get_enum_names
 	var r_ret = jumponly.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_enum_names, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Strings(Array.Through(gd.WrapPackedStrings(pointers.Let[gd.PackedStringArray](r_ret))))
 	return ret
 }
 func (self class) SetDefaultValueEnabled(enabled bool) { //gd:VisualShaderNodeIntParameter.set_default_value_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_value_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsDefaultValueEnabled() bool { //gd:VisualShaderNodeIntParameter.is_default_value_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_default_value_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDefaultValue(value int64) { //gd:VisualShaderNodeIntParameter.set_default_value
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_default_value, 0|(gdextension.SizeInt<<4), &struct{ value int64 }{value})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDefaultValue() int64 { //gd:VisualShaderNodeIntParameter.get_default_value
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_default_value, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -338,26 +357,26 @@ func (o class) AsVisualShaderNodeIntParameter() Advanced         { return Advanc
 func (o Instance) AsVisualShaderNodeIntParameter() Instance      { return o }
 func (o *Extension[T]) AsVisualShaderNodeIntParameter() Instance { return o.Super() }
 func (o class) AsVisualShaderNodeParameter() VisualShaderNodeParameter.Advanced {
-	return VisualShaderNodeParameter.Advanced{gdclass.NewVisualShaderNodeParameter(o[0].AsObject()[0])}
+	return *(*VisualShaderNodeParameter.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualShaderNodeParameter() VisualShaderNodeParameter.Instance {
 	return o.Super().AsVisualShaderNodeParameter()
 }
 func (o Instance) AsVisualShaderNodeParameter() VisualShaderNodeParameter.Instance {
-	return VisualShaderNodeParameter.Instance{gdclass.NewVisualShaderNodeParameter(o[0].AsObject()[0])}
+	return *(*VisualShaderNodeParameter.Instance)(ie.As(&o))
 }
 func (o class) AsVisualShaderNode() VisualShaderNode.Advanced {
-	return VisualShaderNode.Advanced{gdclass.NewVisualShaderNode(o[0].AsObject()[0])}
+	return *(*VisualShaderNode.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualShaderNode() VisualShaderNode.Instance {
 	return o.Super().AsVisualShaderNode()
 }
 func (o Instance) AsVisualShaderNode() VisualShaderNode.Instance {
-	return VisualShaderNode.Instance{gdclass.NewVisualShaderNode(o[0].AsObject()[0])}
+	return *(*VisualShaderNode.Instance)(ie.As(&o))
 }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

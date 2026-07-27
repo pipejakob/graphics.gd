@@ -6,6 +6,7 @@ ENet's purpose is to provide a relatively thin, simple and robust network commun
 package ENetConnection
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -40,6 +41,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -380,7 +384,7 @@ func (self Instance) SocketSend(destination_address string, destination_port int
 type Advanced = class
 type class [1]gdclass.ENetConnection
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewENetConnection(obj[0])
@@ -395,7 +399,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -427,6 +431,8 @@ func (self class) CreateHostBound(bind_address String.Readable, bind_port int64,
 		in_bandwidth  int64
 		out_bandwidth int64
 	}{pointers.Get(gd.InternalString(bind_address)), bind_port, max_peers, max_channels, in_bandwidth, out_bandwidth})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(bind_address)
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -437,11 +443,13 @@ func (self class) CreateHost(max_peers int64, max_channels int64, in_bandwidth i
 		in_bandwidth  int64
 		out_bandwidth int64
 	}{max_peers, max_channels, in_bandwidth, out_bandwidth})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) Destroy() { //gd:ENetConnection.destroy
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.destroy, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ConnectToHost(address String.Readable, port int64, channels int64, data int64) [1]gdclass.ENetPacketPeer { //gd:ENetConnection.connect_to_host
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.connect_to_host, gdextension.SizeObject|(gdextension.SizeString<<4)|(gdextension.SizeInt<<8)|(gdextension.SizeInt<<12)|(gdextension.SizeInt<<16), &struct {
@@ -450,25 +458,31 @@ func (self class) ConnectToHost(address String.Readable, port int64, channels in
 		channels int64
 		data     int64
 	}{pointers.Get(gd.InternalString(address)), port, channels, data})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(address)
 	var ret = [1]gdclass.ENetPacketPeer{gdclass.NewENetPacketPeer(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) Service(timeout int64) Array.Any { //gd:ENetConnection.service
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.service, gdextension.SizeArray|(gdextension.SizeInt<<4), &struct{ timeout int64 }{timeout})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[variant.Any](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) Flush() { //gd:ENetConnection.flush
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.flush, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) BandwidthLimit(in_bandwidth int64, out_bandwidth int64) { //gd:ENetConnection.bandwidth_limit
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.bandwidth_limit, 0|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		in_bandwidth  int64
 		out_bandwidth int64
 	}{in_bandwidth, out_bandwidth})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) ChannelLimit(limit int64) { //gd:ENetConnection.channel_limit
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.channel_limit, 0|(gdextension.SizeInt<<4), &struct{ limit int64 }{limit})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) Broadcast(channel int64, packet Packed.Bytes, flags int64) { //gd:ENetConnection.broadcast
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.broadcast, 0|(gdextension.SizeInt<<4)|(gdextension.SizePackedArray<<8)|(gdextension.SizeInt<<12), &struct {
@@ -476,12 +490,17 @@ func (self class) Broadcast(channel int64, packet Packed.Bytes, flags int64) { /
 		packet  gdextension.PackedArray[byte]
 		flags   int64
 	}{channel, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](packet.Array))), flags})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(packet)
 }
 func (self class) Compress(mode CompressionMode) { //gd:ENetConnection.compress
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.compress, 0|(gdextension.SizeInt<<4), &struct{ mode CompressionMode }{mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) DtlsServerSetup(server_options [1]gdclass.TLSOptions) Error.Code { //gd:ENetConnection.dtls_server_setup
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.dtls_server_setup, gdextension.SizeInt|(gdextension.SizeObject<<4), &struct{ server_options gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTLSOptions(server_options[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(server_options[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
@@ -490,29 +509,37 @@ func (self class) DtlsClientSetup(hostname String.Readable, client_options [1]gd
 		hostname       gdextension.String
 		client_options gdextension.Object
 	}{pointers.Get(gd.InternalString(hostname)), gdextension.Object(gdreference.GetObject(gdclass.GetTLSOptions(client_options[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(hostname)
+	runtime.KeepAlive(client_options[0].Anchor())
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) RefuseNewConnections(refuse bool) { //gd:ENetConnection.refuse_new_connections
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.refuse_new_connections, 0|(gdextension.SizeBool<<4), &struct{ refuse bool }{refuse})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) PopStatistic(statistic HostStatistic) float64 { //gd:ENetConnection.pop_statistic
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.pop_statistic, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ statistic HostStatistic }{statistic})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMaxChannels() int64 { //gd:ENetConnection.get_max_channels
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_max_channels, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetLocalPort() int64 { //gd:ENetConnection.get_local_port
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_local_port, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPeers() Array.Contains[[1]gdclass.ENetPacketPeer] { //gd:ENetConnection.get_peers
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_peers, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.ENetPacketPeer](pointers.New[gd.Array](r_ret)))
 	return ret
 }
@@ -522,6 +549,9 @@ func (self class) SocketSend(destination_address String.Readable, destination_po
 		destination_port    int64
 		packet              gdextension.PackedArray[byte]
 	}{pointers.Get(gd.InternalString(destination_address)), destination_port, pointers.Get(gd.InternalPacked[gd.PackedByteArray, byte](Packed.Array[byte](packet.Array)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(destination_address)
+	runtime.KeepAlive(packet)
 }
 func (o class) AsENetConnection() Advanced         { return Advanced(o) }
 func (o Instance) AsENetConnection() Instance      { return o }

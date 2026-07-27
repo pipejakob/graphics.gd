@@ -13,6 +13,7 @@ The way this is used is by filling a number of clips, then configuring the trans
 package AudioStreamInteractive
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -48,6 +49,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -359,7 +363,7 @@ func (self Instance) IsTransitionHoldingPrevious(from_clip Clip, to_clip Clip) b
 type Advanced = class
 type class [1]gdclass.AudioStreamInteractive
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewAudioStreamInteractive(obj[0])
@@ -374,7 +378,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -425,17 +429,21 @@ func (self Instance) SetInitialClip(value Clip) Instance { //gd:AudioStreamInter
 
 func (self class) SetClipCount(clip_count int64) { //gd:AudioStreamInteractive.set_clip_count
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_clip_count, 0|(gdextension.SizeInt<<4), &struct{ clip_count int64 }{clip_count})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetClipCount() int64 { //gd:AudioStreamInteractive.get_clip_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_clip_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetInitialClip(clip_index int64) { //gd:AudioStreamInteractive.set_initial_clip
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_initial_clip, 0|(gdextension.SizeInt<<4), &struct{ clip_index int64 }{clip_index})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetInitialClip() int64 { //gd:AudioStreamInteractive.get_initial_clip
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_initial_clip, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -444,9 +452,12 @@ func (self class) SetClipName(clip_index int64, name String.Name) { //gd:AudioSt
 		clip_index int64
 		name       gdextension.StringName
 	}{clip_index, pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(name)
 }
 func (self class) GetClipName(clip_index int64) String.Name { //gd:AudioStreamInteractive.get_clip_name
 	var r_ret = noescape.Call[gdextension.StringName](gd.ObjectChecked(self.AsObject()), methods.get_clip_name, gdextension.SizeStringName|(gdextension.SizeInt<<4), &struct{ clip_index int64 }{clip_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Name(String.Via(gd.WrapStringName(pointers.New[gd.StringName](r_ret))))
 	return ret
 }
@@ -455,9 +466,12 @@ func (self class) SetClipStream(clip_index int64, stream [1]gdclass.AudioStream)
 		clip_index int64
 		stream     gdextension.Object
 	}{clip_index, gdextension.Object(gdreference.GetObject(gdclass.GetAudioStream(stream[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(stream[0].Anchor())
 }
 func (self class) GetClipStream(clip_index int64) [1]gdclass.AudioStream { //gd:AudioStreamInteractive.get_clip_stream
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_clip_stream, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ clip_index int64 }{clip_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.AudioStream{gdclass.NewAudioStream(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -466,9 +480,11 @@ func (self class) SetClipAutoAdvance(clip_index int64, mode AutoAdvanceMode) { /
 		clip_index int64
 		mode       AutoAdvanceMode
 	}{clip_index, mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetClipAutoAdvance(clip_index int64) AutoAdvanceMode { //gd:AudioStreamInteractive.get_clip_auto_advance
 	var r_ret = noescape.Call[AutoAdvanceMode](gd.ObjectChecked(self.AsObject()), methods.get_clip_auto_advance, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ clip_index int64 }{clip_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -477,9 +493,11 @@ func (self class) SetClipAutoAdvanceNextClip(clip_index int64, auto_advance_next
 		clip_index             int64
 		auto_advance_next_clip int64
 	}{clip_index, auto_advance_next_clip})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetClipAutoAdvanceNextClip(clip_index int64) int64 { //gd:AudioStreamInteractive.get_clip_auto_advance_next_clip
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_clip_auto_advance_next_clip, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ clip_index int64 }{clip_index})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -495,12 +513,14 @@ func (self class) AddTransition(from_clip int64, to_clip int64, from_time Transi
 		filler_clip     int64
 		hold_previous   bool
 	}{from_clip, to_clip, from_time, to_time, fade_mode, fade_beats, use_filler_clip, filler_clip, hold_previous})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasTransition(from_clip int64, to_clip int64) bool { //gd:AudioStreamInteractive.has_transition
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_transition, gdextension.SizeBool|(gdextension.SizeInt<<4)|(gdextension.SizeInt<<8), &struct {
 		from_clip int64
 		to_clip   int64
 	}{from_clip, to_clip})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -509,9 +529,11 @@ func (self class) EraseTransition(from_clip int64, to_clip int64) { //gd:AudioSt
 		from_clip int64
 		to_clip   int64
 	}{from_clip, to_clip})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTransitionList() Packed.Array[int32] { //gd:AudioStreamInteractive.get_transition_list
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_transition_list, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[int32](Array.Through(gd.WrapPacked[gd.PackedInt32Array, int32](pointers.Let[gd.PackedInt32Array](r_ret))))
 	return ret
 }
@@ -520,6 +542,7 @@ func (self class) GetTransitionFromTime(from_clip int64, to_clip int64) Transiti
 		from_clip int64
 		to_clip   int64
 	}{from_clip, to_clip})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -528,6 +551,7 @@ func (self class) GetTransitionToTime(from_clip int64, to_clip int64) Transition
 		from_clip int64
 		to_clip   int64
 	}{from_clip, to_clip})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -536,6 +560,7 @@ func (self class) GetTransitionFadeMode(from_clip int64, to_clip int64) FadeMode
 		from_clip int64
 		to_clip   int64
 	}{from_clip, to_clip})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -544,6 +569,7 @@ func (self class) GetTransitionFadeBeats(from_clip int64, to_clip int64) float64
 		from_clip int64
 		to_clip   int64
 	}{from_clip, to_clip})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -552,6 +578,7 @@ func (self class) IsTransitionUsingFillerClip(from_clip int64, to_clip int64) bo
 		from_clip int64
 		to_clip   int64
 	}{from_clip, to_clip})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -560,6 +587,7 @@ func (self class) GetTransitionFillerClip(from_clip int64, to_clip int64) int64 
 		from_clip int64
 		to_clip   int64
 	}{from_clip, to_clip})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -568,18 +596,19 @@ func (self class) IsTransitionHoldingPrevious(from_clip int64, to_clip int64) bo
 		from_clip int64
 		to_clip   int64
 	}{from_clip, to_clip})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (o class) AsAudioStreamInteractive() Advanced          { return Advanced(o) }
 func (o Instance) AsAudioStreamInteractive() Instance       { return o }
 func (o *Extension[T]) AsAudioStreamInteractive() Instance  { return o.Super() }
-func (o class) AsAudioStream() AudioStream.Advanced         { return AudioStream.Advanced{gdclass.NewAudioStream(o[0].AsObject()[0])} }
+func (o class) AsAudioStream() AudioStream.Advanced         { return *(*AudioStream.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsAudioStream() AudioStream.Instance { return o.Super().AsAudioStream() }
-func (o Instance) AsAudioStream() AudioStream.Instance      { return AudioStream.Instance{gdclass.NewAudioStream(o[0].AsObject()[0])} }
-func (o class) AsResource() Resource.Advanced               { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsAudioStream() AudioStream.Instance      { return *(*AudioStream.Instance)(ie.As(&o)) }
+func (o class) AsResource() Resource.Advanced               { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance       { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance            { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance            { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC                 { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                      { return *(*ie.RC)(ie.As(&o)) }

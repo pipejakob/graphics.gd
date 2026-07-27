@@ -10,6 +10,7 @@ Intended for use with GDExtension to create custom implementations of [PhysicsDi
 package PhysicsDirectSpaceState2DExtension
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -18,6 +19,7 @@ import "graphics.gd/internal/gdreference"
 import "graphics.gd/internal/noescape"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -46,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -263,7 +268,7 @@ func (self Instance) IsBodyExcludedFromQuery(body RID.Body2D) bool { //gd:Physic
 type Advanced = class
 type class [1]gdclass.PhysicsDirectSpaceState2DExtension
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPhysicsDirectSpaceState2DExtension(obj[0])
@@ -278,7 +283,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -401,6 +406,7 @@ func (class) _rest_info(impl func(ptr gdclass.Receiver, shape_rid RID.Any, trans
 
 func (self class) IsBodyExcludedFromQuery(body RID.Any) bool { //gd:PhysicsDirectSpaceState2DExtension.is_body_excluded_from_query
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_body_excluded_from_query, gdextension.SizeBool|(gdextension.SizeRID<<4), &struct{ body RID.Any }{body})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -408,13 +414,13 @@ func (o class) AsPhysicsDirectSpaceState2DExtension() Advanced         { return 
 func (o Instance) AsPhysicsDirectSpaceState2DExtension() Instance      { return o }
 func (o *Extension[T]) AsPhysicsDirectSpaceState2DExtension() Instance { return o.Super() }
 func (o class) AsPhysicsDirectSpaceState2D() PhysicsDirectSpaceState2D.Advanced {
-	return PhysicsDirectSpaceState2D.Advanced{gdclass.NewPhysicsDirectSpaceState2D(o[0].AsObject()[0])}
+	return *(*PhysicsDirectSpaceState2D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsPhysicsDirectSpaceState2D() PhysicsDirectSpaceState2D.Instance {
 	return o.Super().AsPhysicsDirectSpaceState2D()
 }
 func (o Instance) AsPhysicsDirectSpaceState2D() PhysicsDirectSpaceState2D.Instance {
-	return PhysicsDirectSpaceState2D.Instance{gdclass.NewPhysicsDirectSpaceState2D(o[0].AsObject()[0])}
+	return *(*PhysicsDirectSpaceState2D.Instance)(ie.As(&o))
 }
 
 func (self class) Virtual(name string) reflect.Value {

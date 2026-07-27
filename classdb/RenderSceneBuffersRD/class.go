@@ -14,6 +14,7 @@ Note: This is an internal rendering server object. Do not instantiate this class
 package RenderSceneBuffersRD
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -53,6 +54,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -419,7 +423,7 @@ func (self Instance) GetUseDebanding() bool { //gd:RenderSceneBuffersRD.get_use_
 type Advanced = class
 type class [1]gdclass.RenderSceneBuffersRD
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewRenderSceneBuffersRD(obj[0])
@@ -434,7 +438,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -462,6 +466,9 @@ func (self class) HasTexture(context String.Name, name String.Name) bool { //gd:
 		context gdextension.StringName
 		name    gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(context)), pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -478,6 +485,9 @@ func (self class) CreateTexture(context String.Name, name String.Name, data_form
 		unique          bool
 		discardable     bool
 	}{pointers.Get(gd.InternalStringName(context)), pointers.Get(gd.InternalStringName(name)), data_format, usage_bits, texture_samples, size, layers, mipmaps, unique, discardable})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -489,6 +499,11 @@ func (self class) CreateTextureFromFormat(context String.Name, name String.Name,
 		view    gdextension.Object
 		unique  bool
 	}{pointers.Get(gd.InternalStringName(context)), pointers.Get(gd.InternalStringName(name)), gdextension.Object(gdreference.GetObject(gdclass.GetRDTextureFormat(format[0])[0])), gdextension.Object(gdreference.GetObject(gdclass.GetRDTextureView(view[0])[0])), unique})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(format[0].Anchor())
+	runtime.KeepAlive(view[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -499,6 +514,11 @@ func (self class) CreateTextureView(context String.Name, name String.Name, view_
 		view_name gdextension.StringName
 		view      gdextension.Object
 	}{pointers.Get(gd.InternalStringName(context)), pointers.Get(gd.InternalStringName(name)), pointers.Get(gd.InternalStringName(view_name)), gdextension.Object(gdreference.GetObject(gdclass.GetRDTextureView(view[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(view_name)
+	runtime.KeepAlive(view[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -507,6 +527,9 @@ func (self class) GetTexture(context String.Name, name String.Name) RID.Any { //
 		context gdextension.StringName
 		name    gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(context)), pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -515,6 +538,9 @@ func (self class) GetTextureFormat(context String.Name, name String.Name) [1]gdc
 		context gdextension.StringName
 		name    gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(context)), pointers.Get(gd.InternalStringName(name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
+	runtime.KeepAlive(name)
 	var ret = [1]gdclass.RDTextureFormat{gdclass.NewRDTextureFormat(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -527,6 +553,9 @@ func (self class) GetTextureSlice(context String.Name, name String.Name, layer i
 		layers  int64
 		mipmaps int64
 	}{pointers.Get(gd.InternalStringName(context)), pointers.Get(gd.InternalStringName(name)), layer, mipmap, layers, mipmaps})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
@@ -540,6 +569,10 @@ func (self class) GetTextureSliceView(context String.Name, name String.Name, lay
 		mipmaps int64
 		view    gdextension.Object
 	}{pointers.Get(gd.InternalStringName(context)), pointers.Get(gd.InternalStringName(name)), layer, mipmap, layers, mipmaps, gdextension.Object(gdreference.GetObject(gdclass.GetRDTextureView(view[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
+	runtime.KeepAlive(name)
+	runtime.KeepAlive(view[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -549,14 +582,20 @@ func (self class) GetTextureSliceSize(context String.Name, name String.Name, mip
 		name    gdextension.StringName
 		mipmap  int64
 	}{pointers.Get(gd.InternalStringName(context)), pointers.Get(gd.InternalStringName(name)), mipmap})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
+	runtime.KeepAlive(name)
 	var ret = r_ret
 	return ret
 }
 func (self class) ClearContext(context String.Name) { //gd:RenderSceneBuffersRD.clear_context
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_context, 0|(gdextension.SizeStringName<<4), &struct{ context gdextension.StringName }{pointers.Get(gd.InternalStringName(context))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(context)
 }
 func (self class) GetColorTexture(msaa bool) RID.Any { //gd:RenderSceneBuffersRD.get_color_texture
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_color_texture, gdextension.SizeRID|(gdextension.SizeBool<<4), &struct{ msaa bool }{msaa})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -565,11 +604,13 @@ func (self class) GetColorLayer(layer int64, msaa bool) RID.Any { //gd:RenderSce
 		layer int64
 		msaa  bool
 	}{layer, msaa})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetDepthTexture(msaa bool) RID.Any { //gd:RenderSceneBuffersRD.get_depth_texture
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_depth_texture, gdextension.SizeRID|(gdextension.SizeBool<<4), &struct{ msaa bool }{msaa})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -578,11 +619,13 @@ func (self class) GetDepthLayer(layer int64, msaa bool) RID.Any { //gd:RenderSce
 		layer int64
 		msaa  bool
 	}{layer, msaa})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetVelocityTexture(msaa bool) RID.Any { //gd:RenderSceneBuffersRD.get_velocity_texture
 	var r_ret = noescape.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_velocity_texture, gdextension.SizeRID|(gdextension.SizeBool<<4), &struct{ msaa bool }{msaa})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -591,61 +634,73 @@ func (self class) GetVelocityLayer(layer int64, msaa bool) RID.Any { //gd:Render
 		layer int64
 		msaa  bool
 	}{layer, msaa})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetRenderTarget() RID.Any { //gd:RenderSceneBuffersRD.get_render_target
 	var r_ret = jumponly.Call[RID.Any](gd.ObjectChecked(self.AsObject()), methods.get_render_target, gdextension.SizeRID, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetViewCount() int64 { //gd:RenderSceneBuffersRD.get_view_count
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_view_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetInternalSize() Vector2i.XY { //gd:RenderSceneBuffersRD.get_internal_size
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_internal_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetTargetSize() Vector2i.XY { //gd:RenderSceneBuffersRD.get_target_size
 	var r_ret = jumponly.Call[Vector2i.XY](gd.ObjectChecked(self.AsObject()), methods.get_target_size, gdextension.SizeVector2i, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetScaling3dMode() RenderingServer.ViewportScaling3DMode { //gd:RenderSceneBuffersRD.get_scaling_3d_mode
 	var r_ret = jumponly.Call[RenderingServer.ViewportScaling3DMode](gd.ObjectChecked(self.AsObject()), methods.get_scaling_3d_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFsrSharpness() float64 { //gd:RenderSceneBuffersRD.get_fsr_sharpness
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_fsr_sharpness, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetMsaa3d() RenderingServer.ViewportMSAA { //gd:RenderSceneBuffersRD.get_msaa_3d
 	var r_ret = jumponly.Call[RenderingServer.ViewportMSAA](gd.ObjectChecked(self.AsObject()), methods.get_msaa_3d, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetTextureSamples() Rendering.TextureSamples { //gd:RenderSceneBuffersRD.get_texture_samples
 	var r_ret = jumponly.Call[Rendering.TextureSamples](gd.ObjectChecked(self.AsObject()), methods.get_texture_samples, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetScreenSpaceAa() RenderingServer.ViewportScreenSpaceAA { //gd:RenderSceneBuffersRD.get_screen_space_aa
 	var r_ret = jumponly.Call[RenderingServer.ViewportScreenSpaceAA](gd.ObjectChecked(self.AsObject()), methods.get_screen_space_aa, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetUseTaa() bool { //gd:RenderSceneBuffersRD.get_use_taa
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_taa, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetUseDebanding() bool { //gd:RenderSceneBuffersRD.get_use_debanding
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_debanding, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -653,13 +708,13 @@ func (o class) AsRenderSceneBuffersRD() Advanced         { return Advanced(o) }
 func (o Instance) AsRenderSceneBuffersRD() Instance      { return o }
 func (o *Extension[T]) AsRenderSceneBuffersRD() Instance { return o.Super() }
 func (o class) AsRenderSceneBuffers() RenderSceneBuffers.Advanced {
-	return RenderSceneBuffers.Advanced{gdclass.NewRenderSceneBuffers(o[0].AsObject()[0])}
+	return *(*RenderSceneBuffers.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsRenderSceneBuffers() RenderSceneBuffers.Instance {
 	return o.Super().AsRenderSceneBuffers()
 }
 func (o Instance) AsRenderSceneBuffers() RenderSceneBuffers.Instance {
-	return RenderSceneBuffers.Instance{gdclass.NewRenderSceneBuffers(o[0].AsObject()[0])}
+	return *(*RenderSceneBuffers.Instance)(ie.As(&o))
 }
 func (o class) AsRefCounted() ie.RC         { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC { return o.Super().AsRefCounted() }

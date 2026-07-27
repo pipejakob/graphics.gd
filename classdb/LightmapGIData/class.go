@@ -9,6 +9,7 @@
 package LightmapGIData
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -170,7 +174,7 @@ func (self Instance) ClearUsers() { //gd:LightmapGIData.clear_users
 type Advanced = class
 type class [1]gdclass.LightmapGIData
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewLightmapGIData(obj[0])
@@ -185,7 +189,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -259,25 +263,33 @@ func (self Instance) SetLightTexture(value TextureLayered.Instance) Instance { /
 
 func (self class) SetLightmapTextures(light_textures Array.Contains[[1]gdclass.TextureLayered]) { //gd:LightmapGIData.set_lightmap_textures
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_lightmap_textures, 0|(gdextension.SizeArray<<4), &struct{ light_textures gdextension.Array }{pointers.Get(gd.InternalArray(light_textures))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(light_textures)
 }
 func (self class) GetLightmapTextures() Array.Contains[[1]gdclass.TextureLayered] { //gd:LightmapGIData.get_lightmap_textures
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_lightmap_textures, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.TextureLayered](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetShadowmaskTextures(shadowmask_textures Array.Contains[[1]gdclass.TextureLayered]) { //gd:LightmapGIData.set_shadowmask_textures
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_shadowmask_textures, 0|(gdextension.SizeArray<<4), &struct{ shadowmask_textures gdextension.Array }{pointers.Get(gd.InternalArray(shadowmask_textures))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(shadowmask_textures)
 }
 func (self class) GetShadowmaskTextures() Array.Contains[[1]gdclass.TextureLayered] { //gd:LightmapGIData.get_shadowmask_textures
 	var r_ret = noescape.Call[gdextension.Array](gd.ObjectChecked(self.AsObject()), methods.get_shadowmask_textures, gdextension.SizeArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Array.Through(gd.WrapArray[[1]gdclass.TextureLayered](pointers.New[gd.Array](r_ret)))
 	return ret
 }
 func (self class) SetUsesSphericalHarmonics(uses_spherical_harmonics bool) { //gd:LightmapGIData.set_uses_spherical_harmonics
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_uses_spherical_harmonics, 0|(gdextension.SizeBool<<4), &struct{ uses_spherical_harmonics bool }{uses_spherical_harmonics})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingSphericalHarmonics() bool { //gd:LightmapGIData.is_using_spherical_harmonics
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_spherical_harmonics, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -288,34 +300,42 @@ func (self class) AddUser(path Path.ToNode, uv_scale Rect2.PositionSize, slice_i
 		slice_index  int64
 		sub_instance int64
 	}{pointers.Get(gd.InternalNodePath(path)), uv_scale, slice_index, sub_instance})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 }
 func (self class) GetUserCount() int64 { //gd:LightmapGIData.get_user_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_user_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetUserPath(user_idx int64) Path.ToNode { //gd:LightmapGIData.get_user_path
 	var r_ret = noescape.Call[gdextension.NodePath](gd.ObjectChecked(self.AsObject()), methods.get_user_path, gdextension.SizeNodePath|(gdextension.SizeInt<<4), &struct{ user_idx int64 }{user_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Path.ToNode(String.Via(gd.WrapNodePath(pointers.New[gd.NodePath](r_ret))))
 	return ret
 }
 func (self class) ClearUsers() { //gd:LightmapGIData.clear_users
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.clear_users, 0, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) SetLightTexture(light_texture [1]gdclass.TextureLayered) { //gd:LightmapGIData.set_light_texture
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_light_texture, 0|(gdextension.SizeObject<<4), &struct{ light_texture gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetTextureLayered(light_texture[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(light_texture[0].Anchor())
 }
 func (self class) GetLightTexture() [1]gdclass.TextureLayered { //gd:LightmapGIData.get_light_texture
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_light_texture, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.TextureLayered{gdclass.NewTextureLayered(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (o class) AsLightmapGIData() Advanced            { return Advanced(o) }
 func (o Instance) AsLightmapGIData() Instance         { return o }
 func (o *Extension[T]) AsLightmapGIData() Instance    { return o.Super() }
-func (o class) AsResource() Resource.Advanced         { return Resource.Advanced{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o class) AsResource() Resource.Advanced         { return *(*Resource.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsResource() Resource.Instance { return o.Super().AsResource() }
-func (o Instance) AsResource() Resource.Instance      { return Resource.Instance{gdclass.NewResource(o[0].AsObject()[0])} }
+func (o Instance) AsResource() Resource.Instance      { return *(*Resource.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                   { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC           { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                { return *(*ie.RC)(ie.As(&o)) }

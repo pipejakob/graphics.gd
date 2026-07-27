@@ -11,6 +11,7 @@ Note: CSG nodes are intended to be used for level prototyping. Creating CSG node
 package CSGSphere3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -50,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -139,7 +144,7 @@ type Any interface {
 type Advanced = class
 type class [1]gdclass.CSGSphere3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewCSGSphere3D(obj[0])
@@ -154,7 +159,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -244,41 +249,52 @@ func (self Instance) SetMaterial(value Material.Instance) Instance { //gd:CSGSph
 
 func (self class) SetRadius(radius float64) { //gd:CSGSphere3D.set_radius
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_radius, 0|(gdextension.SizeFloat<<4), &struct{ radius float64 }{radius})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadius() float64 { //gd:CSGSphere3D.get_radius
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_radius, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRadialSegments(radial_segments int64) { //gd:CSGSphere3D.set_radial_segments
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_radial_segments, 0|(gdextension.SizeInt<<4), &struct{ radial_segments int64 }{radial_segments})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRadialSegments() int64 { //gd:CSGSphere3D.get_radial_segments
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_radial_segments, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRings(rings int64) { //gd:CSGSphere3D.set_rings
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rings, 0|(gdextension.SizeInt<<4), &struct{ rings int64 }{rings})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRings() int64 { //gd:CSGSphere3D.get_rings
 	var r_ret = jumponly.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_rings, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetSmoothFaces(smooth_faces bool) { //gd:CSGSphere3D.set_smooth_faces
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_smooth_faces, 0|(gdextension.SizeBool<<4), &struct{ smooth_faces bool }{smooth_faces})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSmoothFaces() bool { //gd:CSGSphere3D.get_smooth_faces
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_smooth_faces, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetMaterial(material [1]gdclass.Material) { //gd:CSGSphere3D.set_material
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_material, 0|(gdextension.SizeObject<<4), &struct{ material gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetMaterial(material[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(material[0].Anchor())
 }
 func (self class) GetMaterial() [1]gdclass.Material { //gd:CSGSphere3D.get_material
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_material, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Material{gdclass.NewMaterial(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -286,41 +302,41 @@ func (o class) AsCSGSphere3D() Advanced         { return Advanced(o) }
 func (o Instance) AsCSGSphere3D() Instance      { return o }
 func (o *Extension[T]) AsCSGSphere3D() Instance { return o.Super() }
 func (o class) AsCSGPrimitive3D() CSGPrimitive3D.Advanced {
-	return CSGPrimitive3D.Advanced{gdclass.NewCSGPrimitive3D(o[0].AsObject()[0])}
+	return *(*CSGPrimitive3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsCSGPrimitive3D() CSGPrimitive3D.Instance {
 	return o.Super().AsCSGPrimitive3D()
 }
 func (o Instance) AsCSGPrimitive3D() CSGPrimitive3D.Instance {
-	return CSGPrimitive3D.Instance{gdclass.NewCSGPrimitive3D(o[0].AsObject()[0])}
+	return *(*CSGPrimitive3D.Instance)(ie.As(&o))
 }
-func (o class) AsCSGShape3D() CSGShape3D.Advanced         { return CSGShape3D.Advanced{gdclass.NewCSGShape3D(o[0].AsObject()[0])} }
+func (o class) AsCSGShape3D() CSGShape3D.Advanced         { return *(*CSGShape3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCSGShape3D() CSGShape3D.Instance { return o.Super().AsCSGShape3D() }
-func (o Instance) AsCSGShape3D() CSGShape3D.Instance      { return CSGShape3D.Instance{gdclass.NewCSGShape3D(o[0].AsObject()[0])} }
+func (o Instance) AsCSGShape3D() CSGShape3D.Instance      { return *(*CSGShape3D.Instance)(ie.As(&o)) }
 func (o class) AsGeometryInstance3D() GeometryInstance3D.Advanced {
-	return GeometryInstance3D.Advanced{gdclass.NewGeometryInstance3D(o[0].AsObject()[0])}
+	return *(*GeometryInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsGeometryInstance3D() GeometryInstance3D.Instance {
 	return o.Super().AsGeometryInstance3D()
 }
 func (o Instance) AsGeometryInstance3D() GeometryInstance3D.Instance {
-	return GeometryInstance3D.Instance{gdclass.NewGeometryInstance3D(o[0].AsObject()[0])}
+	return *(*GeometryInstance3D.Instance)(ie.As(&o))
 }
 func (o class) AsVisualInstance3D() VisualInstance3D.Advanced {
-	return VisualInstance3D.Advanced{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Advanced)(ie.As(&o))
 }
 func (o *Extension[T]) AsVisualInstance3D() VisualInstance3D.Instance {
 	return o.Super().AsVisualInstance3D()
 }
 func (o Instance) AsVisualInstance3D() VisualInstance3D.Instance {
-	return VisualInstance3D.Instance{gdclass.NewVisualInstance3D(o[0].AsObject()[0])}
+	return *(*VisualInstance3D.Instance)(ie.As(&o))
 }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

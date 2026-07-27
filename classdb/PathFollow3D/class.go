@@ -11,6 +11,7 @@ It is useful for making other nodes follow a path, without coding the movement p
 package PathFollow3D
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -20,6 +21,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -46,6 +48,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -152,7 +157,7 @@ func CorrectPosture(transform Transform3D.BasisOrigin, rotation_mode RotationMod
 type Advanced = class
 type class [1]gdclass.PathFollow3D
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewPathFollow3D(obj[0])
@@ -167,7 +172,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -324,73 +329,91 @@ func (self Instance) SetTiltEnabled(value bool) Instance { //gd:PathFollow3D.til
 
 func (self class) SetProgress(progress float64) { //gd:PathFollow3D.set_progress
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_progress, 0|(gdextension.SizeFloat<<4), &struct{ progress float64 }{progress})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetProgress() float64 { //gd:PathFollow3D.get_progress
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_progress, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetHOffset(h_offset float64) { //gd:PathFollow3D.set_h_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_h_offset, 0|(gdextension.SizeFloat<<4), &struct{ h_offset float64 }{h_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetHOffset() float64 { //gd:PathFollow3D.get_h_offset
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_h_offset, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetVOffset(v_offset float64) { //gd:PathFollow3D.set_v_offset
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_v_offset, 0|(gdextension.SizeFloat<<4), &struct{ v_offset float64 }{v_offset})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetVOffset() float64 { //gd:PathFollow3D.get_v_offset
 	var r_ret = jumponly.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_v_offset, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetProgressRatio(ratio float64) { //gd:PathFollow3D.set_progress_ratio
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_progress_ratio, 0|(gdextension.SizeFloat<<4), &struct{ ratio float64 }{ratio})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetProgressRatio() float64 { //gd:PathFollow3D.get_progress_ratio
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_progress_ratio, gdextension.SizeFloat, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetRotationMode(rotation_mode RotationMode) { //gd:PathFollow3D.set_rotation_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_rotation_mode, 0|(gdextension.SizeInt<<4), &struct{ rotation_mode RotationMode }{rotation_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetRotationMode() RotationMode { //gd:PathFollow3D.get_rotation_mode
 	var r_ret = jumponly.Call[RotationMode](gd.ObjectChecked(self.AsObject()), methods.get_rotation_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCubicInterpolation(enabled bool) { //gd:PathFollow3D.set_cubic_interpolation
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_cubic_interpolation, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCubicInterpolation() bool { //gd:PathFollow3D.get_cubic_interpolation
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_cubic_interpolation, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseModelFront(enabled bool) { //gd:PathFollow3D.set_use_model_front
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_model_front, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsUsingModelFront() bool { //gd:PathFollow3D.is_using_model_front
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_using_model_front, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetLoop(loop bool) { //gd:PathFollow3D.set_loop
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_loop, 0|(gdextension.SizeBool<<4), &struct{ loop bool }{loop})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) HasLoop() bool { //gd:PathFollow3D.has_loop
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.has_loop, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTiltEnabled(enabled bool) { //gd:PathFollow3D.set_tilt_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tilt_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTiltEnabled() bool { //gd:PathFollow3D.is_tilt_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_tilt_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -405,12 +428,12 @@ func (self class) CorrectPosture(transform Transform3D.BasisOrigin, rotation_mod
 func (o class) AsPathFollow3D() Advanced          { return Advanced(o) }
 func (o Instance) AsPathFollow3D() Instance       { return o }
 func (o *Extension[T]) AsPathFollow3D() Instance  { return o.Super() }
-func (o class) AsNode3D() Node3D.Advanced         { return Node3D.Advanced{gdclass.NewNode3D(o[0].AsObject()[0])} }
+func (o class) AsNode3D() Node3D.Advanced         { return *(*Node3D.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode3D() Node3D.Instance { return o.Super().AsNode3D() }
-func (o Instance) AsNode3D() Node3D.Instance      { return Node3D.Instance{gdclass.NewNode3D(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced             { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode3D() Node3D.Instance      { return *(*Node3D.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced             { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance     { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance          { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance          { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

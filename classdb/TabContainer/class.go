@@ -10,6 +10,7 @@ Note: The drawing of the clickable tabs is handled by this node; [TabBar] is not
 package TabContainer
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -19,6 +20,7 @@ import "graphics.gd/internal/noescape"
 import "graphics.gd/internal/jumponly"
 import gd "graphics.gd/internal"
 import "graphics.gd/internal/gdclass"
+import "graphics.gd/internal/ie"
 import "graphics.gd/variant"
 import "graphics.gd/variant/Angle"
 import "graphics.gd/variant/Euler"
@@ -50,6 +52,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -426,7 +431,7 @@ func (self Instance) GetPopup() Popup.Instance { //gd:TabContainer.get_popup
 type Advanced = class
 type class [1]gdclass.TabContainer
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewTabContainer(obj[0])
@@ -441,7 +446,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -639,84 +644,103 @@ func (self Instance) SetDeselectEnabled(value bool) Instance { //gd:TabContainer
 
 func (self class) GetTabCount() int64 { //gd:TabContainer.get_tab_count
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_tab_count, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetCurrentTab(tab_idx int64) { //gd:TabContainer.set_current_tab
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_current_tab, 0|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetCurrentTab() int64 { //gd:TabContainer.get_current_tab
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_current_tab, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetPreviousTab() int64 { //gd:TabContainer.get_previous_tab
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_previous_tab, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SelectPreviousAvailable() bool { //gd:TabContainer.select_previous_available
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.select_previous_available, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SelectNextAvailable() bool { //gd:TabContainer.select_next_available
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.select_next_available, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetCurrentTabControl() [1]gdclass.Control { //gd:TabContainer.get_current_tab_control
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_current_tab_control, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Control{gdclass.NewControl(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) GetTabBar() [1]gdclass.TabBar { //gd:TabContainer.get_tab_bar
 	var r_ret = jumponly.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_tab_bar, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.TabBar{gdclass.NewTabBar(gd.PointerLifetimeBoundTo(self.AsObject(), r_ret))}
 	return ret
 }
 func (self class) GetTabControl(tab_idx int64) [1]gdclass.Control { //gd:TabContainer.get_tab_control
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_tab_control, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Control{gdclass.NewControl(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetTabAlignment(alignment TabBar.AlignmentMode) { //gd:TabContainer.set_tab_alignment
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tab_alignment, 0|(gdextension.SizeInt<<4), &struct{ alignment TabBar.AlignmentMode }{alignment})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTabAlignment() TabBar.AlignmentMode { //gd:TabContainer.get_tab_alignment
 	var r_ret = noescape.Call[TabBar.AlignmentMode](gd.ObjectChecked(self.AsObject()), methods.get_tab_alignment, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTabsPosition(tabs_position TabPosition) { //gd:TabContainer.set_tabs_position
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tabs_position, 0|(gdextension.SizeInt<<4), &struct{ tabs_position TabPosition }{tabs_position})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTabsPosition() TabPosition { //gd:TabContainer.get_tabs_position
 	var r_ret = jumponly.Call[TabPosition](gd.ObjectChecked(self.AsObject()), methods.get_tabs_position, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetClipTabs(clip_tabs bool) { //gd:TabContainer.set_clip_tabs
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_clip_tabs, 0|(gdextension.SizeBool<<4), &struct{ clip_tabs bool }{clip_tabs})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetClipTabs() bool { //gd:TabContainer.get_clip_tabs
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_clip_tabs, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTabsVisible(visible bool) { //gd:TabContainer.set_tabs_visible
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tabs_visible, 0|(gdextension.SizeBool<<4), &struct{ visible bool }{visible})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) AreTabsVisible() bool { //gd:TabContainer.are_tabs_visible
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.are_tabs_visible, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetAllTabsInFront(is_front bool) { //gd:TabContainer.set_all_tabs_in_front
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_all_tabs_in_front, 0|(gdextension.SizeBool<<4), &struct{ is_front bool }{is_front})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsAllTabsInFront() bool { //gd:TabContainer.is_all_tabs_in_front
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_all_tabs_in_front, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -725,9 +749,12 @@ func (self class) SetTabTitle(tab_idx int64, title String.Readable) { //gd:TabCo
 		tab_idx int64
 		title   gdextension.String
 	}{tab_idx, pointers.Get(gd.InternalString(title))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(title)
 }
 func (self class) GetTabTitle(tab_idx int64) String.Readable { //gd:TabContainer.get_tab_title
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tab_title, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -736,9 +763,12 @@ func (self class) SetTabTooltip(tab_idx int64, tooltip String.Readable) { //gd:T
 		tab_idx int64
 		tooltip gdextension.String
 	}{tab_idx, pointers.Get(gd.InternalString(tooltip))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(tooltip)
 }
 func (self class) GetTabTooltip(tab_idx int64) String.Readable { //gd:TabContainer.get_tab_tooltip
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_tab_tooltip, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
@@ -747,9 +777,12 @@ func (self class) SetTabIcon(tab_idx int64, icon [1]gdclass.Texture2D) { //gd:Ta
 		tab_idx int64
 		icon    gdextension.Object
 	}{tab_idx, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(icon[0].Anchor())
 }
 func (self class) GetTabIcon(tab_idx int64) [1]gdclass.Texture2D { //gd:TabContainer.get_tab_icon
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_tab_icon, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
@@ -758,9 +791,11 @@ func (self class) SetTabIconMaxWidth(tab_idx int64, width int64) { //gd:TabConta
 		tab_idx int64
 		width   int64
 	}{tab_idx, width})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTabIconMaxWidth(tab_idx int64) int64 { //gd:TabContainer.get_tab_icon_max_width
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_tab_icon_max_width, gdextension.SizeInt|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -769,9 +804,11 @@ func (self class) SetTabDisabled(tab_idx int64, disabled bool) { //gd:TabContain
 		tab_idx  int64
 		disabled bool
 	}{tab_idx, disabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTabDisabled(tab_idx int64) bool { //gd:TabContainer.is_tab_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_tab_disabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -780,9 +817,11 @@ func (self class) SetTabHidden(tab_idx int64, hidden bool) { //gd:TabContainer.s
 		tab_idx int64
 		hidden  bool
 	}{tab_idx, hidden})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsTabHidden(tab_idx int64) bool { //gd:TabContainer.is_tab_hidden
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_tab_hidden, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -791,9 +830,12 @@ func (self class) SetTabMetadata(tab_idx int64, metadata variant.Any) { //gd:Tab
 		tab_idx  int64
 		metadata gdextension.Variant
 	}{tab_idx, gdextension.Variant(pointers.Get(gd.InternalVariant(metadata)))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(metadata)
 }
 func (self class) GetTabMetadata(tab_idx int64) variant.Any { //gd:TabContainer.get_tab_metadata
 	var r_ret = noescape.Call[gdextension.Variant](gd.ObjectChecked(self.AsObject()), methods.get_tab_metadata, gdextension.SizeVariant|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = variant.Implementation(gd.WrapVariant(pointers.New[gd.Variant](r_ret)))
 	return ret
 }
@@ -802,75 +844,96 @@ func (self class) SetTabButtonIcon(tab_idx int64, icon [1]gdclass.Texture2D) { /
 		tab_idx int64
 		icon    gdextension.Object
 	}{tab_idx, gdextension.Object(gdreference.GetObject(gdclass.GetTexture2D(icon[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(icon[0].Anchor())
 }
 func (self class) GetTabButtonIcon(tab_idx int64) [1]gdclass.Texture2D { //gd:TabContainer.get_tab_button_icon
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_tab_button_icon, gdextension.SizeObject|(gdextension.SizeInt<<4), &struct{ tab_idx int64 }{tab_idx})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Texture2D{gdclass.NewTexture2D(gd.PointerWithOwnershipTransferredToGo(r_ret))}
 	return ret
 }
 func (self class) GetTabIdxAtPoint(point Vector2.XY) int64 { //gd:TabContainer.get_tab_idx_at_point
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_tab_idx_at_point, gdextension.SizeInt|(gdextension.SizeVector2<<4), &struct{ point Vector2.XY }{point})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetTabIdxFromControl(control [1]gdclass.Control) int64 { //gd:TabContainer.get_tab_idx_from_control
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_tab_idx_from_control, gdextension.SizeInt|(gdextension.SizeObject<<4), &struct{ control gdextension.Object }{gdextension.Object(gdreference.GetObject(gdclass.GetControl(control[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(control[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetPopup(popup [1]gdclass.Node) { //gd:TabContainer.set_popup
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_popup, 0|(gdextension.SizeObject<<4), &struct{ popup gdextension.Object }{gdextension.Object(gd.PointerWithOwnershipTransferredToGodot(gdclass.GetNode(popup[0])[0]))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(popup[0].Anchor())
 }
 func (self class) GetPopup() [1]gdclass.Popup { //gd:TabContainer.get_popup
 	var r_ret = noescape.Call[gdextension.Object](gd.ObjectChecked(self.AsObject()), methods.get_popup, gdextension.SizeObject, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = [1]gdclass.Popup{gdclass.NewPopup(gdreference.LetObject(r_ret))}
 	return ret
 }
 func (self class) SetSwitchOnDragHover(enabled bool) { //gd:TabContainer.set_switch_on_drag_hover
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_switch_on_drag_hover, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetSwitchOnDragHover() bool { //gd:TabContainer.get_switch_on_drag_hover
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_switch_on_drag_hover, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDragToRearrangeEnabled(enabled bool) { //gd:TabContainer.set_drag_to_rearrange_enabled
 	jumponly.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_drag_to_rearrange_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDragToRearrangeEnabled() bool { //gd:TabContainer.get_drag_to_rearrange_enabled
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_drag_to_rearrange_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTabsRearrangeGroup(group_id int64) { //gd:TabContainer.set_tabs_rearrange_group
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tabs_rearrange_group, 0|(gdextension.SizeInt<<4), &struct{ group_id int64 }{group_id})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTabsRearrangeGroup() int64 { //gd:TabContainer.get_tabs_rearrange_group
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.get_tabs_rearrange_group, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetUseHiddenTabsForMinSize(enabled bool) { //gd:TabContainer.set_use_hidden_tabs_for_min_size
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_use_hidden_tabs_for_min_size, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetUseHiddenTabsForMinSize() bool { //gd:TabContainer.get_use_hidden_tabs_for_min_size
 	var r_ret = jumponly.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_use_hidden_tabs_for_min_size, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetTabFocusMode(focus_mode Control.FocusMode) { //gd:TabContainer.set_tab_focus_mode
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_tab_focus_mode, 0|(gdextension.SizeInt<<4), &struct{ focus_mode Control.FocusMode }{focus_mode})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetTabFocusMode() Control.FocusMode { //gd:TabContainer.get_tab_focus_mode
 	var r_ret = noescape.Call[Control.FocusMode](gd.ObjectChecked(self.AsObject()), methods.get_tab_focus_mode, gdextension.SizeInt, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) SetDeselectEnabled(enabled bool) { //gd:TabContainer.set_deselect_enabled
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_deselect_enabled, 0|(gdextension.SizeBool<<4), &struct{ enabled bool }{enabled})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetDeselectEnabled() bool { //gd:TabContainer.get_deselect_enabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.get_deselect_enabled, gdextension.SizeBool, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -996,18 +1059,18 @@ func (self class) PrePopupPressed() Signal.Any {
 func (o class) AsTabContainer() Advanced                  { return Advanced(o) }
 func (o Instance) AsTabContainer() Instance               { return o }
 func (o *Extension[T]) AsTabContainer() Instance          { return o.Super() }
-func (o class) AsContainer() Container.Advanced           { return Container.Advanced{gdclass.NewContainer(o[0].AsObject()[0])} }
+func (o class) AsContainer() Container.Advanced           { return *(*Container.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsContainer() Container.Instance   { return o.Super().AsContainer() }
-func (o Instance) AsContainer() Container.Instance        { return Container.Instance{gdclass.NewContainer(o[0].AsObject()[0])} }
-func (o class) AsControl() Control.Advanced               { return Control.Advanced{gdclass.NewControl(o[0].AsObject()[0])} }
+func (o Instance) AsContainer() Container.Instance        { return *(*Container.Instance)(ie.As(&o)) }
+func (o class) AsControl() Control.Advanced               { return *(*Control.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsControl() Control.Instance       { return o.Super().AsControl() }
-func (o Instance) AsControl() Control.Instance            { return Control.Instance{gdclass.NewControl(o[0].AsObject()[0])} }
-func (o class) AsCanvasItem() CanvasItem.Advanced         { return CanvasItem.Advanced{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
+func (o Instance) AsControl() Control.Instance            { return *(*Control.Instance)(ie.As(&o)) }
+func (o class) AsCanvasItem() CanvasItem.Advanced         { return *(*CanvasItem.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsCanvasItem() CanvasItem.Instance { return o.Super().AsCanvasItem() }
-func (o Instance) AsCanvasItem() CanvasItem.Instance      { return CanvasItem.Instance{gdclass.NewCanvasItem(o[0].AsObject()[0])} }
-func (o class) AsNode() Node.Advanced                     { return Node.Advanced{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsCanvasItem() CanvasItem.Instance      { return *(*CanvasItem.Instance)(ie.As(&o)) }
+func (o class) AsNode() Node.Advanced                     { return *(*Node.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsNode() Node.Instance             { return o.Super().AsNode() }
-func (o Instance) AsNode() Node.Instance                  { return Node.Instance{gdclass.NewNode(o[0].AsObject()[0])} }
+func (o Instance) AsNode() Node.Instance                  { return *(*Node.Instance)(ie.As(&o)) }
 
 func (self class) Virtual(name string) reflect.Value {
 	switch name {

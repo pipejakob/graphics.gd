@@ -8,6 +8,7 @@ To manage editor feature profiles visually, use Editor > Manage Feature Profiles
 package EditorFeatureProfile
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -40,6 +41,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -228,7 +232,7 @@ func (self Instance) LoadFromFile(path string) error { //gd:EditorFeatureProfile
 type Advanced = class
 type class [1]gdclass.EditorFeatureProfile
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewEditorFeatureProfile(obj[0])
@@ -243,7 +247,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -271,9 +275,13 @@ func (self class) SetDisableClass(class_name String.Name, disable bool) { //gd:E
 		class_name gdextension.StringName
 		disable    bool
 	}{pointers.Get(gd.InternalStringName(class_name)), disable})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(class_name)
 }
 func (self class) IsClassDisabled(class_name String.Name) bool { //gd:EditorFeatureProfile.is_class_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_class_disabled, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ class_name gdextension.StringName }{pointers.Get(gd.InternalStringName(class_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(class_name)
 	var ret = r_ret
 	return ret
 }
@@ -282,9 +290,13 @@ func (self class) SetDisableClassEditor(class_name String.Name, disable bool) { 
 		class_name gdextension.StringName
 		disable    bool
 	}{pointers.Get(gd.InternalStringName(class_name)), disable})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(class_name)
 }
 func (self class) IsClassEditorDisabled(class_name String.Name) bool { //gd:EditorFeatureProfile.is_class_editor_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_class_editor_disabled, gdextension.SizeBool|(gdextension.SizeStringName<<4), &struct{ class_name gdextension.StringName }{pointers.Get(gd.InternalStringName(class_name))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(class_name)
 	var ret = r_ret
 	return ret
 }
@@ -294,12 +306,18 @@ func (self class) SetDisableClassProperty(class_name String.Name, property Strin
 		property   gdextension.StringName
 		disable    bool
 	}{pointers.Get(gd.InternalStringName(class_name)), pointers.Get(gd.InternalStringName(property)), disable})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(class_name)
+	runtime.KeepAlive(property)
 }
 func (self class) IsClassPropertyDisabled(class_name String.Name, property String.Name) bool { //gd:EditorFeatureProfile.is_class_property_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_class_property_disabled, gdextension.SizeBool|(gdextension.SizeStringName<<4)|(gdextension.SizeStringName<<8), &struct {
 		class_name gdextension.StringName
 		property   gdextension.StringName
 	}{pointers.Get(gd.InternalStringName(class_name)), pointers.Get(gd.InternalStringName(property))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(class_name)
+	runtime.KeepAlive(property)
 	var ret = r_ret
 	return ret
 }
@@ -308,24 +326,31 @@ func (self class) SetDisableFeature(feature Feature, disable bool) { //gd:Editor
 		feature Feature
 		disable bool
 	}{feature, disable})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) IsFeatureDisabled(feature Feature) bool { //gd:EditorFeatureProfile.is_feature_disabled
 	var r_ret = noescape.Call[bool](gd.ObjectChecked(self.AsObject()), methods.is_feature_disabled, gdextension.SizeBool|(gdextension.SizeInt<<4), &struct{ feature Feature }{feature})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
 func (self class) GetFeatureName(feature Feature) String.Readable { //gd:EditorFeatureProfile.get_feature_name
 	var r_ret = noescape.Call[gdextension.String](gd.ObjectChecked(self.AsObject()), methods.get_feature_name, gdextension.SizeString|(gdextension.SizeInt<<4), &struct{ feature Feature }{feature})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = String.Via(gd.WrapString(pointers.New[gd.String](r_ret)))
 	return ret
 }
 func (self class) SaveToFile(path String.Readable) Error.Code { //gd:EditorFeatureProfile.save_to_file
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.save_to_file, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }
 func (self class) LoadFromFile(path String.Readable) Error.Code { //gd:EditorFeatureProfile.load_from_file
 	var r_ret = noescape.Call[int64](gd.ObjectChecked(self.AsObject()), methods.load_from_file, gdextension.SizeInt|(gdextension.SizeString<<4), &struct{ path gdextension.String }{pointers.Get(gd.InternalString(path))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(path)
 	var ret = Error.Code(r_ret)
 	return ret
 }

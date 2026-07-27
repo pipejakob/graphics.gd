@@ -12,6 +12,7 @@ As face trackers are turned on they are registered with the [XRServer].
 package XRFaceTracker
 
 import "reflect"
+import "runtime"
 import "slices"
 import "graphics.gd/internal/pointers"
 import "graphics.gd/internal/callframe"
@@ -45,6 +46,9 @@ type _ gdclass.Node
 var _ gd.String
 var _ RefCounted.Instance
 var _ reflect.Type
+
+type _ runtime.Cleanup
+
 var _ callframe.Frame
 var _ = pointers.Cycle
 var _ = Array.Nil
@@ -144,7 +148,7 @@ func (self Instance) SetBlendShape(blend_shape BlendShapeEntry, weight Float.X) 
 type Advanced = class
 type class [1]gdclass.XRFaceTracker
 
-func (o class) AsObject() [1]gdreference.Object { return o[0].AsObject() }
+func (o class) AsObject() [1]gdreference.Object { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (self *class) SetObject(obj [1]gdreference.Object) bool {
 	if gdextension.Host.Objects.Cast(gdreference.GetObject(obj[0]), otype) != 0 {
 		self[0] = gdclass.NewXRFaceTracker(obj[0])
@@ -159,7 +163,7 @@ func (self *Instance) SetObject(obj [1]gdreference.Object) bool {
 	}
 	return false
 }
-func (o Instance) AsObject() [1]gdreference.Object      { return o[0].AsObject() }
+func (o Instance) AsObject() [1]gdreference.Object      { return *(*[1]gdreference.Object)(ie.As(&o)) }
 func (o *Extension[T]) AsObject() [1]gdreference.Object { return o.Super().AsObject() }
 func New() Instance {
 	if !gd.Linked {
@@ -197,6 +201,7 @@ func (self Instance) SetBlendShapes(value []float32) Instance { //gd:XRFaceTrack
 
 func (self class) GetBlendShape(blend_shape BlendShapeEntry) float64 { //gd:XRFaceTracker.get_blend_shape
 	var r_ret = noescape.Call[float64](gd.ObjectChecked(self.AsObject()), methods.get_blend_shape, gdextension.SizeFloat|(gdextension.SizeInt<<4), &struct{ blend_shape BlendShapeEntry }{blend_shape})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = r_ret
 	return ret
 }
@@ -205,9 +210,11 @@ func (self class) SetBlendShape(blend_shape BlendShapeEntry, weight float64) { /
 		blend_shape BlendShapeEntry
 		weight      float64
 	}{blend_shape, weight})
+	runtime.KeepAlive(self[0].Anchor())
 }
 func (self class) GetBlendShapes() Packed.Array[float32] { //gd:XRFaceTracker.get_blend_shapes
 	var r_ret = noescape.Call[gd.PackedPointers](gd.ObjectChecked(self.AsObject()), methods.get_blend_shapes, gdextension.SizePackedArray, &struct{}{})
+	runtime.KeepAlive(self[0].Anchor())
 	var ret = Packed.Array[float32](Array.Through(gd.WrapPacked[gd.PackedFloat32Array, float32](pointers.Let[gd.PackedFloat32Array](r_ret))))
 	return ret
 }
@@ -215,13 +222,15 @@ func (self class) SetBlendShapes(weights Packed.Array[float32]) { //gd:XRFaceTra
 	noescape.Call[struct{}](gd.ObjectChecked(self.AsObject()), methods.set_blend_shapes, 0|(gdextension.SizePackedArray<<4), &struct {
 		weights gdextension.PackedArray[float32]
 	}{pointers.Get(gd.InternalPacked[gd.PackedFloat32Array, float32](weights))})
+	runtime.KeepAlive(self[0].Anchor())
+	runtime.KeepAlive(weights)
 }
 func (o class) AsXRFaceTracker() Advanced               { return Advanced(o) }
 func (o Instance) AsXRFaceTracker() Instance            { return o }
 func (o *Extension[T]) AsXRFaceTracker() Instance       { return o.Super() }
-func (o class) AsXRTracker() XRTracker.Advanced         { return XRTracker.Advanced{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o class) AsXRTracker() XRTracker.Advanced         { return *(*XRTracker.Advanced)(ie.As(&o)) }
 func (o *Extension[T]) AsXRTracker() XRTracker.Instance { return o.Super().AsXRTracker() }
-func (o Instance) AsXRTracker() XRTracker.Instance      { return XRTracker.Instance{gdclass.NewXRTracker(o[0].AsObject()[0])} }
+func (o Instance) AsXRTracker() XRTracker.Instance      { return *(*XRTracker.Instance)(ie.As(&o)) }
 func (o class) AsRefCounted() ie.RC                     { return *(*ie.RC)(ie.As(&o)) }
 func (o *Extension[T]) AsRefCounted() ie.RC             { return o.Super().AsRefCounted() }
 func (o Instance) AsRefCounted() ie.RC                  { return *(*ie.RC)(ie.As(&o)) }
