@@ -17,6 +17,11 @@ func callBuiltinMethod[T any](self unsafe.Pointer, method gdextension.MethodForB
 	// ring.Main is a main-thread-only batch buffer; a non-main caller (e.g. the
 	// dedicated resource-loading thread, via a ResourceFormatLoader callback that
 	// performs String operations) must not touch it, or it races the main thread.
+	// No ring.Threads.Barrier here either: builtin values are only mutated by
+	// synchronous crossings (this path never buffers), so a builtin call has no
+	// queued state to observe — and thread-safe singleton bindings construct
+	// their String arguments through here, which must keep making progress even
+	// while the main thread is parked and the cross-thread ring cannot drain.
 	if threadcheck.Main() {
 		ring.Main.Flush()
 	}
@@ -575,14 +580,38 @@ func ObjectHasMethod(o gdreference.Object, name StringName) bool {
 func ObjectCall(o gdreference.Object, method StringName, args ...Variant) (Variant, error) {
 	if threadcheck.Main() {
 		ring.Main.Flush()
+	} else if !threadcheck.Engine() {
+		// user goroutine: run the whole call on the main thread, in queue
+		// order behind this goroutine's buffered calls. A script method is
+		// arbitrary user code (it can touch the scene tree), and Godot's node
+		// thread guards are compiled out of release builds, so it must not
+		// execute on a user thread. The raw result crosses back and is
+		// tracked here on the calling goroutine: a variant tracked inside the
+		// drain would be a main-thread frame temporary, freed by the
+		// end-of-frame cycle while this goroutine still holds it.
+		var raw gdextension.Variant
+		var err error
+		ring.Threads.Run(func() {
+			ring.Main.Flush()
+			raw, err = objectCallRaw(o, method, args)
+		})
+		return pointers.New[Variant]([3]uint64(raw)), err
 	}
+	raw, err := objectCallRaw(o, method, args)
+	return pointers.New[Variant]([3]uint64(raw)), err
+}
+
+// objectCallRaw performs the engine crossings of [ObjectCall] on the calling
+// thread, returning the result as an untracked raw variant so that a
+// cross-thread caller can track it on its own goroutine.
+func objectCallRaw(o gdreference.Object, method StringName, args []Variant) (gdextension.Variant, error) {
 	self := gdreference.GetObject(o)
 	name := pointers.Get(method)
+	var converted []gdextension.Variant
+	for _, arg := range args {
+		converted = append(converted, gdextension.Variant(pointers.Get(arg)))
+	}
 	if gdextension.Host.Objects.Script.DefinesMethod(self, name) {
-		var converted []gdextension.Variant
-		for _, arg := range args {
-			converted = append(converted, gdextension.Variant(pointers.Get(arg)))
-		}
 		if result, err, ok := noescape.ScriptCallResident(self, name, converted); ok {
 			// Resident-callback mode: script calls are the crossing Go
 			// callables re-enter under, so their nested callbacks take the
@@ -591,7 +620,7 @@ func ObjectCall(o gdreference.Object, method StringName, args ...Variant) (Varia
 			runtime.KeepAlive(o.Anchor())
 			runtime.KeepAlive(method)
 			runtime.KeepAlive(args)
-			return pointers.New[Variant]([3]uint64(result)), err.Err()
+			return gdextension.Variant(result), err.Err()
 		}
 		var err gdextension.CallError
 		var result gdextension.Variant
@@ -604,9 +633,23 @@ func ObjectCall(o gdreference.Object, method StringName, args ...Variant) (Varia
 		runtime.KeepAlive(o.Anchor())
 		runtime.KeepAlive(method)
 		runtime.KeepAlive(args)
-		return pointers.New[Variant]([3]uint64(result)), err.Err()
+		return result, err.Err()
 	}
-	return NewVariant(o).Call(method, args...) // FIXME is this ok?
+	// FIXME is this ok?
+	vo := NewVariant(o)
+	var err gdextension.CallError
+	var result gdextension.Variant
+	gdextension.Host.Variants.Call(pointers.Get(vo), name,
+		gdextension.CallReturns[gdextension.Variant](&result),
+		len(converted),
+		gdextension.CallAccepts[gdextension.Variant](unsafe.SliceData(converted)),
+		gdextension.CallReturns[gdextension.CallError](&err),
+	)
+	runtime.KeepAlive(vo)
+	runtime.KeepAlive(o.Anchor())
+	runtime.KeepAlive(method)
+	runtime.KeepAlive(args)
+	return result, err.Err()
 }
 
 func ObjectCanTranslateMessages(o gdreference.Object) bool {

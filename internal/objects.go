@@ -142,6 +142,15 @@ func Free(raw gdextension.Object) {
 	}
 	if threadcheck.Main() {
 		ring.Main.Flush()
+	} else if !threadcheck.Engine() {
+		// user goroutine: destructors run on the thread that frees (Node's
+		// scene-tree teardown is main-thread-only), so free on the main
+		// thread, in queue order behind this goroutine's buffered uses.
+		ring.Threads.Run(func() {
+			ring.Main.Flush()
+			gdextension.Host.Objects.Unsafe.Free(raw)
+		})
+		return
 	}
 	gdextension.Host.Objects.Unsafe.Free(raw)
 }

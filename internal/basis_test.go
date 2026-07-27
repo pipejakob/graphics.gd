@@ -19,17 +19,15 @@ func test_basis(angles):
 `
 
 func TestBasis(t *testing.T) {
-	runOnMain(t, func(t testing.TB) {
-		var runner = Object.New()
-		var script = GDScript.New().AsScript()
-		script.SetSourceCode(basis_test)
-		script.Reload()
-		runner.SetScript(script)
+	var runner = Object.New()
+	var script = GDScript.New().AsScript()
+	script.SetSourceCode(basis_test)
+	script.Reload()
+	runner.SetScript(script)
 
-		angles := Euler.Radians{X: -1, Y: 0.2, Z: 0}
-		engine := Object.Call(runner, "test_basis", angles).(Basis.XYZ)
-		if engine != Basis.FromEuler(angles, Angle.OrderYXZ) {
-			t.Fatalf("Expected %v, got %v", Object.Call(runner, "test_basis", angles), Basis.FromEuler(angles, Angle.OrderYXZ))
-		}
-	})
+	angles := Euler.Radians{X: -1, Y: 0.2, Z: 0}
+	engine := Object.Call(runner, "test_basis", angles).(Basis.XYZ)
+	if engine != Basis.FromEuler(angles, Angle.OrderYXZ) {
+		t.Fatalf("Expected %v, got %v", Object.Call(runner, "test_basis", angles), Basis.FromEuler(angles, Angle.OrderYXZ))
+	}
 }

@@ -15,26 +15,24 @@ import (
 )
 
 func TestObjectIDs(t *testing.T) {
-	runOnMain(t, func(t testing.TB) {
-		node := Node.New()
-		node.SetName("test")
+	node := Node.New()
+	node.SetName("test")
 
-		nodeID := node.ID()
+	nodeID := node.ID()
 
-		if node, ok := nodeID.Instance(); ok {
-			if node.Name() != "test" {
-				t.Errorf("expected name 'test', got '%s'", node.Name())
-			}
-		} else {
-			t.Error("expected valid instance")
+	if node, ok := nodeID.Instance(); ok {
+		if node.Name() != "test" {
+			t.Errorf("expected name 'test', got '%s'", node.Name())
 		}
+	} else {
+		t.Error("expected valid instance")
+	}
 
-		gd.ObjectFree(node.AsObject()[0])
+	gd.ObjectFree(node.AsObject()[0])
 
-		if _, ok := nodeID.Instance(); ok {
-			t.Error("expected invalid instance after free")
-		}
-	})
+	if _, ok := nodeID.Instance(); ok {
+		t.Error("expected invalid instance after free")
+	}
 }
 
 func TestAliasFreed(t *testing.T) {
@@ -82,27 +80,25 @@ func init() {
 }
 
 func TestGetSet(t *testing.T) {
-	runOnMain(t, func(t testing.TB) {
-		var basis_test string = `extends Object
+	var basis_test string = `extends Object
 
 func set_fields(testing: MyObject):
 	testing.Field1 = "Hello"
 	testing.Field2 = 42
 
 `
-		var runner = Object.New()
-		var script = GDScript.New().AsScript()
-		script.SetSourceCode(basis_test)
-		script.Reload()
-		runner.SetScript(script)
+	var runner = Object.New()
+	var script = GDScript.New().AsScript()
+	script.SetSourceCode(basis_test)
+	script.Reload()
+	runner.SetScript(script)
 
-		var myobject = new(MyObject)
-		Object.Call(runner, "set_fields", myobject)
+	var myobject = new(MyObject)
+	Object.Call(runner, "set_fields", myobject)
 
-		if myobject.Field1 != "Hello" || myobject.Field2 != 42 {
-			t.Errorf("Expected Field1='Hello', Field2=42, got %v, %v", myobject.Field1, myobject.Field2)
-		}
-	})
+	if myobject.Field1 != "Hello" || myobject.Field2 != 42 {
+		t.Errorf("Expected Field1='Hello', Field2=42, got %v, %v", myobject.Field1, myobject.Field2)
+	}
 }
 
 // TestObjectCallNoArgs is a regression test for #309: calling a built-in method
@@ -111,39 +107,33 @@ func set_fields(testing: MyObject):
 // indexed with &args[0]. get_class is a no-arg built-in method, so this call
 // goes through the variant dynamic-call fallback with no arguments.
 func TestObjectCallNoArgs(t *testing.T) {
-	runOnMain(t, func(t testing.TB) {
-		var object = Object.New()
-		result := Object.Call(object, "get_class")
-		if got := fmt.Sprint(result); got != "Object" {
-			t.Errorf("expected class 'Object', got %q", got)
-		}
-	})
+	var object = Object.New()
+	result := Object.Call(object, "get_class")
+	if got := fmt.Sprint(result); got != "Object" {
+		t.Errorf("expected class 'Object', got %q", got)
+	}
 }
 
 func TestObjectAsGoClass(t *testing.T) {
-	runOnMain(t, func(t testing.TB) {
-		var object = new(MyObject)
-		ptr, ok := Object.As[*MyObject](Object.Instance(object.AsObject()))
-		if !ok {
-			t.Error("Expected to convert Object to *MyObject")
-		}
-		if ptr != object {
-			t.Error("Expected to get the same pointer back")
-		}
-	})
+	var object = new(MyObject)
+	ptr, ok := Object.As[*MyObject](Object.Instance(object.AsObject()))
+	if !ok {
+		t.Error("Expected to convert Object to *MyObject")
+	}
+	if ptr != object {
+		t.Error("Expected to get the same pointer back")
+	}
 }
 
 func TestObjectAsGoTool(t *testing.T) {
-	runOnMain(t, func(t testing.TB) {
-		var object = new(MyTool)
-		ptr, ok := Object.As[*MyTool](Object.Instance(object.AsObject()))
-		if !ok {
-			t.Error("Expected to convert Object to *MyTool")
-		}
-		if ptr != object {
-			t.Error("Expected to get the same pointer back")
-		}
-	})
+	var object = new(MyTool)
+	ptr, ok := Object.As[*MyTool](Object.Instance(object.AsObject()))
+	if !ok {
+		t.Error("Expected to convert Object to *MyTool")
+	}
+	if ptr != object {
+		t.Error("Expected to get the same pointer back")
+	}
 }
 
 type MyNode struct {
@@ -155,17 +145,15 @@ func init() {
 }
 
 func TestExtensionClassAliasCastThenAddedToScene(t *testing.T) {
-	runOnMain(t, func(t testing.TB) {
-		var m = new(MyNode)
+	var m = new(MyNode)
 
-		// simulate the scenario where the engine returns MyNode as an 'owned' Object, ie. PackedScene.Instantiate
-		var another_ref_from_the_engine = gdreference.OwnObject(gdreference.GetObject(m.AsObject()[0]), gd.Free)
-		var obj = Node.Instance{gdclass.NewNode(another_ref_from_the_engine)}
+	// simulate the scenario where the engine returns MyNode as an 'owned' Object, ie. PackedScene.Instantiate
+	var another_ref_from_the_engine = gdreference.OwnObject(gdreference.GetObject(m.AsObject()[0]), gd.Free)
+	var obj = Node.Instance{gdclass.NewNode(another_ref_from_the_engine)}
 
-		m = Object.To[*MyNode](obj)
-		var node = Node.New()
-		node.AddChild(obj)
-	})
+	m = Object.To[*MyNode](obj)
+	var node = Node.New()
+	node.AddChild(obj)
 }
 
 var call_callable string = `extends Object
@@ -232,17 +220,15 @@ func TestExtensionClassReturnedToTheEngineFromCallable(t *testing.T) {
 }
 
 func TestJumpOnlyCall(t *testing.T) {
-	runOnMain(t, func(t testing.TB) {
-		var node = Node.New()
-		node.SetProcessInput(true)
-		if !node.IsProcessingInput() {
-			t.Error("Expected node to be processing input")
-		}
-		node.SetProcessInput(false)
-		if node.IsProcessingInput() {
-			t.Error("Expected node to not be processing input")
-		}
-	})
+	var node = Node.New()
+	node.SetProcessInput(true)
+	if !node.IsProcessingInput() {
+		t.Error("Expected node to be processing input")
+	}
+	node.SetProcessInput(false)
+	if node.IsProcessingInput() {
+		t.Error("Expected node to not be processing input")
+	}
 }
 
 type KeepAliveNode struct {
@@ -256,13 +242,11 @@ func init() {
 }
 
 func TestFree(t *testing.T) {
-	runOnMain(t, func(t testing.TB) {
-		var obj = new(MyObject)
-		Object.Free(obj)
-		if Object.InstanceIsValid(Object.Instance(obj.AsObject())) {
-			t.Error("Expected object to be invalid after free")
-		}
-	})
+	var obj = new(MyObject)
+	Object.Free(obj)
+	if Object.InstanceIsValid(Object.Instance(obj.AsObject())) {
+		t.Error("Expected object to be invalid after free")
+	}
 }
 
 func TestAutomaticKeepAlive(t *testing.T) {
@@ -296,15 +280,11 @@ func TestNoInheritance(t *testing.T) {
 	type Allowed struct {
 		Common
 	}
-	runOnMain(t, func(t testing.TB) {
-		defer func() {
-			if recover() == nil {
-				t.Error("Expected panic when trying to cast to an unrelated type")
-			}
-		}()
-		classdb.Register[Player]()
-	})
-	runOnMain(t, func(t testing.TB) {
-		classdb.Register[Allowed]()
-	})
+	defer func() {
+		if recover() == nil {
+			t.Error("Expected panic when trying to cast to an unrelated type")
+		}
+	}()
+	classdb.Register[Player]()
+	classdb.Register[Allowed]()
 }

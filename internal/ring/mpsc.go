@@ -325,6 +325,17 @@ func (r *MPSC) Defer(fn func()) {
 	r.publish(i)
 }
 
+// Barrier is a flush for producers: only the main thread may drain the ring,
+// so "flushing" from a side thread means parking until the next drain has
+// executed everything published before this call. It queues a parked no-op
+// behind the calling goroutine's buffered entries and waits for it, so a
+// direct engine crossing made after Barrier returns observes the effects of
+// all of this goroutine's buffered calls. Returns immediately if the ring is
+// closed.
+func (r *MPSC) Barrier() {
+	r.Run(func() {})
+}
+
 // Flush drains the ring. Main thread only. Entries are executed in FIFO
 // order; runs of engine calls are dispatched in a single crossing, with
 // thunks executed in Go between them. A published entry can trigger engine

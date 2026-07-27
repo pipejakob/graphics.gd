@@ -58,37 +58,29 @@ func init() {
 // field is automatically created and added as a child during Ready.
 func TestDeclarativeChildFlat(t *testing.T) {
 	parent := new(FlatParent)
-	runOnMain(t, func(t testing.TB) {
-		SceneTree.Add(parent.AsNode())
-	})
-	runOnMain(t, func(t testing.TB) {
-		if parent.ChildA == (Node.Instance{}) {
-			t.Fatal("expected ChildA to be populated after Ready, got zero value")
-		}
-		if parent.ChildA.Name() != "ChildA" {
-			t.Fatalf("expected child name 'ChildA', got %q", parent.ChildA.Name())
-		}
-	})
+	SceneTree.Add(parent.AsNode())
+	if parent.ChildA == (Node.Instance{}) {
+		t.Fatal("expected ChildA to be populated after Ready, got zero value")
+	}
+	if parent.ChildA.Name() != "ChildA" {
+		t.Fatalf("expected child name 'ChildA', got %q", parent.ChildA.Name())
+	}
 }
 
 // TestDeclarativeChildMultiple verifies that multiple exported Node fields
 // are each created as separate children.
 func TestDeclarativeChildMultiple(t *testing.T) {
 	parent := new(MultiParent)
-	runOnMain(t, func(t testing.TB) {
-		SceneTree.Add(parent.AsNode())
-	})
-	runOnMain(t, func(t testing.TB) {
-		if parent.First == (Node.Instance{}) {
-			t.Fatal("expected First to be populated")
-		}
-		if parent.Second == (Node.Instance{}) {
-			t.Fatal("expected Second to be populated")
-		}
-		if parent.AsNode().GetChildCount() < 2 {
-			t.Fatalf("expected at least 2 children, got %d", parent.AsNode().GetChildCount())
-		}
-	})
+	SceneTree.Add(parent.AsNode())
+	if parent.First == (Node.Instance{}) {
+		t.Fatal("expected First to be populated")
+	}
+	if parent.Second == (Node.Instance{}) {
+		t.Fatal("expected Second to be populated")
+	}
+	if parent.AsNode().GetChildCount() < 2 {
+		t.Fatalf("expected at least 2 children, got %d", parent.AsNode().GetChildCount())
+	}
 }
 
 // TestDeclarativeChildNested verifies that a named struct field with an
@@ -96,38 +88,30 @@ func TestDeclarativeChildMultiple(t *testing.T) {
 // correctly in the scene tree.
 func TestDeclarativeChildNested(t *testing.T) {
 	parent := new(NestedParent)
-	runOnMain(t, func(t testing.TB) {
-		SceneTree.Add(parent.AsNode())
-	})
-	runOnMain(t, func(t testing.TB) {
-		if parent.Container.Instance == (Node.Instance{}) {
-			t.Fatal("expected Container to be populated")
-		}
-		if parent.Container.Inner == (Node.Instance{}) {
-			t.Fatal("expected Container.Inner to be populated")
-		}
-		if parent.Container.Inner.Name() != "Inner" {
-			t.Fatalf("expected inner child name 'Inner', got %q", parent.Container.Inner.Name())
-		}
-	})
+	SceneTree.Add(parent.AsNode())
+	if parent.Container.Instance == (Node.Instance{}) {
+		t.Fatal("expected Container to be populated")
+	}
+	if parent.Container.Inner == (Node.Instance{}) {
+		t.Fatal("expected Container.Inner to be populated")
+	}
+	if parent.Container.Inner.Name() != "Inner" {
+		t.Fatalf("expected inner child name 'Inner', got %q", parent.Container.Inner.Name())
+	}
 }
 
 // TestDeclarativeChildDeeplyNested verifies multi-level nesting where
 // nested structs contain further nested structs with their own children.
 func TestDeclarativeChildDeeplyNested(t *testing.T) {
 	parent := new(DeepParent)
-	runOnMain(t, func(t testing.TB) {
-		SceneTree.Add(parent.AsNode())
-	})
-	runOnMain(t, func(t testing.TB) {
-		if parent.Level1.Instance == (Node.Instance{}) {
-			t.Fatal("expected Level1 to be populated")
-		}
-		if parent.Level1.Level2.Instance == (Node.Instance{}) {
-			t.Fatal("expected Level1.Level2 to be populated")
-		}
-		if parent.Level1.Level2.Leaf == (Node.Instance{}) {
-			t.Fatal("expected Level1.Level2.Leaf to be populated")
-		}
-	})
+	SceneTree.Add(parent.AsNode())
+	if parent.Level1.Instance == (Node.Instance{}) {
+		t.Fatal("expected Level1 to be populated")
+	}
+	if parent.Level1.Level2.Instance == (Node.Instance{}) {
+		t.Fatal("expected Level1.Level2 to be populated")
+	}
+	if parent.Level1.Level2.Leaf == (Node.Instance{}) {
+		t.Fatal("expected Level1.Level2.Leaf to be populated")
+	}
 }
