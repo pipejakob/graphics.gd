@@ -19,3 +19,11 @@ func (angle Radians) AsVector2() vector2 {
 	sin, cos := sincos32(float32(angle))
 	return vector2{float(cos), float(sin)}
 }
+
+// CosSin returns the cosine and sine of the angle in radians, as the X
+// and Y of a vector. Both come out of a single range reduction, so this
+// costs close to half of calling [Cos] and [Sin] separately.
+func CosSin(x Radians) vector2 {
+	sin, cos := sincos32(float32(x))
+	return vector2{float(cos), float(sin)}
+}
