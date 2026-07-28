@@ -54,6 +54,17 @@ func fastcbEntryFastPC() uintptr {
 // same deferred yield/clear epilogue as the resident fast path in
 // cgocallbackg, then returns to the trampoline, which unwinds to the
 // engine through fastcbentryexit.
+//
+// A resident callback must present the same m thread-lock state that a stock
+// one does. cgocallbackg holds an internal lockOSThread across the callback
+// (see the resident fast path there, which now does the same); a dispatch
+// entered through the thunk bypasses cgocallbackg entirely, so it takes that
+// lock here. Uniform counts matter because callback code may switch a
+// coroutine — startup's iter.Pull main-function coroutine does, once per
+// frame — and runtime.coroswitch_m throws unless every switch sees the
+// lockedInt/lockedExt the coroutine was created with. The lock also gives the
+// dispatch the binding the stock path relies on: if its Go code blocks, the
+// goroutine returns to this m rather than resuming on another.
 func fastcbentrygofast(instance, userdata, args, ret uintptr) {
 	if GOOS == "windows" {
 		// Mirror the resident fast path in cgocallbackg: a stock base
@@ -69,7 +80,9 @@ func fastcbentrygofast(instance, userdata, args, ret uintptr) {
 		if stockBase {
 			osPreemptExtExit(gp.m)
 		}
+		lockOSThread()
 		fastcbEntryFn(instance, userdata, ret, args)
+		unlockOSThread()
 		if stockBase {
 			osPreemptExtEnter(gp.m)
 		}
@@ -77,7 +90,9 @@ func fastcbentrygofast(instance, userdata, args, ret uintptr) {
 		gp.m.winsyscall = winsyscall
 		return
 	}
+	lockOSThread()
 	fastcbEntryFn(instance, userdata, ret, args)
+	unlockOSThread()
 	fastcbentrygoyield()
 }
 

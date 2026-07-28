@@ -40,6 +40,23 @@ TEXT runtime·fastcbCallCFast<ABIInternal>(SB),NOSPLIT|NOFRAME,$0-16
 // The engine's fifth argument (r_ret) sits at [SP+272] after the SUB.
 TEXT runtime·fastcbentryfast(SB),NOSPLIT|NOFRAME,$0
 	NO_LOCAL_POINTERS
+	// Identify the thread BEFORE touching thread-local storage. The g load
+	// below dereferences the thread's TLS array slot, and on Windows that
+	// slot does not exist on a thread which has never run Go code: the load
+	// faults instead of yielding nil, so the TESTQ guard under it never gets
+	// the chance to hand such a thread to the stock entry. (Engine worker
+	// threads reaching a virtual call crashed there with 0xc0000005 —
+	// quaadgras/graphics.gd#321.) The System V thunk needs no such gate: a
+	// single %fs-relative load reads zero on foreign threads.
+	//
+	// The TEB's ClientId.UniqueThread (GS:0x48, 32-bit id zero-extended) is
+	// readable on every thread, and fastcbSetResident publishes the resident
+	// thread's id in fastcbTID, which is zero while residency is off. Only
+	// the resident thread — whose TLS the runtime has certainly set up —
+	// proceeds; everyone else tail-jumps to the stock entry below.
+	MOVL	0x48(GS), R10
+	CMPQ	runtime·fastcbTID(SB), R10
+	JNE	fallback
 	get_tls(R10)
 	MOVQ	g(R10), R11
 	TESTQ	R11, R11

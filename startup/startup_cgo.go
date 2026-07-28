@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"iter"
 	"os"
+	"runtime"
 	"runtime/debug"
 	"slices"
 	"testing"
@@ -62,7 +63,7 @@ func init() {
 						classdb.Register[goSceneTree]()
 					} else {
 						resume_main, stop_main = iter.Pull(call_main_in_steps())
-						resume_main()
+						resumeMain()
 					}
 				}
 				for _, fn := range internal.PostStartupFunctions {
@@ -78,7 +79,7 @@ func init() {
 				// wake up instead of sleeping forever.
 				ring.Threads.Close()
 				if theMainFunctionIsWaitingForTheEngineToShutDown {
-					resume_main()
+					resumeMain()
 				}
 				for _, cleanup := range slices.Backward(internal.Cleanups()) {
 					cleanup()
@@ -133,6 +134,38 @@ var (
 )
 var theMainFunctionIsWaitingForTheEngineToShutDown = false
 
+// resumeMain resumes the main-function coroutine, restoring the OS-thread
+// lock state it was created with for the duration of the switch.
+//
+// A coroutine may only be switched on the same thread and with the same
+// internal and external thread-lock counts it was created with, or
+// runtime.coroswitch_m throws "coro: OS thread locking must match locking at
+// coroutine creation". iter.Pull creates this one during extension init, so
+// it records no external lock. Resident-callback mode then takes one for the
+// life of the process — fastcbFrame calls runtime.LockOSThread when it
+// engages, which is what keeps the resident goroutine bound to the engine
+// thread in the gaps between callbacks — so every resume after the first
+// frame would switch with a count the coroutine has never seen. Rendering
+// mode died that way on Windows on its first frame, once
+// quaadgras/graphics.gd#321 stopped crashing ahead of it.
+//
+// Dropping that external lock across the switch is safe: the callback we are
+// inside holds an internal lock (the resident paths take the same one the
+// stock path does — see the fastcb overlay, which relies on it for exactly
+// this reason), so the goroutine stays bound to this m while the coroutine
+// runs, and the coroutine hands control back to it on this same thread by
+// construction. Retaking the lock before the callback returns to C restores
+// residency's invariant for the gap between callbacks.
+func resumeMain() (bool, bool) {
+	if !fastcbEngaged {
+		return resume_main()
+	}
+	runtime.UnlockOSThread()
+	closing, ok := resume_main()
+	runtime.LockOSThread()
+	return closing, ok
+}
+
 type engineLoadingSharedGo struct{}
 
 func (engineLoadingSharedGo) Start() {
@@ -183,7 +216,7 @@ func init() {
 			editorSetup()
 		}
 		if pause_main != nil {
-			resume_main()
+			resumeMain()
 		}
 	}
 }
@@ -194,7 +227,7 @@ type goMain struct {
 
 func (loop goMain) Initialize() {
 	Callable.Cycle()
-	resume_main()
+	resumeMain()
 }
 
 func (loop goMain) PhysicsProcess(delta Float.X) bool {
@@ -211,10 +244,10 @@ func (loop goMain) Process(delta Float.X) bool {
 	defer Callable.Cycle()
 	defer keep_reachable_instances_alive()
 	dt = delta
-	close, _ := resume_main()
+	close, _ := resumeMain()
 	return close
 }
 
 func (loop goMain) Finalize() {
-	resume_main()
+	resumeMain()
 }

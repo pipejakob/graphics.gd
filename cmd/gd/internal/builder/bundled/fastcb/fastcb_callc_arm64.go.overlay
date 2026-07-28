@@ -55,8 +55,20 @@ func fastcbEntryFastPC() uintptr {
 // same deferred yield/clear epilogue as the resident fast path in
 // cgocallbackg, then returns to the trampoline, which unwinds to the
 // engine through fastcbentryexit.
+//
+// The dispatch runs under the same internal thread lock a stock callback
+// holds (cgocallbackg takes it, including on its resident fast path; a
+// dispatch entered through the thunk bypasses cgocallbackg, so it takes the
+// lock here). Uniform counts matter because callback code may switch a
+// coroutine — startup's iter.Pull main-function coroutine does, once per
+// frame — and runtime.coroswitch_m throws unless every switch sees the
+// lockedInt/lockedExt the coroutine was created with. The lock also gives the
+// dispatch the binding the stock path relies on: if its Go code blocks, the
+// goroutine returns to this m rather than resuming on another.
 func fastcbentrygofast(instance, userdata, args, ret uintptr) {
+	lockOSThread()
 	fastcbEntryFn(instance, userdata, ret, args)
+	unlockOSThread()
 	if fastcbCallCDepth == 0 && (fastcbYieldFlag != 0 || fastcbM == 0) {
 		fastcbYieldFlag = 0
 		if fastcbSavedPC != 0 {

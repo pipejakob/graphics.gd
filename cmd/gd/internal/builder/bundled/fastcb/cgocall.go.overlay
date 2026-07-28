@@ -327,6 +327,16 @@ func callbackUpdateSystemStack(mp *m, sp uintptr, signal bool) {
 // skip exitsyscall/reentersyscall and both status CASes entirely.
 var fastcbM muintptr
 
+// fastcbTID is the resident thread's id (windows only, zero elsewhere and
+// whenever residency is off). The direct virtual-call entry thunk reads g
+// from thread-local storage before it can check anything, and on Windows
+// that read is a dereference through a TLS array slot which does NOT exist
+// on a thread that has never run Go code — it faults rather than yielding
+// nil. Publishing the id here lets the thunk identify the resident thread
+// from the TEB (always readable) and send every other thread to the stock
+// entry without touching TLS at all. See fastcb_callc_windows_amd64.s.
+var fastcbTID uintptr
+
 // graphicsFastcbPCs aliases graphics.gd/internal/fastcb.runtimePCs. The first
 // C->Go callback publishes the entry PCs of the three fastcb runtime hooks
 // there, which is how graphics.gd detects that this patched cgocall.go is in
@@ -412,6 +422,13 @@ func fastcbSetResident() {
 	if gp.lockedm == 0 {
 		throw("fastcbSetResident: goroutine not locked to OS thread")
 	}
+	// Publish the thread id BEFORE the m: a callback arriving in between
+	// passes the thunk's thread gate and then fails its fastcbM check, so
+	// it takes the stock entry. The reverse order would let the thunk read
+	// TLS on a thread it has not yet identified.
+	if GOOS == "windows" {
+		fastcbTID = uintptr(gp.m.procid)
+	}
 	fastcbM.set(gp.m)
 	// Arm Windows extra-M retention now, not at DLL load. gcc_libinit_windows.c
 	// reserves the FLS slot at preinit but leaves _cgo_pthread_key_created
@@ -435,7 +452,11 @@ func fastcbSetResident() {
 //go:linkname fastcbClearResident
 //go:nosplit
 func fastcbClearResident() {
+	// Retire the m first, the thread id second — the mirror of the order in
+	// fastcbSetResident, so the thunk never reaches its TLS read on the
+	// strength of a stale thread id alone.
 	fastcbM = 0
+	fastcbTID = 0
 }
 
 // fastcbYield requests that, when the current callback returns, the resident
@@ -558,7 +579,19 @@ func cgocallbackg(fn, frame unsafe.Pointer, ctxt uintptr) {
 			var cb func(frame unsafe.Pointer)
 			cbFV := funcval{uintptr(fn)}
 			*(*unsafe.Pointer)(unsafe.Pointer(&cb)) = noescape(unsafe.Pointer(&cbFV))
+			// Hold the same internal thread lock the stock path holds
+			// across a callback (taken below, before cgocallbackg1).
+			// A resident callback that presented a different lockedInt
+			// would make the m's thread-lock state depend on which path
+			// delivered it, and callback code may switch a coroutine —
+			// startup's iter.Pull main-function coroutine does, once per
+			// frame — which runtime.coroswitch_m only permits in the
+			// state the coroutine was created with. It also keeps the
+			// goroutine bound to this m if the callback's Go code blocks,
+			// exactly as the stock path guarantees.
+			lockOSThread()
 			cb(frame)
+			unlockOSThread()
 			if stockBase {
 				osPreemptExtEnter(gp.m)
 			}
