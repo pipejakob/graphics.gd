@@ -14,6 +14,8 @@ import (
 	"graphics.gd/internal/pointers"
 	"graphics.gd/internal/ring"
 	"graphics.gd/internal/threadcheck"
+	"graphics.gd/internal/threadsafe"
+	"graphics.gd/variant/Float"
 	"graphics.gd/variant/Object"
 )
 
@@ -25,14 +27,40 @@ type pinnedVirtualFunc struct {
 	// instance word (fastInterface) instead of resolving the instance
 	// record. Nil on portable builds, which fall back to the table.
 	tab unsafe.Pointer
+
+	// tick is the per-frame virtuals' shortcut: _process and
+	// _physics_process are called once per node per frame, so a scene runs
+	// them tens of thousands of times where it runs any other virtual once,
+	// and they are the only ones whose dispatch is worth specialising. It
+	// calls the user's method with the instance word directly, skipping the
+	// receiver interface, the conversion into the generic wrapper's any
+	// parameter and the assertion back out of it — none of which recover
+	// anything the instance word did not already carry. Nil unless the
+	// method has exactly the func(*T, Float.X) shape [classImplementation.tickOf]
+	// looks for; the generic path handles everything else.
+	tick func(unsafe.Pointer, Float.X)
 }
 
 var (
 	virtualPinner  runtime.Pinner
 	pinnedVirtuals []*pinnedVirtualFunc
+	// pinnedVirtualCache reuses a pinned dispatch record per (class,
+	// interned method name): the engine resolves virtuals per instance,
+	// so without it every node entering the tree pins a fresh record for
+	// the same answer.
+	pinnedVirtualCache threadsafe.Map[[2]uintptr, uintptr]
 )
 
 var debugOwnership = strings.Contains(os.Getenv("GDDEBUG"), "ownership")
+
+// tickDisabled sends _process and _physics_process down the generic virtual
+// path instead of [pinnedVirtualFunc.tick]. The shortcut is worth a few
+// nanoseconds per node per frame, which is small enough that only an A/B in
+// the same binary can measure it honestly — comparing two builds moves the
+// answer by more than the effect (see BenchmarkVirtualProcess in
+// internal/virtual_process_test.go). This makes that A/B possible, and gives
+// anyone who suspects the shortcut a way to switch it off.
+var tickDisabled = strings.Contains(os.Getenv("GDDEBUG"), "notick")
 
 func init() {
 	gd.ExtensionInstanceLookup = func(obj gdextension.Object) any {
@@ -83,6 +111,7 @@ func init() {
 		virtualPinner.Unpin()
 		virtualPinner = runtime.Pinner{}
 		pinnedVirtuals = nil
+		pinnedVirtualCache = threadsafe.Map[[2]uintptr, uintptr]{}
 	})
 
 	gdextension.On.Extension = gdextension.CallbacksForExtension{
@@ -172,6 +201,11 @@ func init() {
 			},
 			Called: func(instance gdextension.ExtensionInstanceID, callData gdextension.Pointer, result gdextension.Returns[any], args gdextension.Accepts[any]) {
 				pv := (*pinnedVirtualFunc)(*(*unsafe.Pointer)(unsafe.Pointer(&callData))) // runtime.Pinned, so this is ok.
+				if pv.tick != nil && instance != 0 {
+					pv.tick(unsafe.Pointer(uintptr(instance)), Float.X(gd.UnsafeGet[float64](gdextension.Pointer(args), 0)))
+					gdreference.Barrier()
+					return
+				}
 				if ptr, ok := fastInterface(pv.tab, instance); ok {
 					pv.fn(ptr, gdextension.Pointer(args), gdextension.Pointer(result))
 					gdreference.Barrier()
@@ -265,14 +299,21 @@ func init() {
 				})
 			},
 			Caller: func(class gdextension.ExtensionClassID, method gdextension.StringName, hash uint32) uintptr {
+				key := [2]uintptr{uintptr(class), uintptr(method[0])}
+				if cached, ok := pinnedVirtualCache.Lookup(key); ok {
+					return cached
+				}
 				classImpl := classes.Get(class)
-				virtual, ok := classImpl.GetVirtual(pointers.Let[gd.StringName](method)).(gd.ExtensionClassCallVirtualFunc)
+				name := pointers.Let[gd.StringName](method)
+				virtual, ok := classImpl.GetVirtual(name).(gd.ExtensionClassCallVirtualFunc)
 				if !ok || virtual == nil {
+					pinnedVirtualCache.Insert(key, 0)
 					return 0
 				}
-				pv := &pinnedVirtualFunc{fn: virtual, tab: classImpl.tab}
+				pv := &pinnedVirtualFunc{fn: virtual, tab: classImpl.tab, tick: classImpl.tickOf(name.String())}
 				virtualPinner.Pin(pv)
 				pinnedVirtuals = append(pinnedVirtuals, pv)
+				pinnedVirtualCache.Insert(key, uintptr(unsafe.Pointer(pv)))
 				return uintptr(unsafe.Pointer(pv))
 			},
 		},

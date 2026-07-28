@@ -9,6 +9,7 @@ import (
 	"graphics.gd/internal/gdextension"
 	"graphics.gd/internal/gdreference"
 	"graphics.gd/internal/sticky"
+	"graphics.gd/variant/Float"
 )
 
 // Wire the sticky-P dispatch target to the same logic as
@@ -20,6 +21,11 @@ import (
 func init() {
 	dispatch := func(instance, userdata, result, args uintptr) {
 		pv := (*pinnedVirtualFunc)(unsafe.Pointer(userdata))
+		if pv.tick != nil && instance != 0 {
+			pv.tick(unsafe.Pointer(instance), Float.X(gd.UnsafeGet[float64](gdextension.Pointer(args), 0)))
+			gdreference.Barrier()
+			return
+		}
 		if ptr, ok := fastInterface(pv.tab, gdextension.ExtensionInstanceID(instance)); ok {
 			pv.fn(ptr, gdextension.Pointer(args), gdextension.Pointer(result))
 			gdreference.Barrier()

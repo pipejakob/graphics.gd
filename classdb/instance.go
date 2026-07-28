@@ -44,10 +44,16 @@ func (t *instanceTable) New(instance *instanceImplementation, data reflect.Value
 }
 
 // Del forgets the instance and releases the pin taken by instanceID.
-// Callers must not use id with the engine after this returns.
+// Callers must not use id with the engine after this returns. The
+// memory behind the class's [Engine.Allocated] fields goes back to the
+// engine here, which is what ends its life.
 func (t *instanceTable) Del(id gdextension.ExtensionInstanceID) {
 	if impl, ok := t.table.Lookup(id); ok && impl != nil {
 		impl.pinner.Unpin()
+		for _, addr := range impl.engineMemory {
+			gdextension.Host.Memory.Free(addr)
+		}
+		impl.engineMemory = nil
 	}
 	t.table.Remove(id)
 }

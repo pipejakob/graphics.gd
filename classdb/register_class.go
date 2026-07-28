@@ -31,6 +31,7 @@ import (
 	"graphics.gd/classdb/ShaderMaterial"
 
 	"graphics.gd/variant/Callable"
+	"graphics.gd/variant/Float"
 	"graphics.gd/variant/Object"
 	"graphics.gd/variant/Path"
 	"graphics.gd/variant/RefCounted"
@@ -235,6 +236,7 @@ func Register[T Class](exports ...any) {
 			Constructor: func() reflect.Value {
 				return reflect.New(classType)
 			},
+			virtuals: new(threadsafe.Map[gdextension.StringName, resolvedVirtual]),
 		}
 		for _, field := range reflect.VisibleFields(classType) {
 			if field.Type.Kind() == reflect.Pointer && field.Type.Elem().Kind() == reflect.Struct && field.Type.Elem().NumField() > 0 {
@@ -593,6 +595,14 @@ type classImplementation struct {
 	Constructor    func() reflect.Value
 
 	Singletons []reflect.StructField
+
+	// virtuals caches GetVirtual results keyed by the engine's interned
+	// method name. The engine resolves virtuals per instance, but the
+	// answer depends only on the class and the name: without the cache
+	// every node entering the tree pays a name conversion and a String
+	// round-trip per virtual method queried. The result is boxed so a
+	// cached "no such virtual" is distinguishable from a missing entry.
+	virtuals *threadsafe.Map[gdextension.StringName, resolvedVirtual]
 }
 
 // findEngineClass walks up the inheritance chain and returns the name of the
@@ -711,7 +721,7 @@ func (class classImplementation) reloadInstance(value reflect.Value, super *gdre
 	if len(signals) > 0 {
 		go manageSignals(Object.Instance{*super}.ID(), chSignals)
 	}
-	return &instanceImplementation{
+	impl := &instanceImplementation{
 		object:     gdreference.GetObject(*super),
 		Type:       class.Type,
 		weak:       weak.Make(super),
@@ -719,9 +729,73 @@ func (class classImplementation) reloadInstance(value reflect.Value, super *gdre
 		isEditor:   !class.Tool && Engine.IsEditorHint(),
 		isMainLoop: class.isMainLoop,
 	}
+	impl.engineMemory = allocateFields(value.Type(), value.Addr().UnsafePointer())
+	return impl
 }
 
+// GetVirtual resolves the implementation of a virtual method by its
+// engine name. The engine asks per instance, but the answer depends only
+// on the class and the (interned, so pointer-stable) name, so it is
+// resolved once and cached: without the cache every node entering the
+// tree pays name conversion and String round-trips per virtual queried.
+type resolvedVirtual struct{ value any }
+
 func (class classImplementation) GetVirtual(name gd.StringName) any {
+	key := gdextension.StringName(pointers.Get(name))
+	if cached, ok := class.virtuals.Lookup(key); ok {
+		return cached.value
+	}
+	virtual := class.getVirtual(name)
+	class.virtuals.Insert(key, resolvedVirtual{value: virtual})
+	return virtual
+}
+
+// tickOf resolves the direct call target behind [pinnedVirtualFunc.tick], or
+// nil for any virtual that does not qualify. Only _process and
+// _physics_process are worth specialising — they are the two virtuals a scene
+// calls once per node per frame — and only when the Go method has exactly the
+// shape the shortcut can call: one Float.X argument, no results. Anything
+// else, including a method the engine knows but Go declares differently, is
+// left to the generic wrapper.
+func (class classImplementation) tickOf(name string) func(unsafe.Pointer, Float.X) {
+	if tickDisabled {
+		return nil
+	}
+	switch name {
+	case "_process", "_physics_process":
+	default:
+		return nil
+	}
+	// The shortcut hands the engine's instance word straight to the method as
+	// its receiver, which is only the address of the user's struct on builds
+	// where classTab resolved an itab (see instanceID). Where it did not, the
+	// word is an opaque counter and only the instances table can turn it back
+	// into a receiver, so the generic path has to take the call.
+	if class.tab == nil {
+		return nil
+	}
+	if !class.Tool && class.InEditor {
+		return nil
+	}
+	method, ok := reflect.PointerTo(class.Type).MethodByName(convertName(name))
+	if !ok {
+		return nil
+	}
+	if method.Type.NumIn() != 2 || method.Type.NumOut() != 0 || method.Type.In(1) != reflect.TypeFor[Float.X]() {
+		return nil
+	}
+	// Reinterpret the method as a call whose receiver is a raw pointer: a Go
+	// func value is one word wide whatever its signature, and the instance
+	// word the engine hands back on every callback IS the address of the
+	// user's struct (see instanceID), which is what the receiver expects.
+	// This is the same reinterpretation getVirtual makes to fit a method to
+	// the engine's virtual signature.
+	held := reflect.New(method.Type)
+	held.Elem().Set(method.Func)
+	return *(*func(unsafe.Pointer, Float.X))(held.UnsafePointer())
+}
+
+func (class classImplementation) getVirtual(name gd.StringName) any {
 	if !class.Tool && class.InEditor {
 		return nil
 	}
@@ -771,6 +845,11 @@ type instanceImplementation struct {
 	weak    weak.Pointer[gdreference.Object]
 	cleanup runtime.Cleanup
 	signals []signalChan
+
+	// engineMemory holds the allocations behind the class's
+	// [Engine.Allocated] fields, handed back when the engine frees the
+	// instance (instanceTable.Del).
+	engineMemory []gdextension.Pointer
 
 	// itab caches the interface type-word for (*Type, gdclass.Pointer). It is
 	// static per class, so once resolved every subsequent [Interface] call can
