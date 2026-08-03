@@ -3,6 +3,7 @@
 package gd_test
 
 import (
+	"math"
 	"testing"
 
 	"graphics.gd/classdb"
@@ -84,7 +85,7 @@ func TestRegisterExportedProperties(t *testing.T) {
 			kvPair{"test_string", wanted.TestString},
 			kvPair{"test_float", wanted.TestFloat},
 			kvPair{"test_vector", wanted.TestVector},
-			kvPair{"test_enum", wanted.TestEnum},
+			kvPair{"test_enum", wanted.TestEnum.Int()},
 		}
 
 		Object.Call(obj, "set_values")
@@ -111,8 +112,23 @@ func TestRegisterExportedProperties(t *testing.T) {
 			if obj.onSetCalls[i].k != wantedOnSet[i].k {
 				t.Errorf("obj.OnSet() called with key = %v, wanted %v", obj.onSetCalls[i].k, wantedOnSet[i].k)
 			}
+
+			// Floats don't retain perfect precision, so instead of requiring equality, check that they're "close enough."
+			if floatVal, ok := obj.onSetCalls[i].v.(float64); ok {
+				if !isApproximatelyEqual(floatVal, float64(wantedOnSet[i].v.(float32))) {
+					t.Errorf("obj.OnSet() called with value = %v, wanted %v", obj.onSetCalls[i].v, wantedOnSet[i].v)
+				}
+			} else {
+				if obj.onSetCalls[i].v != wantedOnSet[i].v {
+					t.Errorf("obj.OnSet() called with value = %v, wanted %v", obj.onSetCalls[i].v, wantedOnSet[i].v)
+				}
+			}
 		}
 	})
+}
+
+func isApproximatelyEqual(a, b float64) bool {
+	return math.Abs(a - b) < 1e-6
 }
 
 const unrecognizedPropertySetter = `extends TestingExportedProperties
