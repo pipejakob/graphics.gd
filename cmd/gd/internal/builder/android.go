@@ -519,11 +519,29 @@ func (android Android) Test(args ...string) error {
 // relaunches the app after it exits, so by the time we read the verdict the log
 // contains the suite repeated many times. Failure details (the indented
 // "foo_test.go:12: ..." assertion lines and panics) are kept, or a --- FAIL
-// verdict is impossible to act on.
+// verdict is impossible to act on. The first panic's crash output (goroutine
+// stacks) is printed in full: those lines match none of the result patterns,
+// and a panic verdict without its stack is impossible to act on too.
 func printAndroidResults(log string) {
 	seen := make(map[string]bool)
+	crash, crashPrinted := false, false
 	for _, line := range strings.Split(log, "\n") {
 		t := strings.TrimSpace(line)
+		if crash {
+			// The crash output runs until the process dies; a relaunched
+			// suite starting over (or finishing) marks where it ended.
+			if strings.HasPrefix(t, "=== RUN") || strings.HasPrefix(t, "--- PASS") || strings.HasPrefix(t, "GDTEST_DONE") {
+				crash, crashPrinted = false, true
+			} else {
+				fmt.Println(line)
+				continue
+			}
+		}
+		if !crashPrinted && (strings.HasPrefix(t, "panic:") || strings.HasPrefix(t, "fatal error:")) {
+			crash = true
+			fmt.Println(t)
+			continue
+		}
 		result := strings.HasPrefix(t, "--- PASS") || strings.HasPrefix(t, "--- FAIL")
 		detail := strings.Contains(t, "_test.go:") || strings.HasPrefix(t, "panic:")
 		if (result || detail) && !seen[t] {
