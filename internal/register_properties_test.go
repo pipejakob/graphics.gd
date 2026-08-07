@@ -3,7 +3,6 @@
 package gd_test
 
 import (
-	"math"
 	"testing"
 
 	"graphics.gd/classdb"
@@ -115,7 +114,7 @@ func TestRegisterExportedProperties(t *testing.T) {
 
 			// Floats don't retain perfect precision, so instead of requiring equality, check that they're "close enough."
 			if floatVal, ok := obj.onSetCalls[i].v.(float64); ok {
-				if !isApproximatelyEqual(floatVal, float64(wantedOnSet[i].v.(float32))) {
+				if !Float.IsApproximatelyEqual(floatVal, float64(wantedOnSet[i].v.(float32))) {
 					t.Errorf("obj.OnSet() called with value = %v, wanted %v", obj.onSetCalls[i].v, wantedOnSet[i].v)
 				}
 			} else {
@@ -125,10 +124,6 @@ func TestRegisterExportedProperties(t *testing.T) {
 			}
 		}
 	})
-}
-
-func isApproximatelyEqual(a, b float64) bool {
-	return math.Abs(a - b) < 1e-6
 }
 
 const unrecognizedPropertySetter = `extends TestingExportedProperties
